@@ -14,7 +14,9 @@ export function extractTimeTags(doc: Document, opts: ParseOptions = {}): Candida
   const out: Candidate[] = []
 
   for (const el of doc.querySelectorAll('time[datetime], time[pubdate]')) {
-    const raw = el.getAttribute('datetime')?.trim() || el.textContent?.trim()
+    const attr = el.getAttribute('datetime')?.trim()
+    const own = el.textContent?.trim()
+    const raw = attr || own
     if (!raw) continue
 
     const context = scoreContext(el)
@@ -38,6 +40,29 @@ export function extractTimeTags(doc: Document, opts: ParseOptions = {}): Candida
     const itemprop = el.getAttribute('itemprop')?.toLowerCase()
     if (itemprop === 'datepublished') field = 'published'
     if (itemprop === 'datemodified') field = 'modified'
+
+    // A `<time>` whose own text says "Publié le 29 juin 2019" while its
+    // datetime attribute reads 2019-07-03 is stating two different things. The
+    // text carries an explicit publication label; the attribute carries none,
+    // and on these pages it is an indexing or last-touched stamp. The stated
+    // intent wins over the bare machine value.
+    if (attr && own && field === 'published') {
+      const fromText = parseDateString(own, opts)
+      if (
+        fromText &&
+        fromText.value.slice(0, 10) !== parsed.value.slice(0, 10) &&
+        fieldFromLabel(own) === 'published'
+      ) {
+        out.push({
+          ...fromText,
+          field: 'published',
+          source: 'time-tag',
+          confidence: 'derived',
+          note: `<time> text is labelled a publication date, disagreeing with its datetime="${attr.slice(0, 10)}"`,
+        })
+        continue
+      }
+    }
 
     out.push({
       ...parsed,

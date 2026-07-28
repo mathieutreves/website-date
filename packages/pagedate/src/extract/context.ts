@@ -27,7 +27,7 @@ const EXCLUDED_PATTERN =
  * time around it, which the ratio guard would otherwise reject.
  */
 const ARTICLE_PATTERN =
-  /(^|[-_\s])(byline|dateline|post-meta|entry-meta|article-meta|published|publish-date|posted-on|posted|pubdate|last-updated|lastmod|updated|submitted|created|publication|post-date|entry-date|date|datum|erstellt|veroffentlicht)([-_\s]|$)/i
+  /(^|[-_\s])(byline|dateline|post-meta|entry-meta|article-meta|published|publish-date|posted-on|posted|pubdate|last-updated|lastmod|updated|submitted|created|publication|post-date|entry-date|date|datum|erstellt|veroffentlicht|author|autor|fecha|parution|subline|info|meta|footer|time|publish|created-post|post-detail|field-content)([-_\s]|$)/i
 
 /**
  * Split camelCase so framework class names match the patterns above:

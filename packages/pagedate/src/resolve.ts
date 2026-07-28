@@ -79,6 +79,16 @@ function rank(c: Candidate): number {
   )
 }
 
+/**
+ * Pick the strongest candidate.
+ *
+ * Ties fall back to document order, which sounds arbitrary but was the best of
+ * the options measured. Preferring the earliest date for a publication — on the
+ * reasoning that publication precedes the comments and updates a page
+ * accumulates — fixes pages where several unlabelled text dates compete, and
+ * loses more pages than it fixes elsewhere. It was tried both broadly and
+ * narrowed to the inferred tier, and lost one net page either way.
+ */
 function best(candidates: Candidate[]): Candidate | undefined {
   if (candidates.length === 0) return undefined
   return candidates.reduce((a, b) => (rank(b) > rank(a) ? b : a))

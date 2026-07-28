@@ -38,6 +38,32 @@ export const MAYBE_DATE =
   /[0-9٠-٩۰-۹०-९๐-๙０-９]{4}|[年년]/
 
 /**
+ * Text that contains digits in a date-like shape but is not a date.
+ *
+ * Version numbers, prices, phone numbers, postal codes, IP addresses and bank
+ * details all read as `12.03.2024` to a naive matcher. Rejecting them is pure
+ * precision: nothing here can ever be a publication date.
+ *
+ * Adapted from htmldate's DISCARD_PATTERNS (Apache-2.0), which arrived at much
+ * the same list from the same corpus.
+ */
+export const NOT_A_DATE = new RegExp(
+  [
+    '^\\d{1,2}:\\d{2}(?:[ :]|$)', // a clock time alone
+    '[$€¥£¢₽₱฿₹#]', // currency symbols
+    '\\b[A-Z]{3}\\d', // currency codes like USD1
+    '(?:^|\\D)(?:\\+\\d{2}|\\d{5,})\\D', // phone numbers, postal codes
+    '\\b(?:ftps?|https?|sftp)://', // URLs
+    '\\bIBAN\\b|\\b[A-Z]{2}\\d{2}[A-Z0-9]{10,}', // bank accounts
+    // Version numbers must carry the `v` prefix or a fourth component. A bare
+    // `16.12.2012` is a German date, and matching that shape as a version
+    // silently discards the single most common European date format.
+    '\\bv\\d+\\.\\d+(?:\\.\\d+)?\\b|\\b\\d+\\.\\d+\\.\\d+\\.\\d+\\b',
+    '®|™', // trademark noise
+  ].join('|'),
+)
+
+/**
  * Elements whose text is worth scanning for a date.
  *
  * `abbr` earns its place: the hAtom microformat convention is

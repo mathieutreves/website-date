@@ -2,7 +2,7 @@ import type { Candidate } from '../types.js'
 import { parseDateString, type ParseOptions } from '../parse/normalize.js'
 import { foldCase } from '../parse/locale.js'
 import { scoreContext } from './context.js'
-import { DATE_ANYWHERE, isBorrowedContent, MAYBE_DATE, TEXT_CANDIDATE_SELECTOR } from './patterns.js'
+import { DATE_ANYWHERE, isBorrowedContent, MAYBE_DATE, TEXT_CANDIDATE_SELECTOR, NOT_A_DATE } from './patterns.js'
 
 /**
  * Dates in rendered text with no label attached — a bare "December 11, 2023"
@@ -49,6 +49,8 @@ export function extractBareText(
     // Same cheap rejection as visibleText, before any allocation.
     const raw = dateBearingText(el)
     if (!raw || !MAYBE_DATE.test(raw)) continue
+    // Prices, versions, phone numbers and IBANs all look like dates.
+    if (NOT_A_DATE.test(raw)) continue
 
     const collapsed = collapse(raw)
     if (collapsed.length > MAX_TEXT_LENGTH) continue
@@ -130,7 +132,11 @@ function directText(el: Element): string {
   for (const node of el.childNodes) {
     // Node.TEXT_NODE === 3 / ELEMENT_NODE === 1; compared numerically because
     // the Node constants are not globals under linkedom.
-    if (node.nodeType === 3) out += node.nodeValue ?? ''
+    // `textContent` is the fallback because some non-browser DOM
+    // implementations (node-html-parser) leave `nodeValue` undefined on text
+    // nodes. On a text node the two are defined to be equal, so this costs
+    // nothing on a real DOM and keeps the extractor parser-agnostic.
+    if (node.nodeType === 3) out += node.nodeValue ?? node.textContent ?? ''
     else if (node.nodeType === 1) {
       const tag = (node as Element).tagName?.toUpperCase()
       if (tag === 'TIME' || tag === 'SPAN' || tag === 'B' || tag === 'STRONG' || tag === 'EM') {
