@@ -1,0 +1,12 @@
+{
+  "cache-control": "max-age=60, public",
+  "cf-cache-status": "HIT",
+  "cf-ray": "a2228dbdb969ea49-FCO",
+  "connection": "keep-alive",
+  "content-encoding": "gzip",
+  "content-type": "text/html",
+  "date": "Tue, 28 Jul 2026 08:36:00 GMT",
+  "etag": "W/\"0c745e3b07ca90ebdfe3fcbc7df89430\"",
+  "server": "cloudflare",
+  "transfer-encoding": "chunked"
+}

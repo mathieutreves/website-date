@@ -1,0 +1,11 @@
+{
+  "url": "https://simonwillison.net/2024/Dec/31/llms-in-2024/",
+  "capturedAt": "2026-07-28",
+  "notes": "Static blog with a full Atom feed. og:updated_time is a UNIX epoch integer (1735668451), which the normalizer does not currently accept.",
+  "fetchedFeedUrl": "https://simonwillison.net/atom/everything/",
+  "expect": {
+    "published": "2024-12-31",
+    "modified": null,
+    "conflict": null
+  }
+}

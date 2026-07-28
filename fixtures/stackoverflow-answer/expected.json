@@ -1,0 +1,11 @@
+{
+  "url": "https://stackoverflow.com/questions/11227809/why-is-processing-a-sorted-array-faster-than-processing-an-unsorted-array",
+  "capturedAt": "2026-07-28",
+  "notes": "Stack Overflow question from 2012 whose answers were edited years later. Generic JSON-LD extraction already recovers the question date; the outstanding gap is the false-positive modified date picked up from an answer or comment, which is what the stackexchange adapter would fix.",
+  "fetchedFeedUrl": "https://stackoverflow.com/feeds/question/11227809",
+  "expect": {
+    "published": "2012-06-27",
+    "modified": null,
+    "conflict": null
+  }
+}

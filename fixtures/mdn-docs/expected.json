@@ -1,0 +1,11 @@
+{
+  "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document/lastModified",
+  "capturedAt": "2026-07-28",
+  "notes": "MDN reference page. Single <time> carrying the last-modified date.",
+  "fetchedFeedUrl": "https://developer.mozilla.org/en-US/blog/rss.xml",
+  "expect": {
+    "published": null,
+    "modified": "2024-07-24",
+    "conflict": null
+  }
+}

@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>CSS-Tricks</title>
+	<atom:link href="https://css-tricks.com/feed/" rel="self" type="application/rss+xml" />
+	<link>https://css-tricks.com</link>
+	<description>A learning community for front-end designers and developers</description>
+	<lastBuildDate>Thu, 16 Jul 2026 13:08:33 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	
+
+<image>
+	<url>https://i0.wp.com/css-tricks.com/wp-content/uploads/2021/07/star.png?fit=32%2C32&#038;ssl=1</url>
+	<title>CSS-Tricks</title>
+	<link>https://css-tricks.com</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+<site xmlns="com-wordpress:feed-additions:1">45537868</site>	<item>
+		<title>writing-mode</title>
+		<link>https://css-tricks.com/almanac/properties/w/writing-mode/</link>
+		
+		<dc:creator><![CDATA[Mojtaba Seyedi]]></dc:creator>
+		<pubDate>Tue, 21 Jul 2026 09:39:10 +0000</pubDate>
+				<guid isPermaLink="false">http://css-tricks.com/?page_id=244261</guid>
+
+					<description><![CDATA[<p class="wp-block-paragraph">The <code>writing-mode</code> CSS property sets whether lines of text are laid out horizontally or vertically, and the direction in which blocks and lines progress.</p>
+<pre rel="CSS" class="wp-block-csstricks-code-block language-css" data-line=""><code markup="tt">.element {
+  writing-mode: vertical-rl;
+}</code></pre>
+<p class="wp-block-paragraph">This is most useful in languages such as Chinese, Japanese or &#8230;</p>
+<hr />
+<p><small><a rel="nofollow" href="https://css-tricks.com/almanac/properties/w/writing-mode/">writing-mode</a> originally handwritten and published with love on <a rel="nofollow" href="https://css-tricks.com">CSS-Tricks</a>. You should really <a href="https://css-tricks.com/newsletters/">get the newsletter</a> as well.</p>
+]]></description>
+		
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">244261</post-id>	</item>
+		<item>
+		<title>pointer-events</title>
+		<link>https://css-tricks.com/almanac/properties/p/pointer-events/</link>
+					<comments>https://css-tricks.com/almanac/properties/p/pointer-events/#comments</comments>
+		
+		<dc:creator><![CDATA[Mojtaba Seyedi]]></dc:creator>
+		<pubDate>Wed, 15 Jul 2026 19:57:51 +0000</pubDate>
+				<category><![CDATA[pointer-events]]></category>
+		<guid isPermaLink="false">http://css-tricks.com/?page_id=18170</guid>
+
+					<description><![CDATA[<p class="wp-block-paragraph">The <code>pointer-events</code> property controls whether an element can become the target of pointer events like clicks, hover states, and other pointer-based events. In other words, it lets you decide whether the browser should treat an element as interactive when the &#8230;</p>
+<hr />
+<p><small><a rel="nofollow" href="https://css-tricks.com/almanac/properties/p/pointer-events/">pointer-events</a> originally handwritten and published with love on <a rel="nofollow" href="https://css-tricks.com">CSS-Tricks</a>. You should really <a href="https://css-tricks.com/newsletters/">get the newsletter</a> as well.</p>
+]]></description>
+		
+					<wfw:commentRss>https://css-tricks.com/almanac/properties/p/pointer-events/feed/</wfw:commentRss>
+			<slash:comments>35</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">18170</post-id>	</item>
+		<item>
+		<title>What’s !important #15: Boundary-aware CSS, Time-based CSS, Full-bleed CSS, and More</title>
+		<link>https://css-tricks.com/whats-important-15/</link>
+					<comments>https://css-tricks.com/whats-important-15/#respond</comments>
+		
+		<dc:creator><![CDATA[Daniel Schwarz]]></dc:creator>
+		<pubDate>Wed, 15 Jul 2026 14:36:18 +0000</pubDate>
+				<category><![CDATA[Articles]]></category>
+		<category><![CDATA[news]]></category>
+		<guid isPermaLink="false">https://css-tricks.com/?p=396027</guid>
+
+					<description><![CDATA[<p>Read all about boundary-aware CSS, accessible grid lanes, time-based web designs, full-bleed, the customizable select, and new web platform features.</p>
+<hr />
+<p><small><a rel="nofollow" href="https://css-tricks.com/whats-important-15/">What’s !important #15: Boundary-aware CSS, Time-based CSS, Full-bleed CSS, and More</a> originally handwritten and published with love on <a rel="nofollow" href="https://css-tricks.com">CSS-Tricks</a>. You should really <a href="https://css-tricks.com/newsletters/">get the newsletter</a> as well.</p>
+]]></description>
+		
+					<wfw:commentRss>https://css-tricks.com/whats-important-15/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		<enclosure url="https://css-tricks.com/wp-content/uploads/2026/07/3.mp4" length="163854" type="video/mp4" />
+
+		<post-id xmlns="com-wordpress:feed-additions:1">396027</post-id>	</item>
+		<item>
+		<title>Get Ready For the Powerful CSS border-shape Property!</title>
+		<link>https://css-tricks.com/get-ready-for-the-powerful-css-border-shape-property/</link>
+					<comments>https://css-tricks.com/get-ready-for-the-powerful-css-border-shape-property/#comments</comments>
+		
+		<dc:creator><![CDATA[Temani Afif]]></dc:creator>
+		<pubDate>Tue, 07 Jul 2026 15:14:00 +0000</pubDate>
+				<category><![CDATA[Articles]]></category>
+		<category><![CDATA[border-shape]]></category>
+		<category><![CDATA[borders]]></category>
+		<category><![CDATA[css shapes]]></category>
+		<guid isPermaLink="false">https://css-tricks.com/?p=395508</guid>
+
+					<description><![CDATA[<p>We recently got the <code>shape()</code> function and <code>corner-shape</code> property. What else could we possibly need as far as making shapes in CSS? Let me tell you: the <code>border-shape</code> property!</p>
+<hr />
+<p><small><a rel="nofollow" href="https://css-tricks.com/get-ready-for-the-powerful-css-border-shape-property/">Get Ready For the Powerful CSS border-shape Property!</a> originally handwritten and published with love on <a rel="nofollow" href="https://css-tricks.com">CSS-Tricks</a>. You should really <a href="https://css-tricks.com/newsletters/">get the newsletter</a> as well.</p>
+]]></description>
+		
+					<wfw:commentRss>https://css-tricks.com/get-ready-for-the-powerful-css-border-shape-property/feed/</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">395508</post-id>	</item>
+		<item>
+		<title>What’s !important #14: Gap Decorations, random(), &#060;select&gt; field-sizing, and More</title>
+		<link>https://css-tricks.com/whats-important-14/</link>
+					<comments>https://css-tricks.com/whats-important-14/#comments</comments>
+		
+		<dc:creator><![CDATA[Daniel Schwarz]]></dc:creator>
+		<pubDate>Tue, 30 Jun 2026 13:54:14 +0000</pubDate>
+				<category><![CDATA[Articles]]></category>
+		<category><![CDATA[news]]></category>
+		<guid isPermaLink="false">https://css-tricks.com/?p=395894</guid>
+
+					<description><![CDATA[<p>I know you’re busy, so for What’s !important #14, I’ll be sprinting through what’s been a stacked couple of weeks despite few browser updates. From CSS Quake to CSS Gap Decorations, this isn’t one to miss!</p>
+<hr />
+<p><small><a rel="nofollow" href="https://css-tricks.com/whats-important-14/">What’s !important #14: Gap Decorations, random(), &lt;select&gt; field-sizing, and More</a> originally handwritten and published with love on <a rel="nofollow" href="https://css-tricks.com">CSS-Tricks</a>. You should really <a href="https://css-tricks.com/newsletters/">get the newsletter</a> as well.</p>
+]]></description>
+		
+					<wfw:commentRss>https://css-tricks.com/whats-important-14/feed/</wfw:commentRss>
+			<slash:comments>4</slash:comments>
+		
+		<enclosure url="https://css-tricks.com/wp-content/uploads/2026/06/3.mp4" length="35551592" type="video/mp4" />
+
+		<post-id xmlns="com-wordpress:feed-additions:1">395894</post-id>	</item>
+		<item>
+		<title>The Shifting Line Between CSS States and JavaScript Events</title>
+		<link>https://css-tricks.com/css-states-and-javascript-events/</link>
+					<comments>https://css-tricks.com/css-states-and-javascript-events/#comments</comments>
+		
+		<dc:creator><![CDATA[Daniel Schwarz]]></dc:creator>
+		<pubDate>Mon, 29 Jun 2026 13:03:32 +0000</pubDate>
+				<category><![CDATA[Articles]]></category>
+		<category><![CDATA[pseudo elements]]></category>
+		<category><![CDATA[state]]></category>
+		<guid isPermaLink="false">https://css-tricks.com/?p=395223</guid>
+
+					<description><![CDATA[<p>CSS has always had pseudo-classes that style things based on user interactions. Recent features, however, are blurring the line between what CSS "listens" for and how they are alternatives to what Javascript typically listens for.</p>
+<hr />
+<p><small><a rel="nofollow" href="https://css-tricks.com/css-states-and-javascript-events/">The Shifting Line Between CSS States and JavaScript Events</a> originally handwritten and published with love on <a rel="nofollow" href="https://css-tricks.com">CSS-Tricks</a>. You should really <a href="https://css-tricks.com/newsletters/">get the newsletter</a> as well.</p>
+]]></description>
+		
+					<wfw:commentRss>https://css-tricks.com/css-states-and-javascript-events/feed/</wfw:commentRss>
+			<slash:comments>5</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">395223</post-id>	</item>
+		<item>
+		<title>translateZ()</title>
+		<link>https://css-tricks.com/almanac/functions/t/translatez/</link>
+		
+		<dc:creator><![CDATA[Gabriel Shoyombo]]></dc:creator>
+		<pubDate>Thu, 25 Jun 2026 13:18:56 +0000</pubDate>
+				<category><![CDATA[3d]]></category>
+		<category><![CDATA[transform]]></category>
+		<guid isPermaLink="false">https://css-tricks.com/?page_id=394786</guid>
+
+					<description><![CDATA[<p>The <code>translateZ()</code> function moves an element closer to or farther from the user. </p>
+<hr />
+<p><small><a rel="nofollow" href="https://css-tricks.com/almanac/functions/t/translatez/">translateZ()</a> originally handwritten and published with love on <a rel="nofollow" href="https://css-tricks.com">CSS-Tricks</a>. You should really <a href="https://css-tricks.com/newsletters/">get the newsletter</a> as well.</p>
+]]></description>
+		
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">394786</post-id>	</item>
+		<item>
+		<title>translateY()</title>
+		<link>https://css-tricks.com/almanac/functions/t/translatey/</link>
+		
+		<dc:creator><![CDATA[Gabriel Shoyombo]]></dc:creator>
+		<pubDate>Thu, 25 Jun 2026 13:17:56 +0000</pubDate>
+				<category><![CDATA[transform]]></category>
+		<guid isPermaLink="false">https://css-tricks.com/?page_id=393249</guid>
+
+					<description><![CDATA[<p>The <code>translateY()</code> function shifts an element vertically by the specified amount. </p>
+<hr />
+<p><small><a rel="nofollow" href="https://css-tricks.com/almanac/functions/t/translatey/">translateY()</a> originally handwritten and published with love on <a rel="nofollow" href="https://css-tricks.com">CSS-Tricks</a>. You should really <a href="https://css-tricks.com/newsletters/">get the newsletter</a> as well.</p>
+]]></description>
+		
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">393249</post-id>	</item>
+		<item>
+		<title>translateX()</title>
+		<link>https://css-tricks.com/almanac/functions/t/translatex/</link>
+		
+		<dc:creator><![CDATA[Gabriel Shoyombo]]></dc:creator>
+		<pubDate>Thu, 25 Jun 2026 13:16:01 +0000</pubDate>
+				<category><![CDATA[transform]]></category>
+		<guid isPermaLink="false">https://css-tricks.com/?page_id=393255</guid>
+
+					<description><![CDATA[<p>The <code>translateX()</code> function shifts an element horizontally by the specified amount. </p>
+<hr />
+<p><small><a rel="nofollow" href="https://css-tricks.com/almanac/functions/t/translatex/">translateX()</a> originally handwritten and published with love on <a rel="nofollow" href="https://css-tricks.com">CSS-Tricks</a>. You should really <a href="https://css-tricks.com/newsletters/">get the newsletter</a> as well.</p>
+]]></description>
+		
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">393255</post-id>	</item>
+		<item>
+		<title>translate()</title>
+		<link>https://css-tricks.com/almanac/functions/t/translate/</link>
+		
+		<dc:creator><![CDATA[Gabriel Shoyombo]]></dc:creator>
+		<pubDate>Thu, 25 Jun 2026 13:15:05 +0000</pubDate>
+				<category><![CDATA[transform]]></category>
+		<guid isPermaLink="false">https://css-tricks.com/?page_id=393233</guid>
+
+					<description><![CDATA[<p>The CSS <code>translate()</code> function shifts an element from its default position on a 2-dimensional plane</p>
+<hr />
+<p><small><a rel="nofollow" href="https://css-tricks.com/almanac/functions/t/translate/">translate()</a> originally handwritten and published with love on <a rel="nofollow" href="https://css-tricks.com">CSS-Tricks</a>. You should really <a href="https://css-tricks.com/newsletters/">get the newsletter</a> as well.</p>
+]]></description>
+		
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">393233</post-id>	</item>
+		<item>
+		<title>Using Scroll-Driven Animations for Opposing Scroll Directions</title>
+		<link>https://css-tricks.com/scroll-driven-animations-opposing-scroll-directions/</link>
+					<comments>https://css-tricks.com/scroll-driven-animations-opposing-scroll-directions/#comments</comments>
+		
+		<dc:creator><![CDATA[Silvestar Bistrović]]></dc:creator>
+		<pubDate>Mon, 22 Jun 2026 12:39:13 +0000</pubDate>
+				<category><![CDATA[Articles]]></category>
+		<category><![CDATA[animations]]></category>
+		<category><![CDATA[Scroll Driven Animation]]></category>
+		<guid isPermaLink="false">https://css-tricks.com/?p=394890</guid>
+
+					<description><![CDATA[<p class="wp-block-paragraph">Sometimes designers have silly ideas that eventually grow on you. That happened to me with this concept where I had to build columns of items moving in opposite directions when a user scrolls the page.</p>
+<p>CodePen Embed Fallback</p>
+<p class="is-style-explanation wp-block-paragraph"><strong>Note:</strong> This &#8230;</p>
+<hr />
+<p><small><a rel="nofollow" href="https://css-tricks.com/scroll-driven-animations-opposing-scroll-directions/">Using Scroll-Driven Animations for Opposing Scroll Directions</a> originally handwritten and published with love on <a rel="nofollow" href="https://css-tricks.com">CSS-Tricks</a>. You should really <a href="https://css-tricks.com/newsletters/">get the newsletter</a> as well.</p>
+]]></description>
+		
+					<wfw:commentRss>https://css-tricks.com/scroll-driven-animations-opposing-scroll-directions/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		<enclosure url="https://css-tricks.com/wp-content/uploads/2026/05/opposing-scrolling-logos.mov" length="38364603" type="video/quicktime" />
+
+		<post-id xmlns="com-wordpress:feed-additions:1">394890</post-id>	</item>
+		<item>
+		<title>A First Look at Scroll-Triggered Animations</title>
+		<link>https://css-tricks.com/css-scroll-triggered-animations-first-look/</link>
+					<comments>https://css-tricks.com/css-scroll-triggered-animations-first-look/#comments</comments>
+		
+		<dc:creator><![CDATA[Daniel Schwarz]]></dc:creator>
+		<pubDate>Fri, 19 Jun 2026 13:03:17 +0000</pubDate>
+				<category><![CDATA[Articles]]></category>
+		<category><![CDATA[animation]]></category>
+		<category><![CDATA[Scroll-Triggered Animation]]></category>
+		<category><![CDATA[scrolling]]></category>
+		<guid isPermaLink="false">https://css-tricks.com/?p=394364</guid>
+
+					<description><![CDATA[<p>Let's poke at the differences between scroll-<em>driven</em> and scroll-<em>triggered</em> animations.</p>
+<hr />
+<p><small><a rel="nofollow" href="https://css-tricks.com/css-scroll-triggered-animations-first-look/">A First Look at Scroll-Triggered Animations</a> originally handwritten and published with love on <a rel="nofollow" href="https://css-tricks.com">CSS-Tricks</a>. You should really <a href="https://css-tricks.com/newsletters/">get the newsletter</a> as well.</p>
+]]></description>
+		
+					<wfw:commentRss>https://css-tricks.com/css-scroll-triggered-animations-first-look/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		<enclosure url="https://css-tricks.com/wp-content/uploads/2026/04/1-1.mp4" length="515618" type="video/mp4" />
+<enclosure url="https://css-tricks.com/wp-content/uploads/2026/04/scroll-triggered-2.mp4" length="192166" type="video/mp4" />
+<enclosure url="https://css-tricks.com/wp-content/uploads/2026/04/scroll-triggered-3.mp4" length="259874" type="video/mp4" />
+<enclosure url="https://css-tricks.com/wp-content/uploads/2026/04/scroll-triggered.mp4" length="423606" type="video/mp4" />
+<enclosure url="https://css-tricks.com/wp-content/uploads/2026/04/scroll-triggered-5.mp4" length="491139" type="video/mp4" />
+<enclosure url="https://css-tricks.com/wp-content/uploads/2026/04/scroll-triggered-6.mp4" length="461888" type="video/mp4" />
+<enclosure url="https://css-tricks.com/wp-content/uploads/2026/04/scroll-triggered-7.mp4" length="757238" type="video/mp4" />
+
+		<post-id xmlns="com-wordpress:feed-additions:1">394364</post-id>	</item>
+		<item>
+		<title>The Siren Song of ariaNotify()</title>
+		<link>https://css-tricks.com/the-siren-song-of-arianotify/</link>
+					<comments>https://css-tricks.com/the-siren-song-of-arianotify/#comments</comments>
+		
+		<dc:creator><![CDATA[Mat Marquis]]></dc:creator>
+		<pubDate>Wed, 17 Jun 2026 15:32:30 +0000</pubDate>
+				<category><![CDATA[Articles]]></category>
+		<category><![CDATA[accessibility]]></category>
+		<category><![CDATA[JavaScript]]></category>
+		<guid isPermaLink="false">https://css-tricks.com/?p=395567</guid>
+
+					<description><![CDATA[<p>There's a brand new <code>ariaNotify()</code> method — defined by the WAI-ARIA 1.3 Specification — that provides a means of programmatically triggering narration in a screen reader.</p>
+<hr />
+<p><small><a rel="nofollow" href="https://css-tricks.com/the-siren-song-of-arianotify/">The Siren Song of ariaNotify()</a> originally handwritten and published with love on <a rel="nofollow" href="https://css-tricks.com">CSS-Tricks</a>. You should really <a href="https://css-tricks.com/newsletters/">get the newsletter</a> as well.</p>
+]]></description>
+		
+					<wfw:commentRss>https://css-tricks.com/the-siren-song-of-arianotify/feed/</wfw:commentRss>
+			<slash:comments>5</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">395567</post-id>	</item>
+		<item>
+		<title>Prop For That</title>
+		<link>https://css-tricks.com/prop-for-that/</link>
+					<comments>https://css-tricks.com/prop-for-that/#comments</comments>
+		
+		<dc:creator><![CDATA[Geoff Graham]]></dc:creator>
+		<pubDate>Tue, 16 Jun 2026 18:36:25 +0000</pubDate>
+				<category><![CDATA[Links]]></category>
+		<category><![CDATA[custom properties]]></category>
+		<category><![CDATA[framework]]></category>
+		<guid isPermaLink="false">https://css-tricks.com/?p=395776</guid>
+
+					<description><![CDATA[<p>Props for That creates live props based things CSS can't normally see in the browser. Things like cursor position, progress values, certain form states, current time, scroll velocity.</p>
+<hr />
+<p><small><a rel="nofollow" href="https://css-tricks.com/prop-for-that/">Prop For That</a> originally handwritten and published with love on <a rel="nofollow" href="https://css-tricks.com">CSS-Tricks</a>. You should really <a href="https://css-tricks.com/newsletters/">get the newsletter</a> as well.</p>
+]]></description>
+		
+					<wfw:commentRss>https://css-tricks.com/prop-for-that/feed/</wfw:commentRss>
+			<slash:comments>2</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">395776</post-id>	</item>
+		<item>
+		<title>What’s !important #13: @function, alpha(), CSS Wordle, and More</title>
+		<link>https://css-tricks.com/whats-important-13/</link>
+					<comments>https://css-tricks.com/whats-important-13/#respond</comments>
+		
+		<dc:creator><![CDATA[Daniel Schwarz]]></dc:creator>
+		<pubDate>Mon, 15 Jun 2026 13:15:33 +0000</pubDate>
+				<category><![CDATA[Articles]]></category>
+		<category><![CDATA[news]]></category>
+		<guid isPermaLink="false">https://css-tricks.com/?p=395752</guid>
+
+					<description><![CDATA[<p>CSS functions, the alpha() function, Grid Lanes, some things about Dialog that you might not know, CSS Wordle, and more — this is What’s !important right now.</p>
+<hr />
+<p><small><a rel="nofollow" href="https://css-tricks.com/whats-important-13/">What’s !important #13: @function, alpha(), CSS Wordle, and More</a> originally handwritten and published with love on <a rel="nofollow" href="https://css-tricks.com">CSS-Tricks</a>. You should really <a href="https://css-tricks.com/newsletters/">get the newsletter</a> as well.</p>
+]]></description>
+		
+					<wfw:commentRss>https://css-tricks.com/whats-important-13/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">395752</post-id>	</item>
+	</channel>
+</rss>
+
+<!-- plugin=object-cache-pro client=phpredis metric#hits=6478 metric#misses=8 metric#hit-ratio=99.9 metric#bytes=6942921 metric#prefetches=400 metric#store-reads=28 metric#store-writes=2 metric#store-hits=408 metric#store-misses=4 metric#sql-queries=30 metric#ms-total=328.60 metric#ms-cache=18.23 metric#ms-cache-avg=0.6288 metric#ms-cache-ratio=5.6 -->

@@ -1,0 +1,11 @@
+{
+  "url": "https://docs.astro.build/en/getting-started/",
+  "capturedAt": "2026-07-28",
+  "notes": "Second true negative. The served HTML contains no date in any form. Guards against the extractors inventing one.",
+  "fetchedFeedUrl": null,
+  "expect": {
+    "published": null,
+    "modified": null,
+    "conflict": null
+  }
+}

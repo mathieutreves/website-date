@@ -1,0 +1,19 @@
+{
+  "access-control-allow-origin": "*",
+  "alt-svc": "h3=\":443\"; ma=86400",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "cf-cache-status": "DYNAMIC",
+  "cf-ray": "a2228da03c1cea71-FCO",
+  "connection": "keep-alive",
+  "content-encoding": "br",
+  "content-type": "text/html; charset=utf-8",
+  "date": "Tue, 28 Jul 2026 08:35:55 GMT",
+  "link": "</avi.jpg>; rel=\"preload\"; as=image, <https://plausible.io/js/script.js>; rel=\"preload\"; as=script",
+  "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=X8ke2BZcSXuQQX85BHcc3Wlc0Bbihd7Fg0pX1tsjDk0k6ozPMY6kjr2%2BB9RhsdOoU%2BIY9pcTE8DprHZn48fC7Rp2pFztZRDmrqsJUiKRXG5Muauku%2FQkUSM1YdRg2G7Xtg%3D%3D\"}]}",
+  "server": "cloudflare",
+  "transfer-encoding": "chunked",
+  "vary": "accept-encoding",
+  "x-content-type-options": "nosniff"
+}

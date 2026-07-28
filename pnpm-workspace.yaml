@@ -1,0 +1,6 @@
+packages:
+  - 'packages/*'
+  - 'apps/*'
+allowBuilds:
+  # esbuild ships a platform-specific binary; tsup and vitest both need it.
+  esbuild: true

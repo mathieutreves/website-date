@@ -1,0 +1,12 @@
+{
+  "url": "https://overreacted.io/a-chain-reaction/",
+  "capturedAt": "2026-07-28",
+  "notes": "Next.js blog. No metadata whatsoever; the date exists only as bare visible text \"December 11, 2023\" with no \"Published\"/\"Posted\" label before it.",
+  "fetchedFeedUrl": null,
+  "expect": {
+    "published": "2023-12-11",
+    "modified": null,
+    "conflict": null
+  },
+  "knownMiss": "visibleText requires an anchoring label, so an unlabelled byline date is invisible to it."
+}

@@ -1,0 +1,15 @@
+{
+  "accept-ranges": "bytes",
+  "age": "41079",
+  "cache-control": "public,max-age=0,must-revalidate",
+  "cache-status": "\"Netlify Edge\"; hit",
+  "content-encoding": "br",
+  "content-length": "6459",
+  "content-type": "text/html; charset=UTF-8",
+  "date": "Tue, 28 Jul 2026 08:35:58 GMT",
+  "etag": "\"fe4dc66125d7e7dc066bff43ad81c315-ssl-df\"",
+  "server": "Netlify",
+  "strict-transport-security": "max-age=31536000",
+  "vary": "Accept-Encoding",
+  "x-nf-request-id": "01KYKXVK013Y42GAP4GTE5EEWM"
+}

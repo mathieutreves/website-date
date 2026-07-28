@@ -1,0 +1,21 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Third-party evaluation corpus, downloaded on demand by
+# scripts/fetch-htmldate-corpus.ts. Not vendored: it is ~40 MB of other
+# people's HTML under no license we control.
+corpus-external/
+
+# WXT / extension build output
+.wxt/
+.output/
+web-ext-artifacts/
+
+# editor / OS
+.DS_Store
+*.log
+.idea/
+.vscode/*
+!.vscode/extensions.json
