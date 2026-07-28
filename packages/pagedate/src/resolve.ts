@@ -2,24 +2,35 @@ import type { Candidate, Conflict, Confidence, DateResult, Precision } from './t
 import { toInstant } from './parse/normalize.js'
 import { isPlausible } from './parse/plausibility.js'
 
-const CONFIDENCE_RANK: Record<Confidence, number> = {
+/**
+ * The three ranking tables are null-prototype, and {@link rank} checks its
+ * arithmetic, because all three are indexed by strings that arrive as data.
+ * `Candidate.source` is a free-form `string` an {@link Adapter} supplies, and
+ * `resolveCandidates` is exported for callers to drive directly. On a plain
+ * object `SOURCE_RANK['constructor']` resolves to an inherited *function*
+ * rather than `undefined`, so the `?? 30` fallback never fires, `rank()` returns
+ * `NaN`, and every comparison against it is false — a candidate that silently
+ * could never be picked. Neither table is hot enough for the prototype to be
+ * worth that.
+ */
+const CONFIDENCE_RANK: Record<Confidence, number> = Object.assign(Object.create(null), {
   declared: 3,
   derived: 2,
   inferred: 1,
-}
+})
 
-const PRECISION_RANK: Record<Precision, number> = {
+const PRECISION_RANK: Record<Precision, number> = Object.assign(Object.create(null), {
   minute: 4,
   day: 3,
   month: 2,
   year: 1,
-}
+})
 
 /**
  * Tie-break between sources of equal confidence. Ordering reflects how often
  * each is deliberately maintained versus emitted as a build artefact.
  */
-const SOURCE_RANK: Record<string, number> = {
+const SOURCE_RANK: Record<string, number> = Object.assign(Object.create(null), {
   adapter: 100,
   jsonld: 90,
   'atom-feed': 85,
@@ -37,6 +48,11 @@ const SOURCE_RANK: Record<string, number> = {
   'marked-date': 42,
   sitemap: 40,
   'meta-date': 35,
+  // Below the metadata a site publishes for consumers, above anything guessed
+  // from rendered text: an inlined state blob is exact and site-authored, but it
+  // is an implementation detail that no contract obliges the site to keep true.
+  wordpress: 32,
+  'inline-state': 31,
   'url-slug': 20,
   // Below url-slug: a post's URL is minted with the post, but the image it
   // previews with can be a stock banner uploaded years earlier.
@@ -46,7 +62,7 @@ const SOURCE_RANK: Record<string, number> = {
   // site committed to in its own URL structure.
   'text-date': 12,
   'http-last-modified': 10,
-}
+})
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
@@ -75,11 +91,16 @@ export function rankCandidate(c: Candidate): number {
 }
 
 function rank(c: Candidate): number {
-  return (
+  const score =
     CONFIDENCE_RANK[c.confidence] * 10_000 +
     (SOURCE_RANK[c.source] ?? 30) * 10 +
     PRECISION_RANK[c.precision]
-  )
+
+  // An unrecognised confidence or precision — from an adapter, or a caller
+  // driving `resolveCandidates` directly — leaves a `NaN` that loses every
+  // comparison, which reads as "this candidate is never the best" rather than
+  // as the malformed input it is. Rank it last, visibly and deterministically.
+  return Number.isFinite(score) ? score : 0
 }
 
 /**
@@ -97,11 +118,47 @@ function best(candidates: Candidate[]): Candidate | undefined {
   return candidates.reduce((a, b) => (rank(b) > rank(a) ? b : a))
 }
 
-function gapDays(a: Candidate, b: Candidate): number {
-  const ia = toInstant(a.value)
-  const ib = toInstant(b.value)
-  if (!ia || !ib) return 0
-  return Math.abs(ia.getTime() - ib.getTime()) / DAY_MS
+/**
+ * The furthest-apart pair in a group, or nothing if they all agree.
+ *
+ * "Do any two of these disagree by more than a month" is decided entirely by the
+ * extremes, so this is a single pass tracking min and max rather than a
+ * comparison of every pair. The pairwise form was quadratic in a group with no
+ * size limit — nothing caps how many `<meta article:published_time>` tags a page
+ * may carry, and because the early exit only fired on a *disagreement*, a page
+ * repeating one date was the worst case rather than the cheapest. 3000 of them
+ * is 183 KB of HTML and was six and a half seconds of blocked event loop.
+ *
+ * Reporting the widest pair rather than the first-found one is also the better
+ * answer: it names the two sources actually furthest apart.
+ */
+function widestDisagreement(
+  candidates: Candidate[],
+): { earliest: Candidate; latest: Candidate; gap: number } | null {
+  let earliest: Candidate | undefined
+  let latest: Candidate | undefined
+  let min = Infinity
+  let max = -Infinity
+
+  // One parse per candidate. The pairwise form re-parsed both values on every
+  // comparison, so the same string was parsed O(n) times.
+  for (const candidate of candidates) {
+    const at = toInstant(candidate.value)
+    if (!at) continue
+    const ms = at.getTime()
+    if (ms < min) {
+      min = ms
+      earliest = candidate
+    }
+    if (ms > max) {
+      max = ms
+      latest = candidate
+    }
+  }
+
+  if (!earliest || !latest) return null
+  const gap = (max - min) / DAY_MS
+  return gap > DECLARED_DISAGREEMENT_DAYS ? { earliest, latest, gap } : null
 }
 
 export type ResolveOptions = {
@@ -199,19 +256,13 @@ function detectConflict(input: {
 
   // (a) The site contradicts itself: two things it declared don't agree.
   for (const group of [published, modified]) {
-    const declared = group.filter((c) => c.confidence === 'declared')
-    for (let i = 0; i < declared.length; i++) {
-      for (let j = i + 1; j < declared.length; j++) {
-        const a = declared[i]!
-        const b = declared[j]!
-        const gap = gapDays(a, b)
-        if (gap > DECLARED_DISAGREEMENT_DAYS) {
-          return {
-            kind: 'declared-disagreement',
-            gapDays: Math.round(gap),
-            detail: `${a.source} says ${a.value}, ${b.source} says ${b.value} for the same field.`,
-          }
-        }
+    const widest = widestDisagreement(group.filter((c) => c.confidence === 'declared'))
+    if (widest) {
+      const { earliest, latest, gap } = widest
+      return {
+        kind: 'declared-disagreement',
+        gapDays: Math.round(gap),
+        detail: `${earliest.source} says ${earliest.value}, ${latest.source} says ${latest.value} for the same field.`,
       }
     }
   }
