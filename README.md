@@ -11,9 +11,13 @@ Two pieces:
 
 ## Status
 
-Library core works. CLI works. Extension not built yet.
+Library, CLI and extension all work. Not published to npm or the extension
+stores yet.
 
-On the local corpus: **100%** published accuracy, **90.9%** modified. On [htmldate](https://github.com/adbar/htmldate)'s public cached subset: **41.8%** strict — see [Evaluation](#evaluation).
+On the local corpus of 17 annotated pages: **100%** published accuracy, **94.1%**
+modified. On [htmldate](https://github.com/adbar/htmldate)'s public cached
+subset: **43.6%** — second of ten tools measured, and first among JavaScript
+ones. See [Against other tools](#against-other-tools).
 
 ## Usage
 
@@ -96,7 +100,30 @@ node packages/pagedate/scripts/eval-htmldate.ts
 
 The local corpus reports precision/recall/accuracy/F-score in the same shapes htmldate publishes, plus two things a single-date benchmark cannot express: **true negatives** (pages that genuinely have no date, where returning nothing is correct) and **confidence-tier calibration** (if `declared` and `inferred` are right equally often, the tiering is decorative).
 
-Note that htmldate's published 1000-page benchmark is **not** reproducible — only ~69 of the cached pages are in their public repo. Numbers here are not directly comparable to theirs.
+### Against other tools
+
+Measured on the same pages, current versions — see [docs/BENCHMARK.md](docs/BENCHMARK.md):
+
+| tool | accuracy | ms/page |
+|---|---|---|
+| htmldate (extensive) | 90.9% | 75.5 |
+| htmldate (fast) | 78.2% | 11.2 |
+| **pagedate (standard)** | **43.6%** | **5.4** |
+| date_guesser | 25.5% | 115.6 |
+| newspaper4k | 20.0% | 148.8 |
+| @extractus/article-extractor | 14.5% | 85.5 |
+| unfluff | 14.5% | 114.0 |
+| goose3 | 7.3% | 131.8 |
+
+htmldate is the better general-purpose extractor and it is not close. What
+pagedate offers is a different shape: it runs in a browser where htmldate
+cannot, it is the fastest of the group, and among JavaScript libraries nothing
+else is within 3x of it. It also reports published *and* modified dates with
+provenance and conflict detection, none of which this benchmark measures.
+
+Note htmldate's published 1000-page benchmark is **not** reproducible — only ~55
+annotated cached pages are in their public repo, and they are also that project's
+unit-test set. Every non-htmldate figure here is likely understated as a result.
 
 ## Adding fixtures
 
