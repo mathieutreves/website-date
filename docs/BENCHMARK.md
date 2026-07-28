@@ -66,6 +66,85 @@ A second possibility is simple decay: several of these have not been updated in
 years and may parse modern markup worse than they did. Both explanations can be
 true at once.
 
+## Is pagedate faster than htmldate?
+
+Only if you say where it runs. Measured both ways:
+
+| | extraction only | including HTML parsing |
+| --- | --- | --- |
+| pagedate (fast) | 1.15 ms | 12.56 ms |
+| pagedate (standard) | 4.14 ms | 15.41 ms |
+| htmldate (fast) | — | 11.17 ms |
+| htmldate (extensive) | — | 75.53 ms |
+
+**In a browser extension, pagedate is dramatically faster** — the DOM already
+exists, so nothing pays for parsing, and the real cost is 1–4 ms. htmldate
+cannot run there at any speed.
+
+**In Node, pagedate is slower than htmldate's fast mode** — 15.4 ms against
+11.2 ms. Parsing dominates, and the comparison is really linkedom against lxml
+rather than one extractor against the other.
+
+### Could a faster parser fix that?
+
+Not lxml — it is a Python C extension. Three Node parsers were measured on the
+same 55 pages:
+
+| parser | parse | traverse | same answers as linkedom |
+| --- | --- | --- | --- |
+| linkedom | 10.43 ms | 2.08 ms | — |
+| node-html-parser | 3.50 ms | 1.97 ms | **41 of 55** |
+| happy-dom | 36.44 ms | 9.73 ms | not measured (already slower) |
+
+`node-html-parser` is three times faster and would put the Node path under
+htmldate's — but it silently returns a different answer on 14 of 55 pages,
+always `null` where linkedom found a date. It sees less of the document. A
+parser that is fast because it does less is not a speed-up, so linkedom stays.
+
+## Does the gold standard understate pagedate?
+
+Partly, and it is worth checking rather than assuming, because several golds in
+this corpus point at dates belonging to other documents — the exact thing
+`isBorrowedContent` rejects by design.
+
+Seven of the 32 disagreements have a gold date sitting inside a link href, an
+asset path, or a crawl-time query string. Excluding those pages:
+
+| | before | after |
+| --- | --- | --- |
+| pagedate (standard) | 43.6% | **50.0%** |
+| htmldate (extensive) | 90.9% | **91.7%** |
+
+So the correction is real and it does help — but it helps htmldate slightly too,
+because htmldate matched the artifact gold on **6 of those 7** pages. Removing
+them takes seven from its denominator and only six from its numerator. The gap
+narrows from 47.3 points to 41.7.
+
+The honest reading: the gold standard is imperfect, the imperfection does
+understate pagedate, and correcting for it changes nothing about who is ahead.
+
+### What the rest of the disagreements are
+
+| | count | whose fault |
+| --- | --- | --- |
+| gold is real, sitting in visible text we miss | 17 | ours |
+| gold looks like an artifact | 7 | the corpus |
+| gold string not present in the HTML at all | 5 | unclear |
+| gold in a `<time datetime>` byline we got wrong | 3 | **ours, and plainly** |
+
+That last row is the uncomfortable one. All three are pages with textbook
+machine-readable bylines that we still get wrong:
+
+- `verfassungsblog.de` carries `<time class="entry-date" datetime="2019-07-13…"
+  pubdate>` inside `<span class="byline">` and we return **nothing at all**
+- `la-bas.org` has `<p class="publication"><time datetime="2019-06-28…">` and we
+  pick a different `<time>` from elsewhere on the page
+- `mediapart.fr` has `<span class="author"><time datetime="2019-06-27">` and we
+  rank an unrelated text date above it
+
+These are not corpus problems and not hard cases. They are bugs, and they are
+worth more than any amount of arguing about the gold standard.
+
 ## Fairness notes
 
 Two competitors were being charged for work unrelated to date extraction:
