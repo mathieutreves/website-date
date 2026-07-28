@@ -109,6 +109,14 @@ export const MESSAGES = {
   optArchiveAlways: 'Always',
 
   overlayNoDate: 'no date',
+  /** {1} is the age the page declares. */
+  overlaySays: 'says {1}',
+  /** {1} is the age of the oldest hard evidence on the page. */
+  overlayOldest: 'oldest {1}',
+  /** {1} = declared age, {2} = age of the oldest evidence. */
+  overlayCounterLabel: 'The page says {1}, but the oldest date it carries is from {2}.',
+  /** {1} = formatted date, {2} = provenance. */
+  overlayOldestDetail: 'Oldest date on the page: {1} — {2}.',
 
   optOverlayHeading: 'On the page',
   optOverlay: 'Show the age in the corner of the page',

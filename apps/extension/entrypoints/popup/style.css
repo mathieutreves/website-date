@@ -103,7 +103,18 @@
 
 body {
   margin: 0;
+  /*
+   * `width` is what a desktop popup sizes itself from, so it stays. `max-width`
+   * clamps it on Firefox for Android — the one mobile browser this can realistically
+   * run in — where the panel is bounded by the screen rather than by us.
+   *
+   * Deliberately not a `max-width` media query: inside a desktop popup the
+   * viewport *is* this width, so any narrow-viewport query matches there too
+   * and the rule feeds back on itself. `pointer: coarse` is the honest test for
+   * "this is a touch device", and is what the touch rules below use.
+   */
   width: 360px;
+  max-width: 100vw;
   background: var(--surface);
   color: var(--fg);
   font:
@@ -610,6 +621,52 @@ button.icon:hover {
     --inferred: #b0b8c2;
     --alert: #ff9d94;
     --notice: #fbbf24;
+  }
+}
+
+/* ----------------------------------------------------------------- touch */
+
+/*
+ * Everything interactive here was sized for a cursor. On Firefox for Android
+ * the same panel is driven by a thumb, so the hit areas grow to the 44px
+ * minimum — type sizes and layout are left alone, because the panel is read
+ * the same way on both.
+ */
+@media (pointer: coarse) {
+  #app {
+    padding: var(--s4);
+  }
+
+  button {
+    min-height: 44px;
+    padding: 8px var(--s3);
+  }
+
+  button.icon {
+    min-width: 44px;
+    padding: var(--s2);
+  }
+
+  summary {
+    min-height: 44px;
+    padding: var(--s3) 0;
+  }
+
+  .row {
+    padding: var(--s3) 0;
+  }
+
+  footer {
+    padding-top: var(--s1);
+  }
+
+  /*
+   * The axis dots carry `title` tooltips, which touch has no way to summon.
+   * Nothing is lost: every date is listed with its source in the disclosure
+   * below, which is the reachable form of the same information.
+   */
+  .spread {
+    padding-bottom: var(--s1);
   }
 }
 

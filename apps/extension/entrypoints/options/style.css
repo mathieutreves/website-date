@@ -243,6 +243,50 @@ button:disabled {
   color: var(--fg-muted);
 }
 
+/* ----------------------------------------------------------------- touch */
+
+/*
+ * A settings page is almost entirely hit targets, so this matters more here
+ * than in the panel. The native controls grow rather than being replaced —
+ * a 22px checkbox is still a checkbox, with the keyboard and screen-reader
+ * behaviour a hand-built one would have cost.
+ */
+@media (pointer: coarse) {
+  #app {
+    padding: var(--s4) var(--s3) 56px;
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* The label is part of the target, so the whole row is tappable. */
+  .choice {
+    min-height: 44px;
+    gap: var(--s2);
+  }
+
+  .control {
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .choices {
+    gap: var(--s2) var(--s4);
+  }
+
+  button {
+    min-height: 44px;
+    padding: 10px var(--s4);
+  }
+
+  .field {
+    padding-bottom: var(--s4);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
