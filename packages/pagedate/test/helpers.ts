@@ -1,16 +1,26 @@
-import { DOMParser, parseHTML } from 'linkedom'
+import { DOMParser } from 'linkedom'
 import type { Env } from '../src/types.js'
+import { parseHtml } from '../src/node/index.js'
 
 /**
  * Build a `Document` from an HTML string.
  *
- * linkedom's Document is structurally compatible with the subset of the DOM the
- * library uses, but not nominally identical to lib.dom's, hence the cast — it is
- * confined to this helper rather than spread through the tests.
+ * Deliberately the library's *own* `parseHtml`, not a parser chosen for the
+ * tests. `pagedate/node` ships `node-html-parser`; parsing with linkedom here
+ * instead would mean every test and every published figure describes a parser no
+ * caller uses, and the two would be free to drift apart without a single test
+ * going red. `bench/parity.mjs` checks that they have not.
+ *
+ * The returned object is structurally compatible with the subset of the DOM the
+ * library uses but not nominally identical to lib.dom's, hence the cast inside
+ * `parseHtml` — confined there rather than spread through the tests.
+ *
+ * The browser is a third case that nothing here covers: an extension gets a real
+ * DOM, which is neither of these. `apps/extension/test/pipeline.test.ts` stands
+ * in for it with linkedom's `DOMParser`, which is the closer approximation.
  */
 export function documentFrom(html: string): Document {
-  const { document } = parseHTML(html)
-  return document as unknown as Document
+  return parseHtml(html)
 }
 
 /**

@@ -11,7 +11,10 @@
 
 import { readFile, readdir } from 'node:fs/promises'
 import { join } from 'node:path'
-import { parseHTML } from 'linkedom'
+// Parses with the library's own `parseHtml` — node-html-parser, the parser
+// `pagedate/node` ships. Measuring through a different one would publish a
+// figure that describes nothing anyone runs; see bench/parity.mjs.
+import { parseHtml } from '../src/node/index.js'
 import { extractJsonLd } from '../src/extract/jsonld.js'
 import { extractMeta } from '../src/extract/meta.js'
 import { extractTimeTags } from '../src/extract/timeTags.js'
@@ -68,7 +71,7 @@ async function main(): Promise<void> {
   }
 
   const docs = pages.map((page) => {
-    const { document } = parseHTML(page.html)
+    const document = parseHtml(page.html)
     return { ...page, doc: document as unknown as Document, url_: safeUrl(page.url) }
   })
 
