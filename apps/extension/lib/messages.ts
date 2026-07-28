@@ -108,6 +108,22 @@ export const MESSAGES = {
   optArchiveAsk: 'Ask each time',
   optArchiveAlways: 'Always',
 
+  overlayNoDate: 'no date',
+
+  optOverlayHeading: 'On the page',
+  optOverlay: 'Show the age in the corner of the page',
+  optOverlayHelp:
+    'Most pages never print their own date — it sits in metadata you cannot see — so this is usually the only place it appears. Needs automatic checking to be on.',
+  optOverlayNever: 'Never',
+  optOverlayAlways: 'Always',
+  optOverlayConflict: 'Only when contradicted',
+  optOverlayPosition: 'Corner',
+  optOverlayBottomLeft: 'Bottom left',
+  optOverlayBottomRight: 'Bottom right',
+  optOverlayTopLeft: 'Top left',
+  optOverlayTopRight: 'Top right',
+  optOverlayNeedsAutoRead: 'Turn on automatic checking above to use this.',
+
   optDisplayHeading: 'Display',
   optDateFormat: 'Lead with',
   optDateFormatRelative: 'How long ago',

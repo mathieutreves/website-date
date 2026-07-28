@@ -145,6 +145,17 @@ section {
   padding-bottom: 0;
 }
 
+/* Shown but inert, so the precondition is visible rather than the setting
+   simply missing. */
+.field.disabled .name,
+.field.disabled .choice {
+  color: var(--fg-subtle);
+}
+
+.field.disabled input {
+  cursor: default;
+}
+
 .control {
   display: flex;
   align-items: flex-start;

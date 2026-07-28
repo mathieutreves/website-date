@@ -56,16 +56,48 @@ export function pageEnv(pageUrl: string): Env {
   }
 }
 
-/** Read the live DOM as HTML. Reflects the hydrated page, so SPAs work. */
-export async function readPageHtml(tabId: number): Promise<string | null> {
+/**
+ * Read the live DOM as HTML. Reflects the hydrated page, so SPAs work.
+ *
+ * `location.href` comes back with it so the caller can prove the DOM it just
+ * read belongs to the page it asked about. On a single-page app the URL changes
+ * before the new view renders, so a read fired on navigation can easily return
+ * the *previous* route's markup — which would then be cached under the new URL
+ * and served as fact for a week. Mismatches are refused rather than trusted.
+ */
+export async function readPageHtml(
+  tabId: number,
+  expectedUrl?: string,
+): Promise<string | null> {
   try {
     const [injection] = await browser.scripting.executeScript({
       target: { tabId },
-      func: () => document.documentElement.outerHTML,
+      func: () => ({ html: document.documentElement.outerHTML, href: location.href }),
     })
-    return typeof injection?.result === 'string' ? injection.result : null
+
+    const read = injection?.result as { html: string; href: string } | undefined
+    if (!read || typeof read.html !== 'string') return null
+    if (expectedUrl && !sameDocument(read.href, expectedUrl)) return null
+    return read.html
   } catch {
     return null
+  }
+}
+
+/**
+ * Compare ignoring the fragment: `#comments` is a position within a document,
+ * not a different one, and treating it as a mismatch would refuse every
+ * in-page anchor click.
+ */
+export function sameDocument(a: string, b: string): boolean {
+  try {
+    const left = new URL(a)
+    const right = new URL(b)
+    left.hash = ''
+    right.hash = ''
+    return left.href === right.href
+  } catch {
+    return a === b
   }
 }
 
@@ -96,6 +128,12 @@ export type Analysis = { result: DateResult; fromCache: boolean } | { error: 'un
 export type AnalyzeOptions = {
   /** Ask the Internet Archive about edits the page does not admit to. */
   withArchive?: boolean
+  /**
+   * Refuse the read unless the tab is still showing this URL. Set by the
+   * background worker, which reads on navigation and can therefore race the
+   * page it is asking about; the popup reads on a click and cannot.
+   */
+  expectUrl?: string
 }
 
 export async function analyze(
@@ -108,7 +146,7 @@ export async function analyze(
   // different question, so the cache is bypassed rather than answered stale.
   if (cached && !options.withArchive) return { result: cached, fromCache: true }
 
-  const html = await readPageHtml(tabId)
+  const html = await readPageHtml(tabId, options.expectUrl)
   if (html === null) return { error: 'unreadable' }
 
   const archive = options.withArchive ? await fetchArchive(url) : null

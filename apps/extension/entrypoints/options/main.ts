@@ -7,6 +7,8 @@ import {
   setAutoRead,
   type ArchiveMode,
   type DateFormat,
+  type OverlayMode,
+  type OverlayPosition,
 } from '../../lib/settings.js'
 import { optionsView } from './render.js'
 
@@ -39,7 +41,27 @@ function wire(): void {
     autoRead.checked = granted
     autoReadStatus.hidden = !(wanted && !granted)
     autoReadStatus.textContent = wanted && !granted ? t('optAutoReadDenied') : ''
+    // The overlay section is gated on this, so the page has to redraw rather
+    // than leave a disabled control next to a toggle that is now on.
+    await render()
   })
+
+  for (const input of document.querySelectorAll<HTMLInputElement>('input[name="overlay"]')) {
+    input.addEventListener('change', async () => {
+      await saveSettings({ overlay: input.value as OverlayMode })
+      // Choosing "never" removes the corner picker, choosing anything else
+      // brings it back.
+      await render()
+    })
+  }
+
+  for (const input of document.querySelectorAll<HTMLInputElement>(
+    'input[name="overlayPosition"]',
+  )) {
+    input.addEventListener('change', () => {
+      void saveSettings({ overlayPosition: input.value as OverlayPosition })
+    })
+  }
 
   const archiveStatus = document.getElementById('archive-status') as HTMLElement
 
