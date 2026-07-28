@@ -1,0 +1,251 @@
+/*
+ * Confidence tiers are the whole point of this UI, so they are given genuinely
+ * different treatments rather than a label change: a solid left rule for what
+ * the site itself declared, a dashed one for what we inferred. A reader
+ * glancing at the popup should be able to tell them apart without reading.
+ */
+
+:root {
+  --bg: #ffffff;
+  --fg: #16181d;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  --declared: #15803d;
+  --derived: #a16207;
+  --inferred: #6b7280;
+  --alarm: #b91c1c;
+  --alarm-bg: #fef2f2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16181d;
+    --fg: #e8eaed;
+    --muted: #9aa0a6;
+    --line: #2c2f36;
+    --declared: #4ade80;
+    --derived: #fbbf24;
+    --inferred: #9aa0a6;
+    --alarm: #f87171;
+    --alarm-bg: #2a1616;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  width: 340px;
+  background: var(--bg);
+  color: var(--fg);
+  font:
+    13px/1.45 system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+}
+
+#app {
+  padding: 12px;
+}
+
+.state,
+.empty {
+  color: var(--muted);
+  padding: 10px 2px;
+  margin: 0;
+}
+
+.empty.error {
+  color: var(--alarm);
+}
+
+/* ---------------------------------------------------------------- rows */
+
+.row {
+  padding: 8px 0 8px 10px;
+  border-left: 3px solid var(--line);
+  margin-bottom: 8px;
+}
+
+.row.tier-declared {
+  border-left-color: var(--declared);
+  border-left-style: solid;
+}
+
+.row.tier-derived {
+  border-left-color: var(--derived);
+  border-left-style: solid;
+}
+
+/* Dashed, because this one is a guess and should not look like a fact. */
+.row.tier-inferred {
+  border-left-color: var(--inferred);
+  border-left-style: dashed;
+}
+
+.row.absent {
+  border-left-style: dotted;
+}
+
+.label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.value {
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+.row.absent .value {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.provenance {
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.tier-declared .provenance .tier {
+  color: var(--declared);
+}
+
+.tier-derived .provenance .tier {
+  color: var(--derived);
+}
+
+.provenance .source {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  opacity: 0.85;
+}
+
+.note {
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+/* ------------------------------------------------------------ conflict */
+
+.conflict {
+  background: var(--alarm-bg);
+  border: 1px solid var(--alarm);
+  border-radius: 5px;
+  padding: 9px 10px;
+  margin-bottom: 10px;
+}
+
+.conflict-heading {
+  color: var(--alarm);
+  font-weight: 650;
+  margin-bottom: 3px;
+}
+
+.conflict-detail {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+/* ---------------------------------------------------------- candidates */
+
+details {
+  margin-top: 4px;
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+
+summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.candidates {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.candidates li {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  padding: 3px 0 3px 8px;
+  border-left: 2px solid var(--line);
+  font-size: 11px;
+}
+
+.candidates li.tier-declared {
+  border-left-color: var(--declared);
+}
+
+.candidates li.tier-derived {
+  border-left-color: var(--derived);
+}
+
+.candidates li.tier-inferred {
+  border-left-color: var(--inferred);
+  border-left-style: dashed;
+}
+
+.c-value {
+  font-weight: 600;
+}
+
+.c-field,
+.c-source {
+  color: var(--muted);
+}
+
+.c-source {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  margin-left: auto;
+}
+
+/* -------------------------------------------------------------- footer */
+
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.host {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+button {
+  font: inherit;
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: var(--muted);
+}
