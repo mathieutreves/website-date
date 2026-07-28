@@ -1,5 +1,11 @@
 import type { Precision } from '../types.js'
-import { type DayFirstHint, foldCase, MONTH_NAME_PATTERN, monthFromName } from './locale.js'
+import {
+  type DayFirstHint,
+  foldCase,
+  MONTH_NAME_PATTERN,
+  monthFromName,
+  normaliseDigits,
+} from './locale.js'
 
 export type ParsedDate = {
   /** ISO 8601 truncated to `precision`. */
@@ -38,15 +44,45 @@ function ymd(y: number, m: number, d: number): ParsedDate | null {
  * Returns `null` for anything unrecognised or structurally invalid.
  */
 export function parseDateString(raw: string, opts: ParseOptions = {}): ParsedDate | null {
-  const input = raw.trim()
+  // Arabic, Persian and Indic pages render dates in their own digit systems;
+  // without this a parser that only knows 0-9 sees no date at all.
+  const input = normaliseDigits(raw.trim())
   if (!input) return null
 
   return (
     parseIso(input) ??
+    parseCjk(input) ??
     parseRfc2822(input) ??
     parseNumeric(input, opts.dayFirst ?? 'unknown') ??
     parseTextualMonth(input)
   )
+}
+
+/**
+ * CJK dates are structural rather than named: `2024年3月12日`, or `2024년 3월
+ * 12일` in Korean. Japanese shares the Chinese markers.
+ *
+ * Year-month-day order makes these unambiguous, so no locale hint is needed.
+ */
+function parseCjk(input: string): ParsedDate | null {
+  const full = /(\d{4})\s*[年년]\s*(\d{1,2})\s*[月월]\s*(\d{1,2})\s*[日일]?/.exec(input)
+  if (full) {
+    const parsed = ymd(Number(full[1]), Number(full[2]), Number(full[3]))
+    if (parsed) return parsed
+  }
+
+  const monthOnly = /(\d{4})\s*[年년]\s*(\d{1,2})\s*[月월]/.exec(input)
+  if (monthOnly) {
+    const m = Number(monthOnly[2])
+    if (m >= 1 && m <= 12) {
+      return { value: `${monthOnly[1]}-${pad(m)}`, precision: 'month' }
+    }
+  }
+
+  const yearOnly = /(\d{4})\s*[年년]/.exec(input)
+  if (yearOnly) return { value: yearOnly[1]!, precision: 'year' }
+
+  return null
 }
 
 /** ISO 8601 and its common near-misses, including the `YYYY-MM` / `YYYY` prefixes. */
@@ -160,38 +196,59 @@ function parseNumeric(input: string, dayFirst: DayFirstHint): ParsedDate | null 
   return { value: `${pad(y, 4)}`, precision: 'year' }
 }
 
+/*
+ * Built once, at module load.
+ *
+ * `MONTH_NAME_PATTERN` is a 333-alternative, 2.4 KB alternation, and compiling
+ * the three patterns below costs ~46 µs. They are loop-invariant, so doing it
+ * per call put that on the hot path of every date parsed from text.
+ */
+
+/**
+ * "12 March 2024", "12 marzo 2024", "12 de marzo de 2024", and the German
+ * ordinal form "19. Juli 2014" — the dot after the day is an ordinal marker,
+ * not a separator.
+ */
+const DAY_FIRST_TEXTUAL = new RegExp(
+  `\\b(\\d{1,2})\\.?\\s+(?:de\\s+)?(${MONTH_NAME_PATTERN})\\.?\\s+(?:de\\s+|del\\s+)?(\\d{4})\\b`,
+  'i',
+)
+
+/** "March 12 2024" */
+const MONTH_FIRST_TEXTUAL = new RegExp(
+  `\\b(${MONTH_NAME_PATTERN})\\.?\\s+(\\d{1,2})\\s+(\\d{4})\\b`,
+  'i',
+)
+
+/** "March 2024" — month precision, no day was stated. */
+const MONTH_YEAR_TEXTUAL = new RegExp(`\\b(${MONTH_NAME_PATTERN})\\.?\\s+(\\d{4})\\b`, 'i')
+
 /** Dates written with a month name, in either order and in any supported language. */
 function parseTextualMonth(input: string): ParsedDate | null {
   // Fold before matching: MONTH_NAME_PATTERN is built from diacritic-stripped
   // keys, so `février` only matches once the input is folded too.
+  // Ordinal suffixes are dropped rather than matched around, so every language's
+  // form collapses to a plain number and the three patterns below stay readable.
+  // `°`/`º`/`ª` need no `\b` after them — they are not word characters, and a
+  // word boundary there would never match.
   const cleaned = foldCase(input)
-    .replace(/(\d+)(st|nd|rd|th)\b/gi, '$1')
+    .replace(/(\d+)(?:st|nd|rd|th|ers?|ere|eme|e)\b/gi, '$1')
+    .replace(/(\d+)[º°ª]/g, '$1')
     .replace(/,/g, ' ')
 
-  // "12 March 2024", "12 marzo 2024", "12 de marzo de 2024", and the German
-  // ordinal form "19. Juli 2014" — the dot after the day is an ordinal marker,
-  // not a separator.
-  const dayFirst = new RegExp(
-    `\\b(\\d{1,2})\\.?\\s+(?:de\\s+)?(${MONTH_NAME_PATTERN})\\.?\\s+(?:de\\s+|del\\s+)?(\\d{4})\\b`,
-    'i',
-  ).exec(cleaned)
+  const dayFirst = DAY_FIRST_TEXTUAL.exec(cleaned)
   if (dayFirst) {
     const month = monthFromName(dayFirst[2]!)
     if (month !== undefined) return ymd(Number(dayFirst[3]), month, Number(dayFirst[1]))
   }
 
-  // "March 12 2024"
-  const monthFirst = new RegExp(
-    `\\b(${MONTH_NAME_PATTERN})\\.?\\s+(\\d{1,2})\\s+(\\d{4})\\b`,
-    'i',
-  ).exec(cleaned)
+  const monthFirst = MONTH_FIRST_TEXTUAL.exec(cleaned)
   if (monthFirst) {
     const month = monthFromName(monthFirst[1]!)
     if (month !== undefined) return ymd(Number(monthFirst[3]), month, Number(monthFirst[2]))
   }
 
-  // "March 2024" — month precision, no day was stated.
-  const monthYear = new RegExp(`\\b(${MONTH_NAME_PATTERN})\\.?\\s+(\\d{4})\\b`, 'i').exec(cleaned)
+  const monthYear = MONTH_YEAR_TEXTUAL.exec(cleaned)
   if (monthYear) {
     const month = monthFromName(monthYear[1]!)
     if (month !== undefined) {

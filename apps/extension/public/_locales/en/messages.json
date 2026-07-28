@@ -1,0 +1,266 @@
+{
+  "fieldPublished": {
+    "message": "Published"
+  },
+  "fieldModified": {
+    "message": "Last modified"
+  },
+  "notDeclared": {
+    "message": "not declared"
+  },
+  "tierDeclared": {
+    "message": "stated by the site"
+  },
+  "tierDerived": {
+    "message": "from page markup"
+  },
+  "tierInferred": {
+    "message": "inferred"
+  },
+  "ageApprox": {
+    "message": "about {1}"
+  },
+  "ageFuture": {
+    "message": "dated in the future"
+  },
+  "conflictDisagreement": {
+    "message": "This page contradicts itself"
+  },
+  "conflictPredated": {
+    "message": "This page is probably older than it says"
+  },
+  "conflictStale": {
+    "message": "This page may have changed since it says"
+  },
+  "spreadTitle": {
+    "message": "Evidence spread"
+  },
+  "spreadSummary": {
+    "message": "{1} dates found, spanning {2}"
+  },
+  "spreadOldest": {
+    "message": "oldest"
+  },
+  "spreadDeclared": {
+    "message": "declared"
+  },
+  "candidatesOne": {
+    "message": "{1} other candidate"
+  },
+  "candidatesMany": {
+    "message": "{1} other candidates"
+  },
+  "candidateFieldPublished": {
+    "message": "published"
+  },
+  "candidateFieldModified": {
+    "message": "updated"
+  },
+  "candidateFieldUnknown": {
+    "message": "unlabelled"
+  },
+  "loading": {
+    "message": "Reading page…"
+  },
+  "emptyNoDate": {
+    "message": "No date found. That is sometimes the correct answer — this page may genuinely not state when it was written."
+  },
+  "emptyUnsupported": {
+    "message": "Open a web page to check when it was written."
+  },
+  "errorUnreadable": {
+    "message": "Could not read this page. Browser settings pages and extension galleries are off limits to extensions."
+  },
+  "recheck": {
+    "message": "Re-check"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "archiveCheck": {
+    "message": "Check the archive for hidden edits"
+  },
+  "archiveChecking": {
+    "message": "Asking the archive…"
+  },
+  "archiveNothing": {
+    "message": "The archive records no edits since this was published."
+  },
+  "srcAdapter": {
+    "message": "a site-specific rule"
+  },
+  "srcJsonld": {
+    "message": "JSON-LD metadata"
+  },
+  "srcJsonldContainer": {
+    "message": "JSON-LD site metadata"
+  },
+  "srcAtomFeed": {
+    "message": "the site’s Atom feed"
+  },
+  "srcRssFeed": {
+    "message": "the site’s RSS feed"
+  },
+  "srcOpengraph": {
+    "message": "an OpenGraph tag"
+  },
+  "srcItemprop": {
+    "message": "microdata"
+  },
+  "srcDublinCore": {
+    "message": "a Dublin Core tag"
+  },
+  "srcCitation": {
+    "message": "a citation tag"
+  },
+  "srcParsely": {
+    "message": "a Parse.ly tag"
+  },
+  "srcSailthru": {
+    "message": "a Sailthru tag"
+  },
+  "srcTimeTag": {
+    "message": "a <time> element"
+  },
+  "srcSitemap": {
+    "message": "the site’s sitemap"
+  },
+  "srcMetaDate": {
+    "message": "a meta tag"
+  },
+  "srcUrlSlug": {
+    "message": "the page URL"
+  },
+  "srcImagePath": {
+    "message": "the preview image’s upload path"
+  },
+  "srcVisibleText": {
+    "message": "text on the page"
+  },
+  "srcTextDate": {
+    "message": "unlabelled text on the page"
+  },
+  "srcHttpLastModified": {
+    "message": "the Last-Modified header"
+  },
+  "optTitle": {
+    "message": "Page Date settings"
+  },
+  "optPrivacyNote": {
+    "message": "This extension asks for nothing at install time. Each setting below that needs wider access requests it when you turn it on, and gives it back when you turn it off."
+  },
+  "optReadingHeading": {
+    "message": "Reading pages"
+  },
+  "optAutoRead": {
+    "message": "Check every page automatically"
+  },
+  "optAutoReadHelp": {
+    "message": "Shows the age on the toolbar icon without opening this panel. Requires permission to read every site you visit — the browser will ask when you turn this on."
+  },
+  "optAutoReadDenied": {
+    "message": "Permission was declined, so this stayed off."
+  },
+  "optArchiveHeading": {
+    "message": "Internet Archive"
+  },
+  "optArchive": {
+    "message": "Check the archive for edits a page does not admit to"
+  },
+  "optArchiveHelp": {
+    "message": "Finding edits a page hides means asking web.archive.org what it has stored, which tells them the address of the page you are on."
+  },
+  "optArchiveOff": {
+    "message": "Never"
+  },
+  "optArchiveAsk": {
+    "message": "Ask each time"
+  },
+  "optArchiveAlways": {
+    "message": "Always"
+  },
+  "overlayNoDate": {
+    "message": "no date"
+  },
+  "overlaySays": {
+    "message": "says {1}"
+  },
+  "overlayOldest": {
+    "message": "oldest {1}"
+  },
+  "overlayCounterLabel": {
+    "message": "The page says {1}, but the oldest date it carries is from {2}."
+  },
+  "overlayOldestDetail": {
+    "message": "Oldest date on the page: {1} — {2}."
+  },
+  "optOverlayHeading": {
+    "message": "On the page"
+  },
+  "optOverlay": {
+    "message": "Show the age in the corner of the page"
+  },
+  "optOverlayHelp": {
+    "message": "Most pages never print their own date — it sits in metadata you cannot see — so this is usually the only place it appears. Needs automatic checking to be on."
+  },
+  "optOverlayNever": {
+    "message": "Never"
+  },
+  "optOverlayAlways": {
+    "message": "Always"
+  },
+  "optOverlayConflict": {
+    "message": "Only when contradicted"
+  },
+  "optOverlayPosition": {
+    "message": "Corner"
+  },
+  "optOverlayBottomLeft": {
+    "message": "Bottom left"
+  },
+  "optOverlayBottomRight": {
+    "message": "Bottom right"
+  },
+  "optOverlayTopLeft": {
+    "message": "Top left"
+  },
+  "optOverlayTopRight": {
+    "message": "Top right"
+  },
+  "optOverlayNeedsAutoRead": {
+    "message": "Turn on automatic checking above to use this."
+  },
+  "optDisplayHeading": {
+    "message": "Display"
+  },
+  "optDateFormat": {
+    "message": "Lead with"
+  },
+  "optDateFormatRelative": {
+    "message": "How long ago"
+  },
+  "optDateFormatAbsolute": {
+    "message": "The exact date"
+  },
+  "optDateFormatIso": {
+    "message": "The exact date, as 2024-03-12"
+  },
+  "optDataHeading": {
+    "message": "Stored results"
+  },
+  "optCacheSummary": {
+    "message": "{1} pages remembered, using {2}."
+  },
+  "optCacheEmpty": {
+    "message": "Nothing stored."
+  },
+  "optCacheHelp": {
+    "message": "Results are kept for a week so re-opening a page is instant. They are stored on this device only, and never sent anywhere."
+  },
+  "optCacheClear": {
+    "message": "Clear stored results"
+  },
+  "optCacheCleared": {
+    "message": "Cleared."
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "accept-ranges": "bytes",
+  "cache-control": "max-age=120, must-revalidate",
+  "connection": "keep-alive",
+  "content-encoding": "gzip",
+  "content-length": "121649",
+  "content-type": "text/html; charset=utf-8",
+  "date": "Tue, 28 Jul 2026 10:25:02 GMT",
+  "etag": "W/\"82601-L9Aal3kyvKn77dmSOzl9hMHZ21o\"",
+  "server": "nginx",
+  "strict-transport-security": "max-age=15768000",
+  "vary": "Accept-Encoding",
+  "x-content-type-options": "nosniff",
+  "x-frame-options": "SAMEORIGIN",
+  "x-rq": "mxp2 182 249 80",
+  "x-xss-protection": "1; mode=block"
+}

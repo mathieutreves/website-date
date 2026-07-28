@@ -1,0 +1,61 @@
+
+591 manifest entries, 590 fetched, 459 in split "dev", 273 within lag 30d, 262 scored
+  excluded 11 entries whose label appears nowhere in the page (run enrich.ts; --include-unanswerable to keep them)
+
+=== OVERALL (mode=standard, split=dev) ===
+
+  stratum                        n  exact  part  wrong  miss | precision  accuracy
+  --------------------------------------------------------------------------------
+  all                          262    235     0     13    14 |    94.8%     89.7%
+
+=== BY PUBLICATION ERA ===
+
+  stratum                        n  exact  part  wrong  miss | precision  accuracy
+  --------------------------------------------------------------------------------
+  2006                           2      2     0      0     0 |   100.0%    100.0%
+  2009                          13     13     0      0     0 |   100.0%    100.0%
+  2012                          25     16     0      2     7 |    88.9%     64.0%
+  2015                          36     33     0      2     1 |    94.3%     91.7%
+  2018                          40     36     0      4     0 |    90.0%     90.0%
+  2021                          40     39     0      1     0 |    97.5%     97.5%
+  2023                          46     44     0      2     0 |    95.7%     95.7%
+  2025                          54     52     0      2     0 |    96.3%     96.3%
+  2026                           6      0     0      0     6 |      —        0.0%
+
+=== BY LANGUAGE (from <html lang>) ===
+
+  stratum                        n  exact  part  wrong  miss | precision  accuracy
+  --------------------------------------------------------------------------------
+  en                           206    190     0      8     8 |    96.0%     92.2%
+  es                             6      3     0      3     0 |    50.0%     50.0%
+  it                            31     23     0      2     6 |    92.0%     74.2%
+  unknown                       19     19     0      0     0 |   100.0%    100.0%
+
+=== BY CAPTURE LAG ===
+
+  stratum                        n  exact  part  wrong  miss | precision  accuracy
+  --------------------------------------------------------------------------------
+  lag 0-1d                     188    174     0      8     6 |    95.6%     92.6%
+  lag 2-7d                      67     54     0      5     8 |    91.5%     80.6%
+  lag 8-30d                      7      7     0      0     0 |   100.0%    100.0%
+
+=== WHERE THE CORRECT ANSWERS CAME FROM ===
+
+  opengraph                     69
+  jsonld                        64
+  text-date                     36
+  marked-date                   34
+  time-tag                      18
+  wordpress                      8
+  sailthru                       6
+
+=== WORST HOSTS (wrong + missed) ===
+
+  ilpost.it                         8 of   31
+  schneier.com                      6 of    6
+  techcrunch.com                    4 of   51
+  elpais.com                        3 of    6
+  chicagotribune.com                2 of    8
+  boingboing.net                    2 of   56
+  creativecommons.org               1 of   27
+  daringfireball.net                1 of   31

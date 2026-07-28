@@ -1,0 +1,13 @@
+
+  htmldate corpus — 55 pages
+    same answer               55
+    DIFFERENT answer           0
+    different #candidates      1
+
+  permalink corpus — 590 pages
+    same answer              590
+    DIFFERENT answer           0
+    different #candidates      1
+
+  Parsers agree. The published figures describe the Node path as well as the browser one.
+

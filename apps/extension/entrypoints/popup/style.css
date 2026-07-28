@@ -1,0 +1,688 @@
+/*
+ * Design language
+ * ───────────────
+ * Four rules, applied everywhere below:
+ *
+ *   Hierarchy by type, not by chrome.  There is one card in this UI and it is
+ *   the popup itself. Size, weight and colour carry the ranking; no nested
+ *   boxes, borders or shadows compete with the answer.
+ *
+ *   One loud thing.  Exactly one element may use the alert palette, and only
+ *   when the page contradicts itself. Everything else lives on a neutral ramp,
+ *   which is what keeps the loud thing legible as loud.
+ *
+ *   Confidence is the product, so it is encoded redundantly — marker shape
+ *   (filled / half / ring), colour, and words. Any one of the three can be
+ *   lost and the distinction survives.
+ *
+ *   Vertical rhythm off one 4px step. Every margin and padding below is a
+ *   multiple of it, which is most of what makes a dense panel feel calm.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* ------------------------------------------------------------- palette */
+  --surface: #ffffff;
+  --surface-sunken: #f7f8f9;
+  --fg: #16181d;
+  --fg-muted: #5f6673;
+  --fg-subtle: #8b929e;
+  --line: #e6e8ec;
+  --line-strong: #d3d7de;
+
+  /*
+   * Confidence tiers. Teal / orange / neutral rather than the obvious
+   * green / amber / grey: under protanopia that pair separates by ΔE 5.0,
+   * which is below the level at which even a shape difference rescues it.
+   * These separate by 12.0, and all three clear 4.5:1 as text.
+   *
+   * The neutral is deliberately near-zero chroma. The tiers are an ordinal
+   * evidence scale, not three equal categories, and desaturating the weakest
+   * step is how the ranking is encoded.
+   */
+  --declared: #0f766e;
+  --derived: #c2410c;
+  --inferred: #6b7280;
+
+  --alert: #b3261e;
+  --alert-tint: #fdf3f2;
+  --alert-line: #f0c9c5;
+  --notice: #8a5a00;
+  --notice-tint: #fdf8ef;
+  --notice-line: #ecd9b4;
+
+  --focus: #2563eb;
+
+  /* ---------------------------------------------------------------- type */
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-md: 13px;
+  --text-lg: 15px;
+  --text-xl: 21px;
+
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  /* -------------------------------------------------------------- rhythm */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #17191e;
+    --surface-sunken: #1d2026;
+    --fg: #e9ebef;
+    --fg-muted: #a1a8b4;
+    --fg-subtle: #767d89;
+    --line: #2a2e36;
+    --line-strong: #3a3f49;
+
+    /* Re-stepped for the dark surface, not flipped: same hues, chosen against
+       #17191e so they stay inside the lightness band and above 4.5:1. */
+    --declared: #0d9488;
+    --derived: #d97706;
+    --inferred: #7c8797;
+
+    --alert: #f2837a;
+    --alert-tint: #2a1a19;
+    --alert-line: #56302d;
+    --notice: #e0aa3e;
+    --notice-tint: #262019;
+    --notice-line: #4b3d24;
+
+    --focus: #6ea8fe;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  /*
+   * The one number a popup stylesheet cannot get wrong.
+   *
+   * A desktop popup has no viewport until it has been laid out, and it lays out
+   * from its own content — so anything here expressed in viewport units resolves
+   * against a provisional width, clamps the body to it, and the popup then
+   * confirms that clamped size. It is a feedback loop, and it collapses the
+   * panel to the width of its longest unbreakable word.
+   *
+   * That applies to `100vw` exactly as it applies to a narrow-viewport media
+   * query. Both are questions about a viewport that does not exist yet. So this
+   * width is absolute and unconditional, and the mobile clamp — for Firefox for
+   * Android, where the panel really is bounded by the screen — lives under
+   * `pointer: coarse` with the other touch rules, which is a question about the
+   * device rather than about the box being measured.
+   */
+  width: 360px;
+  background: var(--surface);
+  color: var(--fg);
+  font:
+    var(--text-md) / 1.45 system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  /* Dates are compared by scanning down a column; proportional digits make
+     that column ragged for no benefit. */
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  padding: var(--s3) var(--s4) var(--s2);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+.state,
+.empty {
+  color: var(--fg-muted);
+  padding: var(--s3) 0;
+  margin: 0;
+}
+
+.empty.error {
+  color: var(--alert);
+}
+
+/* ------------------------------------------------------ confidence marker */
+
+/*
+ * Filled / half / ring. The shapes are deliberately readable without colour:
+ * "solid" reads as asserted, "hollow" as guessed, and the half-state sits
+ * visibly between them.
+ */
+.marker,
+.pt {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--inferred);
+  background: transparent;
+}
+
+.tier-declared.pt,
+.tier-declared .marker {
+  border-color: var(--declared);
+  background: var(--declared);
+}
+
+.tier-derived.pt,
+.tier-derived .marker {
+  border-color: var(--derived);
+  background: linear-gradient(to right, var(--derived) 50%, transparent 50%);
+}
+
+/* ---------------------------------------------------------- spread axis */
+
+/*
+ * One continuous time axis. The dots are the same three markers used in the
+ * rows above, positioned by actual date — so a twelve-year gap looks twelve
+ * times a one-year gap, which a list of rows can never show.
+ *
+ * Only the endpoints are labelled. A number on every point is noise at 360px,
+ * and the disclosure list underneath is already the tabular view.
+ */
+.spread {
+  margin: 0;
+  padding: var(--s3) 0 var(--s2);
+  border-top: 1px solid var(--line);
+}
+
+.spread figcaption {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--fg-subtle);
+}
+
+.axis {
+  position: relative;
+  height: 20px;
+  margin-top: var(--s2);
+}
+
+.track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  margin-top: -1px;
+  border-radius: 1px;
+  background: var(--line-strong);
+}
+
+.pt {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  /* A ring in the surface colour so overlapping dots stay countable. */
+  box-shadow: 0 0 0 2px var(--surface);
+}
+
+/* The two resolved dates sit above the evidence they were chosen from. */
+.pt.role-published,
+.pt.role-modified {
+  width: 11px;
+  height: 11px;
+  z-index: 2;
+}
+
+.scale {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s2);
+  margin-top: 2px;
+  font-size: var(--text-xs);
+  color: var(--fg-subtle);
+}
+
+.scale .span {
+  color: var(--fg-muted);
+  font-weight: 550;
+}
+
+/* ------------------------------------------------------------- headline */
+
+/*
+ * The age is the answer. Someone opens this popup to find out whether a page
+ * is current, and "about 3 years ago" answers that without arithmetic; the
+ * calendar date below is the evidence for it, not the headline.
+ */
+.headline {
+  padding-bottom: var(--s3);
+}
+
+.age {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 620;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+
+/* Undercut by a conflict: shown, but stripped of the authority of full
+   contrast. The warning above it has already said why. */
+.headline.disputed .age {
+  color: var(--fg-subtle);
+  text-decoration: underline dotted var(--line-strong);
+  text-underline-offset: 4px;
+}
+
+.exact {
+  margin: var(--s1) 0 0;
+  font-size: var(--text-lg);
+  display: flex;
+  align-items: baseline;
+  gap: var(--s2);
+  flex-wrap: wrap;
+}
+
+.exact .field {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--fg-subtle);
+}
+
+/* ------------------------------------------------------------ secondary */
+
+.row {
+  padding: var(--s2) 0;
+  border-top: 1px solid var(--line);
+}
+
+.row .line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+
+.row .field {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--fg-subtle);
+}
+
+.row .value {
+  font-size: var(--text-md);
+  font-weight: 550;
+}
+
+.row.absent .value {
+  font-weight: 400;
+  color: var(--fg-subtle);
+  font-style: italic;
+}
+
+.row.absent {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+
+/* ----------------------------------------------------------- provenance */
+
+.provenance {
+  margin: var(--s1) 0 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-xs);
+  color: var(--fg-muted);
+}
+
+.tier-declared .provenance .tier {
+  color: var(--declared);
+}
+
+.tier-derived .provenance .tier {
+  color: var(--derived);
+}
+
+.provenance .sep {
+  color: var(--line-strong);
+}
+
+.provenance .source {
+  color: var(--fg-subtle);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.note {
+  margin: var(--s1) 0 0;
+  padding-left: 14px;
+  font-size: var(--text-xs);
+  color: var(--fg-subtle);
+  overflow-wrap: anywhere;
+}
+
+/* ------------------------------------------------------------- conflict */
+
+/*
+ * A tint plus a rule, not a saturated slab. The point is to be read first,
+ * which a 360px panel achieves through contrast against surrounding calm —
+ * shouting louder than that just makes the panel feel broken.
+ */
+.conflict {
+  margin: 0 0 var(--s3);
+  padding: var(--s2) var(--s3);
+  border: 1px solid;
+  border-left-width: 3px;
+  border-radius: 6px;
+}
+
+.conflict.alert {
+  background: var(--alert-tint);
+  border-color: var(--alert-line);
+  border-left-color: var(--alert);
+}
+
+.conflict.notice {
+  background: var(--notice-tint);
+  border-color: var(--notice-line);
+  border-left-color: var(--notice);
+}
+
+.conflict-heading {
+  margin: 0;
+  font-size: var(--text-md);
+  font-weight: 620;
+}
+
+.conflict.alert .conflict-heading {
+  color: var(--alert);
+}
+
+.conflict.notice .conflict-heading {
+  color: var(--notice);
+}
+
+.conflict-detail {
+  margin: 3px 0 0;
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+  overflow-wrap: anywhere;
+}
+
+/* ----------------------------------------------------------- candidates */
+
+.more {
+  border-top: 1px solid var(--line);
+  padding-top: var(--s2);
+}
+
+summary {
+  cursor: pointer;
+  color: var(--fg-muted);
+  font-size: var(--text-sm);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+  user-select: none;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+/* A disclosure triangle drawn in CSS: one glyph fewer to load, and it rotates
+   rather than swapping, so the state change is continuous. */
+summary::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 4px solid currentColor;
+  border-top: 3.5px solid transparent;
+  border-bottom: 3.5px solid transparent;
+  transition: transform 120ms ease;
+}
+
+.more[open] summary::before {
+  transform: rotate(90deg);
+}
+
+summary:hover {
+  color: var(--fg);
+}
+
+.candidates {
+  list-style: none;
+  margin: var(--s1) 0 0;
+  padding: 0;
+}
+
+.candidates li {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: 5px var(--s2);
+  border-radius: 4px;
+  font-size: var(--text-xs);
+}
+
+.candidates li:nth-child(odd) {
+  background: var(--surface-sunken);
+}
+
+.c-value {
+  font-weight: 550;
+  white-space: nowrap;
+}
+
+.c-field {
+  color: var(--fg-subtle);
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.c-source {
+  color: var(--fg-subtle);
+  margin-left: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* -------------------------------------------------------------- footer */
+
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  margin-top: var(--s3);
+  padding-top: var(--s2);
+  border-top: 1px solid var(--line);
+  font-size: var(--text-xs);
+  color: var(--fg-subtle);
+}
+
+.host {
+  font-family: var(--mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+button {
+  font: inherit;
+  flex: none;
+  color: var(--fg-muted);
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: 5px;
+  padding: 3px var(--s2);
+  cursor: pointer;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+button:hover {
+  color: var(--fg);
+  border-color: var(--fg-subtle);
+}
+
+button.wide {
+  display: block;
+  width: 100%;
+  margin-top: var(--s2);
+  padding: 6px;
+  text-align: center;
+  font-size: var(--text-sm);
+}
+
+.archive-result {
+  margin: var(--s2) 0 0;
+  font-size: var(--text-xs);
+  color: var(--fg-subtle);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+
+button.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-color: transparent;
+}
+
+button.icon:hover {
+  border-color: var(--line-strong);
+}
+
+/* ------------------------------------------------------------- contrast */
+
+/*
+ * Honoured automatically rather than offered as a setting: the OS already
+ * knows, and a popup that is open for three seconds should not ask again.
+ * Tier hues darken toward their ramp ends and the hairlines gain weight —
+ * the shapes and layout are unchanged, so nothing has to be relearned.
+ */
+@media (prefers-contrast: more) {
+  :root {
+    --fg: #000000;
+    --fg-muted: #33383f;
+    --fg-subtle: #4b525b;
+    --line: #9aa0a8;
+    --line-strong: #6b727b;
+    --declared: #0b5c55;
+    --derived: #98330a;
+    --inferred: #4b5158;
+    --alert: #8c1c16;
+    --notice: #6b4600;
+  }
+
+  .row,
+  .more,
+  .spread,
+  footer {
+    border-top-width: 2px;
+  }
+
+  .marker,
+  .pt {
+    border-width: 2px;
+  }
+
+  .headline.disputed .age {
+    color: var(--fg-muted);
+  }
+}
+
+@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+  :root {
+    --fg: #ffffff;
+    --fg-muted: #d2d7dd;
+    --fg-subtle: #b3bac2;
+    --line: #5a626c;
+    --line-strong: #8b939d;
+    --declared: #2dd4bf;
+    --derived: #fbbf24;
+    --inferred: #b0b8c2;
+    --alert: #ff9d94;
+    --notice: #fbbf24;
+  }
+}
+
+/* ----------------------------------------------------------------- touch */
+
+/*
+ * Everything interactive here was sized for a cursor. On Firefox for Android
+ * the same panel is driven by a thumb, so the hit areas grow to the 44px
+ * minimum — type sizes and layout are left alone, because the panel is read
+ * the same way on both.
+ */
+@media (pointer: coarse) {
+  /* Safe here, and only here: a touch panel has a real viewport before it is
+     laid out, so this cannot feed back into the popup's own measurement. */
+  body {
+    max-width: 100vw;
+  }
+
+  #app {
+    padding: var(--s4);
+  }
+
+  button {
+    min-height: 44px;
+    padding: 8px var(--s3);
+  }
+
+  button.icon {
+    min-width: 44px;
+    padding: var(--s2);
+  }
+
+  summary {
+    min-height: 44px;
+    padding: var(--s3) 0;
+  }
+
+  .row {
+    padding: var(--s3) 0;
+  }
+
+  footer {
+    padding-top: var(--s1);
+  }
+
+  /*
+   * The axis dots carry `title` tooltips, which touch has no way to summon.
+   * Nothing is lost: every date is listed with its source in the disclosure
+   * below, which is the reachable form of the same information.
+   */
+  .spread {
+    padding-bottom: var(--s1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}

@@ -1,8 +1,8 @@
 import type { Candidate } from '../types.js'
 import { parseDateString, type ParseOptions } from '../parse/normalize.js'
 import { foldCase } from '../parse/locale.js'
-import { scoreContext } from './context.js'
-import { DATE_ANYWHERE, isBorrowedContent, TEXT_CANDIDATE_SELECTOR } from './patterns.js'
+import { marksPageRegion, scoreContext } from './context.js'
+import { collapse, DATE_ANYWHERE, directText, isBorrowedContent, MAYBE_DATE, textCandidates, NOT_A_DATE } from './patterns.js'
 
 /**
  * Dates in rendered text with no label attached — a bare "December 11, 2023"
@@ -43,12 +43,19 @@ export function extractBareText(
   const seen = new Set<string>()
   const pageHost = pageUrl?.hostname ?? null
 
-  for (const el of doc.querySelectorAll(TEXT_CANDIDATE_SELECTOR)) {
+  for (const el of textCandidates(doc)) {
     if (out.length >= MAX_CANDIDATES) break
 
-    const text = foldCase(directText(el))
-    if (!text || text.length > MAX_TEXT_LENGTH) continue
+    // Same cheap rejection as visibleText, before any allocation.
+    const raw = dateBearingText(el)
+    if (!raw || !MAYBE_DATE.test(raw)) continue
+    // Prices, versions, phone numbers and IBANs all look like dates.
+    if (NOT_A_DATE.test(raw)) continue
 
+    const collapsed = collapse(raw)
+    if (collapsed.length > MAX_TEXT_LENGTH) continue
+
+    const text = foldCase(collapsed)
     const match = DATE_ANYWHERE.exec(text)
     if (!match) continue
 
@@ -58,8 +65,15 @@ export function extractBareText(
 
     // In byline-marked markup the surrounding words are expected ("by Dan ·
     // 5 min read"); elsewhere the date has to carry the element.
-    const ratio = match[0].length / text.length
-    if (!context.strong && text.length > ALWAYS_ACCEPT_LENGTH && ratio < MIN_DATE_RATIO) continue
+    //
+    // Page-region markers do not earn the exemption — see {@link marksPageRegion}
+    // for what a footer costs. Narrowing further, to markers that positively
+    // name a date block, was measured and refused: it also discards genuine
+    // bylines marked only `entry-meta` or `author`, which is two real pages lost
+    // against one artifact suppressed.
+    const ratio = match[0].length / measurableLength(text)
+    const bylineMarked = context.strong && !marksPageRegion(context.marker)
+    if (!bylineMarked && text.length > ALWAYS_ACCEPT_LENGTH && ratio < MIN_DATE_RATIO) continue
 
     const parsed = parseDateString(match[0], opts)
     if (!parsed) continue
@@ -72,7 +86,7 @@ export function extractBareText(
       field: 'unknown',
       source: 'text-date',
       confidence: 'inferred',
-      note: context.strong
+      note: bylineMarked
         ? `unlabelled date in byline markup: "${match[0].trim()}"`
         : `unlabelled date in text: "${match[0].trim()}"`,
     })
@@ -82,21 +96,37 @@ export function extractBareText(
 }
 
 /**
- * Text belonging to this element rather than its descendants, so a wrapper
- * doesn't inherit every date its children contain.
+ * Weekday names and clock times, which pad a date line without adding meaning.
+ *
+ * German date blocks read "Mittwoch, 20. Februar 2019, 14:45 Uhr" — mostly
+ * furniture around a date. Discounting it stops the ratio guard from rejecting
+ * a line that is, in substance, entirely a date.
  */
-function directText(el: Element): string {
-  let out = ''
-  for (const node of el.childNodes) {
-    // Node.TEXT_NODE === 3 / ELEMENT_NODE === 1; compared numerically because
-    // the Node constants are not globals under linkedom.
-    if (node.nodeType === 3) out += node.nodeValue ?? ''
-    else if (node.nodeType === 1) {
-      const tag = (node as Element).tagName?.toUpperCase()
-      if (tag === 'TIME' || tag === 'SPAN' || tag === 'B' || tag === 'STRONG' || tag === 'EM') {
-        out += (node as Element).textContent ?? ''
-      }
-    }
-  }
-  return out.replace(/\s+/g, ' ').trim()
+const PADDING =
+  /\b(montag|dienstag|mittwoch|donnerstag|freitag|samstag|sonntag|monday|tuesday|wednesday|thursday|friday|saturday|sunday|lunedi|martedi|mercoledi|giovedi|venerdi|sabato|domenica|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)\b|\b\d{1,2}[:.]\d{2}\s*(uhr|am|pm|h)?\b|\bum\b|\bbis\b/gi
+
+/** Length of the text once weekday and clock padding is discounted. */
+function measurableLength(text: string): number {
+  return Math.max(1, text.replace(PADDING, '').replace(/\s+/g, ' ').trim().length)
 }
+
+/**
+ * The element's own text, plus `title` where markup convention puts the real
+ * date there.
+ *
+ * hAtom writes `<abbr class="published" title="...">`, and Facebook renders
+ * `<abbr title="Freitag, 6. Oktober 2017 um 04:00">` with only a relative
+ * "3 hrs" as the visible text — so reading text alone finds nothing.
+ */
+function dateBearingText(el: Element): string {
+  const own = directText(el)
+  const tag = el.tagName?.toUpperCase()
+
+  if (tag === 'ABBR' || tag === 'TIME' || tag === 'SPAN') {
+    const title = el.getAttribute('title')
+    if (title && DATE_ANYWHERE.test(title)) return title
+  }
+
+  return own
+}
+

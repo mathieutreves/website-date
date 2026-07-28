@@ -1,0 +1,60 @@
+# The full benchmark, on demand only.
+#
+# Not on push: rebuilding corpus/cache/ means fetching ~590 pinned captures from
+# the Internet Archive, which is a free service with no SLA. Running that on
+# every commit to reproduce a number that only moves when the extractors change
+# would be rude and slow.
+#
+# Run it when the extractors change, or to check that a claim in the README
+# still holds. The tables land in the artifact; diff them against results/.
+name: Benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      quick:
+        description: 'Skip the corpus rebuild and the Python tools'
+        type: boolean
+        default: false
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - run: pnpm install --frozen-lockfile
+
+      # Competitors live in their own node_modules so they can never reach the
+      # published dependency tree.
+      - name: Install competitors
+        run: |
+          (cd bench && npm install)
+          pip install -r scripts/requirements-bench.txt
+
+      # corpus/cache/ is gitignored; the manifest is committed and verify.ts
+      # confirms the refetched bytes are the ones the figures were measured on.
+      - name: Cache the corpus between runs
+        uses: actions/cache@v4
+        with:
+          path: corpus/cache
+          key: corpus-${{ hashFiles('corpus/manifest.jsonl') }}
+
+      - name: Run the pipeline
+        run: ./scripts/validate.sh ${{ inputs.quick && '--quick' || '' }}
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: results
+          path: results/

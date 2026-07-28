@@ -1,0 +1,11 @@
+{
+  "url": "https://www.bbc.com/zhongwen/articles/cg5lvqre8lzo/simp",
+  "capturedAt": "2026-07-28",
+  "notes": "BBC Chinese article. The body prominently mentions 1976年7月28日, a historical anniversary. The correct result is the declared 2026 date — this fixture guards against a CJK date in running prose being mistaken for the publication date, and against predated-content firing on it.",
+  "fetchedFeedUrl": null,
+  "expect": {
+    "published": "2026-07-28",
+    "modified": "2026-07-28",
+    "conflict": null
+  }
+}

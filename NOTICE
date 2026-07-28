@@ -1,0 +1,34 @@
+pagedate
+Copyright (c) 2026 Mathieu Treves
+
+This product includes software adapted from htmldate
+(https://github.com/adbar/htmldate), Copyright Adrien Barbaresi and
+contributors, licensed under the Apache License, Version 2.0.
+
+You may obtain a copy of that licence at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+What was adapted, and how it was changed:
+
+  packages/pagedate/src/extract/patterns.ts
+      NOT_A_DATE is adapted from htmldate's DISCARD_PATTERNS — the set of
+      digit shapes that look like dates but are not (currency, phone numbers,
+      IBANs, version strings). Reimplemented in TypeScript as a single
+      alternation rather than a list of compiled patterns, and the version-
+      number rule was narrowed to require a `v` prefix or a fourth component,
+      because the original form also matched `16.12.2012`, the most common
+      European date format.
+
+  packages/pagedate/src/extract/context.ts
+      The vocabulary of class and id tokens that mark article furniture was
+      informed by htmldate's equivalent, though the scoring around it — the
+      proximity rule, the marker tiers, the page-region distinction — is not
+      derived from it.
+
+No htmldate source code is copied verbatim, and no Apache-2.0 licensed file is
+distributed with this software. This notice records the derivation and the
+modifications, as Apache-2.0 section 4 requires of derivative work.
+
+htmldate is Apache-2.0 from version 1.8.0 onward; earlier releases were
+GPLv3+, and nothing here is derived from those.

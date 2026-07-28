@@ -1,0 +1,94 @@
+# Everything that can be checked without the network.
+#
+# Deliberately NOT the benchmarks. corpus/cache/ is gitignored and rebuilt from
+# pinned Wayback captures, so running them in CI would mean hammering a free
+# service on every push to reproduce a number that only moves when someone
+# changes the extractors. `benchmark.yml` does that on demand instead.
+name: CI
+
+on:
+  push:
+    branches: [main, 'feat/**']
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # The version in packageManager/engines, so a mismatch fails here
+          # rather than in someone's install.
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm --filter pagedate build
+
+      - name: Typecheck
+        run: pnpm -r typecheck
+
+      - name: Library tests
+        run: pnpm --filter pagedate test
+
+      - name: Extension tests
+        run: pnpm --filter @website-date/extension test
+
+      # The extension is the reason the library is browser-first, so a build
+      # break there is a break in the thing this project is for. Both targets,
+      # because MV3 differs between them and Firefox is the fussier one.
+      - name: Extension builds for both browsers
+        working-directory: apps/extension
+        run: |
+          pnpm build
+          pnpm build:firefox
+
+      # Catches the failure mode where the package publishes fine and the npm
+      # page is blank, or ships source it should not.
+      - name: Package contents
+        working-directory: packages/pagedate
+        run: |
+          npm pack --dry-run --json > /tmp/pack.json
+          node -e '
+            const [pkg] = require("/tmp/pack.json")
+            const files = pkg.files.map((f) => f.path)
+            const required = ["README.md", "LICENSE", "NOTICE", "dist/index.js", "dist/index.d.ts"]
+            const missing = required.filter((f) => !files.includes(f))
+            if (missing.length) {
+              console.error("missing from tarball:", missing.join(", "))
+              process.exit(1)
+            }
+            const leaked = files.filter((f) => f.startsWith("src/") || f.startsWith("test/"))
+            if (leaked.length) {
+              console.error("source leaked into tarball:", leaked.join(", "))
+              process.exit(1)
+            }
+            console.log(`ok — ${files.length} files, ${(pkg.size / 1024).toFixed(0)} kB`)
+          '
+
+  # The library claims zero runtime dependencies. That claim is worth a check,
+  # because it is the kind of thing a single convenient import quietly ends.
+  no-runtime-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          node -e '
+            const pkg = require("./packages/pagedate/package.json")
+            const deps = Object.keys(pkg.dependencies ?? {})
+            if (deps.length) {
+              console.error("pagedate gained runtime dependencies:", deps.join(", "))
+              process.exit(1)
+            }
+            console.log("ok — no runtime dependencies")
+          '

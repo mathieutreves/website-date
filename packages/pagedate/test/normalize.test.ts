@@ -106,3 +106,36 @@ describe('toInstant', () => {
     expect(toInstant('2024-03')?.toISOString()).toBe('2024-03-01T00:00:00.000Z')
   })
 })
+
+/**
+ * Ordinal day suffixes.
+ *
+ * The parser already stripped English ones; the gap was in the *finder*, which
+ * never handed it the phrase. A matcher blind to "November 1st, 2012" does not
+ * degrade to month precision — it fails to see a date at all, and the page falls
+ * through to whatever stale template date is lying around. TechCrunch's entire
+ * 2012 archive is written this way.
+ */
+describe('ordinal day suffixes', () => {
+  it('reads the day through the suffix, in each language that uses one', () => {
+    for (const [text, expected] of [
+      ['November 1st, 2012', '2012-11-01'],
+      ['Nov 22nd, 2009', '2009-11-22'],
+      ['August 3rd, 2020', '2020-08-03'],
+      ['1st November 2012', '2012-11-01'],
+      ['le 1er mars 2013', '2013-03-01'],
+      ['1º marzo 2013', '2013-03-01'],
+      ['3e januari 2014', '2014-01-03'],
+    ] as const) {
+      expect(parseDateString(text), text).toMatchObject({ value: expected, precision: 'day' })
+    }
+  })
+
+  it('leaves the forms that carry no suffix alone', () => {
+    // The German dot is a separator here, not an ordinal marker to strip, and
+    // the numeric forms must not be touched by the suffix rules at all.
+    expect(parseDateString('19. Juli 2014')).toMatchObject({ value: '2014-07-19' })
+    expect(parseDateString('16.12.2012')).toMatchObject({ value: '2012-12-16' })
+    expect(parseDateString('2024年3月12日')).toMatchObject({ value: '2024-03-12' })
+  })
+})

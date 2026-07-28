@@ -1,7 +1,17 @@
 {
   "name": "pagedate",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Extract publication and modification dates from web pages, with provenance and confidence. Browser-first, zero runtime dependencies.",
+  "author": "Mathieu Treves",
+  "homepage": "https://github.com/mathieutreves/website-date#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mathieutreves/website-date.git",
+    "directory": "packages/pagedate"
+  },
+  "bugs": {
+    "url": "https://github.com/mathieutreves/website-date/issues"
+  },
   "type": "module",
   "license": "MIT",
   "keywords": [
@@ -18,13 +28,33 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/node/index.d.ts",
+      "import": "./dist/node/index.js"
     }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "pagedate": "./dist/node/cli.js"
+  },
   "files": [
-    "dist"
+    "dist",
+    "NOTICE"
   ],
+  "peerDependencies": {
+    "linkedom": ">=0.18",
+    "node-html-parser": ">=9"
+  },
+  "peerDependenciesMeta": {
+    "linkedom": {
+      "optional": true
+    },
+    "node-html-parser": {
+      "optional": true
+    }
+  },
   "scripts": {
     "build": "tsup",
     "test": "vitest run",
@@ -34,8 +64,16 @@
   "devDependencies": {
     "@types/node": "^22.10.2",
     "linkedom": "^0.18.5",
+    "node-html-parser": "^9.0.0",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }

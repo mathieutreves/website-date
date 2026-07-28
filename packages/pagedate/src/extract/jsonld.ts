@@ -1,5 +1,6 @@
 import type { Candidate } from '../types.js'
 import { parseDateString } from '../parse/normalize.js'
+import { scriptSource } from './patterns.js'
 import type { ParseOptions } from '../parse/normalize.js'
 
 /**
@@ -8,17 +9,27 @@ import type { ParseOptions } from '../parse/normalize.js'
  * and the site build date on the WebPage.
  */
 const ARTICLE_TYPES = new Set([
-  'article',
-  'blogposting',
-  'newsarticle',
-  'techarticle',
-  'scholarlyarticle',
   'report',
-  'socialmediaposting',
-  'liveblogposting',
   'question',
+  'answer',
   'webpageelement',
+  'creativework',
+  'blog',
+  'podcastepisode',
+  'newsletter',
 ])
+
+/**
+ * schema.org has a long tail of Article and Posting subtypes —
+ * AnalysisNewsArticle, ReportageNewsArticle, OpinionNewsArticle,
+ * SatiricalArticle, DiscussionForumPosting — and enumerating them was already
+ * wrong in practice: BBC's AnalysisNewsArticle was being treated as a mere
+ * container and ranked below its own OpenGraph tags. Matching the suffix covers
+ * the whole family, including subtypes that do not exist yet.
+ */
+function isContentType(type: string): boolean {
+  return type.endsWith('article') || type.endsWith('posting') || ARTICLE_TYPES.has(type)
+}
 
 type JsonValue = unknown
 
@@ -71,7 +82,10 @@ export function extractJsonLd(doc: Document, opts: ParseOptions = {}): Candidate
   const scripts = doc.querySelectorAll('script[type="application/ld+json"]')
 
   for (const script of scripts) {
-    const text = script.textContent?.trim()
+    // Not `textContent`: see scriptSource. A parser that entity-decodes a
+    // raw-text element turns valid JSON-LD into a parse error, and the `catch`
+    // below would swallow it as "malformed JSON-LD" without a trace.
+    const text = scriptSource(script).trim()
     if (!text) continue
 
     let parsed: JsonValue
@@ -84,7 +98,7 @@ export function extractJsonLd(doc: Document, opts: ParseOptions = {}): Candidate
 
     for (const node of walk(parsed)) {
       const types = typesOf(node)
-      const isArticle = types.some((t) => ARTICLE_TYPES.has(t))
+      const isArticle = types.some(isContentType)
       // Only trust dates on nodes that declare a type; an untyped object with a
       // `datePublished` key is usually a fragment we've walked into by accident.
       if (types.length === 0) continue
@@ -103,7 +117,11 @@ export function extractJsonLd(doc: Document, opts: ParseOptions = {}): Candidate
         out.push({
           ...parsedDate,
           field,
-          source: 'jsonld',
+          // Container types rank below content types: a page carrying both
+          // usually has the real date on the Article and the site build time
+          // on the WebPage. Distinguishing them by source rather than by a
+          // note means ranking can actually act on it.
+          source: isArticle ? 'jsonld' : 'jsonld-container',
           confidence: 'declared',
           note: `schema.org ${key} on ${types[0] ?? 'node'}${isArticle ? '' : ' (container type)'}`,
         })
@@ -112,9 +130,4 @@ export function extractJsonLd(doc: Document, opts: ParseOptions = {}): Candidate
   }
 
   return out
-}
-
-/** Whether a JSON-LD candidate came from a content type rather than a container. */
-export function isArticleScoped(candidate: Candidate): boolean {
-  return candidate.source === 'jsonld' && !candidate.note?.includes('(container type)')
 }

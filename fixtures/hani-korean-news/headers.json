@@ -1,0 +1,15 @@
+{
+  "age": "7",
+  "cache-control": "public",
+  "connection": "keep-alive",
+  "content-encoding": "gzip",
+  "content-type": "text/html; charset=utf-8",
+  "date": "Tue, 28 Jul 2026 10:24:57 GMT",
+  "etag": "\"mrkvegojeh2jgw\"",
+  "expires": "Tue, 28 Jul 2026 10:25:50 GMT",
+  "server": "PWS/8.3.1.0.8",
+  "transfer-encoding": "chunked",
+  "via": "1.1 PShgseSEL4nm28:19 (W), 1.1 PShgseSEL4un24:4 (W), 1.1 PS-CDG-044e582:2 (W)",
+  "x-px": "ms PS-CDG-044e582CDG, ht PShgseSEL4un24GMP",
+  "x-ws-request-id": "6a688379_PS-CDG-044e582_45155-56778"
+}

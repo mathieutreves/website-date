@@ -11,7 +11,10 @@
 
 import { readFile, readdir } from 'node:fs/promises'
 import { join } from 'node:path'
-import { parseHTML } from 'linkedom'
+// Parses with the library's own `parseHtml` — node-html-parser, the parser
+// `pagedate/node` ships. Measuring through a different one would publish a
+// figure that describes nothing anyone runs; see bench/parity.mjs.
+import { parseHtml } from '../dist/node/index.js'
 import { extractFromDocument, resolveCandidates } from '../dist/index.js'
 
 const CORPUS = join(import.meta.dirname, '..', '..', '..', 'corpus-external', 'htmldate')
@@ -75,7 +78,7 @@ async function main(): Promise<void> {
     // Parsing is timed separately: in the extension the browser has already
     // produced the DOM, so parse cost is not part of our real per-page latency.
     const parseStart = performance.now()
-    const { document } = parseHTML(html)
+    const document = parseHtml(html)
     parseMs += performance.now() - parseStart
 
     const start = performance.now()

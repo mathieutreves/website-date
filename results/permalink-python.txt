@@ -1,0 +1,17 @@
+
+262 pages
+
+  tool                            exact  part  wrong  miss | precision  accuracy   ms/page
+  ----------------------------------------------------------------------------------------
+    htmldate (extensive)           205     0     57     0 |   78.2%    78.2%     49.15
+    htmldate (fast)                190     0     24    48 |   88.8%    72.5%      5.27
+    newspaper4k                    165     0     10    87 |   94.3%    63.0%     97.21
+    articleDateExtractor           162     0     21    79 |   88.5%    61.8%     38.31
+    date_guesser                   147     0     25    90 |   85.5%    56.1%     91.34
+    goose3                         132     0     10   120 |   93.0%    50.4%     73.89
+
+  precision = of the pages a tool answered, how many it got right
+  accuracy  = of all pages, how many it got right
+  A tool that refuses to guess scores well on the first and badly on the second;
+  the two together are the only honest summary of one.
+
