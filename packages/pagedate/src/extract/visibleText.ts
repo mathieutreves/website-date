@@ -3,7 +3,7 @@ import { parseDateString, type ParseOptions } from '../parse/normalize.js'
 import { foldCase } from '../parse/locale.js'
 import { fieldFromMarker, scoreContext } from './context.js'
 import { MODIFIED_LABEL_PATTERN, PUBLISHED_LABEL_PATTERN } from './labels.js'
-import { DATE_ANYWHERE, DATE_BODY, isBorrowedContent, MAYBE_DATE, TEXT_CANDIDATE_SELECTOR } from './patterns.js'
+import { DATE_ANYWHERE, DATE_BODY, isBorrowedContent, MAYBE_DATE, TEXT_CANDIDATE_SELECTOR, NOT_A_DATE } from './patterns.js'
 
 /**
  * Prose like "Last updated on 3 March 2024".
@@ -68,6 +68,8 @@ export function extractVisibleText(
     // can skip all three.
     const raw = directText(el)
     if (!raw || !MAYBE_DATE.test(raw)) continue
+    // Prices, versions, phone numbers and IBANs all look like dates.
+    if (NOT_A_DATE.test(raw)) continue
 
     const collapsed = collapse(raw)
     if (collapsed.length > MAX_TEXT_LENGTH) continue
@@ -86,7 +88,13 @@ export function extractVisibleText(
     // unlabelled and outranked by a worse candidate elsewhere on the page.
     const markerField = fieldFromMarker(context.marker)
     if (markerField !== 'unknown' && !MODIFIED_RE.test(text) && !PUBLISHED_RE.test(text)) {
-      const match = DATE_ANYWHERE.exec(text)
+      // hAtom writes `<abbr class="published" title="2016-12-23T05:11:00-05:00">
+      // 5:11 AM</abbr>` — the marker names it a publication date and the machine
+      // value is in the attribute, while the text alone says only a time.
+      const title = el.getAttribute('title')
+      const source = DATE_ANYWHERE.test(text) ? text : title && MAYBE_DATE.test(title) ? title : text
+
+      const match = DATE_ANYWHERE.exec(source)
       const parsed = match ? parseDateString(match[0], opts) : null
       if (parsed && !seen.has(`${markerField}:${parsed.value}`)) {
         seen.add(`${markerField}:${parsed.value}`)
@@ -141,7 +149,11 @@ function directText(el: Element): string {
   for (const node of el.childNodes) {
     // Node.TEXT_NODE === 3; comparing numerically keeps this working under
     // linkedom, where the Node constants aren't globals.
-    if (node.nodeType === 3) out += node.nodeValue ?? ''
+    // `textContent` is the fallback because some non-browser DOM
+    // implementations (node-html-parser) leave `nodeValue` undefined on text
+    // nodes. On a text node the two are defined to be equal, so this costs
+    // nothing on a real DOM and keeps the extractor parser-agnostic.
+    if (node.nodeType === 3) out += node.nodeValue ?? node.textContent ?? ''
     else if (node.nodeType === 1) {
       const tag = (node as Element).tagName?.toUpperCase()
       // Inline wrappers are part of the same phrase.
