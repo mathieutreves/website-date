@@ -1,9 +1,9 @@
 import type { Candidate } from '../types.js'
 import { parseDateString, type ParseOptions } from '../parse/normalize.js'
 import { foldCase } from '../parse/locale.js'
-import { scoreContext } from './context.js'
+import { fieldFromMarker, scoreContext } from './context.js'
 import { MODIFIED_LABEL_PATTERN, PUBLISHED_LABEL_PATTERN } from './labels.js'
-import { DATE_BODY, isBorrowedContent, MAYBE_DATE, TEXT_CANDIDATE_SELECTOR } from './patterns.js'
+import { DATE_ANYWHERE, DATE_BODY, isBorrowedContent, MAYBE_DATE, TEXT_CANDIDATE_SELECTOR } from './patterns.js'
 
 /**
  * Prose like "Last updated on 3 March 2024".
@@ -25,6 +25,26 @@ const GAP = `[\\s:：、,，—–\\-]{0,4}(?:on|il|am|le|el|em|op|the|v|dnia)?[
 
 const MODIFIED_RE = new RegExp(`(?:${MODIFIED_LABEL_PATTERN})${GAP}(${DATE_BODY})`, 'i')
 const PUBLISHED_RE = new RegExp(`(?:${PUBLISHED_LABEL_PATTERN})${GAP}(${DATE_BODY})`, 'i')
+
+/**
+ * The same phrases with the date *before* the label.
+ *
+ * German puts the participle last — "Dieser Artikel wurde am 14. Dezember 2015
+ * um 14:48 veröffentlicht" — and Dutch, Polish and Turkish do much the same.
+ * Matching only label-then-date is blind to all of them.
+ *
+ * The window between the two is deliberately short: a date and a label at
+ * opposite ends of a paragraph are not describing each other.
+ */
+const TRAILING_GAP = `[^<>]{0,48}?`
+const MODIFIED_AFTER_RE = new RegExp(
+  `(${DATE_BODY})${TRAILING_GAP}(?:${MODIFIED_LABEL_PATTERN})`,
+  'i',
+)
+const PUBLISHED_AFTER_RE = new RegExp(
+  `(${DATE_BODY})${TRAILING_GAP}(?:${PUBLISHED_LABEL_PATTERN})`,
+  'i',
+)
 
 
 /** Long blocks are article prose, not a byline. */
@@ -60,9 +80,34 @@ export function extractVisibleText(
     if (!context.usable) continue
     if (isBorrowedContent(el, pageHost)) continue
 
+    // Markup can label a date as clearly as words can. A bare date inside a
+    // container the site named `PublishDate_date` or `entry-date` is a stated
+    // publication date, and reading it as one keeps it from being left
+    // unlabelled and outranked by a worse candidate elsewhere on the page.
+    const markerField = fieldFromMarker(context.marker)
+    if (markerField !== 'unknown' && !MODIFIED_RE.test(text) && !PUBLISHED_RE.test(text)) {
+      const match = DATE_ANYWHERE.exec(text)
+      const parsed = match ? parseDateString(match[0], opts) : null
+      if (parsed && !seen.has(`${markerField}:${parsed.value}`)) {
+        seen.add(`${markerField}:${parsed.value}`)
+        out.push({
+          ...parsed,
+          field: markerField,
+          source: 'marked-date',
+          // Derived, not inferred: this comes from markup the site authored,
+          // not from guessing at prose.
+          confidence: 'derived',
+          note: `date in markup marked "${context.marker}"`,
+        })
+        continue
+      }
+    }
+
     for (const [regex, field] of [
       [MODIFIED_RE, 'modified'],
       [PUBLISHED_RE, 'published'],
+      [MODIFIED_AFTER_RE, 'modified'],
+      [PUBLISHED_AFTER_RE, 'published'],
     ] as const) {
       const match = regex.exec(text)
       if (!match?.[1]) continue

@@ -16,6 +16,7 @@ const MODIFIED_PHRASES = [
   // English
   'last updated', 'updated on', 'updated at', 'last modified', 'last revised',
   'revised on', 'edited on', 'last edited', 'updated', 'modified',
+  'date of last revision', 'last revision', 'revision date', 'last reviewed',
   // Italian
   'ultimo aggiornamento', 'aggiornato il', 'aggiornato al', 'modificato il', 'aggiornato',
   // German

@@ -11,7 +11,7 @@ SAME 55 PAGES, SAME METRIC, CURRENT VERSIONS — publication date only
   ---------------------------------------------------------------------------------------------------------
     htmldate 1.10.0 (extensive)     50     0      5     0 |   90.9%   100.0%    90.9%    95.2%     75.53
     htmldate 1.10.0 (fast)          43     0      3     9 |   93.5%    82.7%    78.2%    87.8%     11.17
-  ▸ pagedate (standard)             24     3     11    17 |   63.2%    58.5%    43.6%    60.8%      5.36
+  ▸ pagedate (standard)             30     3      9    13 |   71.4%    69.8%    54.5%    70.6%      5.36
     date_guesser 2.1.4              14     0      8    33 |   63.6%    29.8%    25.5%    40.6%    115.56
     newspaper4k 0.9.6               11     0      5    39 |   68.8%    22.0%    20.0%    33.3%    148.77
     articleDateExtractor 0.20       11     0      9    35 |   55.0%    23.9%    20.0%    33.3%     40.06
@@ -31,7 +31,7 @@ better general-purpose date extractor, and nothing here comes close.
 every other Python tool and every JavaScript one.
 
 **In JavaScript specifically, there is no real competition.** The best JS
-alternatives manage 14.5%; pagedate manages 43.6%, three times better. Both JS
+alternatives manage 14.5%; pagedate manages 54.5%, nearly four times better. Both JS
 alternatives are article extractors where the date is one field among many, and
 it shows. That is the positioning that matters, because this is a JS library
 meant to run in a browser extension where htmldate cannot go.
@@ -112,7 +112,7 @@ asset path, or a crawl-time query string. Excluding those pages:
 
 | | before | after |
 | --- | --- | --- |
-| pagedate (standard) | 43.6% | **50.0%** |
+| pagedate (standard) | 54.5% | **60.4%** |
 | htmldate (extensive) | 90.9% | **91.7%** |
 
 So the correction is real and it does help — but it helps htmldate slightly too,
@@ -123,27 +123,45 @@ narrows from 47.3 points to 41.7.
 The honest reading: the gold standard is imperfect, the imperfection does
 understate pagedate, and correcting for it changes nothing about who is ahead.
 
-### What the rest of the disagreements are
+### What the adjudication produced
 
-| | count | whose fault |
-| --- | --- | --- |
-| gold is real, sitting in visible text we miss | 17 | ours |
-| gold looks like an artifact | 7 | the corpus |
-| gold string not present in the HTML at all | 5 | unclear |
-| gold in a `<time datetime>` byline we got wrong | 3 | **ours, and plainly** |
+Three pages had textbook machine-readable bylines we got wrong anyway. Chasing
+them found a bug affecting far more than three:
 
-That last row is the uncomfortable one. All three are pages with textbook
-machine-readable bylines that we still get wrong:
+`verfassungsblog.de` puts its byline inside `<div class="site-content
+content-area … sidebar…">`. That token-anchored `sidebar` match excluded the
+entire article body — a *layout* class describing the page was being read as
+"this element is a sidebar". The fix is proximity: a positive marker nearer the
+element than the negative one wins, because `<time class="entry-date">` inside
+`<span class="byline">` is a byline whatever a distant wrapper is called.
+Genuine furniture still excludes correctly, since there the negative marker is
+the closer of the two.
 
-- `verfassungsblog.de` carries `<time class="entry-date" datetime="2019-07-13…"
-  pubdate>` inside `<span class="byline">` and we return **nothing at all**
-- `la-bas.org` has `<p class="publication"><time datetime="2019-06-28…">` and we
-  pick a different `<time>` from elsewhere on the page
-- `mediapart.fr` has `<span class="author"><time datetime="2019-06-27">` and we
-  rank an unrelated text date above it
+That one change recovered **five** pages, not three.
 
-These are not corpus problems and not hard cases. They are bugs, and they are
-worth more than any amount of arguing about the gold standard.
+A second fix followed from the same adjudication: markup can label a date as
+well as words can. `<span class="PublishDate_date">29. Januar 2019</span>` needs
+no "Published on" prefix to be a publication date, and reading the class name as
+the label stops such dates being left unlabelled and outranked by worse
+candidates.
+
+Together: **43.6% → 54.5%**, exact hits 24 → 30, misses 17 → 13.
+
+### Where the remaining 25 stand
+
+| | count |
+| --- | --- |
+| right date, chosen correctly | 30 |
+| right date, reported as *modified* rather than published | 2 |
+| right date present as a candidate but not chosen | 4 |
+| wrong date chosen | 7 |
+| date never found | 12 |
+
+The two "reported as modified" cases are worth naming, because they are a
+limitation of the benchmark rather than of either tool. Pixabay's terms page
+says *"Date of Last Revision: August 9, 2017"*, and we classify that as a
+modification — which it plainly is. A single-date gold cannot express the
+distinction, so correctly making it costs us a point.
 
 ## Fairness notes
 
