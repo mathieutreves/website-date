@@ -133,7 +133,23 @@ export function resolveCandidates(
 
   // An unlabelled date is more likely to be the publication date than the
   // modification date — sites that bother to distinguish usually label the edit.
-  if (!resolvedPublished && unknown.length > 0) {
+  //
+  // It is promoted when nothing claims the field, and also when it is simply
+  // better evidence than what does: a date inside a container the site marked
+  // as its date block outranks a month inferred from the URL, and refusing to
+  // promote on the strength of a field label alone would keep the worse answer.
+  const bestUnknown = best(unknown)
+  const outranksPublished =
+    bestUnknown !== undefined &&
+    resolvedPublished !== undefined &&
+    rank(bestUnknown) > rank(resolvedPublished) &&
+    // Never trade precision for source rank. A month from a marked date block
+    // outranks a day from the URL on tier alone, but "December 2024" is a worse
+    // answer than "31 December 2024" and replacing one with the other loses
+    // information the page actually gave us.
+    PRECISION_RANK[bestUnknown.precision] >= PRECISION_RANK[resolvedPublished.precision]
+
+  if ((!resolvedPublished || outranksPublished) && unknown.length > 0) {
     const promoted = best(unknown)
     if (promoted) {
       const modifiedInstant = resolvedModified ? toInstant(resolvedModified.value) : null

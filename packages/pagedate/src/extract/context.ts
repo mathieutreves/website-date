@@ -82,6 +82,41 @@ export const marksModification = (marker: string | undefined): boolean =>
  * label is what lets a bare date in a marked container be read confidently,
  * rather than being left unlabelled and outranked by something worse.
  */
+/**
+ * Markers naming the element as a date block, whichever kind.
+ *
+ * Deliberately narrower than the context vocabulary. `footer`, `meta`, `info`
+ * and `author` are good reasons to *look* at an element — a date is often
+ * nearby — but they do not assert that what is found is this page's date. A
+ * newspaper's registration date sits in a footer too.
+ */
+const DATE_BLOCK_MARKERS = new Set([
+  ...PUBLICATION_MARKERS,
+  ...MODIFICATION_MARKERS,
+  'date',
+  'datum',
+  'time',
+  'fecha',
+  'parution',
+  'dateline',
+])
+
+/*
+ * Deliberately excluded from the set above: post-meta, entry-meta, meta, info,
+ * footer, subline. Adding them wins three pages on the external corpus — 58.2%
+ * to 63.6% — and costs two false positives locally, including a Korean
+ * newspaper's registration date lifted out of a page footer.
+ *
+ * That trade is refused. The external corpus contains only pages that have a
+ * date, so it cannot reward answering "there is none" correctly; the local one
+ * is built to test exactly that. Optimising against a benchmark that is blind
+ * to the property this library exists for, at the cost of that property, buys a
+ * number and sells the thing the number is supposed to stand for.
+ */
+
+export const marksDateBlock = (marker: string | undefined): boolean =>
+  marker !== undefined && DATE_BLOCK_MARKERS.has(marker)
+
 export function fieldFromMarker(marker: string | undefined): 'published' | 'modified' | 'unknown' {
   if (marksModification(marker)) return 'modified'
   if (marksPublication(marker)) return 'published'
