@@ -6,6 +6,7 @@ import { detectDayFirst } from './parse/locale.js'
 import { extractBareText } from './extract/bareText.js'
 import { extractFeed } from './extract/feed.js'
 import { extractHttpHeaders } from './extract/headers.js'
+import { extractImagePath } from './extract/imagePath.js'
 import { extractJsonLd } from './extract/jsonld.js'
 import { extractMeta } from './extract/meta.js'
 import { extractSitemap } from './extract/sitemap.js'
@@ -34,6 +35,7 @@ export type { ParsedDate, ParseOptions } from './parse/normalize.js'
 export { checkPlausibility, isPlausible } from './parse/plausibility.js'
 export { extractFeed } from './extract/feed.js'
 export { extractHttpHeaders } from './extract/headers.js'
+export { extractImagePath } from './extract/imagePath.js'
 export { extractSitemap } from './extract/sitemap.js'
 export { resolveCandidates } from './resolve.js'
 export type { ResolveOptions } from './resolve.js'
@@ -89,6 +91,11 @@ export function extractFromDocument(
   ]
 
   if (parsedUrl) candidates.push(...extractUrlSlug(parsedUrl))
+
+  // Also metadata, also free: the preview image the page declares often sits in
+  // a dated upload directory. Weakest of the declared-metadata signals, so it
+  // is collected here and ranked last rather than being gated behind a mode.
+  candidates.push(...extractImagePath(doc))
 
   // Text scanning is around 80% of extraction cost, and `fast` exists to skip
   // it. Most pages carry metadata, so this still answers most of them.
