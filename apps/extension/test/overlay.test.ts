@@ -115,3 +115,43 @@ describe('the injected functions survive serialisation', () => {
     for (const body of bodies) expect(body).toContain(OVERLAY_ID)
   })
 })
+
+describe('the date a contradicting page is talking over', () => {
+  const contradicted = () =>
+    result({
+      published: candidate({ value: '2026-05-28' }),
+      candidates: [
+        candidate({ value: '2026-05-28' }),
+        candidate({ value: '2014-03-12', confidence: 'derived', source: 'itemprop' }),
+        candidate({ value: '2018-11-20', confidence: 'derived', source: 'time-tag' }),
+      ],
+      conflict: { kind: 'predated-content', gapDays: 4463, detail: 'x' },
+    })
+
+  it('shows the oldest evidence beside the declared age', () => {
+    const shown = data(contradicted())
+    expect(shown?.age).toMatch(/^says /)
+    expect(shown?.counterAge).toMatch(/^oldest /)
+    expect(shown?.counterAge).toMatch(/12 years ago/)
+  })
+
+  it('attributes the declared date to the page rather than stating it', () => {
+    // On these pages the declared date is the claim, not the answer, so the
+    // readout must not present the two as equally weighted facts.
+    const shown = data(contradicted())
+    expect(shown?.label).toContain('The page says')
+    expect(shown?.label).toContain('oldest date it carries')
+  })
+
+  it('spells the date out in the expanded panel', () => {
+    const shown = data(contradicted())
+    expect(shown?.counterDetail).toContain('2014')
+    expect(shown?.counterDetail).toContain('microdata')
+  })
+
+  it('leaves an ordinary page as a single age', () => {
+    const shown = data(result({ published: candidate() }))
+    expect(shown?.counterAge).toBeNull()
+    expect(shown?.age).not.toMatch(/^says /)
+  })
+})

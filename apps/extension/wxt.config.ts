@@ -25,15 +25,24 @@ export default defineConfig({
     // rather than a cost silently folded into installing the extension.
     optional_host_permissions: ['*://*/*', '*://web.archive.org/*'],
 
-    options_ui: {
-      page: 'options.html',
-      open_in_tab: false,
-    },
+    // `options_ui.open_in_tab` is not set here: WXT owns that key and reads it
+    // from a meta tag on entrypoints/options/index.html.
 
     browser_specific_settings: {
       gecko: {
         id: 'pagedate@mathieutreves.github.io',
         strict_min_version: '109.0',
+      },
+      // Android is declared separately, and later: Firefox for Android only
+      // opened up to general add-ons in 120. It is also the only mobile browser
+      // worth targeting — Chrome for Android has no extensions at all, and
+      // Safari would need a native wrapper and an App Store listing.
+      //
+      // The toolbar badge is close to invisible there, since the icon lives
+      // inside the ⋮ menu. On Android the on-page readout is not a convenience,
+      // it is the only ambient surface available.
+      gecko_android: {
+        strict_min_version: '120.0',
       },
     },
   },

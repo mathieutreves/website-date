@@ -179,6 +179,18 @@
   "overlayNoDate": {
     "message": "no date"
   },
+  "overlaySays": {
+    "message": "says {1}"
+  },
+  "overlayOldest": {
+    "message": "oldest {1}"
+  },
+  "overlayCounterLabel": {
+    "message": "The page says {1}, but the oldest date it carries is from {2}."
+  },
+  "overlayOldestDetail": {
+    "message": "Oldest date on the page: {1} — {2}."
+  },
   "optOverlayHeading": {
     "message": "On the page"
   },

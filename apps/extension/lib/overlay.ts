@@ -1,5 +1,6 @@
 import type { DateResult } from 'pagedate'
 import { display, relativeAge, sourceLabel, tierWord } from './format.js'
+import { oldestCounterEvidence } from './evidence.js'
 import { t } from './messages.js'
 import type { OverlayMode, OverlayPosition } from './settings.js'
 
@@ -33,6 +34,14 @@ export type OverlayData = {
   detail: string
   /** Conflict heading, when there is one. */
   conflict: string | null
+  /**
+   * On a page that is older than it claims, the age of the oldest hard
+   * timestamp it carries — shown beside the declared age, because on those
+   * pages the declared date is the claim rather than the answer.
+   */
+  counterAge: string | null
+  /** The same fact spelled out for the expanded panel. */
+  counterDetail: string | null
   tone: OverlayTone
   position: OverlayPosition
   /** Spoken label, so the collapsed pill is useful without expanding it. */
@@ -79,6 +88,8 @@ export function overlayData(
       muted: true,
       detail: t('emptyNoDate'),
       conflict,
+      counterAge: null,
+      counterDetail: null,
       tone,
       position,
       label: t('overlayNoDate'),
@@ -89,14 +100,30 @@ export function overlayData(
   const age = relativeAge(primary, now) ?? display(primary)
   const detail = `${label} ${display(primary)} — ${tierWord(primary.confidence)}, ${sourceLabel(primary.source)}`
 
+  const counter = oldestCounterEvidence(result)
+  const counterAge = counter ? (relativeAge(counter, now) ?? display(counter)) : null
+
   return {
-    age,
+    age: counter ? t('overlaySays', age) : age,
     muted: false,
     detail,
     conflict,
+    counterAge: counterAge ? t('overlayOldest', counterAge) : null,
+    counterDetail: counter
+      ? t(
+          'overlayOldestDetail',
+          display(counter),
+          `${tierWord(counter.confidence)}, ${sourceLabel(counter.source)}`,
+        )
+      : null,
     tone,
     position,
-    label: `${label} ${age}. ${detail}`,
+    // Spoken as one sentence rather than two fragments, so the relationship
+    // between the two dates survives without the visual layout.
+    label:
+      counter && counterAge
+        ? `${t('overlayCounterLabel', age, counterAge)} ${detail}`
+        : `${label} ${age}. ${detail}`,
   }
 }
 
@@ -149,6 +176,11 @@ export const paintOverlay = (data: OverlayData): void => {
     .pill.alert { color: #b3261e; border-color: rgba(179,38,30,.35); opacity: 1; }
     .pill.notice { color: #8a5a00; border-color: rgba(138,90,0,.35); opacity: 1; }
     .flag { font-weight: 700; }
+    /* The declared age recedes and the evidence takes the weight: on these
+       pages the declared date is the page's claim, not the answer. */
+    .says { opacity: .7; font-weight: 400; }
+    .sep { opacity: .35; }
+    .counter { font-weight: 650; }
     .panel {
       display: none; margin-top: 6px; padding: 9px 11px; border-radius: 8px;
       font: 12px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -169,6 +201,15 @@ export const paintOverlay = (data: OverlayData): void => {
       .panel .warn.alert { color: #f2837a; }
       .panel .warn.notice { color: #e0aa3e; }
     }
+    /*
+     * On touch there is no hover, so the resting state is the only state —
+     * .72 opacity would simply be permanently half-legible. It rests brighter
+     * instead, and grows to a thumb-sized target.
+     */
+    @media (pointer: coarse) {
+      .pill { opacity: .92; padding: 9px 13px; font-size: 12px; min-height: 40px; }
+      .panel { font-size: 13px; padding: 11px 13px; max-width: min(320px, 82vw); }
+    }
     @media (prefers-reduced-motion: reduce) { .pill { transition: none; } }
   `
 
@@ -187,8 +228,22 @@ export const paintOverlay = (data: OverlayData): void => {
   }
 
   const text = document.createElement('span')
+  text.className = data.counterAge ? 'says' : ''
   text.textContent = data.age
   pill.appendChild(text)
+
+  if (data.counterAge) {
+    const sep = document.createElement('span')
+    sep.className = 'sep'
+    sep.textContent = '·'
+    sep.setAttribute('aria-hidden', 'true')
+    pill.appendChild(sep)
+
+    const counter = document.createElement('span')
+    counter.className = 'counter'
+    counter.textContent = data.counterAge
+    pill.appendChild(counter)
+  }
 
   const panel = document.createElement('div')
   panel.className = 'panel'
@@ -203,6 +258,12 @@ export const paintOverlay = (data: OverlayData): void => {
   const detail = document.createElement('p')
   detail.textContent = data.detail
   panel.appendChild(detail)
+
+  if (data.counterDetail) {
+    const counterLine = document.createElement('p')
+    counterLine.textContent = data.counterDetail
+    panel.appendChild(counterLine)
+  }
 
   pill.addEventListener('click', () => {
     const open = panel.classList.toggle('open')
