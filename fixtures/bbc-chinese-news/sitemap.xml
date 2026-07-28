@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   version: df99009430a1a8f8979042c24e21e9fecd8b21cd
+   HTTPS www.bbc.com
+-->
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+   <url>
+      <loc>https://www.bbc.com/scotland</loc>
+      <changefreq>always</changefreq>
+      <priority>0.5</priority>
+   </url>
+
+   <url>
+      <loc>https://www.bbc.com/wales</loc>
+      <changefreq>always</changefreq>
+      <priority>0.5</priority>
+   </url>
+
+   <url>
+      <loc>https://www.bbc.com/northernireland</loc>
+      <changefreq>always</changefreq>
+      <priority>0.5</priority>
+   </url>
+
+   <url>
+      <loc>https://www.bbc.com/alba</loc>
+      <changefreq>always</changefreq>
+      <priority>0.5</priority>
+   </url>
+
+   <url>
+      <loc>https://www.bbc.com/cymru</loc>
+      <changefreq>always</changefreq>
+      <priority>0.5</priority>
+    </url>
+
+</urlset>
