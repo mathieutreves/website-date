@@ -1,0 +1,75 @@
+# Publish pagedate to npm via trusted publishing.
+#
+# INERT until two things are done, both of which are yours:
+#   1. On npmjs.com, add a trusted publisher for the `pagedate` package pointing
+#      at this repository and this workflow file.
+#   2. Create a GitHub release. Nothing else triggers this.
+#
+# Trusted publishing means npm authenticates this workflow over OIDC, so no
+# long-lived token exists in the repo to leak, and each published version
+# carries a provenance attestation linking it to the commit that built it.
+#
+# The version is NOT bumped here. Set it in packages/pagedate/package.json,
+# commit, tag, then release — so the tag, the commit and the registry always
+# agree, and a failed publish leaves nothing half-done.
+name: Publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: 'Build and pack, but do not publish'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  # Required for OIDC. Without it npm cannot verify who is publishing.
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter pagedate build
+
+      # Publishing something that does not typecheck or pass its tests is worse
+      # than not publishing: npm allows unpublish only within 72 hours, and
+      # after that a bad version can only be deprecated, never removed.
+      - run: pnpm -r typecheck
+      - run: pnpm --filter pagedate test
+      - run: pnpm --filter @website-date/extension test
+
+      - name: Tag matches package version
+        if: github.event_name == 'release'
+        working-directory: packages/pagedate
+        run: |
+          pkg=$(node -p "require('./package.json').version")
+          tag="${GITHUB_REF_NAME#v}"
+          if [ "$pkg" != "$tag" ]; then
+            echo "release tag $tag does not match package version $pkg" >&2
+            exit 1
+          fi
+          echo "publishing pagedate@$pkg"
+
+      - name: Publish
+        if: github.event_name == 'release' && !inputs.dry-run
+        working-directory: packages/pagedate
+        run: npm publish
+
+      - name: Dry run
+        if: github.event_name != 'release' || inputs.dry-run
+        working-directory: packages/pagedate
+        run: npm publish --dry-run
