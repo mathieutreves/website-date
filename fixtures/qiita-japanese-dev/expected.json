@@ -1,0 +1,11 @@
+{
+  "url": "https://qiita.com/sumomoo/items/122f9a34360e256bf042",
+  "capturedAt": "2026-07-28",
+  "notes": "Japanese developer article. Declares clean JSON-LD; the visible byline is an English \"posted at\" line on an otherwise Japanese page, which is common on dev sites.",
+  "fetchedFeedUrl": null,
+  "expect": {
+    "published": "2026-07-27",
+    "modified": "2026-07-27",
+    "conflict": null
+  }
+}

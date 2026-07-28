@@ -1,0 +1,11 @@
+{
+  "url": "https://www.aljazeera.net/news/liveblog/2026/7/28/%D8%A5%D9%8A%D8%B1%D8%A7%D9%86-%D9%85%D8%A8%D8%A7%D8%B4%D8%B1-%D8%AA%D8%B1%D9%85%D8%A8-%D9%8A%D8%AA%D8%AD%D8%AF%D8%AB-%D8%B9%D9%86-%D9%85%D9%81%D8%A7%D9%88%D8%B6%D8%A7%D8%AA",
+  "capturedAt": "2026-07-28",
+  "notes": "Al Jazeera Arabic liveblog. RTL page with JSON-LD plus a nested VideoObject whose uploadDate must not outrank the article date.",
+  "fetchedFeedUrl": "https://www.aljazeera.net/aljazeerarss/a7c186be-1baa-4bd4-9d80-a84db769f779/73d0e1b4-532f-45ef-b135-bfdff8b8cab9",
+  "expect": {
+    "published": "2026-07-27",
+    "modified": "2026-07-28",
+    "conflict": null
+  }
+}
