@@ -196,38 +196,59 @@ function parseNumeric(input: string, dayFirst: DayFirstHint): ParsedDate | null 
   return { value: `${pad(y, 4)}`, precision: 'year' }
 }
 
+/*
+ * Built once, at module load.
+ *
+ * `MONTH_NAME_PATTERN` is a 333-alternative, 2.4 KB alternation, and compiling
+ * the three patterns below costs ~46 µs. They are loop-invariant, so doing it
+ * per call put that on the hot path of every date parsed from text.
+ */
+
+/**
+ * "12 March 2024", "12 marzo 2024", "12 de marzo de 2024", and the German
+ * ordinal form "19. Juli 2014" — the dot after the day is an ordinal marker,
+ * not a separator.
+ */
+const DAY_FIRST_TEXTUAL = new RegExp(
+  `\\b(\\d{1,2})\\.?\\s+(?:de\\s+)?(${MONTH_NAME_PATTERN})\\.?\\s+(?:de\\s+|del\\s+)?(\\d{4})\\b`,
+  'i',
+)
+
+/** "March 12 2024" */
+const MONTH_FIRST_TEXTUAL = new RegExp(
+  `\\b(${MONTH_NAME_PATTERN})\\.?\\s+(\\d{1,2})\\s+(\\d{4})\\b`,
+  'i',
+)
+
+/** "March 2024" — month precision, no day was stated. */
+const MONTH_YEAR_TEXTUAL = new RegExp(`\\b(${MONTH_NAME_PATTERN})\\.?\\s+(\\d{4})\\b`, 'i')
+
 /** Dates written with a month name, in either order and in any supported language. */
 function parseTextualMonth(input: string): ParsedDate | null {
   // Fold before matching: MONTH_NAME_PATTERN is built from diacritic-stripped
   // keys, so `février` only matches once the input is folded too.
+  // Ordinal suffixes are dropped rather than matched around, so every language's
+  // form collapses to a plain number and the three patterns below stay readable.
+  // `°`/`º`/`ª` need no `\b` after them — they are not word characters, and a
+  // word boundary there would never match.
   const cleaned = foldCase(input)
-    .replace(/(\d+)(st|nd|rd|th)\b/gi, '$1')
+    .replace(/(\d+)(?:st|nd|rd|th|ers?|ere|eme|e)\b/gi, '$1')
+    .replace(/(\d+)[º°ª]/g, '$1')
     .replace(/,/g, ' ')
 
-  // "12 March 2024", "12 marzo 2024", "12 de marzo de 2024", and the German
-  // ordinal form "19. Juli 2014" — the dot after the day is an ordinal marker,
-  // not a separator.
-  const dayFirst = new RegExp(
-    `\\b(\\d{1,2})\\.?\\s+(?:de\\s+)?(${MONTH_NAME_PATTERN})\\.?\\s+(?:de\\s+|del\\s+)?(\\d{4})\\b`,
-    'i',
-  ).exec(cleaned)
+  const dayFirst = DAY_FIRST_TEXTUAL.exec(cleaned)
   if (dayFirst) {
     const month = monthFromName(dayFirst[2]!)
     if (month !== undefined) return ymd(Number(dayFirst[3]), month, Number(dayFirst[1]))
   }
 
-  // "March 12 2024"
-  const monthFirst = new RegExp(
-    `\\b(${MONTH_NAME_PATTERN})\\.?\\s+(\\d{1,2})\\s+(\\d{4})\\b`,
-    'i',
-  ).exec(cleaned)
+  const monthFirst = MONTH_FIRST_TEXTUAL.exec(cleaned)
   if (monthFirst) {
     const month = monthFromName(monthFirst[1]!)
     if (month !== undefined) return ymd(Number(monthFirst[3]), month, Number(monthFirst[2]))
   }
 
-  // "March 2024" — month precision, no day was stated.
-  const monthYear = new RegExp(`\\b(${MONTH_NAME_PATTERN})\\.?\\s+(\\d{4})\\b`, 'i').exec(cleaned)
+  const monthYear = MONTH_YEAR_TEXTUAL.exec(cleaned)
   if (monthYear) {
     const month = monthFromName(monthYear[1]!)
     if (month !== undefined) {
