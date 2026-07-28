@@ -8,7 +8,13 @@
  */
 
 export type ArchiveMode = 'off' | 'ask' | 'always'
-export type DateFormat = 'relative' | 'absolute'
+/**
+ * `relative` and `absolute` choose which fact leads; `iso` also changes how the
+ * date is written, to the sortable, unambiguous form. Asked for by people
+ * pasting dates into spreadsheets and citations, where "12 March 2024" is a
+ * step backwards and 03/12/2024 is a coin flip.
+ */
+export type DateFormat = 'relative' | 'absolute' | 'iso'
 export type OverlayMode = 'never' | 'always' | 'conflict'
 export type OverlayPosition = 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right'
 

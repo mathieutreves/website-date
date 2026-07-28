@@ -118,6 +118,32 @@ describe('age is the headline', () => {
     expect(html.indexOf('2023')).toBeLessThan(html.indexOf('years ago'))
   })
 
+  it('writes dates as ISO 8601 when asked, throughout the panel', () => {
+    const html = show(
+      result({
+        published: candidate({ value: '2023-04-11' }),
+        modified: candidate({ value: '2025-02-18', field: 'modified' }),
+      }),
+      { dateFormat: 'iso' },
+    )
+
+    expect(html).toContain('2023-04-11')
+    expect(html).toContain('2025-02-18')
+    // Not "11 April 2023" anywhere: a reader who asked for one format and got
+    // two has to work out which line is which.
+    expect(html).not.toMatch(/April|Feb/)
+    // ISO is an absolute format, so the date leads, as with `absolute`.
+    expect(html.indexOf('2023-04-11')).toBeLessThan(html.indexOf('years ago'))
+  })
+
+  it('keeps ISO output at the precision the source carried', () => {
+    expect(display(candidate({ value: '2024', precision: 'year' }), 'iso')).toBe('2024')
+    expect(display(candidate({ value: '2024-03', precision: 'month' }), 'iso')).toBe('2024-03')
+    expect(display(candidate({ value: '2024-03-12T09:30Z', precision: 'minute' }), 'iso')).toBe(
+      '2024-03-12T09:30Z',
+    )
+  })
+
   it('hedges the age when the source was too vague to support an exact one', () => {
     // "2024" cannot justify "2 years ago" to the day — it could be either.
     expect(relativeAge(candidate({ value: '2024', precision: 'year' }), NOW)).toMatch(/^about /)

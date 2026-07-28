@@ -85,6 +85,7 @@ export const MESSAGES = {
   srcSitemap: 'the site’s sitemap',
   srcMetaDate: 'a meta tag',
   srcUrlSlug: 'the page URL',
+  srcImagePath: 'the preview image’s upload path',
   srcVisibleText: 'text on the page',
   srcTextDate: 'unlabelled text on the page',
   srcHttpLastModified: 'the Last-Modified header',
@@ -136,6 +137,8 @@ export const MESSAGES = {
   optDateFormat: 'Lead with',
   optDateFormatRelative: 'How long ago',
   optDateFormatAbsolute: 'The exact date',
+  /** Deliberately shows the shape rather than naming the standard. */
+  optDateFormatIso: 'The exact date, as 2024-03-12',
 
   optDataHeading: 'Stored results',
   /** {1} = a count, {2} = a formatted size, e.g. "41 KB". */

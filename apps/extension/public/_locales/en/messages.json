@@ -131,6 +131,9 @@
   "srcUrlSlug": {
     "message": "the page URL"
   },
+  "srcImagePath": {
+    "message": "the preview image’s upload path"
+  },
   "srcVisibleText": {
     "message": "text on the page"
   },
@@ -238,6 +241,9 @@
   },
   "optDateFormatAbsolute": {
     "message": "The exact date"
+  },
+  "optDateFormatIso": {
+    "message": "The exact date, as 2024-03-12"
   },
   "optDataHeading": {
     "message": "Stored results"

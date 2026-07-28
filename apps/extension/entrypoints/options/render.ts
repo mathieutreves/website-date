@@ -123,6 +123,7 @@ export function optionsView(settings: Settings, stats: CacheStats): string {
         <div class="choices">
           ${format('relative', t('optDateFormatRelative'))}
           ${format('absolute', t('optDateFormatAbsolute'))}
+          ${format('iso', t('optDateFormatIso'))}
         </div>
       </div>
     </section>

@@ -94,6 +94,7 @@ export default defineBackground(() => {
       new Date(),
       settings.overlay,
       settings.overlayPosition,
+      settings.dateFormat,
     )
     if (!data || !current()) return
 
