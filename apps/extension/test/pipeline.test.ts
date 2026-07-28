@@ -68,15 +68,28 @@ describe('popup pipeline on real pages', () => {
   })
 
   it('shows an inferred date as inferred, not as fact', async () => {
+    const html = await runPopup('overreacted-post', 'https://overreacted.io/a-chain-reaction/')
+
+    // Recovered from an unlabelled byline date, on a page carrying no metadata
+    // at all — real, but a weaker claim than metadata, and the popup has to say
+    // so rather than presenting it as something the site stated.
+    expect(html).toContain('2023')
+    expect(html).toContain('tier-inferred')
+    expect(html).toContain('text-date')
+  })
+
+  it('prefers a marked date block over the same date in the URL', async () => {
     const html = await runPopup(
       'simonwillison-post',
       'https://simonwillison.net/2024/Dec/31/llms-in-2024/',
     )
 
-    // Recovered from the URL slug — real, but a weaker claim than metadata.
+    // Both signals agree on 2024-12-31. The site put the date in markup it named
+    // as a date block, which is a stronger claim than a path segment, so that is
+    // the provenance the reader is shown.
     expect(html).toContain('2024')
-    expect(html).toContain('tier-inferred')
-    expect(html).toContain('url-slug')
+    expect(html).toContain('tier-derived')
+    expect(html).toContain('marked-date')
   })
 
   it('produces no unescaped angle brackets from real page content', async () => {

@@ -150,66 +150,139 @@ export const paintOverlay = (data: OverlayData): void => {
   host.setAttribute('style', 'all: initial; position: fixed; z-index: 2147483647;')
 
   const [vertical, horizontal] = data.position.split('-')
-  host.style.setProperty(vertical === 'top' ? 'top' : 'bottom', '12px')
-  host.style.setProperty(horizontal === 'left' ? 'left' : 'right', '12px')
+  host.style.setProperty(vertical === 'top' ? 'top' : 'bottom', '14px')
+  host.style.setProperty(horizontal === 'left' ? 'left' : 'right', '14px')
 
   const root = host.attachShadow({ mode: 'open' })
 
   const style = document.createElement('style')
+  /*
+   * Opaque, and edged on every side.
+   *
+   * This is the one piece of UI in the extension that has to survive being
+   * dropped onto a page it knows nothing about — any background colour, any
+   * image, any density. Translucency and a blur made it a tint of whatever was
+   * behind it, which is exactly the failure mode: on a busy page it read as
+   * part of the page and stopped being findable. So there is no alpha here at
+   * all. Solid fill, solid border, solid ledge beneath it.
+   *
+   * Being opaque is what lets it be quiet. A readout that is unambiguously a
+   * separate object can afford small type and a neutral palette; the earlier
+   * one had to compensate for its own transparency with a saturated state.
+   *
+   * The leading bar carries the tone. It is the only part legible before the
+   * readout is read, and it is the same left-rule the popup uses for a
+   * conflict, so the two surfaces escalate in the same visual language.
+   */
   style.textContent = `
-    :host { all: initial; }
-    * { box-sizing: border-box; margin: 0; }
-    .pill {
-      display: flex; align-items: center; gap: 6px;
-      font: 500 11px/1.3 system-ui, -apple-system, "Segoe UI", sans-serif;
-      font-variant-numeric: tabular-nums;
-      padding: 4px 9px; border-radius: 999px; cursor: pointer;
-      border: 1px solid rgba(0,0,0,.10);
-      background: rgba(255,255,255,.86); color: #3c4450;
-      box-shadow: 0 1px 3px rgba(0,0,0,.14);
-      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-      opacity: .72; transition: opacity 120ms ease;
-      max-width: 60vw;
+    :host {
+      all: initial;
+      --surface: #ffffff;
+      --surface-hover: #f1f3f6;
+      --fg: #16181d;
+      --fg-muted: #5f6673;
+      --edge: #454b55;
+      --lip: #454b55;
+      --accent: #0f766e;
+      --on-accent: #ffffff;
+      --focus: #2563eb;
     }
-    .pill:hover, .pill:focus-visible { opacity: 1; }
-    .pill:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
-    .pill.muted { font-style: italic; opacity: .55; }
-    .pill.alert { color: #b3261e; border-color: rgba(179,38,30,.35); opacity: 1; }
-    .pill.notice { color: #8a5a00; border-color: rgba(138,90,0,.35); opacity: 1; }
-    .flag { font-weight: 700; }
+    * { box-sizing: border-box; margin: 0; }
+
+    /* Tone lives in one variable, so the bar, the badge and the panel heading
+       cannot drift apart. */
+    .alert { --accent: #b3261e; }
+    .notice { --accent: #8a5a00; }
+    .pill.muted { --accent: #8b929e; }
+    /* After .muted, and at the same specificity: a page with no date can still
+       contradict itself, and the tone outranks the absence. */
+    .pill.alert { --accent: #b3261e; --surface: #fdf3f2; --surface-hover: #fae8e6; }
+    .pill.notice { --accent: #8a5a00; --surface: #fdf8ef; --surface-hover: #f8f0e0; }
+
+    .pill {
+      display: flex; align-items: center; gap: 7px;
+      font: 600 12px/1.35 system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-variant-numeric: tabular-nums;
+      padding: 6px 11px 6px 0; border-radius: 8px; cursor: pointer;
+      border: 1.5px solid var(--edge);
+      background: var(--surface); color: var(--fg);
+      /* A hard ledge rather than a soft shadow: same job — lifting the readout
+         off the page — without a blur that would let the page through it. */
+      box-shadow: 0 2px 0 var(--lip);
+      max-width: 60vw;
+      transition: background-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+    }
+    .pill::before {
+      content: ""; flex: none; align-self: stretch;
+      width: 5px; margin-right: 3px;
+      background: var(--accent); border-radius: 6px 0 0 6px;
+    }
+    .pill:hover { background: var(--surface-hover); }
+    .pill:active { transform: translateY(2px); box-shadow: 0 0 0 var(--lip); }
+    .pill:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+    .age { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pill.muted .age { color: var(--fg-muted); font-style: italic; font-weight: 500; }
+    /* A filled disc, not a bare glyph: at 12px an exclamation mark is four
+       pixels of ink and reads as a speck of the page. */
+    .flag {
+      flex: none; display: inline-flex; align-items: center; justify-content: center;
+      width: 15px; height: 15px; border-radius: 50%;
+      background: var(--accent); color: var(--on-accent);
+      font-size: 10px; font-weight: 700; line-height: 1;
+    }
     /* The declared age recedes and the evidence takes the weight: on these
        pages the declared date is the page's claim, not the answer. */
-    .says { opacity: .7; font-weight: 400; }
-    .sep { opacity: .35; }
-    .counter { font-weight: 650; }
+    .says { color: var(--fg-muted); font-weight: 500; }
+    .sep { color: var(--edge); }
+    .counter { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .panel {
-      display: none; margin-top: 6px; padding: 9px 11px; border-radius: 8px;
-      font: 12px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
-      border: 1px solid rgba(0,0,0,.10);
-      background: rgba(255,255,255,.96); color: #22272f;
-      box-shadow: 0 6px 20px rgba(0,0,0,.16);
-      max-width: min(320px, 70vw);
+      display: none; margin-top: 8px; padding: 10px 12px; border-radius: 8px;
+      font: 400 12px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+      border: 1.5px solid var(--edge);
+      background: var(--surface); color: var(--fg);
+      box-shadow: 0 2px 0 var(--lip);
+      max-width: min(340px, 70vw);
     }
     .panel.open { display: block; }
-    .panel .warn { font-weight: 650; margin-bottom: 3px; }
-    .panel .warn.alert { color: #b3261e; }
-    .panel .warn.notice { color: #8a5a00; }
+    .panel p + p { margin-top: 5px; color: var(--fg-muted); }
+    .panel .warn { font-weight: 650; margin-bottom: 5px; color: var(--accent); }
     @media (prefers-color-scheme: dark) {
-      .pill { background: rgba(28,31,37,.88); color: #c3cad4; border-color: rgba(255,255,255,.13); }
-      .pill.alert { color: #f2837a; border-color: rgba(242,131,122,.38); }
-      .pill.notice { color: #e0aa3e; border-color: rgba(224,170,62,.38); }
-      .panel { background: rgba(28,31,37,.97); color: #e4e8ee; border-color: rgba(255,255,255,.13); }
-      .panel .warn.alert { color: #f2837a; }
-      .panel .warn.notice { color: #e0aa3e; }
+      :host {
+        --surface: #1b1e24;
+        --surface-hover: #23272f;
+        --fg: #eef0f4;
+        --fg-muted: #a1a8b4;
+        --edge: #767d89;
+        --lip: #05070a;
+        --accent: #14b8a6;
+        --on-accent: #16181d;
+        --focus: #6ea8fe;
+      }
+      .alert { --accent: #f2837a; }
+      .notice { --accent: #e0aa3e; }
+      .pill.muted { --accent: #767d89; }
+      .pill.alert { --accent: #f2837a; --surface: #2a1a19; --surface-hover: #35211f; }
+      .pill.notice { --accent: #e0aa3e; --surface: #262019; --surface-hover: #302820; }
     }
-    /*
-     * On touch there is no hover, so the resting state is the only state —
-     * .72 opacity would simply be permanently half-legible. It rests brighter
-     * instead, and grows to a thumb-sized target.
-     */
+    /* The page's own contrast preference applies to anything sitting on top of
+       it: the border thickens and the ink goes to the ends of the ramp. */
+    @media (prefers-contrast: more) {
+      :host { --fg: #000000; --fg-muted: #33383f; --edge: #000000; --lip: #000000; }
+      .alert { --accent: #8c1c16; }
+      .notice { --accent: #6b4600; }
+      .pill, .panel { border-width: 2px; }
+      @media (prefers-color-scheme: dark) {
+        :host { --fg: #ffffff; --fg-muted: #d2d7dd; --edge: #ffffff; --lip: #000000; }
+        .alert { --accent: #ff9d94; }
+        .notice { --accent: #fbbf24; }
+      }
+    }
+    /* On touch there is no hover, so the resting state is the only state, and
+       the target has to clear a thumb. */
     @media (pointer: coarse) {
-      .pill { opacity: .92; padding: 9px 13px; font-size: 12px; min-height: 40px; }
-      .panel { font-size: 13px; padding: 11px 13px; max-width: min(320px, 82vw); }
+      .pill { padding: 9px 13px 9px 0; font-size: 13px; min-height: 44px; }
+      .pill::before { width: 6px; }
+      .panel { font-size: 13px; padding: 12px 14px; max-width: min(340px, 82vw); }
     }
     @media (prefers-reduced-motion: reduce) { .pill { transition: none; } }
   `
@@ -229,7 +302,7 @@ export const paintOverlay = (data: OverlayData): void => {
   }
 
   const text = document.createElement('span')
-  text.className = data.counterAge ? 'says' : ''
+  text.className = data.counterAge ? 'age says' : 'age'
   text.textContent = data.age
   pill.appendChild(text)
 
@@ -277,7 +350,7 @@ export const paintOverlay = (data: OverlayData): void => {
   } else {
     root.append(style, panel, pill)
     panel.style.marginTop = '0'
-    panel.style.marginBottom = '6px'
+    panel.style.marginBottom = '8px'
   }
 
   document.documentElement.appendChild(host)
