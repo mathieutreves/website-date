@@ -1,0 +1,82 @@
+# Seed domains for the permalink harvest.
+#
+# THIS LIST IS HAND-WRITTEN, AND THAT IS A KNOWN BIAS. It exists so the harvester
+# has something to run against on day one, not because it is a defensible sample
+# of the web. Before any published number, replace it with a principled frame:
+#
+#   - Tranco top-N, for the head of the web
+#   - a Common Crawl index slice, for a population nobody curated
+#   - feed directories or OPML dumps, for the long tail of blogs
+#
+# Grouped by stratum because the point is coverage, not volume. The harvester
+# prints per-domain yield, so domains that use a different permalink shape (or
+# none) cost one query and show up as a zero.
+#
+# One domain per line. `#` comments and blank lines are ignored.
+
+# --- English news and tech press -------------------------------------------
+techcrunch.com
+arstechnica.com
+engadget.com
+theverge.com
+npr.org
+nytimes.com
+latimes.com
+chicagotribune.com
+smashingmagazine.com
+css-tricks.com
+
+# --- Engineering and personal blogs ----------------------------------------
+blog.rust-lang.org
+blog.mozilla.org
+developers.googleblog.com
+jvns.ca
+daringfireball.net
+boingboing.net
+schneier.com
+troyhunt.com
+blog.jetbrains.com
+blog.wordpress.com
+
+# --- German ----------------------------------------------------------------
+netzpolitik.org
+blog.fefe.de
+kraftfuttermischwerk.de
+lawblog.de
+
+# --- French ----------------------------------------------------------------
+lemonde.fr
+liberation.fr
+korben.info
+linuxfr.org
+
+# --- Spanish and Portuguese ------------------------------------------------
+elpais.com
+microsiervos.com
+xataka.com
+tecnoblog.net
+
+# --- Italian ---------------------------------------------------------------
+ilpost.it
+repubblica.it
+butac.it
+
+# --- Nordic, Dutch, Polish -------------------------------------------------
+tweakers.net
+nrc.nl
+niebezpiecznik.pl
+dr.dk
+
+# --- Japanese, Korean, Chinese ---------------------------------------------
+gigazine.net
+itmedia.co.jp
+ruliweb.com
+solidot.org
+
+# --- Non-news page types: standards bodies, NGOs, government ---------------
+eff.org
+creativecommons.org
+w3.org
+mozilla.org
+un.org
+europa.eu

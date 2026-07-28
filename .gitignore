@@ -26,3 +26,9 @@ web-ext-artifacts/
 # Competitor packages for benchmarking, installed on demand
 bench/node_modules/
 bench/package-lock.json
+
+# Our own benchmark corpus. The manifest IS committed — it is the citable
+# artifact, and corpus/cache/ can be rebuilt from it byte-for-byte via
+# scripts/corpus/fetch.ts. The HTML itself is other people's, under no license
+# we control, so it stays local.
+corpus/cache/
