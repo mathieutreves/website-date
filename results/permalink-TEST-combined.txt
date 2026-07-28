@@ -1,0 +1,20 @@
+
+HELD-OUT TEST SPLIT — 90 pages, URL neutralised for every tool
+
+  tool                           exact  wrong  miss |  accuracy   ms/page
+  ------------------------------------------------------------------
+  htmldate (extensive)              74     16     0 |     82.2%     59.79
+> pagedate (standard)               69      6    15 |     76.7%     20.92
+> pagedate (extensive)              69      6    15 |     76.7%     10.62
+  htmldate (fast)                   69      6    15 |     76.7%      9.56
+  metascraper                       60     12    18 |     66.7%     18.40
+  articleDateExtractor              55      9    26 |     61.1%     54.50
+  @extractus/article-extractor      53     11    26 |     58.9%    129.59
+  newspaper4k                       50      5    35 |     55.6%    155.63
+  goose3                            48      2    40 |     53.3%    117.42
+> pagedate (fast)                   44      5    41 |     48.9%     13.11
+  unfluff                           38      2    50 |     42.2%     87.04
+  date_guesser                      34     12    44 |     37.8%    180.77
+
+  Hosts are split by hash, so no site in this table appears in the dev split
+  that pagedate was tuned against.

@@ -1,0 +1,1572 @@
+{"tool": "htmldate (fast)", "file": "7997467e71b1f729", "gold": "2006-01-25", "found": "2006-01-25", "ms": 4.39}
+{"tool": "htmldate (fast)", "file": "921bb454568653cb", "gold": "2006-07-08", "found": "2006-07-08", "ms": 4.07}
+{"tool": "htmldate (fast)", "file": "ae7a8dfaf51e1b4e", "gold": "2009-12-03", "found": "2009-12-03", "ms": 22.56}
+{"tool": "htmldate (fast)", "file": "412a711320a3ef4a", "gold": "2009-12-07", "found": null, "ms": 21.37}
+{"tool": "htmldate (fast)", "file": "983aa839ff9c2787", "gold": "2012-11-01", "found": "2012-11-01", "ms": 14.79}
+{"tool": "htmldate (fast)", "file": "c026b1b4612094e5", "gold": "2012-11-05", "found": "2012-11-05", "ms": 8.75}
+{"tool": "htmldate (fast)", "file": "19b2502e287b6dc1", "gold": "2012-11-07", "found": "2012-08-11", "ms": 9.59}
+{"tool": "htmldate (fast)", "file": "2d2bde2541fd7e20", "gold": "2012-11-09", "found": "2012-11-09", "ms": 1.6}
+{"tool": "htmldate (fast)", "file": "ce9dff8dcbb1778d", "gold": "2012-05-01", "found": "2012-05-01", "ms": 8.2}
+{"tool": "htmldate (fast)", "file": "f5f440b512c5a41c", "gold": "2012-05-02", "found": "2012-05-19", "ms": 8.36}
+{"tool": "htmldate (fast)", "file": "de1a6d0398e2e0d2", "gold": "2012-05-03", "found": "2012-05-03", "ms": 1.42}
+{"tool": "htmldate (fast)", "file": "b3062b03d70cfb15", "gold": "2012-05-06", "found": "2012-05-19", "ms": 7.25}
+{"tool": "htmldate (fast)", "file": "73ca7f92b0ea1f76", "gold": "2015-04-02", "found": "2015-04-02", "ms": 2.28}
+{"tool": "htmldate (fast)", "file": "b2810ae3f813fb0e", "gold": "2015-04-04", "found": "2015-04-04", "ms": 2.53}
+{"tool": "htmldate (fast)", "file": "fecf263fac1d3717", "gold": "2015-04-07", "found": "2015-04-07", "ms": 2.35}
+{"tool": "htmldate (fast)", "file": "600c06fbef7bbd81", "gold": "2015-04-08", "found": "2015-04-08", "ms": 2.22}
+{"tool": "htmldate (fast)", "file": "e2cf06176201ec29", "gold": "2015-10-01", "found": "2015-10-01", "ms": 2.89}
+{"tool": "htmldate (fast)", "file": "6ca06838e959d314", "gold": "2015-10-04", "found": "2015-10-04", "ms": 3.07}
+{"tool": "htmldate (fast)", "file": "13a64abb1d08c353", "gold": "2015-10-06", "found": "2015-10-06", "ms": 2.99}
+{"tool": "htmldate (fast)", "file": "96dffd4bdd83ddc8", "gold": "2015-10-07", "found": "2015-10-07", "ms": 3.0}
+{"tool": "htmldate (fast)", "file": "532ad6cff07d04fe", "gold": "2018-09-04", "found": "2018-09-04", "ms": 1.02}
+{"tool": "htmldate (fast)", "file": "62e7350984c52823", "gold": "2018-09-05", "found": "2018-09-05", "ms": 7.19}
+{"tool": "htmldate (fast)", "file": "b870e1b6115012ff", "gold": "2018-09-06", "found": "2018-09-06", "ms": 10.95}
+{"tool": "htmldate (fast)", "file": "c0e97ad2eb32fb72", "gold": "2018-09-07", "found": "2018-09-07", "ms": 0.95}
+{"tool": "htmldate (fast)", "file": "ee98b74a31a6abe8", "gold": "2018-03-02", "found": "2018-03-02", "ms": 3.99}
+{"tool": "htmldate (fast)", "file": "d19ffd7f609207cc", "gold": "2018-03-05", "found": "2018-03-05", "ms": 3.58}
+{"tool": "htmldate (fast)", "file": "e027ef88dc285693", "gold": "2018-03-06", "found": "2018-03-06", "ms": 0.68}
+{"tool": "htmldate (fast)", "file": "7346fcd27c215baf", "gold": "2021-02-01", "found": "2021-02-01", "ms": 1.27}
+{"tool": "htmldate (fast)", "file": "34ac3480b90a3311", "gold": "2021-02-01", "found": "2021-02-01", "ms": 2.63}
+{"tool": "htmldate (fast)", "file": "db0204c1a715e86b", "gold": "2021-02-02", "found": "2021-02-02", "ms": 1.28}
+{"tool": "htmldate (fast)", "file": "b1c421aa265f8b9c", "gold": "2021-02-02", "found": "2021-02-02", "ms": 2.14}
+{"tool": "htmldate (fast)", "file": "05d7434a093868a7", "gold": "2021-08-02", "found": "2021-08-02", "ms": 2.27}
+{"tool": "htmldate (fast)", "file": "a8b39959219f05ba", "gold": "2021-08-03", "found": "2021-08-03", "ms": 2.63}
+{"tool": "htmldate (fast)", "file": "249bda0763b1e1cc", "gold": "2021-08-04", "found": "2021-08-04", "ms": 2.2}
+{"tool": "htmldate (fast)", "file": "d589f2bae33dac67", "gold": "2021-08-04", "found": "2021-08-04", "ms": 1.93}
+{"tool": "htmldate (fast)", "file": "4623c6778a8406db", "gold": "2023-07-03", "found": "2023-07-03", "ms": 4.45}
+{"tool": "htmldate (fast)", "file": "1e9e4ce0ebe9932a", "gold": "2023-07-07", "found": "2023-07-07", "ms": 3.08}
+{"tool": "htmldate (fast)", "file": "af1fd3fd17d79fa4", "gold": "2023-07-11", "found": "2023-07-11", "ms": 2.48}
+{"tool": "htmldate (fast)", "file": "308811e724f533e5", "gold": "2023-07-12", "found": "2023-07-05", "ms": 3.04}
+{"tool": "htmldate (fast)", "file": "e96d496074a0375c", "gold": "2023-01-02", "found": "2023-01-02", "ms": 2.12}
+{"tool": "htmldate (fast)", "file": "7f23a15f44498c3b", "gold": "2023-01-03", "found": "2023-01-03", "ms": 1.95}
+{"tool": "htmldate (fast)", "file": "eb9f3c2469fd062e", "gold": "2023-01-04", "found": "2023-01-04", "ms": 2.23}
+{"tool": "htmldate (fast)", "file": "7dda065e8caa031c", "gold": "2023-01-05", "found": "2023-01-05", "ms": 3.04}
+{"tool": "htmldate (fast)", "file": "0f1a5a72f35630c5", "gold": "2025-12-03", "found": "2025-12-03", "ms": 4.32}
+{"tool": "htmldate (fast)", "file": "ff57bbb0f2922d34", "gold": "2025-12-06", "found": "2025-12-06", "ms": 3.61}
+{"tool": "htmldate (fast)", "file": "d9ca1b42b60911c3", "gold": "2025-12-10", "found": "2025-12-10", "ms": 3.82}
+{"tool": "htmldate (fast)", "file": "5cd072862b0e7828", "gold": "2025-12-15", "found": "2025-12-15", "ms": 3.79}
+{"tool": "htmldate (fast)", "file": "ea7eec478ff95e97", "gold": "2025-06-02", "found": "2025-06-02", "ms": 4.48}
+{"tool": "htmldate (fast)", "file": "1633be77fd01780c", "gold": "2025-06-06", "found": "2025-06-06", "ms": 4.19}
+{"tool": "htmldate (fast)", "file": "3280bf41435a4217", "gold": "2025-06-11", "found": "2025-06-11", "ms": 3.68}
+{"tool": "htmldate (fast)", "file": "11b3869440efe946", "gold": "2025-06-17", "found": "2025-06-17", "ms": 3.16}
+{"tool": "htmldate (fast)", "file": "943ca33c7b32ef14", "gold": "2025-12-03", "found": "2025-12-03", "ms": 1.58}
+{"tool": "htmldate (fast)", "file": "8fe2407952949782", "gold": "2025-12-07", "found": "2025-12-07", "ms": 4.48}
+{"tool": "htmldate (fast)", "file": "5bb72422b3b65e86", "gold": "2025-12-11", "found": "2025-12-11", "ms": 3.25}
+{"tool": "htmldate (fast)", "file": "0fe47caaaa593e99", "gold": "2025-12-15", "found": "2025-12-15", "ms": 1.76}
+{"tool": "htmldate (fast)", "file": "d7d14d23155896d3", "gold": "2025-06-02", "found": "2025-06-02", "ms": 1.59}
+{"tool": "htmldate (fast)", "file": "82acad553f1b81ec", "gold": "2025-06-05", "found": "2025-06-05", "ms": 1.47}
+{"tool": "htmldate (fast)", "file": "44af0135c1374b6d", "gold": "2025-06-08", "found": "2025-06-08", "ms": 1.54}
+{"tool": "htmldate (fast)", "file": "a72d6db71649cc57", "gold": "2025-06-11", "found": "2025-06-11", "ms": 1.72}
+{"tool": "htmldate (fast)", "file": "f78b72f8083ee249", "gold": "2025-12-02", "found": "2025-12-02", "ms": 4.63}
+{"tool": "htmldate (fast)", "file": "a7dac93929193d90", "gold": "2025-12-04", "found": "2025-12-06", "ms": 4.59}
+{"tool": "htmldate (fast)", "file": "e4251bbdb1502e57", "gold": "2025-12-06", "found": "2025-12-06", "ms": 4.44}
+{"tool": "htmldate (fast)", "file": "61760bd2876d0888", "gold": "2025-12-09", "found": "2025-12-09", "ms": 4.65}
+{"tool": "htmldate (fast)", "file": "4284e0bb8f7900be", "gold": "2025-06-01", "found": "2025-06-02", "ms": 4.78}
+{"tool": "htmldate (fast)", "file": "0667fad5bb7f6fff", "gold": "2025-06-03", "found": "2025-06-03", "ms": 5.07}
+{"tool": "htmldate (fast)", "file": "a0e54f7a402effdf", "gold": "2025-06-05", "found": "2025-06-06", "ms": 4.79}
+{"tool": "htmldate (fast)", "file": "31ae9a22d4f1a329", "gold": "2025-06-07", "found": "2025-06-09", "ms": 4.49}
+{"tool": "htmldate (fast)", "file": "f40a4aa9f0d116ce", "gold": "2015-04-03", "found": "2015-04-03", "ms": 4.77}
+{"tool": "htmldate (fast)", "file": "1cedf5235b827818", "gold": "2015-04-10", "found": "2015-04-10", "ms": 14.49}
+{"tool": "htmldate (fast)", "file": "1a0331dd32882e26", "gold": "2015-04-17", "found": "2015-04-17", "ms": 25.31}
+{"tool": "htmldate (fast)", "file": "20d89f2db8ba595a", "gold": "2015-04-24", "found": "2015-04-24", "ms": 7.35}
+{"tool": "htmldate (fast)", "file": "18f3873efda097ba", "gold": "2015-10-29", "found": "2015-10-29", "ms": 4.08}
+{"tool": "htmldate (fast)", "file": "e70f108714318193", "gold": "2018-09-13", "found": "2018-09-13", "ms": 4.02}
+{"tool": "htmldate (fast)", "file": "6b1db47d0bfa7f9a", "gold": "2018-09-25", "found": "2018-09-25", "ms": 1.3}
+{"tool": "htmldate (fast)", "file": "7993ced6e84507cc", "gold": "2018-03-12", "found": "2018-03-12", "ms": 2.62}
+{"tool": "htmldate (fast)", "file": "1c0ad49665b647ae", "gold": "2018-03-29", "found": "2018-03-29", "ms": 4.49}
+{"tool": "htmldate (fast)", "file": "72c5aa0c1992217b", "gold": "2021-02-11", "found": null, "ms": 6.8}
+{"tool": "htmldate (fast)", "file": "1088cc00736e5957", "gold": "2021-02-11", "found": null, "ms": 6.76}
+{"tool": "htmldate (fast)", "file": "e04ab815fc35b181", "gold": "2021-08-03", "found": null, "ms": 7.37}
+{"tool": "htmldate (fast)", "file": "44b932ca6adb9459", "gold": "2023-07-01", "found": "2023-07-01", "ms": 2.22}
+{"tool": "htmldate (fast)", "file": "611513422863491f", "gold": "2023-07-05", "found": "2023-07-05", "ms": 1.7}
+{"tool": "htmldate (fast)", "file": "353648f60c17df92", "gold": "2023-07-13", "found": "2023-07-13", "ms": 2.91}
+{"tool": "htmldate (fast)", "file": "9fb406e3a52ca7b1", "gold": "2023-01-10", "found": null, "ms": 3.89}
+{"tool": "htmldate (fast)", "file": "f7a441e99eb4c59d", "gold": "2025-12-11", "found": null, "ms": 21.78}
+{"tool": "htmldate (fast)", "file": "b4fb129c96e92e9a", "gold": "2025-06-16", "found": "2025-06-16", "ms": 2.25}
+{"tool": "htmldate (fast)", "file": "14c533ced767edb3", "gold": "2025-06-20", "found": "2025-06-20", "ms": 10.95}
+{"tool": "htmldate (fast)", "file": "4731511d2d78ffcc", "gold": "2025-06-26", "found": "2025-06-26", "ms": 6.23}
+{"tool": "htmldate (fast)", "file": "ed2a3adcc6dba343", "gold": "2009-06-02", "found": "2009-06-02", "ms": 5.93}
+{"tool": "htmldate (fast)", "file": "e30fe3d8f2252772", "gold": "2009-06-08", "found": "2009-06-08", "ms": 6.97}
+{"tool": "htmldate (fast)", "file": "43dc944de22ff47d", "gold": "2009-06-13", "found": "2009-06-13", "ms": 14.09}
+{"tool": "htmldate (fast)", "file": "929302b6b9803163", "gold": "2009-06-19", "found": "2009-06-19", "ms": 4.36}
+{"tool": "htmldate (fast)", "file": "c8447c14f52003a5", "gold": "2009-12-02", "found": null, "ms": 135.86}
+{"tool": "htmldate (fast)", "file": "3a2979c15030a3bf", "gold": "2009-12-04", "found": null, "ms": 85.29}
+{"tool": "htmldate (fast)", "file": "ac441cfb09546d43", "gold": "2009-12-07", "found": null, "ms": 127.2}
+{"tool": "htmldate (fast)", "file": "487aeefe7ecb2f9b", "gold": "2009-12-09", "found": null, "ms": 53.05}
+{"tool": "htmldate (fast)", "file": "c2a04b232218faa9", "gold": "2012-11-02", "found": "2012-11-02", "ms": 5.77}
+{"tool": "htmldate (fast)", "file": "359dcb25b8315ed0", "gold": "2012-11-06", "found": "2012-11-06", "ms": 5.97}
+{"tool": "htmldate (fast)", "file": "1be75506181684ea", "gold": "2012-11-09", "found": "2012-11-09", "ms": 4.64}
+{"tool": "htmldate (fast)", "file": "b1f3ca7bf3a18391", "gold": "2012-11-12", "found": "2012-11-12", "ms": 4.78}
+{"tool": "htmldate (fast)", "file": "1ecec6882e917098", "gold": "2012-05-01", "found": "2012-05-01", "ms": 4.75}
+{"tool": "htmldate (fast)", "file": "68249ec3ef106d8e", "gold": "2012-05-03", "found": "2012-05-03", "ms": 4.75}
+{"tool": "htmldate (fast)", "file": "158fe273efde13f1", "gold": "2012-05-06", "found": "2012-05-06", "ms": 5.03}
+{"tool": "htmldate (fast)", "file": "2c4cded46582d8a8", "gold": "2012-05-09", "found": "2012-05-09", "ms": 4.97}
+{"tool": "htmldate (fast)", "file": "32803fed25af4188", "gold": "2015-04-02", "found": null, "ms": 11.91}
+{"tool": "htmldate (fast)", "file": "81c7c9b13b74245d", "gold": "2015-04-06", "found": "2015-04-06", "ms": 3.37}
+{"tool": "htmldate (fast)", "file": "44d2edf37517ff2f", "gold": "2015-04-07", "found": "2015-04-07", "ms": 2.88}
+{"tool": "htmldate (fast)", "file": "ed86cd1b45eab47f", "gold": "2015-04-09", "found": "2015-04-09", "ms": 1.08}
+{"tool": "htmldate (fast)", "file": "7ebbaf8e544020d8", "gold": "2015-10-02", "found": "2015-10-03", "ms": 1.21}
+{"tool": "htmldate (fast)", "file": "690370a863309d9a", "gold": "2015-10-06", "found": "2015-10-06", "ms": 1.09}
+{"tool": "htmldate (fast)", "file": "4ef656b9ede34d8b", "gold": "2015-10-09", "found": "2015-10-09", "ms": 1.0}
+{"tool": "htmldate (fast)", "file": "47951aa17daa094a", "gold": "2015-10-14", "found": "2015-10-14", "ms": 1.1}
+{"tool": "htmldate (fast)", "file": "5ce23edfc3bd8c8c", "gold": "2018-09-06", "found": "2018-09-07", "ms": 1.63}
+{"tool": "htmldate (fast)", "file": "3c9732d482eb4682", "gold": "2018-09-12", "found": "2018-09-12", "ms": 1.71}
+{"tool": "htmldate (fast)", "file": "85faaf2a002ae49e", "gold": "2018-09-18", "found": "2018-09-18", "ms": 2.15}
+{"tool": "htmldate (fast)", "file": "68024e11a9348cef", "gold": "2018-09-21", "found": "2018-09-21", "ms": 1.66}
+{"tool": "htmldate (fast)", "file": "951db20b56986516", "gold": "2018-03-02", "found": "2018-03-02", "ms": 1.32}
+{"tool": "htmldate (fast)", "file": "0328c9d9e6303912", "gold": "2018-03-08", "found": "2018-03-08", "ms": 1.46}
+{"tool": "htmldate (fast)", "file": "254a4930ed4da1a3", "gold": "2018-03-13", "found": "2018-03-13", "ms": 1.28}
+{"tool": "htmldate (fast)", "file": "0370bcaf8a2824f5", "gold": "2018-03-17", "found": "2018-03-17", "ms": 1.36}
+{"tool": "htmldate (fast)", "file": "69ab9b927390c91b", "gold": "2021-02-01", "found": "2021-02-02", "ms": 1.7}
+{"tool": "htmldate (fast)", "file": "518e8fa986083071", "gold": "2021-02-04", "found": "2021-02-03", "ms": 2.1}
+{"tool": "htmldate (fast)", "file": "10ac7a4b178a18d1", "gold": "2021-02-10", "found": "2021-02-10", "ms": 1.27}
+{"tool": "htmldate (fast)", "file": "a234e1e85f793b75", "gold": "2021-02-16", "found": "2021-02-16", "ms": 1.33}
+{"tool": "htmldate (fast)", "file": "57c6edfc17717806", "gold": "2021-08-05", "found": "2021-08-05", "ms": 1.4}
+{"tool": "htmldate (fast)", "file": "3df1aa335d72a593", "gold": "2021-08-10", "found": "2021-08-10", "ms": 1.49}
+{"tool": "htmldate (fast)", "file": "d4c1db0ac4ee0610", "gold": "2021-08-13", "found": "2021-08-13", "ms": 1.36}
+{"tool": "htmldate (fast)", "file": "ea8d6231f91ad3fa", "gold": "2021-08-18", "found": "2021-08-13", "ms": 1.38}
+{"tool": "htmldate (fast)", "file": "eb525d8e0521fafc", "gold": "2023-07-04", "found": "2023-06-29", "ms": 1.68}
+{"tool": "htmldate (fast)", "file": "1781d1adef0ec755", "gold": "2023-07-09", "found": "2023-07-09", "ms": 2.31}
+{"tool": "htmldate (fast)", "file": "717a79cd35850d75", "gold": "2023-07-13", "found": "2023-07-13", "ms": 1.91}
+{"tool": "htmldate (fast)", "file": "adc70b51685c01dd", "gold": "2023-07-20", "found": "2023-07-20", "ms": 1.67}
+{"tool": "htmldate (fast)", "file": "4ed34be7f7cbdd0c", "gold": "2023-01-01", "found": "2022-12-31", "ms": 1.52}
+{"tool": "htmldate (fast)", "file": "38c92beb17e06851", "gold": "2023-01-04", "found": "2023-01-04", "ms": 2.04}
+{"tool": "htmldate (fast)", "file": "1e58817ab9177c4e", "gold": "2023-01-08", "found": "2023-01-08", "ms": 1.5}
+{"tool": "htmldate (fast)", "file": "b295db8ab60dcd2b", "gold": "2023-01-11", "found": "2023-01-11", "ms": 1.52}
+{"tool": "htmldate (fast)", "file": "d3c03abf118cbb27", "gold": "2025-12-05", "found": "2025-12-05", "ms": 1.79}
+{"tool": "htmldate (fast)", "file": "0c8e801e264a10bc", "gold": "2025-12-11", "found": "2025-12-11", "ms": 1.7}
+{"tool": "htmldate (fast)", "file": "1296bc21eca06351", "gold": "2025-12-18", "found": "2025-12-18", "ms": 1.75}
+{"tool": "htmldate (fast)", "file": "0fd6f3222f83cadb", "gold": "2025-12-29", "found": "2025-12-29", "ms": 1.65}
+{"tool": "htmldate (fast)", "file": "08f8061a9590d46c", "gold": "2025-06-03", "found": "2025-06-03", "ms": 1.69}
+{"tool": "htmldate (fast)", "file": "6d4dc6170cdcae34", "gold": "2025-06-10", "found": "2025-06-10", "ms": 1.78}
+{"tool": "htmldate (fast)", "file": "8d4eb9e00082e78c", "gold": "2025-06-19", "found": "2025-06-19", "ms": 1.73}
+{"tool": "htmldate (fast)", "file": "2a26cb67de8b557e", "gold": "2025-06-26", "found": "2025-06-26", "ms": 1.64}
+{"tool": "htmldate (fast)", "file": "935a6ebb00f0b21c", "gold": "2012-11-01", "found": null, "ms": 14.16}
+{"tool": "htmldate (fast)", "file": "40389da72c0b2b21", "gold": "2012-11-04", "found": null, "ms": 14.21}
+{"tool": "htmldate (fast)", "file": "00f0c157962c2153", "gold": "2012-11-07", "found": "2012-11-07", "ms": 5.77}
+{"tool": "htmldate (fast)", "file": "0e3fad747f218abb", "gold": "2012-11-08", "found": null, "ms": 13.89}
+{"tool": "htmldate (fast)", "file": "25b8c3dc4cf3a074", "gold": "2012-05-01", "found": null, "ms": 12.97}
+{"tool": "htmldate (fast)", "file": "5d68bf416d3cdfd9", "gold": "2012-05-03", "found": null, "ms": 13.14}
+{"tool": "htmldate (fast)", "file": "983f7ded339ce062", "gold": "2012-05-07", "found": null, "ms": 13.78}
+{"tool": "htmldate (fast)", "file": "f4a1a18e90cabe3e", "gold": "2015-04-04", "found": "2015-04-04", "ms": 2.08}
+{"tool": "htmldate (fast)", "file": "efcbf968c7235728", "gold": "2015-04-07", "found": "2015-04-07", "ms": 2.08}
+{"tool": "htmldate (fast)", "file": "77e879fdd3e818f1", "gold": "2015-04-10", "found": "2015-04-09", "ms": 3.47}
+{"tool": "htmldate (fast)", "file": "41ebaeb310aac536", "gold": "2015-10-01", "found": "2015-10-02", "ms": 1.31}
+{"tool": "htmldate (fast)", "file": "45884b6318470a7e", "gold": "2015-10-03", "found": "2015-10-03", "ms": 1.51}
+{"tool": "htmldate (fast)", "file": "c2efba2cd06430e9", "gold": "2015-10-06", "found": "2015-10-06", "ms": 1.22}
+{"tool": "htmldate (fast)", "file": "249639ed96df73ce", "gold": "2015-10-08", "found": "2015-10-08", "ms": 1.3}
+{"tool": "htmldate (fast)", "file": "a6905494476620df", "gold": "2021-02-01", "found": "2021-02-01", "ms": 1.6}
+{"tool": "htmldate (fast)", "file": "3d519ccd22117fa2", "gold": "2021-02-03", "found": "2021-02-03", "ms": 1.43}
+{"tool": "htmldate (fast)", "file": "cb3a9c1537fa133f", "gold": "2021-08-10", "found": "2021-08-10", "ms": 3.03}
+{"tool": "htmldate (fast)", "file": "68e1bacf5f28e0ee", "gold": "2021-08-13", "found": "2021-08-13", "ms": 3.48}
+{"tool": "htmldate (fast)", "file": "14cc5f6afc16608d", "gold": "2023-07-01", "found": "2023-06-29", "ms": 1.37}
+{"tool": "htmldate (fast)", "file": "d3eed18c52e94e64", "gold": "2023-07-03", "found": "2023-07-03", "ms": 1.25}
+{"tool": "htmldate (fast)", "file": "e92f8a4d74c25b22", "gold": "2023-07-05", "found": "2023-07-05", "ms": 2.05}
+{"tool": "htmldate (fast)", "file": "bb3124bdca35625a", "gold": "2023-07-06", "found": "2023-07-06", "ms": 1.35}
+{"tool": "htmldate (fast)", "file": "4ec07e16aacf986f", "gold": "2023-01-04", "found": "2023-01-04", "ms": 4.48}
+{"tool": "htmldate (fast)", "file": "794507c38a75bd93", "gold": "2023-01-05", "found": "2023-01-05", "ms": 3.61}
+{"tool": "htmldate (fast)", "file": "f96ca66dad068af6", "gold": "2023-01-07", "found": "2023-01-07", "ms": 3.8}
+{"tool": "htmldate (fast)", "file": "3ba77fc9f39d5ddc", "gold": "2025-12-01", "found": "2025-12-01", "ms": 2.04}
+{"tool": "htmldate (fast)", "file": "59725b0fd7e58b97", "gold": "2025-12-02", "found": "2025-12-02", "ms": 1.81}
+{"tool": "htmldate (fast)", "file": "a8ad8945701edff6", "gold": "2025-12-03", "found": "2025-12-03", "ms": 1.9}
+{"tool": "htmldate (fast)", "file": "a7e6c2e4721ceb24", "gold": "2025-12-04", "found": "2025-12-04", "ms": 2.0}
+{"tool": "htmldate (fast)", "file": "62cc0ca58e8df253", "gold": "2025-06-01", "found": "2025-06-01", "ms": 1.63}
+{"tool": "htmldate (fast)", "file": "0b1b7953a463ee8c", "gold": "2025-06-08", "found": "2025-06-08", "ms": 1.62}
+{"tool": "htmldate (fast)", "file": "13824e35969074d0", "gold": "2018-09-12", "found": "2018-09-12", "ms": 2.01}
+{"tool": "htmldate (fast)", "file": "623bb222d99f21be", "gold": "2018-09-18", "found": "2018-09-18", "ms": 1.89}
+{"tool": "htmldate (fast)", "file": "0aad96e61377ee1e", "gold": "2018-09-28", "found": "2018-09-29", "ms": 1.66}
+{"tool": "htmldate (fast)", "file": "b5ebf16a433dda6e", "gold": "2018-03-12", "found": "2018-03-12", "ms": 1.74}
+{"tool": "htmldate (fast)", "file": "57bd183813bc53c1", "gold": "2018-03-21", "found": "2018-03-21", "ms": 1.96}
+{"tool": "htmldate (fast)", "file": "f6b08127da656854", "gold": "2018-03-28", "found": "2018-03-28", "ms": 1.92}
+{"tool": "htmldate (fast)", "file": "9a4f8b3ee56fa6e7", "gold": "2021-02-03", "found": "2021-02-03", "ms": 1.97}
+{"tool": "htmldate (fast)", "file": "d27fbcea64da79e6", "gold": "2021-02-10", "found": "2021-02-10", "ms": 1.96}
+{"tool": "htmldate (fast)", "file": "e6c185e058db9b56", "gold": "2021-02-12", "found": "2021-02-12", "ms": 2.91}
+{"tool": "htmldate (fast)", "file": "f06290212f39874a", "gold": "2021-02-24", "found": "2021-02-24", "ms": 2.0}
+{"tool": "htmldate (fast)", "file": "78ebcf1e243458a7", "gold": "2021-08-12", "found": "2021-08-12", "ms": 1.86}
+{"tool": "htmldate (fast)", "file": "194e81310fd89352", "gold": "2021-08-20", "found": "2021-08-19", "ms": 2.14}
+{"tool": "htmldate (fast)", "file": "9d3451463fef893c", "gold": "2021-08-30", "found": "2021-08-30", "ms": 2.99}
+{"tool": "htmldate (fast)", "file": "6af3e1bb6714a694", "gold": "2021-08-31", "found": "2021-08-31", "ms": 3.0}
+{"tool": "htmldate (fast)", "file": "8741943b3467b955", "gold": "2023-07-01", "found": "2023-07-01", "ms": 2.26}
+{"tool": "htmldate (fast)", "file": "8c7031cec127ae3b", "gold": "2023-07-05", "found": "2023-07-05", "ms": 2.04}
+{"tool": "htmldate (fast)", "file": "8c23ce5be8db2910", "gold": "2023-07-13", "found": "2023-07-13", "ms": 1.8}
+{"tool": "htmldate (fast)", "file": "a2a5d29c112b1461", "gold": "2023-07-20", "found": "2023-07-21", "ms": 2.24}
+{"tool": "htmldate (fast)", "file": "23e9cc3a39545e95", "gold": "2023-01-06", "found": "2023-01-06", "ms": 1.99}
+{"tool": "htmldate (fast)", "file": "823414c1c8b418fe", "gold": "2023-01-12", "found": "2023-01-12", "ms": 2.07}
+{"tool": "htmldate (fast)", "file": "a91466a992d25ddb", "gold": "2023-01-17", "found": "2023-01-17", "ms": 1.75}
+{"tool": "htmldate (fast)", "file": "d18ae7d38d014856", "gold": "2023-01-20", "found": "2023-01-20", "ms": 1.74}
+{"tool": "htmldate (fast)", "file": "ade9b8685c16f1af", "gold": "2025-12-10", "found": "2025-12-10", "ms": 1.36}
+{"tool": "htmldate (fast)", "file": "a158a00f53f22043", "gold": "2025-12-12", "found": "2025-12-12", "ms": 1.19}
+{"tool": "htmldate (fast)", "file": "c509cdfcdf44fefe", "gold": "2025-12-15", "found": "2025-12-15", "ms": 1.21}
+{"tool": "htmldate (fast)", "file": "3e62b45ebe7539ab", "gold": "2025-12-19", "found": "2025-12-19", "ms": 1.46}
+{"tool": "htmldate (fast)", "file": "5cbd8b5c049f0fa5", "gold": "2025-06-25", "found": "2025-06-25", "ms": 1.2}
+{"tool": "htmldate (fast)", "file": "ef4de420b3e9259b", "gold": "2026-07-28", "found": "2026-07-28", "ms": 1.54}
+{"tool": "htmldate (fast)", "file": "6029c006928506a6", "gold": "2026-07-27", "found": "2026-07-27", "ms": 1.5}
+{"tool": "htmldate (fast)", "file": "e5295cc3d40541a7", "gold": "2026-07-24", "found": "2026-07-24", "ms": 1.5}
+{"tool": "htmldate (fast)", "file": "43044cc70d1d4b10", "gold": "2026-07-24", "found": "2026-07-24", "ms": 1.66}
+{"tool": "htmldate (fast)", "file": "dce866d7f1ce7ced", "gold": "2026-07-23", "found": "2026-07-23", "ms": 1.44}
+{"tool": "htmldate (fast)", "file": "bf75dfbcb61a7550", "gold": "2026-07-22", "found": "2026-07-22", "ms": 1.64}
+{"tool": "htmldate (fast)", "file": "6db77ed6ec94d371", "gold": "2018-09-08", "found": "2018-09-09", "ms": 2.15}
+{"tool": "htmldate (fast)", "file": "f3439870a2fad578", "gold": "2018-09-15", "found": "2018-09-16", "ms": 4.25}
+{"tool": "htmldate (fast)", "file": "94a01354eba25c7c", "gold": "2018-09-22", "found": "2018-09-22", "ms": 4.04}
+{"tool": "htmldate (fast)", "file": "8bd509cf109683df", "gold": "2018-03-03", "found": "2018-03-03", "ms": 3.7}
+{"tool": "htmldate (fast)", "file": "90b06c68a48dcf84", "gold": "2018-03-09", "found": "2018-03-09", "ms": 1.74}
+{"tool": "htmldate (fast)", "file": "85b692707e800b1f", "gold": "2018-03-14", "found": "2018-03-15", "ms": 1.86}
+{"tool": "htmldate (fast)", "file": "c97513a92d25a961", "gold": "2015-04-14", "found": "2015-04-14", "ms": 1.42}
+{"tool": "htmldate (fast)", "file": "33fadade9e811dd8", "gold": "2015-10-31", "found": "2015-10-31", "ms": 2.26}
+{"tool": "htmldate (fast)", "file": "ae9cd1fc7e1eec9b", "gold": "2018-09-03", "found": "2018-09-03", "ms": 4.01}
+{"tool": "htmldate (fast)", "file": "9ccd515fc58da393", "gold": "2018-09-22", "found": "2018-09-22", "ms": 1.74}
+{"tool": "htmldate (fast)", "file": "eaf7c86f914d96fa", "gold": "2018-09-30", "found": "2018-09-30", "ms": 3.02}
+{"tool": "htmldate (fast)", "file": "0e110232bc77191e", "gold": "2018-03-05", "found": "2018-03-05", "ms": 2.41}
+{"tool": "htmldate (fast)", "file": "a17abadb8b65bfc4", "gold": "2018-03-26", "found": "2018-03-26", "ms": 1.97}
+{"tool": "htmldate (fast)", "file": "b30933bd0f259f2d", "gold": "2018-03-31", "found": "2018-03-31", "ms": 3.76}
+{"tool": "htmldate (fast)", "file": "ced87e9e767878fa", "gold": "2021-02-02", "found": "2021-02-02", "ms": 1.91}
+{"tool": "htmldate (fast)", "file": "d4b9226693aefd1c", "gold": "2021-02-04", "found": "2021-02-04", "ms": 1.9}
+{"tool": "htmldate (fast)", "file": "031aafe8166e0790", "gold": "2021-02-10", "found": "2021-02-10", "ms": 1.71}
+{"tool": "htmldate (fast)", "file": "f0e4e96a64d5810e", "gold": "2023-07-08", "found": "2023-07-08", "ms": 1.82}
+{"tool": "htmldate (fast)", "file": "ee67c4f0147c3468", "gold": "2023-07-10", "found": "2023-07-10", "ms": 2.29}
+{"tool": "htmldate (fast)", "file": "51b3d6151bafbc36", "gold": "2023-07-28", "found": "2023-07-28", "ms": 3.11}
+{"tool": "htmldate (fast)", "file": "219d5867ea4e3386", "gold": "2023-01-10", "found": "2023-01-10", "ms": 3.4}
+{"tool": "htmldate (fast)", "file": "b99cc31c6acdbfc3", "gold": "2023-01-13", "found": "2023-01-13", "ms": 3.62}
+{"tool": "htmldate (fast)", "file": "90cb6264603271ba", "gold": "2023-01-18", "found": "2023-01-18", "ms": 4.23}
+{"tool": "htmldate (fast)", "file": "0926977dac85ae5e", "gold": "2025-06-10", "found": "2025-06-10", "ms": 3.43}
+{"tool": "htmldate (fast)", "file": "b15e4d8cd6271cc0", "gold": "2009-06-15", "found": null, "ms": 2.94}
+{"tool": "htmldate (fast)", "file": "2328702eea23a596", "gold": "2009-06-23", "found": null, "ms": 2.59}
+{"tool": "htmldate (fast)", "file": "c36d0cb038d857ec", "gold": "2009-12-29", "found": null, "ms": 2.6}
+{"tool": "htmldate (fast)", "file": "64cac4363fafa44f", "gold": "2012-11-05", "found": null, "ms": 3.11}
+{"tool": "htmldate (fast)", "file": "8211e4925e36699f", "gold": "2012-11-27", "found": null, "ms": 2.95}
+{"tool": "htmldate (fast)", "file": "746d21921d1d2c5c", "gold": "2015-04-07", "found": null, "ms": 3.01}
+{"tool": "htmldate (fast)", "file": "28e37887014d5a65", "gold": "2015-04-18", "found": null, "ms": 2.94}
+{"tool": "htmldate (fast)", "file": "7569a8c5de54ea73", "gold": "2015-04-28", "found": null, "ms": 3.58}
+{"tool": "htmldate (fast)", "file": "da67c8b1fa061a85", "gold": "2015-10-04", "found": null, "ms": 3.32}
+{"tool": "htmldate (fast)", "file": "7958733d76409d80", "gold": "2015-10-13", "found": null, "ms": 3.09}
+{"tool": "htmldate (fast)", "file": "8075e1922d33e914", "gold": "2015-10-24", "found": null, "ms": 3.16}
+{"tool": "htmldate (fast)", "file": "944c55bcecf80019", "gold": "2018-09-21", "found": null, "ms": 4.34}
+{"tool": "htmldate (fast)", "file": "b1332d84f2c1e55f", "gold": "2018-09-28", "found": null, "ms": 4.31}
+{"tool": "htmldate (fast)", "file": "3a4fdf3ffe026512", "gold": "2018-03-27", "found": null, "ms": 3.51}
+{"tool": "htmldate (fast)", "file": "ad82957e50931a68", "gold": "2021-02-02", "found": null, "ms": 4.06}
+{"tool": "htmldate (fast)", "file": "ec2260dfcdd9e057", "gold": "2021-02-12", "found": null, "ms": 3.53}
+{"tool": "htmldate (fast)", "file": "59db525f0adae67b", "gold": "2021-02-19", "found": null, "ms": 3.57}
+{"tool": "htmldate (fast)", "file": "27fbee71f11db470", "gold": "2021-08-09", "found": null, "ms": 4.3}
+{"tool": "htmldate (fast)", "file": "f9f69c8f5cbc9069", "gold": "2021-08-13", "found": null, "ms": 3.95}
+{"tool": "htmldate (fast)", "file": "cb5af453d9d8d5db", "gold": "2021-08-29", "found": null, "ms": 3.64}
+{"tool": "htmldate (fast)", "file": "0bf275b9fb1b3b71", "gold": "2023-07-06", "found": null, "ms": 6.16}
+{"tool": "htmldate (fast)", "file": "6967a7b06af4cbaf", "gold": "2023-07-16", "found": null, "ms": 6.02}
+{"tool": "htmldate (fast)", "file": "173ec36ab9fa6675", "gold": "2023-01-01", "found": null, "ms": 5.08}
+{"tool": "htmldate (fast)", "file": "e392a99d9bbd906e", "gold": "2023-01-13", "found": null, "ms": 4.43}
+{"tool": "htmldate (fast)", "file": "1b045bc2f15d95ae", "gold": "2023-01-22", "found": null, "ms": 4.98}
+{"tool": "htmldate (fast)", "file": "36f23adc20402ddd", "gold": "2025-12-08", "found": null, "ms": 7.0}
+{"tool": "htmldate (fast)", "file": "f0e333ab0da88511", "gold": "2025-12-15", "found": null, "ms": 7.89}
+{"tool": "htmldate (fast)", "file": "e3a50038700658c7", "gold": "2025-12-27", "found": null, "ms": 6.94}
+{"tool": "htmldate (fast)", "file": "e343bff5377f96c5", "gold": "2025-06-04", "found": null, "ms": 7.6}
+{"tool": "htmldate (fast)", "file": "59dcba3d2dd2461d", "gold": "2025-06-09", "found": null, "ms": 5.53}
+{"tool": "htmldate (fast)", "file": "2a57b50a2e5a78d1", "gold": "2025-06-22", "found": null, "ms": 5.3}
+{"tool": "htmldate (extensive)", "file": "7997467e71b1f729", "gold": "2006-01-25", "found": "2006-01-25", "ms": 8.69}
+{"tool": "htmldate (extensive)", "file": "921bb454568653cb", "gold": "2006-07-08", "found": "2006-07-08", "ms": 8.27}
+{"tool": "htmldate (extensive)", "file": "ae7a8dfaf51e1b4e", "gold": "2009-12-03", "found": "2009-12-03", "ms": 28.55}
+{"tool": "htmldate (extensive)", "file": "412a711320a3ef4a", "gold": "2009-12-07", "found": "2009-12-07", "ms": 10.78}
+{"tool": "htmldate (extensive)", "file": "983aa839ff9c2787", "gold": "2012-11-01", "found": "2012-11-01", "ms": 22.45}
+{"tool": "htmldate (extensive)", "file": "c026b1b4612094e5", "gold": "2012-11-05", "found": "2012-11-05", "ms": 19.24}
+{"tool": "htmldate (extensive)", "file": "19b2502e287b6dc1", "gold": "2012-11-07", "found": "2012-08-11", "ms": 18.58}
+{"tool": "htmldate (extensive)", "file": "2d2bde2541fd7e20", "gold": "2012-11-09", "found": "2012-11-09", "ms": 1.73}
+{"tool": "htmldate (extensive)", "file": "ce9dff8dcbb1778d", "gold": "2012-05-01", "found": "2012-05-01", "ms": 14.22}
+{"tool": "htmldate (extensive)", "file": "f5f440b512c5a41c", "gold": "2012-05-02", "found": "2012-05-19", "ms": 14.27}
+{"tool": "htmldate (extensive)", "file": "de1a6d0398e2e0d2", "gold": "2012-05-03", "found": "2012-05-03", "ms": 1.52}
+{"tool": "htmldate (extensive)", "file": "b3062b03d70cfb15", "gold": "2012-05-06", "found": "2012-05-19", "ms": 10.56}
+{"tool": "htmldate (extensive)", "file": "73ca7f92b0ea1f76", "gold": "2015-04-02", "found": "2015-04-02", "ms": 2.45}
+{"tool": "htmldate (extensive)", "file": "b2810ae3f813fb0e", "gold": "2015-04-04", "found": "2015-04-04", "ms": 2.61}
+{"tool": "htmldate (extensive)", "file": "fecf263fac1d3717", "gold": "2015-04-07", "found": "2015-04-07", "ms": 2.54}
+{"tool": "htmldate (extensive)", "file": "600c06fbef7bbd81", "gold": "2015-04-08", "found": "2015-04-08", "ms": 3.7}
+{"tool": "htmldate (extensive)", "file": "e2cf06176201ec29", "gold": "2015-10-01", "found": "2015-10-01", "ms": 5.31}
+{"tool": "htmldate (extensive)", "file": "6ca06838e959d314", "gold": "2015-10-04", "found": "2015-10-04", "ms": 3.77}
+{"tool": "htmldate (extensive)", "file": "13a64abb1d08c353", "gold": "2015-10-06", "found": "2015-10-06", "ms": 3.23}
+{"tool": "htmldate (extensive)", "file": "96dffd4bdd83ddc8", "gold": "2015-10-07", "found": "2015-10-07", "ms": 3.07}
+{"tool": "htmldate (extensive)", "file": "532ad6cff07d04fe", "gold": "2018-09-04", "found": "2018-09-04", "ms": 1.06}
+{"tool": "htmldate (extensive)", "file": "62e7350984c52823", "gold": "2018-09-05", "found": "2018-09-05", "ms": 6.5}
+{"tool": "htmldate (extensive)", "file": "b870e1b6115012ff", "gold": "2018-09-06", "found": "2018-09-06", "ms": 6.89}
+{"tool": "htmldate (extensive)", "file": "c0e97ad2eb32fb72", "gold": "2018-09-07", "found": "2018-09-07", "ms": 0.96}
+{"tool": "htmldate (extensive)", "file": "ee98b74a31a6abe8", "gold": "2018-03-02", "found": "2018-03-02", "ms": 4.32}
+{"tool": "htmldate (extensive)", "file": "d19ffd7f609207cc", "gold": "2018-03-05", "found": "2018-03-05", "ms": 3.6}
+{"tool": "htmldate (extensive)", "file": "e027ef88dc285693", "gold": "2018-03-06", "found": "2018-03-06", "ms": 0.81}
+{"tool": "htmldate (extensive)", "file": "7346fcd27c215baf", "gold": "2021-02-01", "found": "2021-02-01", "ms": 1.39}
+{"tool": "htmldate (extensive)", "file": "34ac3480b90a3311", "gold": "2021-02-01", "found": "2021-02-01", "ms": 2.41}
+{"tool": "htmldate (extensive)", "file": "db0204c1a715e86b", "gold": "2021-02-02", "found": "2021-02-02", "ms": 1.23}
+{"tool": "htmldate (extensive)", "file": "b1c421aa265f8b9c", "gold": "2021-02-02", "found": "2021-02-02", "ms": 2.13}
+{"tool": "htmldate (extensive)", "file": "05d7434a093868a7", "gold": "2021-08-02", "found": "2021-08-02", "ms": 2.29}
+{"tool": "htmldate (extensive)", "file": "a8b39959219f05ba", "gold": "2021-08-03", "found": "2021-08-03", "ms": 3.06}
+{"tool": "htmldate (extensive)", "file": "249bda0763b1e1cc", "gold": "2021-08-04", "found": "2021-08-04", "ms": 1.9}
+{"tool": "htmldate (extensive)", "file": "d589f2bae33dac67", "gold": "2021-08-04", "found": "2021-08-04", "ms": 1.88}
+{"tool": "htmldate (extensive)", "file": "4623c6778a8406db", "gold": "2023-07-03", "found": "2023-07-03", "ms": 4.99}
+{"tool": "htmldate (extensive)", "file": "1e9e4ce0ebe9932a", "gold": "2023-07-07", "found": "2023-07-07", "ms": 2.91}
+{"tool": "htmldate (extensive)", "file": "af1fd3fd17d79fa4", "gold": "2023-07-11", "found": "2023-07-11", "ms": 2.22}
+{"tool": "htmldate (extensive)", "file": "308811e724f533e5", "gold": "2023-07-12", "found": "2023-07-05", "ms": 2.99}
+{"tool": "htmldate (extensive)", "file": "e96d496074a0375c", "gold": "2023-01-02", "found": "2023-01-02", "ms": 2.08}
+{"tool": "htmldate (extensive)", "file": "7f23a15f44498c3b", "gold": "2023-01-03", "found": "2023-01-03", "ms": 1.88}
+{"tool": "htmldate (extensive)", "file": "eb9f3c2469fd062e", "gold": "2023-01-04", "found": "2023-01-04", "ms": 2.09}
+{"tool": "htmldate (extensive)", "file": "7dda065e8caa031c", "gold": "2023-01-05", "found": "2023-01-05", "ms": 2.76}
+{"tool": "htmldate (extensive)", "file": "0f1a5a72f35630c5", "gold": "2025-12-03", "found": "2025-12-03", "ms": 4.36}
+{"tool": "htmldate (extensive)", "file": "ff57bbb0f2922d34", "gold": "2025-12-06", "found": "2025-12-06", "ms": 3.74}
+{"tool": "htmldate (extensive)", "file": "d9ca1b42b60911c3", "gold": "2025-12-10", "found": "2025-12-10", "ms": 3.65}
+{"tool": "htmldate (extensive)", "file": "5cd072862b0e7828", "gold": "2025-12-15", "found": "2025-12-15", "ms": 3.63}
+{"tool": "htmldate (extensive)", "file": "ea7eec478ff95e97", "gold": "2025-06-02", "found": "2025-06-02", "ms": 4.08}
+{"tool": "htmldate (extensive)", "file": "1633be77fd01780c", "gold": "2025-06-06", "found": "2025-06-06", "ms": 4.19}
+{"tool": "htmldate (extensive)", "file": "3280bf41435a4217", "gold": "2025-06-11", "found": "2025-06-11", "ms": 3.72}
+{"tool": "htmldate (extensive)", "file": "11b3869440efe946", "gold": "2025-06-17", "found": "2025-06-17", "ms": 3.25}
+{"tool": "htmldate (extensive)", "file": "943ca33c7b32ef14", "gold": "2025-12-03", "found": "2025-12-03", "ms": 1.45}
+{"tool": "htmldate (extensive)", "file": "8fe2407952949782", "gold": "2025-12-07", "found": "2025-12-07", "ms": 2.88}
+{"tool": "htmldate (extensive)", "file": "5bb72422b3b65e86", "gold": "2025-12-11", "found": "2025-12-11", "ms": 2.98}
+{"tool": "htmldate (extensive)", "file": "0fe47caaaa593e99", "gold": "2025-12-15", "found": "2025-12-15", "ms": 1.65}
+{"tool": "htmldate (extensive)", "file": "d7d14d23155896d3", "gold": "2025-06-02", "found": "2025-06-02", "ms": 1.49}
+{"tool": "htmldate (extensive)", "file": "82acad553f1b81ec", "gold": "2025-06-05", "found": "2025-06-05", "ms": 1.48}
+{"tool": "htmldate (extensive)", "file": "44af0135c1374b6d", "gold": "2025-06-08", "found": "2025-06-08", "ms": 1.47}
+{"tool": "htmldate (extensive)", "file": "a72d6db71649cc57", "gold": "2025-06-11", "found": "2025-06-11", "ms": 1.82}
+{"tool": "htmldate (extensive)", "file": "f78b72f8083ee249", "gold": "2025-12-02", "found": "2025-12-02", "ms": 4.54}
+{"tool": "htmldate (extensive)", "file": "a7dac93929193d90", "gold": "2025-12-04", "found": "2025-12-06", "ms": 4.5}
+{"tool": "htmldate (extensive)", "file": "e4251bbdb1502e57", "gold": "2025-12-06", "found": "2025-12-06", "ms": 4.57}
+{"tool": "htmldate (extensive)", "file": "61760bd2876d0888", "gold": "2025-12-09", "found": "2025-12-09", "ms": 4.56}
+{"tool": "htmldate (extensive)", "file": "4284e0bb8f7900be", "gold": "2025-06-01", "found": "2025-06-02", "ms": 4.83}
+{"tool": "htmldate (extensive)", "file": "0667fad5bb7f6fff", "gold": "2025-06-03", "found": "2025-06-03", "ms": 4.77}
+{"tool": "htmldate (extensive)", "file": "a0e54f7a402effdf", "gold": "2025-06-05", "found": "2025-06-06", "ms": 4.46}
+{"tool": "htmldate (extensive)", "file": "31ae9a22d4f1a329", "gold": "2025-06-07", "found": "2025-06-09", "ms": 4.79}
+{"tool": "htmldate (extensive)", "file": "f40a4aa9f0d116ce", "gold": "2015-04-03", "found": "2015-04-03", "ms": 6.98}
+{"tool": "htmldate (extensive)", "file": "1cedf5235b827818", "gold": "2015-04-10", "found": "2015-04-10", "ms": 15.9}
+{"tool": "htmldate (extensive)", "file": "1a0331dd32882e26", "gold": "2015-04-17", "found": "2015-04-17", "ms": 26.83}
+{"tool": "htmldate (extensive)", "file": "20d89f2db8ba595a", "gold": "2015-04-24", "found": "2015-04-24", "ms": 8.07}
+{"tool": "htmldate (extensive)", "file": "18f3873efda097ba", "gold": "2015-10-29", "found": "2015-10-29", "ms": 4.3}
+{"tool": "htmldate (extensive)", "file": "e70f108714318193", "gold": "2018-09-13", "found": "2018-09-13", "ms": 4.83}
+{"tool": "htmldate (extensive)", "file": "6b1db47d0bfa7f9a", "gold": "2018-09-25", "found": "2018-09-25", "ms": 1.65}
+{"tool": "htmldate (extensive)", "file": "7993ced6e84507cc", "gold": "2018-03-12", "found": "2018-03-12", "ms": 3.94}
+{"tool": "htmldate (extensive)", "file": "1c0ad49665b647ae", "gold": "2018-03-29", "found": "2018-03-29", "ms": 5.25}
+{"tool": "htmldate (extensive)", "file": "72c5aa0c1992217b", "gold": "2021-02-11", "found": "2021-02-11", "ms": 73.24}
+{"tool": "htmldate (extensive)", "file": "1088cc00736e5957", "gold": "2021-02-11", "found": "2021-02-11", "ms": 4.46}
+{"tool": "htmldate (extensive)", "file": "e04ab815fc35b181", "gold": "2021-08-03", "found": "2021-08-03", "ms": 6.73}
+{"tool": "htmldate (extensive)", "file": "44b932ca6adb9459", "gold": "2023-07-01", "found": "2023-07-01", "ms": 2.99}
+{"tool": "htmldate (extensive)", "file": "611513422863491f", "gold": "2023-07-05", "found": "2023-07-05", "ms": 2.39}
+{"tool": "htmldate (extensive)", "file": "353648f60c17df92", "gold": "2023-07-13", "found": "2023-07-13", "ms": 4.74}
+{"tool": "htmldate (extensive)", "file": "9fb406e3a52ca7b1", "gold": "2023-01-10", "found": "2023-01-10", "ms": 5.08}
+{"tool": "htmldate (extensive)", "file": "f7a441e99eb4c59d", "gold": "2025-12-11", "found": "2025-12-11", "ms": 13.75}
+{"tool": "htmldate (extensive)", "file": "b4fb129c96e92e9a", "gold": "2025-06-16", "found": "2025-06-16", "ms": 3.79}
+{"tool": "htmldate (extensive)", "file": "14c533ced767edb3", "gold": "2025-06-20", "found": "2025-06-20", "ms": 17.15}
+{"tool": "htmldate (extensive)", "file": "4731511d2d78ffcc", "gold": "2025-06-26", "found": "2025-06-26", "ms": 8.07}
+{"tool": "htmldate (extensive)", "file": "ed2a3adcc6dba343", "gold": "2009-06-02", "found": "2009-06-02", "ms": 7.06}
+{"tool": "htmldate (extensive)", "file": "e30fe3d8f2252772", "gold": "2009-06-08", "found": "2009-06-08", "ms": 9.7}
+{"tool": "htmldate (extensive)", "file": "43dc944de22ff47d", "gold": "2009-06-13", "found": "2009-06-13", "ms": 17.35}
+{"tool": "htmldate (extensive)", "file": "929302b6b9803163", "gold": "2009-06-19", "found": "2009-06-19", "ms": 5.84}
+{"tool": "htmldate (extensive)", "file": "c8447c14f52003a5", "gold": "2009-12-02", "found": "2009-12-01", "ms": 5847.87}
+{"tool": "htmldate (extensive)", "file": "3a2979c15030a3bf", "gold": "2009-12-04", "found": "2009-11-01", "ms": 1572.7}
+{"tool": "htmldate (extensive)", "file": "ac441cfb09546d43", "gold": "2009-12-07", "found": "2009-01-01", "ms": 2861.85}
+{"tool": "htmldate (extensive)", "file": "487aeefe7ecb2f9b", "gold": "2009-12-09", "found": "2009-01-01", "ms": 1011.67}
+{"tool": "htmldate (extensive)", "file": "c2a04b232218faa9", "gold": "2012-11-02", "found": "2012-11-02", "ms": 59.38}
+{"tool": "htmldate (extensive)", "file": "359dcb25b8315ed0", "gold": "2012-11-06", "found": "2012-11-06", "ms": 36.74}
+{"tool": "htmldate (extensive)", "file": "1be75506181684ea", "gold": "2012-11-09", "found": "2012-11-09", "ms": 33.95}
+{"tool": "htmldate (extensive)", "file": "b1f3ca7bf3a18391", "gold": "2012-11-12", "found": "2012-11-12", "ms": 36.85}
+{"tool": "htmldate (extensive)", "file": "1ecec6882e917098", "gold": "2012-05-01", "found": "2012-05-01", "ms": 34.54}
+{"tool": "htmldate (extensive)", "file": "68249ec3ef106d8e", "gold": "2012-05-03", "found": "2012-05-03", "ms": 36.25}
+{"tool": "htmldate (extensive)", "file": "158fe273efde13f1", "gold": "2012-05-06", "found": "2012-05-06", "ms": 37.29}
+{"tool": "htmldate (extensive)", "file": "2c4cded46582d8a8", "gold": "2012-05-09", "found": "2012-05-09", "ms": 37.03}
+{"tool": "htmldate (extensive)", "file": "32803fed25af4188", "gold": "2015-04-02", "found": "2015-04-02", "ms": 14.78}
+{"tool": "htmldate (extensive)", "file": "81c7c9b13b74245d", "gold": "2015-04-06", "found": "2015-04-06", "ms": 5.43}
+{"tool": "htmldate (extensive)", "file": "44d2edf37517ff2f", "gold": "2015-04-07", "found": "2015-04-07", "ms": 4.93}
+{"tool": "htmldate (extensive)", "file": "ed86cd1b45eab47f", "gold": "2015-04-09", "found": "2015-04-09", "ms": 1.3}
+{"tool": "htmldate (extensive)", "file": "7ebbaf8e544020d8", "gold": "2015-10-02", "found": "2015-10-03", "ms": 1.22}
+{"tool": "htmldate (extensive)", "file": "690370a863309d9a", "gold": "2015-10-06", "found": "2015-10-06", "ms": 1.12}
+{"tool": "htmldate (extensive)", "file": "4ef656b9ede34d8b", "gold": "2015-10-09", "found": "2015-10-09", "ms": 1.05}
+{"tool": "htmldate (extensive)", "file": "47951aa17daa094a", "gold": "2015-10-14", "found": "2015-10-14", "ms": 1.38}
+{"tool": "htmldate (extensive)", "file": "5ce23edfc3bd8c8c", "gold": "2018-09-06", "found": "2018-09-07", "ms": 1.66}
+{"tool": "htmldate (extensive)", "file": "3c9732d482eb4682", "gold": "2018-09-12", "found": "2018-09-12", "ms": 1.64}
+{"tool": "htmldate (extensive)", "file": "85faaf2a002ae49e", "gold": "2018-09-18", "found": "2018-09-18", "ms": 1.57}
+{"tool": "htmldate (extensive)", "file": "68024e11a9348cef", "gold": "2018-09-21", "found": "2018-09-21", "ms": 1.57}
+{"tool": "htmldate (extensive)", "file": "951db20b56986516", "gold": "2018-03-02", "found": "2018-03-02", "ms": 1.44}
+{"tool": "htmldate (extensive)", "file": "0328c9d9e6303912", "gold": "2018-03-08", "found": "2018-03-08", "ms": 1.51}
+{"tool": "htmldate (extensive)", "file": "254a4930ed4da1a3", "gold": "2018-03-13", "found": "2018-03-13", "ms": 1.5}
+{"tool": "htmldate (extensive)", "file": "0370bcaf8a2824f5", "gold": "2018-03-17", "found": "2018-03-17", "ms": 1.43}
+{"tool": "htmldate (extensive)", "file": "69ab9b927390c91b", "gold": "2021-02-01", "found": "2021-02-02", "ms": 1.85}
+{"tool": "htmldate (extensive)", "file": "518e8fa986083071", "gold": "2021-02-04", "found": "2021-02-03", "ms": 2.27}
+{"tool": "htmldate (extensive)", "file": "10ac7a4b178a18d1", "gold": "2021-02-10", "found": "2021-02-10", "ms": 1.38}
+{"tool": "htmldate (extensive)", "file": "a234e1e85f793b75", "gold": "2021-02-16", "found": "2021-02-16", "ms": 1.46}
+{"tool": "htmldate (extensive)", "file": "57c6edfc17717806", "gold": "2021-08-05", "found": "2021-08-05", "ms": 1.63}
+{"tool": "htmldate (extensive)", "file": "3df1aa335d72a593", "gold": "2021-08-10", "found": "2021-08-10", "ms": 1.55}
+{"tool": "htmldate (extensive)", "file": "d4c1db0ac4ee0610", "gold": "2021-08-13", "found": "2021-08-13", "ms": 1.45}
+{"tool": "htmldate (extensive)", "file": "ea8d6231f91ad3fa", "gold": "2021-08-18", "found": "2021-08-13", "ms": 1.57}
+{"tool": "htmldate (extensive)", "file": "eb525d8e0521fafc", "gold": "2023-07-04", "found": "2023-06-29", "ms": 1.81}
+{"tool": "htmldate (extensive)", "file": "1781d1adef0ec755", "gold": "2023-07-09", "found": "2023-07-09", "ms": 1.8}
+{"tool": "htmldate (extensive)", "file": "717a79cd35850d75", "gold": "2023-07-13", "found": "2023-07-13", "ms": 1.9}
+{"tool": "htmldate (extensive)", "file": "adc70b51685c01dd", "gold": "2023-07-20", "found": "2023-07-20", "ms": 1.82}
+{"tool": "htmldate (extensive)", "file": "4ed34be7f7cbdd0c", "gold": "2023-01-01", "found": "2022-12-31", "ms": 1.71}
+{"tool": "htmldate (extensive)", "file": "38c92beb17e06851", "gold": "2023-01-04", "found": "2023-01-04", "ms": 1.61}
+{"tool": "htmldate (extensive)", "file": "1e58817ab9177c4e", "gold": "2023-01-08", "found": "2023-01-08", "ms": 1.56}
+{"tool": "htmldate (extensive)", "file": "b295db8ab60dcd2b", "gold": "2023-01-11", "found": "2023-01-11", "ms": 1.71}
+{"tool": "htmldate (extensive)", "file": "d3c03abf118cbb27", "gold": "2025-12-05", "found": "2025-12-05", "ms": 1.88}
+{"tool": "htmldate (extensive)", "file": "0c8e801e264a10bc", "gold": "2025-12-11", "found": "2025-12-11", "ms": 1.82}
+{"tool": "htmldate (extensive)", "file": "1296bc21eca06351", "gold": "2025-12-18", "found": "2025-12-18", "ms": 2.0}
+{"tool": "htmldate (extensive)", "file": "0fd6f3222f83cadb", "gold": "2025-12-29", "found": "2025-12-29", "ms": 1.8}
+{"tool": "htmldate (extensive)", "file": "08f8061a9590d46c", "gold": "2025-06-03", "found": "2025-06-03", "ms": 1.78}
+{"tool": "htmldate (extensive)", "file": "6d4dc6170cdcae34", "gold": "2025-06-10", "found": "2025-06-10", "ms": 1.83}
+{"tool": "htmldate (extensive)", "file": "8d4eb9e00082e78c", "gold": "2025-06-19", "found": "2025-06-19", "ms": 1.86}
+{"tool": "htmldate (extensive)", "file": "2a26cb67de8b557e", "gold": "2025-06-26", "found": "2025-06-26", "ms": 1.86}
+{"tool": "htmldate (extensive)", "file": "935a6ebb00f0b21c", "gold": "2012-11-01", "found": "2012-11-03", "ms": 17.5}
+{"tool": "htmldate (extensive)", "file": "40389da72c0b2b21", "gold": "2012-11-04", "found": "2012-11-08", "ms": 21.65}
+{"tool": "htmldate (extensive)", "file": "00f0c157962c2153", "gold": "2012-11-07", "found": "2012-11-07", "ms": 8.7}
+{"tool": "htmldate (extensive)", "file": "0e3fad747f218abb", "gold": "2012-11-08", "found": "2011-06-01", "ms": 19.87}
+{"tool": "htmldate (extensive)", "file": "25b8c3dc4cf3a074", "gold": "2012-05-01", "found": "2012-05-01", "ms": 21.85}
+{"tool": "htmldate (extensive)", "file": "5d68bf416d3cdfd9", "gold": "2012-05-03", "found": "2012-05-03", "ms": 21.34}
+{"tool": "htmldate (extensive)", "file": "983f7ded339ce062", "gold": "2012-05-07", "found": "2011-04-21", "ms": 18.78}
+{"tool": "htmldate (extensive)", "file": "f4a1a18e90cabe3e", "gold": "2015-04-04", "found": "2015-04-04", "ms": 2.33}
+{"tool": "htmldate (extensive)", "file": "efcbf968c7235728", "gold": "2015-04-07", "found": "2015-04-07", "ms": 1.85}
+{"tool": "htmldate (extensive)", "file": "77e879fdd3e818f1", "gold": "2015-04-10", "found": "2015-04-09", "ms": 3.67}
+{"tool": "htmldate (extensive)", "file": "41ebaeb310aac536", "gold": "2015-10-01", "found": "2015-10-02", "ms": 1.37}
+{"tool": "htmldate (extensive)", "file": "45884b6318470a7e", "gold": "2015-10-03", "found": "2015-10-03", "ms": 1.6}
+{"tool": "htmldate (extensive)", "file": "c2efba2cd06430e9", "gold": "2015-10-06", "found": "2015-10-06", "ms": 1.46}
+{"tool": "htmldate (extensive)", "file": "249639ed96df73ce", "gold": "2015-10-08", "found": "2015-10-08", "ms": 1.48}
+{"tool": "htmldate (extensive)", "file": "a6905494476620df", "gold": "2021-02-01", "found": "2021-02-01", "ms": 1.85}
+{"tool": "htmldate (extensive)", "file": "3d519ccd22117fa2", "gold": "2021-02-03", "found": "2021-02-03", "ms": 1.67}
+{"tool": "htmldate (extensive)", "file": "cb3a9c1537fa133f", "gold": "2021-08-10", "found": "2021-08-10", "ms": 2.79}
+{"tool": "htmldate (extensive)", "file": "68e1bacf5f28e0ee", "gold": "2021-08-13", "found": "2021-08-13", "ms": 3.33}
+{"tool": "htmldate (extensive)", "file": "14cc5f6afc16608d", "gold": "2023-07-01", "found": "2023-06-29", "ms": 1.38}
+{"tool": "htmldate (extensive)", "file": "d3eed18c52e94e64", "gold": "2023-07-03", "found": "2023-07-03", "ms": 1.32}
+{"tool": "htmldate (extensive)", "file": "e92f8a4d74c25b22", "gold": "2023-07-05", "found": "2023-07-05", "ms": 2.41}
+{"tool": "htmldate (extensive)", "file": "bb3124bdca35625a", "gold": "2023-07-06", "found": "2023-07-06", "ms": 1.4}
+{"tool": "htmldate (extensive)", "file": "4ec07e16aacf986f", "gold": "2023-01-04", "found": "2023-01-04", "ms": 4.35}
+{"tool": "htmldate (extensive)", "file": "794507c38a75bd93", "gold": "2023-01-05", "found": "2023-01-05", "ms": 3.27}
+{"tool": "htmldate (extensive)", "file": "f96ca66dad068af6", "gold": "2023-01-07", "found": "2023-01-07", "ms": 3.29}
+{"tool": "htmldate (extensive)", "file": "3ba77fc9f39d5ddc", "gold": "2025-12-01", "found": "2025-12-01", "ms": 1.82}
+{"tool": "htmldate (extensive)", "file": "59725b0fd7e58b97", "gold": "2025-12-02", "found": "2025-12-02", "ms": 2.08}
+{"tool": "htmldate (extensive)", "file": "a8ad8945701edff6", "gold": "2025-12-03", "found": "2025-12-03", "ms": 1.87}
+{"tool": "htmldate (extensive)", "file": "a7e6c2e4721ceb24", "gold": "2025-12-04", "found": "2025-12-04", "ms": 2.14}
+{"tool": "htmldate (extensive)", "file": "62cc0ca58e8df253", "gold": "2025-06-01", "found": "2025-06-01", "ms": 1.66}
+{"tool": "htmldate (extensive)", "file": "0b1b7953a463ee8c", "gold": "2025-06-08", "found": "2025-06-08", "ms": 1.77}
+{"tool": "htmldate (extensive)", "file": "13824e35969074d0", "gold": "2018-09-12", "found": "2018-09-12", "ms": 2.42}
+{"tool": "htmldate (extensive)", "file": "623bb222d99f21be", "gold": "2018-09-18", "found": "2018-09-18", "ms": 2.02}
+{"tool": "htmldate (extensive)", "file": "0aad96e61377ee1e", "gold": "2018-09-28", "found": "2018-09-29", "ms": 1.87}
+{"tool": "htmldate (extensive)", "file": "b5ebf16a433dda6e", "gold": "2018-03-12", "found": "2018-03-12", "ms": 1.82}
+{"tool": "htmldate (extensive)", "file": "57bd183813bc53c1", "gold": "2018-03-21", "found": "2018-03-21", "ms": 2.07}
+{"tool": "htmldate (extensive)", "file": "f6b08127da656854", "gold": "2018-03-28", "found": "2018-03-28", "ms": 1.91}
+{"tool": "htmldate (extensive)", "file": "9a4f8b3ee56fa6e7", "gold": "2021-02-03", "found": "2021-02-03", "ms": 2.15}
+{"tool": "htmldate (extensive)", "file": "d27fbcea64da79e6", "gold": "2021-02-10", "found": "2021-02-10", "ms": 2.16}
+{"tool": "htmldate (extensive)", "file": "e6c185e058db9b56", "gold": "2021-02-12", "found": "2021-02-12", "ms": 3.34}
+{"tool": "htmldate (extensive)", "file": "f06290212f39874a", "gold": "2021-02-24", "found": "2021-02-24", "ms": 2.16}
+{"tool": "htmldate (extensive)", "file": "78ebcf1e243458a7", "gold": "2021-08-12", "found": "2021-08-12", "ms": 2.16}
+{"tool": "htmldate (extensive)", "file": "194e81310fd89352", "gold": "2021-08-20", "found": "2021-08-19", "ms": 2.04}
+{"tool": "htmldate (extensive)", "file": "9d3451463fef893c", "gold": "2021-08-30", "found": "2021-08-30", "ms": 3.18}
+{"tool": "htmldate (extensive)", "file": "6af3e1bb6714a694", "gold": "2021-08-31", "found": "2021-08-31", "ms": 2.87}
+{"tool": "htmldate (extensive)", "file": "8741943b3467b955", "gold": "2023-07-01", "found": "2023-07-01", "ms": 2.14}
+{"tool": "htmldate (extensive)", "file": "8c7031cec127ae3b", "gold": "2023-07-05", "found": "2023-07-05", "ms": 1.99}
+{"tool": "htmldate (extensive)", "file": "8c23ce5be8db2910", "gold": "2023-07-13", "found": "2023-07-13", "ms": 2.03}
+{"tool": "htmldate (extensive)", "file": "a2a5d29c112b1461", "gold": "2023-07-20", "found": "2023-07-21", "ms": 2.08}
+{"tool": "htmldate (extensive)", "file": "23e9cc3a39545e95", "gold": "2023-01-06", "found": "2023-01-06", "ms": 2.03}
+{"tool": "htmldate (extensive)", "file": "823414c1c8b418fe", "gold": "2023-01-12", "found": "2023-01-12", "ms": 1.97}
+{"tool": "htmldate (extensive)", "file": "a91466a992d25ddb", "gold": "2023-01-17", "found": "2023-01-17", "ms": 1.87}
+{"tool": "htmldate (extensive)", "file": "d18ae7d38d014856", "gold": "2023-01-20", "found": "2023-01-20", "ms": 2.0}
+{"tool": "htmldate (extensive)", "file": "ade9b8685c16f1af", "gold": "2025-12-10", "found": "2025-12-10", "ms": 1.34}
+{"tool": "htmldate (extensive)", "file": "a158a00f53f22043", "gold": "2025-12-12", "found": "2025-12-12", "ms": 1.3}
+{"tool": "htmldate (extensive)", "file": "c509cdfcdf44fefe", "gold": "2025-12-15", "found": "2025-12-15", "ms": 1.25}
+{"tool": "htmldate (extensive)", "file": "3e62b45ebe7539ab", "gold": "2025-12-19", "found": "2025-12-19", "ms": 1.48}
+{"tool": "htmldate (extensive)", "file": "5cbd8b5c049f0fa5", "gold": "2025-06-25", "found": "2025-06-25", "ms": 1.22}
+{"tool": "htmldate (extensive)", "file": "ef4de420b3e9259b", "gold": "2026-07-28", "found": "2026-07-28", "ms": 1.75}
+{"tool": "htmldate (extensive)", "file": "6029c006928506a6", "gold": "2026-07-27", "found": "2026-07-27", "ms": 1.56}
+{"tool": "htmldate (extensive)", "file": "e5295cc3d40541a7", "gold": "2026-07-24", "found": "2026-07-24", "ms": 1.61}
+{"tool": "htmldate (extensive)", "file": "43044cc70d1d4b10", "gold": "2026-07-24", "found": "2026-07-24", "ms": 1.76}
+{"tool": "htmldate (extensive)", "file": "dce866d7f1ce7ced", "gold": "2026-07-23", "found": "2026-07-23", "ms": 1.56}
+{"tool": "htmldate (extensive)", "file": "bf75dfbcb61a7550", "gold": "2026-07-22", "found": "2026-07-22", "ms": 1.6}
+{"tool": "htmldate (extensive)", "file": "6db77ed6ec94d371", "gold": "2018-09-08", "found": "2018-09-09", "ms": 2.43}
+{"tool": "htmldate (extensive)", "file": "f3439870a2fad578", "gold": "2018-09-15", "found": "2018-09-16", "ms": 4.24}
+{"tool": "htmldate (extensive)", "file": "94a01354eba25c7c", "gold": "2018-09-22", "found": "2018-09-22", "ms": 3.94}
+{"tool": "htmldate (extensive)", "file": "8bd509cf109683df", "gold": "2018-03-03", "found": "2018-03-03", "ms": 3.73}
+{"tool": "htmldate (extensive)", "file": "90b06c68a48dcf84", "gold": "2018-03-09", "found": "2018-03-09", "ms": 2.02}
+{"tool": "htmldate (extensive)", "file": "85b692707e800b1f", "gold": "2018-03-14", "found": "2018-03-15", "ms": 2.11}
+{"tool": "htmldate (extensive)", "file": "c97513a92d25a961", "gold": "2015-04-14", "found": "2015-04-14", "ms": 2.07}
+{"tool": "htmldate (extensive)", "file": "33fadade9e811dd8", "gold": "2015-10-31", "found": "2015-10-31", "ms": 3.26}
+{"tool": "htmldate (extensive)", "file": "ae9cd1fc7e1eec9b", "gold": "2018-09-03", "found": "2018-09-03", "ms": 3.25}
+{"tool": "htmldate (extensive)", "file": "9ccd515fc58da393", "gold": "2018-09-22", "found": "2018-09-22", "ms": 2.34}
+{"tool": "htmldate (extensive)", "file": "eaf7c86f914d96fa", "gold": "2018-09-30", "found": "2018-09-30", "ms": 3.53}
+{"tool": "htmldate (extensive)", "file": "0e110232bc77191e", "gold": "2018-03-05", "found": "2018-03-05", "ms": 3.12}
+{"tool": "htmldate (extensive)", "file": "a17abadb8b65bfc4", "gold": "2018-03-26", "found": "2018-03-26", "ms": 2.75}
+{"tool": "htmldate (extensive)", "file": "b30933bd0f259f2d", "gold": "2018-03-31", "found": "2018-03-31", "ms": 4.28}
+{"tool": "htmldate (extensive)", "file": "ced87e9e767878fa", "gold": "2021-02-02", "found": "2021-02-02", "ms": 2.57}
+{"tool": "htmldate (extensive)", "file": "d4b9226693aefd1c", "gold": "2021-02-04", "found": "2021-02-04", "ms": 2.82}
+{"tool": "htmldate (extensive)", "file": "031aafe8166e0790", "gold": "2021-02-10", "found": "2021-02-10", "ms": 2.4}
+{"tool": "htmldate (extensive)", "file": "f0e4e96a64d5810e", "gold": "2023-07-08", "found": "2023-07-08", "ms": 2.62}
+{"tool": "htmldate (extensive)", "file": "ee67c4f0147c3468", "gold": "2023-07-10", "found": "2023-07-10", "ms": 3.09}
+{"tool": "htmldate (extensive)", "file": "51b3d6151bafbc36", "gold": "2023-07-28", "found": "2023-07-28", "ms": 4.4}
+{"tool": "htmldate (extensive)", "file": "219d5867ea4e3386", "gold": "2023-01-10", "found": "2023-01-10", "ms": 4.33}
+{"tool": "htmldate (extensive)", "file": "b99cc31c6acdbfc3", "gold": "2023-01-13", "found": "2023-01-13", "ms": 4.97}
+{"tool": "htmldate (extensive)", "file": "90cb6264603271ba", "gold": "2023-01-18", "found": "2023-01-18", "ms": 6.23}
+{"tool": "htmldate (extensive)", "file": "0926977dac85ae5e", "gold": "2025-06-10", "found": "2025-06-10", "ms": 5.65}
+{"tool": "htmldate (extensive)", "file": "b15e4d8cd6271cc0", "gold": "2009-06-15", "found": "2009-06-01", "ms": 30.23}
+{"tool": "htmldate (extensive)", "file": "2328702eea23a596", "gold": "2009-06-23", "found": "2009-06-01", "ms": 5.29}
+{"tool": "htmldate (extensive)", "file": "c36d0cb038d857ec", "gold": "2009-12-29", "found": "2009-12-01", "ms": 30.71}
+{"tool": "htmldate (extensive)", "file": "64cac4363fafa44f", "gold": "2012-11-05", "found": "2012-11-01", "ms": 6.31}
+{"tool": "htmldate (extensive)", "file": "8211e4925e36699f", "gold": "2012-11-27", "found": "2012-11-27", "ms": 10.6}
+{"tool": "htmldate (extensive)", "file": "746d21921d1d2c5c", "gold": "2015-04-07", "found": "2015-04-01", "ms": 6.32}
+{"tool": "htmldate (extensive)", "file": "28e37887014d5a65", "gold": "2015-04-18", "found": "2015-04-18", "ms": 11.33}
+{"tool": "htmldate (extensive)", "file": "7569a8c5de54ea73", "gold": "2015-04-28", "found": "2015-04-28", "ms": 13.06}
+{"tool": "htmldate (extensive)", "file": "da67c8b1fa061a85", "gold": "2015-10-04", "found": "2015-10-04", "ms": 11.39}
+{"tool": "htmldate (extensive)", "file": "7958733d76409d80", "gold": "2015-10-13", "found": "2015-10-13", "ms": 10.2}
+{"tool": "htmldate (extensive)", "file": "8075e1922d33e914", "gold": "2015-10-24", "found": "2015-10-24", "ms": 10.67}
+{"tool": "htmldate (extensive)", "file": "944c55bcecf80019", "gold": "2018-09-21", "found": "2018-09-01", "ms": 6.48}
+{"tool": "htmldate (extensive)", "file": "b1332d84f2c1e55f", "gold": "2018-09-28", "found": "2018-09-01", "ms": 7.42}
+{"tool": "htmldate (extensive)", "file": "3a4fdf3ffe026512", "gold": "2018-03-27", "found": "2018-03-01", "ms": 6.55}
+{"tool": "htmldate (extensive)", "file": "ad82957e50931a68", "gold": "2021-02-02", "found": "2020-09-06", "ms": 5.59}
+{"tool": "htmldate (extensive)", "file": "ec2260dfcdd9e057", "gold": "2021-02-12", "found": "2020-09-06", "ms": 5.1}
+{"tool": "htmldate (extensive)", "file": "59db525f0adae67b", "gold": "2021-02-19", "found": "2020-09-06", "ms": 4.89}
+{"tool": "htmldate (extensive)", "file": "27fbee71f11db470", "gold": "2021-08-09", "found": "2020-09-06", "ms": 5.64}
+{"tool": "htmldate (extensive)", "file": "f9f69c8f5cbc9069", "gold": "2021-08-13", "found": "2020-09-06", "ms": 5.35}
+{"tool": "htmldate (extensive)", "file": "cb5af453d9d8d5db", "gold": "2021-08-29", "found": "2020-09-06", "ms": 5.09}
+{"tool": "htmldate (extensive)", "file": "0bf275b9fb1b3b71", "gold": "2023-07-06", "found": "2022-08-01", "ms": 7.19}
+{"tool": "htmldate (extensive)", "file": "6967a7b06af4cbaf", "gold": "2023-07-16", "found": "2022-08-01", "ms": 5.56}
+{"tool": "htmldate (extensive)", "file": "173ec36ab9fa6675", "gold": "2023-01-01", "found": "2022-08-01", "ms": 5.06}
+{"tool": "htmldate (extensive)", "file": "e392a99d9bbd906e", "gold": "2023-01-13", "found": "2022-08-01", "ms": 5.3}
+{"tool": "htmldate (extensive)", "file": "1b045bc2f15d95ae", "gold": "2023-01-22", "found": "2022-08-01", "ms": 5.43}
+{"tool": "htmldate (extensive)", "file": "36f23adc20402ddd", "gold": "2025-12-08", "found": "2025-12-02", "ms": 6.88}
+{"tool": "htmldate (extensive)", "file": "f0e333ab0da88511", "gold": "2025-12-15", "found": "2025-03-12", "ms": 6.55}
+{"tool": "htmldate (extensive)", "file": "e3a50038700658c7", "gold": "2025-12-27", "found": "2025-03-12", "ms": 5.93}
+{"tool": "htmldate (extensive)", "file": "e343bff5377f96c5", "gold": "2025-06-04", "found": "2025-03-12", "ms": 7.25}
+{"tool": "htmldate (extensive)", "file": "59dcba3d2dd2461d", "gold": "2025-06-09", "found": "2025-03-12", "ms": 5.72}
+{"tool": "htmldate (extensive)", "file": "2a57b50a2e5a78d1", "gold": "2025-06-22", "found": "2025-03-12", "ms": 6.24}
+{"tool": "newspaper4k", "file": "7997467e71b1f729", "gold": "2006-01-25", "found": null, "ms": 68.57}
+{"tool": "newspaper4k", "file": "921bb454568653cb", "gold": "2006-07-08", "found": null, "ms": 66.05}
+{"tool": "newspaper4k", "file": "ae7a8dfaf51e1b4e", "gold": "2009-12-03", "found": null, "ms": 223.7}
+{"tool": "newspaper4k", "file": "412a711320a3ef4a", "gold": "2009-12-07", "found": null, "ms": 85.53}
+{"tool": "newspaper4k", "file": "983aa839ff9c2787", "gold": "2012-11-01", "found": null, "ms": 121.59}
+{"tool": "newspaper4k", "file": "c026b1b4612094e5", "gold": "2012-11-05", "found": null, "ms": 113.12}
+{"tool": "newspaper4k", "file": "19b2502e287b6dc1", "gold": "2012-11-07", "found": null, "ms": 152.71}
+{"tool": "newspaper4k", "file": "2d2bde2541fd7e20", "gold": "2012-11-09", "found": "2012-11-09", "ms": 84.53}
+{"tool": "newspaper4k", "file": "ce9dff8dcbb1778d", "gold": "2012-05-01", "found": null, "ms": 124.18}
+{"tool": "newspaper4k", "file": "f5f440b512c5a41c", "gold": "2012-05-02", "found": null, "ms": 120.27}
+{"tool": "newspaper4k", "file": "de1a6d0398e2e0d2", "gold": "2012-05-03", "found": "2012-05-03", "ms": 73.25}
+{"tool": "newspaper4k", "file": "b3062b03d70cfb15", "gold": "2012-05-06", "found": null, "ms": 101.69}
+{"tool": "newspaper4k", "file": "73ca7f92b0ea1f76", "gold": "2015-04-02", "found": "2015-04-02", "ms": 148.87}
+{"tool": "newspaper4k", "file": "b2810ae3f813fb0e", "gold": "2015-04-04", "found": "2015-04-04", "ms": 256.41}
+{"tool": "newspaper4k", "file": "fecf263fac1d3717", "gold": "2015-04-07", "found": "2015-04-07", "ms": 143.14}
+{"tool": "newspaper4k", "file": "600c06fbef7bbd81", "gold": "2015-04-08", "found": "2015-04-08", "ms": 139.92}
+{"tool": "newspaper4k", "file": "e2cf06176201ec29", "gold": "2015-10-01", "found": "2015-10-01", "ms": 182.72}
+{"tool": "newspaper4k", "file": "6ca06838e959d314", "gold": "2015-10-04", "found": "2015-10-05", "ms": 209.62}
+{"tool": "newspaper4k", "file": "13a64abb1d08c353", "gold": "2015-10-06", "found": "2015-10-06", "ms": 196.55}
+{"tool": "newspaper4k", "file": "96dffd4bdd83ddc8", "gold": "2015-10-07", "found": "2015-10-07", "ms": 190.87}
+{"tool": "newspaper4k", "file": "532ad6cff07d04fe", "gold": "2018-09-04", "found": "2018-09-04", "ms": 59.59}
+{"tool": "newspaper4k", "file": "62e7350984c52823", "gold": "2018-09-05", "found": "2018-09-05", "ms": 42.36}
+{"tool": "newspaper4k", "file": "b870e1b6115012ff", "gold": "2018-09-06", "found": "2018-09-06", "ms": 48.1}
+{"tool": "newspaper4k", "file": "c0e97ad2eb32fb72", "gold": "2018-09-07", "found": "2018-09-07", "ms": 34.2}
+{"tool": "newspaper4k", "file": "ee98b74a31a6abe8", "gold": "2018-03-02", "found": "2018-03-02", "ms": 239.57}
+{"tool": "newspaper4k", "file": "d19ffd7f609207cc", "gold": "2018-03-05", "found": "2018-03-05", "ms": 203.15}
+{"tool": "newspaper4k", "file": "e027ef88dc285693", "gold": "2018-03-06", "found": "2018-03-06", "ms": 21.02}
+{"tool": "newspaper4k", "file": "7346fcd27c215baf", "gold": "2021-02-01", "found": "2021-02-01", "ms": 26.72}
+{"tool": "newspaper4k", "file": "34ac3480b90a3311", "gold": "2021-02-01", "found": "2021-02-01", "ms": 60.39}
+{"tool": "newspaper4k", "file": "db0204c1a715e86b", "gold": "2021-02-02", "found": "2021-02-02", "ms": 21.86}
+{"tool": "newspaper4k", "file": "b1c421aa265f8b9c", "gold": "2021-02-02", "found": "2021-02-02", "ms": 78.95}
+{"tool": "newspaper4k", "file": "05d7434a093868a7", "gold": "2021-08-02", "found": "2021-08-02", "ms": 59.44}
+{"tool": "newspaper4k", "file": "a8b39959219f05ba", "gold": "2021-08-03", "found": "2021-08-03", "ms": 124.98}
+{"tool": "newspaper4k", "file": "249bda0763b1e1cc", "gold": "2021-08-04", "found": "2021-08-04", "ms": 52.21}
+{"tool": "newspaper4k", "file": "d589f2bae33dac67", "gold": "2021-08-04", "found": "2021-08-04", "ms": 54.19}
+{"tool": "newspaper4k", "file": "4623c6778a8406db", "gold": "2023-07-03", "found": "2023-07-03", "ms": 71.68}
+{"tool": "newspaper4k", "file": "1e9e4ce0ebe9932a", "gold": "2023-07-07", "found": "2023-07-07", "ms": 190.75}
+{"tool": "newspaper4k", "file": "af1fd3fd17d79fa4", "gold": "2023-07-11", "found": "2023-07-11", "ms": 55.84}
+{"tool": "newspaper4k", "file": "308811e724f533e5", "gold": "2023-07-12", "found": "2023-07-12", "ms": 74.73}
+{"tool": "newspaper4k", "file": "e96d496074a0375c", "gold": "2023-01-02", "found": "2023-01-02", "ms": 59.23}
+{"tool": "newspaper4k", "file": "7f23a15f44498c3b", "gold": "2023-01-03", "found": "2023-01-03", "ms": 54.83}
+{"tool": "newspaper4k", "file": "eb9f3c2469fd062e", "gold": "2023-01-04", "found": "2023-01-04", "ms": 46.91}
+{"tool": "newspaper4k", "file": "7dda065e8caa031c", "gold": "2023-01-05", "found": "2023-01-05", "ms": 96.17}
+{"tool": "newspaper4k", "file": "0f1a5a72f35630c5", "gold": "2025-12-03", "found": "2025-12-03", "ms": 238.97}
+{"tool": "newspaper4k", "file": "ff57bbb0f2922d34", "gold": "2025-12-06", "found": "2025-12-06", "ms": 196.54}
+{"tool": "newspaper4k", "file": "d9ca1b42b60911c3", "gold": "2025-12-10", "found": "2025-12-10", "ms": 243.47}
+{"tool": "newspaper4k", "file": "5cd072862b0e7828", "gold": "2025-12-15", "found": "2025-12-15", "ms": 253.14}
+{"tool": "newspaper4k", "file": "ea7eec478ff95e97", "gold": "2025-06-02", "found": "2025-06-02", "ms": 230.63}
+{"tool": "newspaper4k", "file": "1633be77fd01780c", "gold": "2025-06-06", "found": "2025-06-06", "ms": 230.82}
+{"tool": "newspaper4k", "file": "3280bf41435a4217", "gold": "2025-06-11", "found": "2025-06-11", "ms": 233.34}
+{"tool": "newspaper4k", "file": "11b3869440efe946", "gold": "2025-06-17", "found": "2025-06-17", "ms": 198.13}
+{"tool": "newspaper4k", "file": "943ca33c7b32ef14", "gold": "2025-12-03", "found": "2025-12-03", "ms": 71.21}
+{"tool": "newspaper4k", "file": "8fe2407952949782", "gold": "2025-12-07", "found": "2025-12-07", "ms": 174.9}
+{"tool": "newspaper4k", "file": "5bb72422b3b65e86", "gold": "2025-12-11", "found": "2025-12-11", "ms": 220.82}
+{"tool": "newspaper4k", "file": "0fe47caaaa593e99", "gold": "2025-12-15", "found": "2025-12-15", "ms": 95.4}
+{"tool": "newspaper4k", "file": "d7d14d23155896d3", "gold": "2025-06-02", "found": "2025-06-02", "ms": 73.96}
+{"tool": "newspaper4k", "file": "82acad553f1b81ec", "gold": "2025-06-05", "found": "2025-06-05", "ms": 83.76}
+{"tool": "newspaper4k", "file": "44af0135c1374b6d", "gold": "2025-06-08", "found": "2025-06-08", "ms": 91.37}
+{"tool": "newspaper4k", "file": "a72d6db71649cc57", "gold": "2025-06-11", "found": "2025-06-11", "ms": 103.56}
+{"tool": "newspaper4k", "file": "f78b72f8083ee249", "gold": "2025-12-02", "found": "2025-12-02", "ms": 232.94}
+{"tool": "newspaper4k", "file": "a7dac93929193d90", "gold": "2025-12-04", "found": "2025-12-05", "ms": 243.87}
+{"tool": "newspaper4k", "file": "e4251bbdb1502e57", "gold": "2025-12-06", "found": "2025-12-06", "ms": 256.21}
+{"tool": "newspaper4k", "file": "61760bd2876d0888", "gold": "2025-12-09", "found": "2025-12-09", "ms": 225.2}
+{"tool": "newspaper4k", "file": "4284e0bb8f7900be", "gold": "2025-06-01", "found": "2025-06-01", "ms": 227.96}
+{"tool": "newspaper4k", "file": "0667fad5bb7f6fff", "gold": "2025-06-03", "found": "2025-06-03", "ms": 261.31}
+{"tool": "newspaper4k", "file": "a0e54f7a402effdf", "gold": "2025-06-05", "found": "2025-06-05", "ms": 276.26}
+{"tool": "newspaper4k", "file": "31ae9a22d4f1a329", "gold": "2025-06-07", "found": "2025-06-08", "ms": 213.48}
+{"tool": "newspaper4k", "file": "f40a4aa9f0d116ce", "gold": "2015-04-03", "found": null, "ms": 99.77}
+{"tool": "newspaper4k", "file": "1cedf5235b827818", "gold": "2015-04-10", "found": null, "ms": 259.5}
+{"tool": "newspaper4k", "file": "1a0331dd32882e26", "gold": "2015-04-17", "found": null, "ms": 353.89}
+{"tool": "newspaper4k", "file": "20d89f2db8ba595a", "gold": "2015-04-24", "found": null, "ms": 133.4}
+{"tool": "newspaper4k", "file": "18f3873efda097ba", "gold": "2015-10-29", "found": null, "ms": 68.05}
+{"tool": "newspaper4k", "file": "e70f108714318193", "gold": "2018-09-13", "found": null, "ms": 85.11}
+{"tool": "newspaper4k", "file": "6b1db47d0bfa7f9a", "gold": "2018-09-25", "found": null, "ms": 24.79}
+{"tool": "newspaper4k", "file": "7993ced6e84507cc", "gold": "2018-03-12", "found": null, "ms": 85.39}
+{"tool": "newspaper4k", "file": "1c0ad49665b647ae", "gold": "2018-03-29", "found": null, "ms": 92.95}
+{"tool": "newspaper4k", "file": "72c5aa0c1992217b", "gold": "2021-02-11", "found": null, "ms": 76.31}
+{"tool": "newspaper4k", "file": "1088cc00736e5957", "gold": "2021-02-11", "found": null, "ms": 71.67}
+{"tool": "newspaper4k", "file": "e04ab815fc35b181", "gold": "2021-08-03", "found": null, "ms": 70.7}
+{"tool": "newspaper4k", "file": "44b932ca6adb9459", "gold": "2023-07-01", "found": null, "ms": 45.18}
+{"tool": "newspaper4k", "file": "611513422863491f", "gold": "2023-07-05", "found": null, "ms": 43.5}
+{"tool": "newspaper4k", "file": "353648f60c17df92", "gold": "2023-07-13", "found": null, "ms": 76.78}
+{"tool": "newspaper4k", "file": "9fb406e3a52ca7b1", "gold": "2023-01-10", "found": null, "ms": 28.86}
+{"tool": "newspaper4k", "file": "f7a441e99eb4c59d", "gold": "2025-12-11", "found": null, "ms": 199.16}
+{"tool": "newspaper4k", "file": "b4fb129c96e92e9a", "gold": "2025-06-16", "found": null, "ms": 35.17}
+{"tool": "newspaper4k", "file": "14c533ced767edb3", "gold": "2025-06-20", "found": null, "ms": 374.6}
+{"tool": "newspaper4k", "file": "4731511d2d78ffcc", "gold": "2025-06-26", "found": null, "ms": 134.25}
+{"tool": "newspaper4k", "file": "ed2a3adcc6dba343", "gold": "2009-06-02", "found": null, "ms": 46.75}
+{"tool": "newspaper4k", "file": "e30fe3d8f2252772", "gold": "2009-06-08", "found": null, "ms": 73.65}
+{"tool": "newspaper4k", "file": "43dc944de22ff47d", "gold": "2009-06-13", "found": null, "ms": 152.57}
+{"tool": "newspaper4k", "file": "929302b6b9803163", "gold": "2009-06-19", "found": null, "ms": 135.29}
+{"tool": "newspaper4k", "file": "c8447c14f52003a5", "gold": "2009-12-02", "found": null, "ms": 442.08}
+{"tool": "newspaper4k", "file": "3a2979c15030a3bf", "gold": "2009-12-04", "found": null, "ms": 273.3}
+{"tool": "newspaper4k", "file": "ac441cfb09546d43", "gold": "2009-12-07", "found": null, "ms": 406.11}
+{"tool": "newspaper4k", "file": "487aeefe7ecb2f9b", "gold": "2009-12-09", "found": null, "ms": 186.8}
+{"tool": "newspaper4k", "file": "c2a04b232218faa9", "gold": "2012-11-02", "found": null, "ms": 72.64}
+{"tool": "newspaper4k", "file": "359dcb25b8315ed0", "gold": "2012-11-06", "found": null, "ms": 81.92}
+{"tool": "newspaper4k", "file": "1be75506181684ea", "gold": "2012-11-09", "found": null, "ms": 48.82}
+{"tool": "newspaper4k", "file": "b1f3ca7bf3a18391", "gold": "2012-11-12", "found": null, "ms": 60.57}
+{"tool": "newspaper4k", "file": "1ecec6882e917098", "gold": "2012-05-01", "found": null, "ms": 48.92}
+{"tool": "newspaper4k", "file": "68249ec3ef106d8e", "gold": "2012-05-03", "found": null, "ms": 53.23}
+{"tool": "newspaper4k", "file": "158fe273efde13f1", "gold": "2012-05-06", "found": null, "ms": 47.35}
+{"tool": "newspaper4k", "file": "2c4cded46582d8a8", "gold": "2012-05-09", "found": null, "ms": 61.58}
+{"tool": "newspaper4k", "file": "32803fed25af4188", "gold": "2015-04-02", "found": null, "ms": 65.77}
+{"tool": "newspaper4k", "file": "81c7c9b13b74245d", "gold": "2015-04-06", "found": null, "ms": 45.44}
+{"tool": "newspaper4k", "file": "44d2edf37517ff2f", "gold": "2015-04-07", "found": null, "ms": 42.18}
+{"tool": "newspaper4k", "file": "ed86cd1b45eab47f", "gold": "2015-04-09", "found": "2015-04-09", "ms": 43.88}
+{"tool": "newspaper4k", "file": "7ebbaf8e544020d8", "gold": "2015-10-02", "found": "2015-10-02", "ms": 70.37}
+{"tool": "newspaper4k", "file": "690370a863309d9a", "gold": "2015-10-06", "found": "2015-10-06", "ms": 53.33}
+{"tool": "newspaper4k", "file": "4ef656b9ede34d8b", "gold": "2015-10-09", "found": "2015-10-09", "ms": 64.77}
+{"tool": "newspaper4k", "file": "47951aa17daa094a", "gold": "2015-10-14", "found": "2015-10-14", "ms": 77.17}
+{"tool": "newspaper4k", "file": "5ce23edfc3bd8c8c", "gold": "2018-09-06", "found": "2018-09-07", "ms": 78.15}
+{"tool": "newspaper4k", "file": "3c9732d482eb4682", "gold": "2018-09-12", "found": "2018-09-12", "ms": 89.38}
+{"tool": "newspaper4k", "file": "85faaf2a002ae49e", "gold": "2018-09-18", "found": "2018-09-18", "ms": 163.89}
+{"tool": "newspaper4k", "file": "68024e11a9348cef", "gold": "2018-09-21", "found": "2018-09-21", "ms": 97.02}
+{"tool": "newspaper4k", "file": "951db20b56986516", "gold": "2018-03-02", "found": "2018-03-02", "ms": 69.58}
+{"tool": "newspaper4k", "file": "0328c9d9e6303912", "gold": "2018-03-08", "found": "2018-03-08", "ms": 93.66}
+{"tool": "newspaper4k", "file": "254a4930ed4da1a3", "gold": "2018-03-13", "found": "2018-03-13", "ms": 71.71}
+{"tool": "newspaper4k", "file": "0370bcaf8a2824f5", "gold": "2018-03-17", "found": "2018-03-17", "ms": 72.84}
+{"tool": "newspaper4k", "file": "69ab9b927390c91b", "gold": "2021-02-01", "found": "2021-02-01", "ms": 84.97}
+{"tool": "newspaper4k", "file": "518e8fa986083071", "gold": "2021-02-04", "found": "2021-02-04", "ms": 136.84}
+{"tool": "newspaper4k", "file": "10ac7a4b178a18d1", "gold": "2021-02-10", "found": "2021-02-10", "ms": 75.16}
+{"tool": "newspaper4k", "file": "a234e1e85f793b75", "gold": "2021-02-16", "found": "2021-02-16", "ms": 70.77}
+{"tool": "newspaper4k", "file": "57c6edfc17717806", "gold": "2021-08-05", "found": "2021-08-05", "ms": 96.9}
+{"tool": "newspaper4k", "file": "3df1aa335d72a593", "gold": "2021-08-10", "found": "2021-08-10", "ms": 132.67}
+{"tool": "newspaper4k", "file": "d4c1db0ac4ee0610", "gold": "2021-08-13", "found": "2021-08-13", "ms": 83.89}
+{"tool": "newspaper4k", "file": "ea8d6231f91ad3fa", "gold": "2021-08-18", "found": "2021-08-18", "ms": 88.93}
+{"tool": "newspaper4k", "file": "eb525d8e0521fafc", "gold": "2023-07-04", "found": "2023-07-04", "ms": 103.97}
+{"tool": "newspaper4k", "file": "1781d1adef0ec755", "gold": "2023-07-09", "found": "2023-07-09", "ms": 94.43}
+{"tool": "newspaper4k", "file": "717a79cd35850d75", "gold": "2023-07-13", "found": "2023-07-13", "ms": 111.63}
+{"tool": "newspaper4k", "file": "adc70b51685c01dd", "gold": "2023-07-20", "found": "2023-07-20", "ms": 98.2}
+{"tool": "newspaper4k", "file": "4ed34be7f7cbdd0c", "gold": "2023-01-01", "found": "2023-01-01", "ms": 91.35}
+{"tool": "newspaper4k", "file": "38c92beb17e06851", "gold": "2023-01-04", "found": "2023-01-04", "ms": 80.34}
+{"tool": "newspaper4k", "file": "1e58817ab9177c4e", "gold": "2023-01-08", "found": "2023-01-08", "ms": 84.07}
+{"tool": "newspaper4k", "file": "b295db8ab60dcd2b", "gold": "2023-01-11", "found": "2023-01-11", "ms": 100.03}
+{"tool": "newspaper4k", "file": "d3c03abf118cbb27", "gold": "2025-12-05", "found": "2025-12-05", "ms": 91.97}
+{"tool": "newspaper4k", "file": "0c8e801e264a10bc", "gold": "2025-12-11", "found": "2025-12-11", "ms": 101.46}
+{"tool": "newspaper4k", "file": "1296bc21eca06351", "gold": "2025-12-18", "found": "2025-12-18", "ms": 101.56}
+{"tool": "newspaper4k", "file": "0fd6f3222f83cadb", "gold": "2025-12-29", "found": "2025-12-29", "ms": 86.75}
+{"tool": "newspaper4k", "file": "08f8061a9590d46c", "gold": "2025-06-03", "found": "2025-06-03", "ms": 83.47}
+{"tool": "newspaper4k", "file": "6d4dc6170cdcae34", "gold": "2025-06-10", "found": "2025-06-10", "ms": 92.14}
+{"tool": "newspaper4k", "file": "8d4eb9e00082e78c", "gold": "2025-06-19", "found": "2025-06-19", "ms": 129.87}
+{"tool": "newspaper4k", "file": "2a26cb67de8b557e", "gold": "2025-06-26", "found": "2025-06-26", "ms": 108.0}
+{"tool": "newspaper4k", "file": "935a6ebb00f0b21c", "gold": "2012-11-01", "found": null, "ms": 55.38}
+{"tool": "newspaper4k", "file": "40389da72c0b2b21", "gold": "2012-11-04", "found": null, "ms": 52.96}
+{"tool": "newspaper4k", "file": "00f0c157962c2153", "gold": "2012-11-07", "found": null, "ms": 64.97}
+{"tool": "newspaper4k", "file": "0e3fad747f218abb", "gold": "2012-11-08", "found": null, "ms": 52.4}
+{"tool": "newspaper4k", "file": "25b8c3dc4cf3a074", "gold": "2012-05-01", "found": null, "ms": 50.19}
+{"tool": "newspaper4k", "file": "5d68bf416d3cdfd9", "gold": "2012-05-03", "found": null, "ms": 56.28}
+{"tool": "newspaper4k", "file": "983f7ded339ce062", "gold": "2012-05-07", "found": null, "ms": 56.15}
+{"tool": "newspaper4k", "file": "f4a1a18e90cabe3e", "gold": "2015-04-04", "found": "2015-04-04", "ms": 87.07}
+{"tool": "newspaper4k", "file": "efcbf968c7235728", "gold": "2015-04-07", "found": "2015-04-07", "ms": 77.53}
+{"tool": "newspaper4k", "file": "77e879fdd3e818f1", "gold": "2015-04-10", "found": "2015-04-10", "ms": 132.46}
+{"tool": "newspaper4k", "file": "41ebaeb310aac536", "gold": "2015-10-01", "found": "2015-10-02", "ms": 52.64}
+{"tool": "newspaper4k", "file": "45884b6318470a7e", "gold": "2015-10-03", "found": "2015-10-03", "ms": 64.5}
+{"tool": "newspaper4k", "file": "c2efba2cd06430e9", "gold": "2015-10-06", "found": "2015-10-06", "ms": 56.06}
+{"tool": "newspaper4k", "file": "249639ed96df73ce", "gold": "2015-10-08", "found": "2015-10-08", "ms": 69.04}
+{"tool": "newspaper4k", "file": "a6905494476620df", "gold": "2021-02-01", "found": "2021-02-01", "ms": 55.88}
+{"tool": "newspaper4k", "file": "3d519ccd22117fa2", "gold": "2021-02-03", "found": "2021-02-03", "ms": 55.83}
+{"tool": "newspaper4k", "file": "cb3a9c1537fa133f", "gold": "2021-08-10", "found": "2021-08-10", "ms": 83.59}
+{"tool": "newspaper4k", "file": "68e1bacf5f28e0ee", "gold": "2021-08-13", "found": "2021-08-13", "ms": 105.02}
+{"tool": "newspaper4k", "file": "14cc5f6afc16608d", "gold": "2023-07-01", "found": "2023-06-29", "ms": 72.46}
+{"tool": "newspaper4k", "file": "d3eed18c52e94e64", "gold": "2023-07-03", "found": "2023-07-03", "ms": 71.86}
+{"tool": "newspaper4k", "file": "e92f8a4d74c25b22", "gold": "2023-07-05", "found": "2023-07-05", "ms": 114.59}
+{"tool": "newspaper4k", "file": "bb3124bdca35625a", "gold": "2023-07-06", "found": "2023-07-06", "ms": 73.41}
+{"tool": "newspaper4k", "file": "4ec07e16aacf986f", "gold": "2023-01-04", "found": "2023-01-04", "ms": 82.34}
+{"tool": "newspaper4k", "file": "794507c38a75bd93", "gold": "2023-01-05", "found": "2023-01-05", "ms": 81.81}
+{"tool": "newspaper4k", "file": "f96ca66dad068af6", "gold": "2023-01-07", "found": "2023-01-07", "ms": 76.29}
+{"tool": "newspaper4k", "file": "3ba77fc9f39d5ddc", "gold": "2025-12-01", "found": "2025-12-01", "ms": 68.48}
+{"tool": "newspaper4k", "file": "59725b0fd7e58b97", "gold": "2025-12-02", "found": "2025-12-02", "ms": 67.47}
+{"tool": "newspaper4k", "file": "a8ad8945701edff6", "gold": "2025-12-03", "found": "2025-12-03", "ms": 66.1}
+{"tool": "newspaper4k", "file": "a7e6c2e4721ceb24", "gold": "2025-12-04", "found": "2025-12-04", "ms": 68.51}
+{"tool": "newspaper4k", "file": "62cc0ca58e8df253", "gold": "2025-06-01", "found": "2025-06-01", "ms": 63.59}
+{"tool": "newspaper4k", "file": "0b1b7953a463ee8c", "gold": "2025-06-08", "found": "2025-06-08", "ms": 66.84}
+{"tool": "newspaper4k", "file": "13824e35969074d0", "gold": "2018-09-12", "found": "2018-09-12", "ms": 117.48}
+{"tool": "newspaper4k", "file": "623bb222d99f21be", "gold": "2018-09-18", "found": "2018-09-18", "ms": 127.05}
+{"tool": "newspaper4k", "file": "0aad96e61377ee1e", "gold": "2018-09-28", "found": "2018-09-28", "ms": 95.38}
+{"tool": "newspaper4k", "file": "b5ebf16a433dda6e", "gold": "2018-03-12", "found": "2018-03-12", "ms": 93.25}
+{"tool": "newspaper4k", "file": "57bd183813bc53c1", "gold": "2018-03-21", "found": "2018-03-21", "ms": 121.14}
+{"tool": "newspaper4k", "file": "f6b08127da656854", "gold": "2018-03-28", "found": "2018-03-28", "ms": 111.33}
+{"tool": "newspaper4k", "file": "9a4f8b3ee56fa6e7", "gold": "2021-02-03", "found": "2021-02-03", "ms": 102.5}
+{"tool": "newspaper4k", "file": "d27fbcea64da79e6", "gold": "2021-02-10", "found": "2021-02-10", "ms": 97.51}
+{"tool": "newspaper4k", "file": "e6c185e058db9b56", "gold": "2021-02-12", "found": "2021-02-12", "ms": 141.93}
+{"tool": "newspaper4k", "file": "f06290212f39874a", "gold": "2021-02-24", "found": "2021-02-24", "ms": 99.91}
+{"tool": "newspaper4k", "file": "78ebcf1e243458a7", "gold": "2021-08-12", "found": "2021-08-12", "ms": 91.54}
+{"tool": "newspaper4k", "file": "194e81310fd89352", "gold": "2021-08-20", "found": "2021-08-20", "ms": 88.16}
+{"tool": "newspaper4k", "file": "9d3451463fef893c", "gold": "2021-08-30", "found": "2021-08-30", "ms": 112.11}
+{"tool": "newspaper4k", "file": "6af3e1bb6714a694", "gold": "2021-08-31", "found": "2021-08-31", "ms": 105.05}
+{"tool": "newspaper4k", "file": "8741943b3467b955", "gold": "2023-07-01", "found": "2023-07-01", "ms": 84.45}
+{"tool": "newspaper4k", "file": "8c7031cec127ae3b", "gold": "2023-07-05", "found": "2023-07-05", "ms": 83.22}
+{"tool": "newspaper4k", "file": "8c23ce5be8db2910", "gold": "2023-07-13", "found": "2023-07-13", "ms": 94.76}
+{"tool": "newspaper4k", "file": "a2a5d29c112b1461", "gold": "2023-07-20", "found": "2023-07-21", "ms": 130.71}
+{"tool": "newspaper4k", "file": "23e9cc3a39545e95", "gold": "2023-01-06", "found": "2023-01-06", "ms": 109.04}
+{"tool": "newspaper4k", "file": "823414c1c8b418fe", "gold": "2023-01-12", "found": "2023-01-12", "ms": 94.76}
+{"tool": "newspaper4k", "file": "a91466a992d25ddb", "gold": "2023-01-17", "found": "2023-01-17", "ms": 78.22}
+{"tool": "newspaper4k", "file": "d18ae7d38d014856", "gold": "2023-01-20", "found": "2023-01-20", "ms": 90.42}
+{"tool": "newspaper4k", "file": "ade9b8685c16f1af", "gold": "2025-12-10", "found": "2025-12-10", "ms": 82.52}
+{"tool": "newspaper4k", "file": "a158a00f53f22043", "gold": "2025-12-12", "found": "2025-12-12", "ms": 74.48}
+{"tool": "newspaper4k", "file": "c509cdfcdf44fefe", "gold": "2025-12-15", "found": "2025-12-15", "ms": 73.2}
+{"tool": "newspaper4k", "file": "3e62b45ebe7539ab", "gold": "2025-12-19", "found": "2025-12-19", "ms": 116.15}
+{"tool": "newspaper4k", "file": "5cbd8b5c049f0fa5", "gold": "2025-06-25", "found": "2025-06-25", "ms": 74.34}
+{"tool": "newspaper4k", "file": "ef4de420b3e9259b", "gold": "2026-07-28", "found": "2026-07-28", "ms": 78.83}
+{"tool": "newspaper4k", "file": "6029c006928506a6", "gold": "2026-07-27", "found": "2026-07-27", "ms": 76.34}
+{"tool": "newspaper4k", "file": "e5295cc3d40541a7", "gold": "2026-07-24", "found": "2026-07-24", "ms": 73.14}
+{"tool": "newspaper4k", "file": "43044cc70d1d4b10", "gold": "2026-07-24", "found": "2026-07-24", "ms": 157.28}
+{"tool": "newspaper4k", "file": "dce866d7f1ce7ced", "gold": "2026-07-23", "found": "2026-07-23", "ms": 82.82}
+{"tool": "newspaper4k", "file": "bf75dfbcb61a7550", "gold": "2026-07-22", "found": "2026-07-22", "ms": 74.67}
+{"tool": "newspaper4k", "file": "6db77ed6ec94d371", "gold": "2018-09-08", "found": "2018-09-09", "ms": 143.17}
+{"tool": "newspaper4k", "file": "f3439870a2fad578", "gold": "2018-09-15", "found": "2018-09-16", "ms": 230.87}
+{"tool": "newspaper4k", "file": "94a01354eba25c7c", "gold": "2018-09-22", "found": "2018-09-22", "ms": 221.74}
+{"tool": "newspaper4k", "file": "8bd509cf109683df", "gold": "2018-03-03", "found": "2018-03-03", "ms": 175.64}
+{"tool": "newspaper4k", "file": "90b06c68a48dcf84", "gold": "2018-03-09", "found": "2018-03-09", "ms": 85.27}
+{"tool": "newspaper4k", "file": "85b692707e800b1f", "gold": "2018-03-14", "found": "2018-03-15", "ms": 114.12}
+{"tool": "newspaper4k", "file": "c97513a92d25a961", "gold": "2015-04-14", "found": "2015-04-14", "ms": 27.33}
+{"tool": "newspaper4k", "file": "33fadade9e811dd8", "gold": "2015-10-31", "found": "2015-10-31", "ms": 55.47}
+{"tool": "newspaper4k", "file": "ae9cd1fc7e1eec9b", "gold": "2018-09-03", "found": "2018-09-03", "ms": 70.21}
+{"tool": "newspaper4k", "file": "9ccd515fc58da393", "gold": "2018-09-22", "found": "2018-09-22", "ms": 30.35}
+{"tool": "newspaper4k", "file": "eaf7c86f914d96fa", "gold": "2018-09-30", "found": "2018-09-30", "ms": 62.74}
+{"tool": "newspaper4k", "file": "0e110232bc77191e", "gold": "2018-03-05", "found": "2018-03-05", "ms": 52.56}
+{"tool": "newspaper4k", "file": "a17abadb8b65bfc4", "gold": "2018-03-26", "found": "2018-03-26", "ms": 43.7}
+{"tool": "newspaper4k", "file": "b30933bd0f259f2d", "gold": "2018-03-31", "found": "2018-03-31", "ms": 81.5}
+{"tool": "newspaper4k", "file": "ced87e9e767878fa", "gold": "2021-02-02", "found": "2021-02-02", "ms": 31.47}
+{"tool": "newspaper4k", "file": "d4b9226693aefd1c", "gold": "2021-02-04", "found": "2021-02-04", "ms": 34.94}
+{"tool": "newspaper4k", "file": "031aafe8166e0790", "gold": "2021-02-10", "found": "2021-02-10", "ms": 29.49}
+{"tool": "newspaper4k", "file": "f0e4e96a64d5810e", "gold": "2023-07-08", "found": "2023-07-08", "ms": 34.63}
+{"tool": "newspaper4k", "file": "ee67c4f0147c3468", "gold": "2023-07-10", "found": "2023-07-10", "ms": 45.0}
+{"tool": "newspaper4k", "file": "51b3d6151bafbc36", "gold": "2023-07-28", "found": "2023-07-28", "ms": 81.88}
+{"tool": "newspaper4k", "file": "219d5867ea4e3386", "gold": "2023-01-10", "found": "2023-01-10", "ms": 78.98}
+{"tool": "newspaper4k", "file": "b99cc31c6acdbfc3", "gold": "2023-01-13", "found": "2023-01-13", "ms": 112.42}
+{"tool": "newspaper4k", "file": "90cb6264603271ba", "gold": "2023-01-18", "found": "2023-01-18", "ms": 139.57}
+{"tool": "newspaper4k", "file": "0926977dac85ae5e", "gold": "2025-06-10", "found": "2025-06-10", "ms": 104.06}
+{"tool": "newspaper4k", "file": "b15e4d8cd6271cc0", "gold": "2009-06-15", "found": null, "ms": 16.06}
+{"tool": "newspaper4k", "file": "2328702eea23a596", "gold": "2009-06-23", "found": null, "ms": 14.79}
+{"tool": "newspaper4k", "file": "c36d0cb038d857ec", "gold": "2009-12-29", "found": null, "ms": 15.05}
+{"tool": "newspaper4k", "file": "64cac4363fafa44f", "gold": "2012-11-05", "found": null, "ms": 18.04}
+{"tool": "newspaper4k", "file": "8211e4925e36699f", "gold": "2012-11-27", "found": null, "ms": 17.16}
+{"tool": "newspaper4k", "file": "746d21921d1d2c5c", "gold": "2015-04-07", "found": null, "ms": 17.19}
+{"tool": "newspaper4k", "file": "28e37887014d5a65", "gold": "2015-04-18", "found": null, "ms": 15.82}
+{"tool": "newspaper4k", "file": "7569a8c5de54ea73", "gold": "2015-04-28", "found": null, "ms": 18.64}
+{"tool": "newspaper4k", "file": "da67c8b1fa061a85", "gold": "2015-10-04", "found": null, "ms": 17.59}
+{"tool": "newspaper4k", "file": "7958733d76409d80", "gold": "2015-10-13", "found": null, "ms": 15.24}
+{"tool": "newspaper4k", "file": "8075e1922d33e914", "gold": "2015-10-24", "found": null, "ms": 15.65}
+{"tool": "newspaper4k", "file": "944c55bcecf80019", "gold": "2018-09-21", "found": null, "ms": 17.11}
+{"tool": "newspaper4k", "file": "b1332d84f2c1e55f", "gold": "2018-09-28", "found": null, "ms": 19.43}
+{"tool": "newspaper4k", "file": "3a4fdf3ffe026512", "gold": "2018-03-27", "found": null, "ms": 17.33}
+{"tool": "newspaper4k", "file": "ad82957e50931a68", "gold": "2021-02-02", "found": null, "ms": 20.72}
+{"tool": "newspaper4k", "file": "ec2260dfcdd9e057", "gold": "2021-02-12", "found": null, "ms": 19.65}
+{"tool": "newspaper4k", "file": "59db525f0adae67b", "gold": "2021-02-19", "found": null, "ms": 18.49}
+{"tool": "newspaper4k", "file": "27fbee71f11db470", "gold": "2021-08-09", "found": null, "ms": 22.43}
+{"tool": "newspaper4k", "file": "f9f69c8f5cbc9069", "gold": "2021-08-13", "found": null, "ms": 20.99}
+{"tool": "newspaper4k", "file": "cb5af453d9d8d5db", "gold": "2021-08-29", "found": null, "ms": 18.33}
+{"tool": "newspaper4k", "file": "0bf275b9fb1b3b71", "gold": "2023-07-06", "found": null, "ms": 27.17}
+{"tool": "newspaper4k", "file": "6967a7b06af4cbaf", "gold": "2023-07-16", "found": null, "ms": 18.38}
+{"tool": "newspaper4k", "file": "173ec36ab9fa6675", "gold": "2023-01-01", "found": null, "ms": 18.85}
+{"tool": "newspaper4k", "file": "e392a99d9bbd906e", "gold": "2023-01-13", "found": null, "ms": 19.35}
+{"tool": "newspaper4k", "file": "1b045bc2f15d95ae", "gold": "2023-01-22", "found": null, "ms": 21.17}
+{"tool": "newspaper4k", "file": "36f23adc20402ddd", "gold": "2025-12-08", "found": null, "ms": 28.74}
+{"tool": "newspaper4k", "file": "f0e333ab0da88511", "gold": "2025-12-15", "found": null, "ms": 26.45}
+{"tool": "newspaper4k", "file": "e3a50038700658c7", "gold": "2025-12-27", "found": null, "ms": 21.08}
+{"tool": "newspaper4k", "file": "e343bff5377f96c5", "gold": "2025-06-04", "found": null, "ms": 27.3}
+{"tool": "newspaper4k", "file": "59dcba3d2dd2461d", "gold": "2025-06-09", "found": null, "ms": 19.59}
+{"tool": "newspaper4k", "file": "2a57b50a2e5a78d1", "gold": "2025-06-22", "found": null, "ms": 26.12}
+{"tool": "goose3", "file": "7997467e71b1f729", "gold": "2006-01-25", "found": null, "ms": 514.98}
+{"tool": "goose3", "file": "921bb454568653cb", "gold": "2006-07-08", "found": null, "ms": 58.11}
+{"tool": "goose3", "file": "ae7a8dfaf51e1b4e", "gold": "2009-12-03", "found": null, "ms": 147.01}
+{"tool": "goose3", "file": "412a711320a3ef4a", "gold": "2009-12-07", "found": null, "ms": 84.0}
+{"tool": "goose3", "file": "983aa839ff9c2787", "gold": "2012-11-01", "found": null, "ms": 126.48}
+{"tool": "goose3", "file": "c026b1b4612094e5", "gold": "2012-11-05", "found": null, "ms": 117.15}
+{"tool": "goose3", "file": "19b2502e287b6dc1", "gold": "2012-11-07", "found": null, "ms": 149.54}
+{"tool": "goose3", "file": "2d2bde2541fd7e20", "gold": "2012-11-09", "found": null, "ms": 92.53}
+{"tool": "goose3", "file": "ce9dff8dcbb1778d", "gold": "2012-05-01", "found": null, "ms": 121.3}
+{"tool": "goose3", "file": "f5f440b512c5a41c", "gold": "2012-05-02", "found": null, "ms": 115.78}
+{"tool": "goose3", "file": "de1a6d0398e2e0d2", "gold": "2012-05-03", "found": null, "ms": 80.71}
+{"tool": "goose3", "file": "b3062b03d70cfb15", "gold": "2012-05-06", "found": null, "ms": 98.88}
+{"tool": "goose3", "file": "73ca7f92b0ea1f76", "gold": "2015-04-02", "found": null, "ms": 97.01}
+{"tool": "goose3", "file": "b2810ae3f813fb0e", "gold": "2015-04-04", "found": null, "ms": 97.34}
+{"tool": "goose3", "file": "fecf263fac1d3717", "gold": "2015-04-07", "found": null, "ms": 96.95}
+{"tool": "goose3", "file": "600c06fbef7bbd81", "gold": "2015-04-08", "found": null, "ms": 95.36}
+{"tool": "goose3", "file": "e2cf06176201ec29", "gold": "2015-10-01", "found": "2015-10-01", "ms": 106.81}
+{"tool": "goose3", "file": "6ca06838e959d314", "gold": "2015-10-04", "found": "2015-10-05", "ms": 117.01}
+{"tool": "goose3", "file": "13a64abb1d08c353", "gold": "2015-10-06", "found": "2015-10-06", "ms": 106.94}
+{"tool": "goose3", "file": "96dffd4bdd83ddc8", "gold": "2015-10-07", "found": "2015-10-07", "ms": 110.46}
+{"tool": "goose3", "file": "532ad6cff07d04fe", "gold": "2018-09-04", "found": "2018-09-04", "ms": 39.82}
+{"tool": "goose3", "file": "62e7350984c52823", "gold": "2018-09-05", "found": "2018-09-05", "ms": 264.4}
+{"tool": "goose3", "file": "b870e1b6115012ff", "gold": "2018-09-06", "found": "2018-09-06", "ms": 264.18}
+{"tool": "goose3", "file": "c0e97ad2eb32fb72", "gold": "2018-09-07", "found": "2018-09-07", "ms": 27.65}
+{"tool": "goose3", "file": "ee98b74a31a6abe8", "gold": "2018-03-02", "found": "2018-03-02", "ms": 125.77}
+{"tool": "goose3", "file": "d19ffd7f609207cc", "gold": "2018-03-05", "found": "2018-03-05", "ms": 96.74}
+{"tool": "goose3", "file": "e027ef88dc285693", "gold": "2018-03-06", "found": "2018-03-06", "ms": 19.51}
+{"tool": "goose3", "file": "7346fcd27c215baf", "gold": "2021-02-01", "found": null, "ms": 55.95}
+{"tool": "goose3", "file": "34ac3480b90a3311", "gold": "2021-02-01", "found": "2021-02-01", "ms": 81.04}
+{"tool": "goose3", "file": "db0204c1a715e86b", "gold": "2021-02-02", "found": null, "ms": 57.79}
+{"tool": "goose3", "file": "b1c421aa265f8b9c", "gold": "2021-02-02", "found": "2021-02-02", "ms": 83.43}
+{"tool": "goose3", "file": "05d7434a093868a7", "gold": "2021-08-02", "found": "2021-08-02", "ms": 88.63}
+{"tool": "goose3", "file": "a8b39959219f05ba", "gold": "2021-08-03", "found": "2021-08-03", "ms": 120.12}
+{"tool": "goose3", "file": "249bda0763b1e1cc", "gold": "2021-08-04", "found": "2021-08-04", "ms": 72.75}
+{"tool": "goose3", "file": "d589f2bae33dac67", "gold": "2021-08-04", "found": "2021-08-04", "ms": 70.17}
+{"tool": "goose3", "file": "4623c6778a8406db", "gold": "2023-07-03", "found": "2023-07-03", "ms": 82.14}
+{"tool": "goose3", "file": "1e9e4ce0ebe9932a", "gold": "2023-07-07", "found": "2023-07-07", "ms": 152.72}
+{"tool": "goose3", "file": "af1fd3fd17d79fa4", "gold": "2023-07-11", "found": "2023-07-11", "ms": 80.73}
+{"tool": "goose3", "file": "308811e724f533e5", "gold": "2023-07-12", "found": "2023-07-12", "ms": 105.55}
+{"tool": "goose3", "file": "e96d496074a0375c", "gold": "2023-01-02", "found": "2023-01-02", "ms": 76.63}
+{"tool": "goose3", "file": "7f23a15f44498c3b", "gold": "2023-01-03", "found": "2023-01-03", "ms": 69.34}
+{"tool": "goose3", "file": "eb9f3c2469fd062e", "gold": "2023-01-04", "found": "2023-01-04", "ms": 76.99}
+{"tool": "goose3", "file": "7dda065e8caa031c", "gold": "2023-01-05", "found": "2023-01-05", "ms": 106.64}
+{"tool": "goose3", "file": "0f1a5a72f35630c5", "gold": "2025-12-03", "found": "2025-12-03", "ms": 99.78}
+{"tool": "goose3", "file": "ff57bbb0f2922d34", "gold": "2025-12-06", "found": "2025-12-06", "ms": 76.94}
+{"tool": "goose3", "file": "d9ca1b42b60911c3", "gold": "2025-12-10", "found": "2025-12-10", "ms": 95.47}
+{"tool": "goose3", "file": "5cd072862b0e7828", "gold": "2025-12-15", "found": "2025-12-15", "ms": 94.55}
+{"tool": "goose3", "file": "ea7eec478ff95e97", "gold": "2025-06-02", "found": "2025-06-02", "ms": 95.58}
+{"tool": "goose3", "file": "1633be77fd01780c", "gold": "2025-06-06", "found": "2025-06-06", "ms": 105.65}
+{"tool": "goose3", "file": "3280bf41435a4217", "gold": "2025-06-11", "found": "2025-06-11", "ms": 100.48}
+{"tool": "goose3", "file": "11b3869440efe946", "gold": "2025-06-17", "found": "2025-06-17", "ms": 78.86}
+{"tool": "goose3", "file": "943ca33c7b32ef14", "gold": "2025-12-03", "found": "2025-12-03", "ms": 41.08}
+{"tool": "goose3", "file": "8fe2407952949782", "gold": "2025-12-07", "found": "2025-12-07", "ms": 132.03}
+{"tool": "goose3", "file": "5bb72422b3b65e86", "gold": "2025-12-11", "found": "2025-12-11", "ms": 149.29}
+{"tool": "goose3", "file": "0fe47caaaa593e99", "gold": "2025-12-15", "found": "2025-12-15", "ms": 52.68}
+{"tool": "goose3", "file": "d7d14d23155896d3", "gold": "2025-06-02", "found": "2025-06-02", "ms": 38.83}
+{"tool": "goose3", "file": "82acad553f1b81ec", "gold": "2025-06-05", "found": "2025-06-05", "ms": 49.89}
+{"tool": "goose3", "file": "44af0135c1374b6d", "gold": "2025-06-08", "found": "2025-06-08", "ms": 49.76}
+{"tool": "goose3", "file": "a72d6db71649cc57", "gold": "2025-06-11", "found": "2025-06-11", "ms": 58.12}
+{"tool": "goose3", "file": "f78b72f8083ee249", "gold": "2025-12-02", "found": "2025-12-02", "ms": 115.33}
+{"tool": "goose3", "file": "a7dac93929193d90", "gold": "2025-12-04", "found": "2025-12-05", "ms": 112.12}
+{"tool": "goose3", "file": "e4251bbdb1502e57", "gold": "2025-12-06", "found": "2025-12-06", "ms": 131.63}
+{"tool": "goose3", "file": "61760bd2876d0888", "gold": "2025-12-09", "found": "2025-12-09", "ms": 106.8}
+{"tool": "goose3", "file": "4284e0bb8f7900be", "gold": "2025-06-01", "found": "2025-06-01", "ms": 118.53}
+{"tool": "goose3", "file": "0667fad5bb7f6fff", "gold": "2025-06-03", "found": "2025-06-03", "ms": 133.1}
+{"tool": "goose3", "file": "a0e54f7a402effdf", "gold": "2025-06-05", "found": "2025-06-05", "ms": 129.68}
+{"tool": "goose3", "file": "31ae9a22d4f1a329", "gold": "2025-06-07", "found": "2025-06-08", "ms": 112.13}
+{"tool": "goose3", "file": "f40a4aa9f0d116ce", "gold": "2015-04-03", "found": null, "ms": 91.05}
+{"tool": "goose3", "file": "1cedf5235b827818", "gold": "2015-04-10", "found": null, "ms": 554.78}
+{"tool": "goose3", "file": "1a0331dd32882e26", "gold": "2015-04-17", "found": null, "ms": 948.94}
+{"tool": "goose3", "file": "20d89f2db8ba595a", "gold": "2015-04-24", "found": null, "ms": 250.03}
+{"tool": "goose3", "file": "18f3873efda097ba", "gold": "2015-10-29", "found": null, "ms": 63.64}
+{"tool": "goose3", "file": "e70f108714318193", "gold": "2018-09-13", "found": null, "ms": 112.65}
+{"tool": "goose3", "file": "6b1db47d0bfa7f9a", "gold": "2018-09-25", "found": null, "ms": 21.98}
+{"tool": "goose3", "file": "7993ced6e84507cc", "gold": "2018-03-12", "found": null, "ms": 62.44}
+{"tool": "goose3", "file": "1c0ad49665b647ae", "gold": "2018-03-29", "found": null, "ms": 155.03}
+{"tool": "goose3", "file": "72c5aa0c1992217b", "gold": "2021-02-11", "found": null, "ms": 50.49}
+{"tool": "goose3", "file": "1088cc00736e5957", "gold": "2021-02-11", "found": null, "ms": 47.1}
+{"tool": "goose3", "file": "e04ab815fc35b181", "gold": "2021-08-03", "found": null, "ms": 48.97}
+{"tool": "goose3", "file": "44b932ca6adb9459", "gold": "2023-07-01", "found": null, "ms": 35.26}
+{"tool": "goose3", "file": "611513422863491f", "gold": "2023-07-05", "found": null, "ms": 23.82}
+{"tool": "goose3", "file": "353648f60c17df92", "gold": "2023-07-13", "found": null, "ms": 47.29}
+{"tool": "goose3", "file": "9fb406e3a52ca7b1", "gold": "2023-01-10", "found": null, "ms": 23.9}
+{"tool": "goose3", "file": "f7a441e99eb4c59d", "gold": "2025-12-11", "found": null, "ms": 197.96}
+{"tool": "goose3", "file": "b4fb129c96e92e9a", "gold": "2025-06-16", "found": null, "ms": 23.35}
+{"tool": "goose3", "file": "14c533ced767edb3", "gold": "2025-06-20", "found": null, "ms": 66.63}
+{"tool": "goose3", "file": "4731511d2d78ffcc", "gold": "2025-06-26", "found": null, "ms": 113.85}
+{"tool": "goose3", "file": "ed2a3adcc6dba343", "gold": "2009-06-02", "found": null, "ms": 54.89}
+{"tool": "goose3", "file": "e30fe3d8f2252772", "gold": "2009-06-08", "found": null, "ms": 66.77}
+{"tool": "goose3", "file": "43dc944de22ff47d", "gold": "2009-06-13", "found": null, "ms": 108.56}
+{"tool": "goose3", "file": "929302b6b9803163", "gold": "2009-06-19", "found": null, "ms": 54.17}
+{"tool": "goose3", "file": "c8447c14f52003a5", "gold": "2009-12-02", "found": null, "ms": 244.13}
+{"tool": "goose3", "file": "3a2979c15030a3bf", "gold": "2009-12-04", "found": null, "ms": 175.22}
+{"tool": "goose3", "file": "ac441cfb09546d43", "gold": "2009-12-07", "found": null, "ms": 248.57}
+{"tool": "goose3", "file": "487aeefe7ecb2f9b", "gold": "2009-12-09", "found": null, "ms": 141.52}
+{"tool": "goose3", "file": "c2a04b232218faa9", "gold": "2012-11-02", "found": null, "ms": 38.67}
+{"tool": "goose3", "file": "359dcb25b8315ed0", "gold": "2012-11-06", "found": null, "ms": 59.98}
+{"tool": "goose3", "file": "1be75506181684ea", "gold": "2012-11-09", "found": null, "ms": 34.89}
+{"tool": "goose3", "file": "b1f3ca7bf3a18391", "gold": "2012-11-12", "found": null, "ms": 35.08}
+{"tool": "goose3", "file": "1ecec6882e917098", "gold": "2012-05-01", "found": null, "ms": 60.01}
+{"tool": "goose3", "file": "68249ec3ef106d8e", "gold": "2012-05-03", "found": null, "ms": 61.28}
+{"tool": "goose3", "file": "158fe273efde13f1", "gold": "2012-05-06", "found": null, "ms": 61.42}
+{"tool": "goose3", "file": "2c4cded46582d8a8", "gold": "2012-05-09", "found": null, "ms": 58.87}
+{"tool": "goose3", "file": "32803fed25af4188", "gold": "2015-04-02", "found": null, "ms": 34.64}
+{"tool": "goose3", "file": "81c7c9b13b74245d", "gold": "2015-04-06", "found": null, "ms": 28.81}
+{"tool": "goose3", "file": "44d2edf37517ff2f", "gold": "2015-04-07", "found": null, "ms": 26.73}
+{"tool": "goose3", "file": "ed86cd1b45eab47f", "gold": "2015-04-09", "found": "2015-04-09", "ms": 18.14}
+{"tool": "goose3", "file": "7ebbaf8e544020d8", "gold": "2015-10-02", "found": "2015-10-02", "ms": 50.24}
+{"tool": "goose3", "file": "690370a863309d9a", "gold": "2015-10-06", "found": "2015-10-06", "ms": 50.51}
+{"tool": "goose3", "file": "4ef656b9ede34d8b", "gold": "2015-10-09", "found": "2015-10-09", "ms": 44.44}
+{"tool": "goose3", "file": "47951aa17daa094a", "gold": "2015-10-14", "found": "2015-10-14", "ms": 54.09}
+{"tool": "goose3", "file": "5ce23edfc3bd8c8c", "gold": "2018-09-06", "found": "2018-09-07", "ms": 58.23}
+{"tool": "goose3", "file": "3c9732d482eb4682", "gold": "2018-09-12", "found": "2018-09-12", "ms": 70.39}
+{"tool": "goose3", "file": "85faaf2a002ae49e", "gold": "2018-09-18", "found": "2018-09-18", "ms": 56.49}
+{"tool": "goose3", "file": "68024e11a9348cef", "gold": "2018-09-21", "found": "2018-09-21", "ms": 53.91}
+{"tool": "goose3", "file": "951db20b56986516", "gold": "2018-03-02", "found": "2018-03-02", "ms": 49.62}
+{"tool": "goose3", "file": "0328c9d9e6303912", "gold": "2018-03-08", "found": "2018-03-08", "ms": 57.31}
+{"tool": "goose3", "file": "254a4930ed4da1a3", "gold": "2018-03-13", "found": "2018-03-13", "ms": 45.72}
+{"tool": "goose3", "file": "0370bcaf8a2824f5", "gold": "2018-03-17", "found": "2018-03-17", "ms": 56.57}
+{"tool": "goose3", "file": "69ab9b927390c91b", "gold": "2021-02-01", "found": "2021-02-01", "ms": 48.48}
+{"tool": "goose3", "file": "518e8fa986083071", "gold": "2021-02-04", "found": "2021-02-04", "ms": 87.38}
+{"tool": "goose3", "file": "10ac7a4b178a18d1", "gold": "2021-02-10", "found": "2021-02-10", "ms": 45.59}
+{"tool": "goose3", "file": "a234e1e85f793b75", "gold": "2021-02-16", "found": "2021-02-16", "ms": 41.68}
+{"tool": "goose3", "file": "57c6edfc17717806", "gold": "2021-08-05", "found": "2021-08-05", "ms": 49.44}
+{"tool": "goose3", "file": "3df1aa335d72a593", "gold": "2021-08-10", "found": "2021-08-10", "ms": 49.17}
+{"tool": "goose3", "file": "d4c1db0ac4ee0610", "gold": "2021-08-13", "found": "2021-08-13", "ms": 44.85}
+{"tool": "goose3", "file": "ea8d6231f91ad3fa", "gold": "2021-08-18", "found": "2021-08-18", "ms": 48.94}
+{"tool": "goose3", "file": "eb525d8e0521fafc", "gold": "2023-07-04", "found": "2023-07-04", "ms": 63.56}
+{"tool": "goose3", "file": "1781d1adef0ec755", "gold": "2023-07-09", "found": "2023-07-09", "ms": 70.53}
+{"tool": "goose3", "file": "717a79cd35850d75", "gold": "2023-07-13", "found": "2023-07-13", "ms": 67.99}
+{"tool": "goose3", "file": "adc70b51685c01dd", "gold": "2023-07-20", "found": "2023-07-20", "ms": 56.33}
+{"tool": "goose3", "file": "4ed34be7f7cbdd0c", "gold": "2023-01-01", "found": "2023-01-01", "ms": 50.95}
+{"tool": "goose3", "file": "38c92beb17e06851", "gold": "2023-01-04", "found": "2023-01-04", "ms": 47.41}
+{"tool": "goose3", "file": "1e58817ab9177c4e", "gold": "2023-01-08", "found": "2023-01-08", "ms": 48.3}
+{"tool": "goose3", "file": "b295db8ab60dcd2b", "gold": "2023-01-11", "found": "2023-01-11", "ms": 54.43}
+{"tool": "goose3", "file": "d3c03abf118cbb27", "gold": "2025-12-05", "found": "2025-12-05", "ms": 54.45}
+{"tool": "goose3", "file": "0c8e801e264a10bc", "gold": "2025-12-11", "found": "2025-12-11", "ms": 57.73}
+{"tool": "goose3", "file": "1296bc21eca06351", "gold": "2025-12-18", "found": "2025-12-18", "ms": 57.27}
+{"tool": "goose3", "file": "0fd6f3222f83cadb", "gold": "2025-12-29", "found": "2025-12-29", "ms": 69.56}
+{"tool": "goose3", "file": "08f8061a9590d46c", "gold": "2025-06-03", "found": "2025-06-03", "ms": 55.04}
+{"tool": "goose3", "file": "6d4dc6170cdcae34", "gold": "2025-06-10", "found": "2025-06-10", "ms": 56.56}
+{"tool": "goose3", "file": "8d4eb9e00082e78c", "gold": "2025-06-19", "found": "2025-06-19", "ms": 58.9}
+{"tool": "goose3", "file": "2a26cb67de8b557e", "gold": "2025-06-26", "found": "2025-06-26", "ms": 54.98}
+{"tool": "goose3", "file": "935a6ebb00f0b21c", "gold": "2012-11-01", "found": null, "ms": 51.02}
+{"tool": "goose3", "file": "40389da72c0b2b21", "gold": "2012-11-04", "found": null, "ms": 48.29}
+{"tool": "goose3", "file": "00f0c157962c2153", "gold": "2012-11-07", "found": null, "ms": 68.3}
+{"tool": "goose3", "file": "0e3fad747f218abb", "gold": "2012-11-08", "found": null, "ms": 46.63}
+{"tool": "goose3", "file": "25b8c3dc4cf3a074", "gold": "2012-05-01", "found": null, "ms": 47.28}
+{"tool": "goose3", "file": "5d68bf416d3cdfd9", "gold": "2012-05-03", "found": null, "ms": 45.7}
+{"tool": "goose3", "file": "983f7ded339ce062", "gold": "2012-05-07", "found": null, "ms": 50.94}
+{"tool": "goose3", "file": "f4a1a18e90cabe3e", "gold": "2015-04-04", "found": "2015-04-04", "ms": 44.94}
+{"tool": "goose3", "file": "efcbf968c7235728", "gold": "2015-04-07", "found": "2015-04-07", "ms": 41.06}
+{"tool": "goose3", "file": "77e879fdd3e818f1", "gold": "2015-04-10", "found": "2015-04-10", "ms": 69.25}
+{"tool": "goose3", "file": "41ebaeb310aac536", "gold": "2015-10-01", "found": "2015-10-02", "ms": 22.73}
+{"tool": "goose3", "file": "45884b6318470a7e", "gold": "2015-10-03", "found": null, "ms": 41.61}
+{"tool": "goose3", "file": "c2efba2cd06430e9", "gold": "2015-10-06", "found": null, "ms": 38.06}
+{"tool": "goose3", "file": "249639ed96df73ce", "gold": "2015-10-08", "found": null, "ms": 50.27}
+{"tool": "goose3", "file": "a6905494476620df", "gold": "2021-02-01", "found": "2021-02-01", "ms": 28.67}
+{"tool": "goose3", "file": "3d519ccd22117fa2", "gold": "2021-02-03", "found": "2021-02-03", "ms": 29.04}
+{"tool": "goose3", "file": "cb3a9c1537fa133f", "gold": "2021-08-10", "found": null, "ms": 119.77}
+{"tool": "goose3", "file": "68e1bacf5f28e0ee", "gold": "2021-08-13", "found": null, "ms": 140.93}
+{"tool": "goose3", "file": "14cc5f6afc16608d", "gold": "2023-07-01", "found": "2023-06-29", "ms": 34.08}
+{"tool": "goose3", "file": "d3eed18c52e94e64", "gold": "2023-07-03", "found": "2023-07-03", "ms": 31.44}
+{"tool": "goose3", "file": "e92f8a4d74c25b22", "gold": "2023-07-05", "found": null, "ms": 93.37}
+{"tool": "goose3", "file": "bb3124bdca35625a", "gold": "2023-07-06", "found": "2023-07-06", "ms": 31.89}
+{"tool": "goose3", "file": "4ec07e16aacf986f", "gold": "2023-01-04", "found": null, "ms": 166.38}
+{"tool": "goose3", "file": "794507c38a75bd93", "gold": "2023-01-05", "found": "2023-01-05", "ms": 148.0}
+{"tool": "goose3", "file": "f96ca66dad068af6", "gold": "2023-01-07", "found": "2023-01-07", "ms": 202.98}
+{"tool": "goose3", "file": "3ba77fc9f39d5ddc", "gold": "2025-12-01", "found": "2025-12-01", "ms": 76.23}
+{"tool": "goose3", "file": "59725b0fd7e58b97", "gold": "2025-12-02", "found": "2025-12-02", "ms": 63.03}
+{"tool": "goose3", "file": "a8ad8945701edff6", "gold": "2025-12-03", "found": "2025-12-03", "ms": 75.64}
+{"tool": "goose3", "file": "a7e6c2e4721ceb24", "gold": "2025-12-04", "found": "2025-12-04", "ms": 74.58}
+{"tool": "goose3", "file": "62cc0ca58e8df253", "gold": "2025-06-01", "found": "2025-06-01", "ms": 81.57}
+{"tool": "goose3", "file": "0b1b7953a463ee8c", "gold": "2025-06-08", "found": "2025-06-08", "ms": 83.12}
+{"tool": "goose3", "file": "13824e35969074d0", "gold": "2018-09-12", "found": "2018-09-12", "ms": 56.89}
+{"tool": "goose3", "file": "623bb222d99f21be", "gold": "2018-09-18", "found": "2018-09-18", "ms": 70.25}
+{"tool": "goose3", "file": "0aad96e61377ee1e", "gold": "2018-09-28", "found": "2018-09-28", "ms": 50.45}
+{"tool": "goose3", "file": "b5ebf16a433dda6e", "gold": "2018-03-12", "found": "2018-03-12", "ms": 48.84}
+{"tool": "goose3", "file": "57bd183813bc53c1", "gold": "2018-03-21", "found": "2018-03-21", "ms": 71.41}
+{"tool": "goose3", "file": "f6b08127da656854", "gold": "2018-03-28", "found": "2018-03-28", "ms": 57.44}
+{"tool": "goose3", "file": "9a4f8b3ee56fa6e7", "gold": "2021-02-03", "found": "2021-02-03", "ms": 55.65}
+{"tool": "goose3", "file": "d27fbcea64da79e6", "gold": "2021-02-10", "found": "2021-02-10", "ms": 50.84}
+{"tool": "goose3", "file": "e6c185e058db9b56", "gold": "2021-02-12", "found": "2021-02-12", "ms": 73.43}
+{"tool": "goose3", "file": "f06290212f39874a", "gold": "2021-02-24", "found": "2021-02-24", "ms": 57.33}
+{"tool": "goose3", "file": "78ebcf1e243458a7", "gold": "2021-08-12", "found": "2021-08-12", "ms": 57.27}
+{"tool": "goose3", "file": "194e81310fd89352", "gold": "2021-08-20", "found": "2021-08-20", "ms": 51.53}
+{"tool": "goose3", "file": "9d3451463fef893c", "gold": "2021-08-30", "found": "2021-08-30", "ms": 76.35}
+{"tool": "goose3", "file": "6af3e1bb6714a694", "gold": "2021-08-31", "found": "2021-08-31", "ms": 70.07}
+{"tool": "goose3", "file": "8741943b3467b955", "gold": "2023-07-01", "found": "2023-07-01", "ms": 58.08}
+{"tool": "goose3", "file": "8c7031cec127ae3b", "gold": "2023-07-05", "found": "2023-07-05", "ms": 66.37}
+{"tool": "goose3", "file": "8c23ce5be8db2910", "gold": "2023-07-13", "found": "2023-07-13", "ms": 71.65}
+{"tool": "goose3", "file": "a2a5d29c112b1461", "gold": "2023-07-20", "found": "2023-07-21", "ms": 82.54}
+{"tool": "goose3", "file": "23e9cc3a39545e95", "gold": "2023-01-06", "found": "2023-01-06", "ms": 65.29}
+{"tool": "goose3", "file": "823414c1c8b418fe", "gold": "2023-01-12", "found": "2023-01-12", "ms": 59.08}
+{"tool": "goose3", "file": "a91466a992d25ddb", "gold": "2023-01-17", "found": "2023-01-17", "ms": 46.33}
+{"tool": "goose3", "file": "d18ae7d38d014856", "gold": "2023-01-20", "found": "2023-01-20", "ms": 51.58}
+{"tool": "goose3", "file": "ade9b8685c16f1af", "gold": "2025-12-10", "found": "2025-12-10", "ms": 36.78}
+{"tool": "goose3", "file": "a158a00f53f22043", "gold": "2025-12-12", "found": "2025-12-12", "ms": 35.62}
+{"tool": "goose3", "file": "c509cdfcdf44fefe", "gold": "2025-12-15", "found": "2025-12-15", "ms": 34.47}
+{"tool": "goose3", "file": "3e62b45ebe7539ab", "gold": "2025-12-19", "found": "2025-12-19", "ms": 40.29}
+{"tool": "goose3", "file": "5cbd8b5c049f0fa5", "gold": "2025-06-25", "found": "2025-06-25", "ms": 53.71}
+{"tool": "goose3", "file": "ef4de420b3e9259b", "gold": "2026-07-28", "found": "2026-07-28", "ms": 32.12}
+{"tool": "goose3", "file": "6029c006928506a6", "gold": "2026-07-27", "found": "2026-07-27", "ms": 30.99}
+{"tool": "goose3", "file": "e5295cc3d40541a7", "gold": "2026-07-24", "found": "2026-07-24", "ms": 31.37}
+{"tool": "goose3", "file": "43044cc70d1d4b10", "gold": "2026-07-24", "found": "2026-07-24", "ms": 64.46}
+{"tool": "goose3", "file": "dce866d7f1ce7ced", "gold": "2026-07-23", "found": "2026-07-23", "ms": 34.31}
+{"tool": "goose3", "file": "bf75dfbcb61a7550", "gold": "2026-07-22", "found": "2026-07-22", "ms": 30.05}
+{"tool": "goose3", "file": "6db77ed6ec94d371", "gold": "2018-09-08", "found": "2018-09-09", "ms": 91.89}
+{"tool": "goose3", "file": "f3439870a2fad578", "gold": "2018-09-15", "found": "2018-09-16", "ms": 137.46}
+{"tool": "goose3", "file": "94a01354eba25c7c", "gold": "2018-09-22", "found": "2018-09-22", "ms": 125.87}
+{"tool": "goose3", "file": "8bd509cf109683df", "gold": "2018-03-03", "found": "2018-03-03", "ms": 99.45}
+{"tool": "goose3", "file": "90b06c68a48dcf84", "gold": "2018-03-09", "found": "2018-03-09", "ms": 80.19}
+{"tool": "goose3", "file": "85b692707e800b1f", "gold": "2018-03-14", "found": "2018-03-15", "ms": 97.8}
+{"tool": "goose3", "file": "c97513a92d25a961", "gold": "2015-04-14", "found": null, "ms": 14.6}
+{"tool": "goose3", "file": "33fadade9e811dd8", "gold": "2015-10-31", "found": null, "ms": 40.78}
+{"tool": "goose3", "file": "ae9cd1fc7e1eec9b", "gold": "2018-09-03", "found": null, "ms": 38.48}
+{"tool": "goose3", "file": "9ccd515fc58da393", "gold": "2018-09-22", "found": null, "ms": 17.51}
+{"tool": "goose3", "file": "eaf7c86f914d96fa", "gold": "2018-09-30", "found": null, "ms": 33.13}
+{"tool": "goose3", "file": "0e110232bc77191e", "gold": "2018-03-05", "found": null, "ms": 25.25}
+{"tool": "goose3", "file": "a17abadb8b65bfc4", "gold": "2018-03-26", "found": null, "ms": 24.38}
+{"tool": "goose3", "file": "b30933bd0f259f2d", "gold": "2018-03-31", "found": null, "ms": 49.07}
+{"tool": "goose3", "file": "ced87e9e767878fa", "gold": "2021-02-02", "found": null, "ms": 21.16}
+{"tool": "goose3", "file": "d4b9226693aefd1c", "gold": "2021-02-04", "found": null, "ms": 23.45}
+{"tool": "goose3", "file": "031aafe8166e0790", "gold": "2021-02-10", "found": null, "ms": 18.95}
+{"tool": "goose3", "file": "f0e4e96a64d5810e", "gold": "2023-07-08", "found": null, "ms": 20.84}
+{"tool": "goose3", "file": "ee67c4f0147c3468", "gold": "2023-07-10", "found": null, "ms": 31.08}
+{"tool": "goose3", "file": "51b3d6151bafbc36", "gold": "2023-07-28", "found": null, "ms": 48.64}
+{"tool": "goose3", "file": "219d5867ea4e3386", "gold": "2023-01-10", "found": null, "ms": 48.24}
+{"tool": "goose3", "file": "b99cc31c6acdbfc3", "gold": "2023-01-13", "found": null, "ms": 67.55}
+{"tool": "goose3", "file": "90cb6264603271ba", "gold": "2023-01-18", "found": null, "ms": 83.59}
+{"tool": "goose3", "file": "0926977dac85ae5e", "gold": "2025-06-10", "found": null, "ms": 68.0}
+{"tool": "goose3", "file": "b15e4d8cd6271cc0", "gold": "2009-06-15", "found": null, "ms": 14.35}
+{"tool": "goose3", "file": "2328702eea23a596", "gold": "2009-06-23", "found": null, "ms": 12.74}
+{"tool": "goose3", "file": "c36d0cb038d857ec", "gold": "2009-12-29", "found": null, "ms": 12.85}
+{"tool": "goose3", "file": "64cac4363fafa44f", "gold": "2012-11-05", "found": null, "ms": 16.08}
+{"tool": "goose3", "file": "8211e4925e36699f", "gold": "2012-11-27", "found": null, "ms": 15.7}
+{"tool": "goose3", "file": "746d21921d1d2c5c", "gold": "2015-04-07", "found": null, "ms": 16.17}
+{"tool": "goose3", "file": "28e37887014d5a65", "gold": "2015-04-18", "found": null, "ms": 15.43}
+{"tool": "goose3", "file": "7569a8c5de54ea73", "gold": "2015-04-28", "found": null, "ms": 17.46}
+{"tool": "goose3", "file": "da67c8b1fa061a85", "gold": "2015-10-04", "found": null, "ms": 18.39}
+{"tool": "goose3", "file": "7958733d76409d80", "gold": "2015-10-13", "found": null, "ms": 13.51}
+{"tool": "goose3", "file": "8075e1922d33e914", "gold": "2015-10-24", "found": null, "ms": 14.92}
+{"tool": "goose3", "file": "944c55bcecf80019", "gold": "2018-09-21", "found": null, "ms": 15.15}
+{"tool": "goose3", "file": "b1332d84f2c1e55f", "gold": "2018-09-28", "found": null, "ms": 17.66}
+{"tool": "goose3", "file": "3a4fdf3ffe026512", "gold": "2018-03-27", "found": null, "ms": 15.12}
+{"tool": "goose3", "file": "ad82957e50931a68", "gold": "2021-02-02", "found": null, "ms": 18.35}
+{"tool": "goose3", "file": "ec2260dfcdd9e057", "gold": "2021-02-12", "found": null, "ms": 17.76}
+{"tool": "goose3", "file": "59db525f0adae67b", "gold": "2021-02-19", "found": null, "ms": 17.13}
+{"tool": "goose3", "file": "27fbee71f11db470", "gold": "2021-08-09", "found": null, "ms": 30.2}
+{"tool": "goose3", "file": "f9f69c8f5cbc9069", "gold": "2021-08-13", "found": null, "ms": 19.54}
+{"tool": "goose3", "file": "cb5af453d9d8d5db", "gold": "2021-08-29", "found": null, "ms": 16.0}
+{"tool": "goose3", "file": "0bf275b9fb1b3b71", "gold": "2023-07-06", "found": null, "ms": 24.92}
+{"tool": "goose3", "file": "6967a7b06af4cbaf", "gold": "2023-07-16", "found": null, "ms": 16.6}
+{"tool": "goose3", "file": "173ec36ab9fa6675", "gold": "2023-01-01", "found": null, "ms": 19.72}
+{"tool": "goose3", "file": "e392a99d9bbd906e", "gold": "2023-01-13", "found": null, "ms": 18.51}
+{"tool": "goose3", "file": "1b045bc2f15d95ae", "gold": "2023-01-22", "found": null, "ms": 18.34}
+{"tool": "goose3", "file": "36f23adc20402ddd", "gold": "2025-12-08", "found": null, "ms": 24.16}
+{"tool": "goose3", "file": "f0e333ab0da88511", "gold": "2025-12-15", "found": null, "ms": 22.13}
+{"tool": "goose3", "file": "e3a50038700658c7", "gold": "2025-12-27", "found": null, "ms": 17.93}
+{"tool": "goose3", "file": "e343bff5377f96c5", "gold": "2025-06-04", "found": null, "ms": 25.65}
+{"tool": "goose3", "file": "59dcba3d2dd2461d", "gold": "2025-06-09", "found": null, "ms": 17.31}
+{"tool": "goose3", "file": "2a57b50a2e5a78d1", "gold": "2025-06-22", "found": null, "ms": 22.74}
+{"tool": "date_guesser", "file": "7997467e71b1f729", "gold": "2006-01-25", "found": null, "ms": 61.34}
+{"tool": "date_guesser", "file": "921bb454568653cb", "gold": "2006-07-08", "found": null, "ms": 60.82}
+{"tool": "date_guesser", "file": "ae7a8dfaf51e1b4e", "gold": "2009-12-03", "found": null, "ms": 262.45}
+{"tool": "date_guesser", "file": "412a711320a3ef4a", "gold": "2009-12-07", "found": null, "ms": 90.69}
+{"tool": "date_guesser", "file": "983aa839ff9c2787", "gold": "2012-11-01", "found": "2012-09-15", "ms": 111.34}
+{"tool": "date_guesser", "file": "c026b1b4612094e5", "gold": "2012-11-05", "found": "2012-11-15", "ms": 108.52}
+{"tool": "date_guesser", "file": "19b2502e287b6dc1", "gold": "2012-11-07", "found": "2012-11-15", "ms": 121.49}
+{"tool": "date_guesser", "file": "2d2bde2541fd7e20", "gold": "2012-11-09", "found": "2012-11-09", "ms": 196.56}
+{"tool": "date_guesser", "file": "ce9dff8dcbb1778d", "gold": "2012-05-01", "found": "2012-05-15", "ms": 102.16}
+{"tool": "date_guesser", "file": "f5f440b512c5a41c", "gold": "2012-05-02", "found": "2012-05-15", "ms": 102.4}
+{"tool": "date_guesser", "file": "de1a6d0398e2e0d2", "gold": "2012-05-03", "found": "2012-05-03", "ms": 84.04}
+{"tool": "date_guesser", "file": "b3062b03d70cfb15", "gold": "2012-05-06", "found": "2012-05-15", "ms": 97.65}
+{"tool": "date_guesser", "file": "73ca7f92b0ea1f76", "gold": "2015-04-02", "found": "2015-04-01", "ms": 149.91}
+{"tool": "date_guesser", "file": "b2810ae3f813fb0e", "gold": "2015-04-04", "found": "2015-04-03", "ms": 171.64}
+{"tool": "date_guesser", "file": "fecf263fac1d3717", "gold": "2015-04-07", "found": "2015-04-07", "ms": 149.43}
+{"tool": "date_guesser", "file": "600c06fbef7bbd81", "gold": "2015-04-08", "found": "2015-04-09", "ms": 145.25}
+{"tool": "date_guesser", "file": "e2cf06176201ec29", "gold": "2015-10-01", "found": "2015-10-01", "ms": 188.02}
+{"tool": "date_guesser", "file": "6ca06838e959d314", "gold": "2015-10-04", "found": "2015-10-05", "ms": 221.52}
+{"tool": "date_guesser", "file": "13a64abb1d08c353", "gold": "2015-10-06", "found": "2015-10-05", "ms": 208.05}
+{"tool": "date_guesser", "file": "96dffd4bdd83ddc8", "gold": "2015-10-07", "found": "2015-10-07", "ms": 208.63}
+{"tool": "date_guesser", "file": "532ad6cff07d04fe", "gold": "2018-09-04", "found": "2018-09-04", "ms": 27.66}
+{"tool": "date_guesser", "file": "62e7350984c52823", "gold": "2018-09-05", "found": "2018-09-05", "ms": 25.18}
+{"tool": "date_guesser", "file": "b870e1b6115012ff", "gold": "2018-09-06", "found": "2018-09-06", "ms": 26.48}
+{"tool": "date_guesser", "file": "c0e97ad2eb32fb72", "gold": "2018-09-07", "found": "2018-09-07", "ms": 22.68}
+{"tool": "date_guesser", "file": "ee98b74a31a6abe8", "gold": "2018-03-02", "found": "2018-03-01", "ms": 229.26}
+{"tool": "date_guesser", "file": "d19ffd7f609207cc", "gold": "2018-03-05", "found": "2018-03-05", "ms": 340.16}
+{"tool": "date_guesser", "file": "e027ef88dc285693", "gold": "2018-03-06", "found": "2018-03-06", "ms": 21.07}
+{"tool": "date_guesser", "file": "7346fcd27c215baf", "gold": "2021-02-01", "found": "2021-02-01", "ms": 21.9}
+{"tool": "date_guesser", "file": "34ac3480b90a3311", "gold": "2021-02-01", "found": "2021-02-01", "ms": 32.58}
+{"tool": "date_guesser", "file": "db0204c1a715e86b", "gold": "2021-02-02", "found": "2021-02-02", "ms": 21.28}
+{"tool": "date_guesser", "file": "b1c421aa265f8b9c", "gold": "2021-02-02", "found": "2021-02-02", "ms": 33.41}
+{"tool": "date_guesser", "file": "05d7434a093868a7", "gold": "2021-08-02", "found": "2021-08-02", "ms": 29.93}
+{"tool": "date_guesser", "file": "a8b39959219f05ba", "gold": "2021-08-03", "found": "2021-08-03", "ms": 53.34}
+{"tool": "date_guesser", "file": "249bda0763b1e1cc", "gold": "2021-08-04", "found": "2021-08-04", "ms": 30.08}
+{"tool": "date_guesser", "file": "d589f2bae33dac67", "gold": "2021-08-04", "found": "2021-08-04", "ms": 31.62}
+{"tool": "date_guesser", "file": "4623c6778a8406db", "gold": "2023-07-03", "found": "2023-07-03", "ms": 44.06}
+{"tool": "date_guesser", "file": "1e9e4ce0ebe9932a", "gold": "2023-07-07", "found": "2023-07-07", "ms": 68.7}
+{"tool": "date_guesser", "file": "af1fd3fd17d79fa4", "gold": "2023-07-11", "found": "2023-07-11", "ms": 41.02}
+{"tool": "date_guesser", "file": "308811e724f533e5", "gold": "2023-07-12", "found": "2023-07-12", "ms": 42.43}
+{"tool": "date_guesser", "file": "e96d496074a0375c", "gold": "2023-01-02", "found": "2023-01-02", "ms": 39.44}
+{"tool": "date_guesser", "file": "7f23a15f44498c3b", "gold": "2023-01-03", "found": "2023-01-03", "ms": 33.86}
+{"tool": "date_guesser", "file": "eb9f3c2469fd062e", "gold": "2023-01-04", "found": "2023-01-04", "ms": 31.5}
+{"tool": "date_guesser", "file": "7dda065e8caa031c", "gold": "2023-01-05", "found": "2023-01-05", "ms": 43.07}
+{"tool": "date_guesser", "file": "0f1a5a72f35630c5", "gold": "2025-12-03", "found": "2025-12-03", "ms": 149.7}
+{"tool": "date_guesser", "file": "ff57bbb0f2922d34", "gold": "2025-12-06", "found": "2025-12-06", "ms": 126.72}
+{"tool": "date_guesser", "file": "d9ca1b42b60911c3", "gold": "2025-12-10", "found": "2025-12-10", "ms": 140.23}
+{"tool": "date_guesser", "file": "5cd072862b0e7828", "gold": "2025-12-15", "found": "2025-12-15", "ms": 139.26}
+{"tool": "date_guesser", "file": "ea7eec478ff95e97", "gold": "2025-06-02", "found": "2025-06-02", "ms": 132.08}
+{"tool": "date_guesser", "file": "1633be77fd01780c", "gold": "2025-06-06", "found": "2025-06-06", "ms": 137.59}
+{"tool": "date_guesser", "file": "3280bf41435a4217", "gold": "2025-06-11", "found": "2025-06-11", "ms": 135.69}
+{"tool": "date_guesser", "file": "11b3869440efe946", "gold": "2025-06-17", "found": "2025-06-17", "ms": 123.34}
+{"tool": "date_guesser", "file": "943ca33c7b32ef14", "gold": "2025-12-03", "found": "2025-12-03", "ms": 75.87}
+{"tool": "date_guesser", "file": "8fe2407952949782", "gold": "2025-12-07", "found": "2025-12-07", "ms": 138.37}
+{"tool": "date_guesser", "file": "5bb72422b3b65e86", "gold": "2025-12-11", "found": "2025-12-11", "ms": 144.43}
+{"tool": "date_guesser", "file": "0fe47caaaa593e99", "gold": "2025-12-15", "found": "2025-12-15", "ms": 83.96}
+{"tool": "date_guesser", "file": "d7d14d23155896d3", "gold": "2025-06-02", "found": "2025-06-02", "ms": 198.03}
+{"tool": "date_guesser", "file": "82acad553f1b81ec", "gold": "2025-06-05", "found": "2025-06-05", "ms": 81.64}
+{"tool": "date_guesser", "file": "44af0135c1374b6d", "gold": "2025-06-08", "found": "2025-06-08", "ms": 83.25}
+{"tool": "date_guesser", "file": "a72d6db71649cc57", "gold": "2025-06-11", "found": "2025-06-11", "ms": 86.59}
+{"tool": "date_guesser", "file": "f78b72f8083ee249", "gold": "2025-12-02", "found": "2025-12-02", "ms": 174.52}
+{"tool": "date_guesser", "file": "a7dac93929193d90", "gold": "2025-12-04", "found": "2025-12-05", "ms": 165.61}
+{"tool": "date_guesser", "file": "e4251bbdb1502e57", "gold": "2025-12-06", "found": "2025-12-06", "ms": 159.28}
+{"tool": "date_guesser", "file": "61760bd2876d0888", "gold": "2025-12-09", "found": "2025-12-09", "ms": 158.77}
+{"tool": "date_guesser", "file": "4284e0bb8f7900be", "gold": "2025-06-01", "found": "2025-06-01", "ms": 165.39}
+{"tool": "date_guesser", "file": "0667fad5bb7f6fff", "gold": "2025-06-03", "found": "2025-06-03", "ms": 168.19}
+{"tool": "date_guesser", "file": "a0e54f7a402effdf", "gold": "2025-06-05", "found": "2025-06-05", "ms": 168.84}
+{"tool": "date_guesser", "file": "31ae9a22d4f1a329", "gold": "2025-06-07", "found": "2025-06-08", "ms": 159.0}
+{"tool": "date_guesser", "file": "f40a4aa9f0d116ce", "gold": "2015-04-03", "found": null, "ms": 62.38}
+{"tool": "date_guesser", "file": "1cedf5235b827818", "gold": "2015-04-10", "found": null, "ms": 163.58}
+{"tool": "date_guesser", "file": "1a0331dd32882e26", "gold": "2015-04-17", "found": null, "ms": 275.48}
+{"tool": "date_guesser", "file": "20d89f2db8ba595a", "gold": "2015-04-24", "found": null, "ms": 75.58}
+{"tool": "date_guesser", "file": "18f3873efda097ba", "gold": "2015-10-29", "found": null, "ms": 38.79}
+{"tool": "date_guesser", "file": "e70f108714318193", "gold": "2018-09-13", "found": null, "ms": 44.91}
+{"tool": "date_guesser", "file": "6b1db47d0bfa7f9a", "gold": "2018-09-25", "found": null, "ms": 167.16}
+{"tool": "date_guesser", "file": "7993ced6e84507cc", "gold": "2018-03-12", "found": null, "ms": 35.71}
+{"tool": "date_guesser", "file": "1c0ad49665b647ae", "gold": "2018-03-29", "found": null, "ms": 48.15}
+{"tool": "date_guesser", "file": "72c5aa0c1992217b", "gold": "2021-02-11", "found": null, "ms": 41.95}
+{"tool": "date_guesser", "file": "1088cc00736e5957", "gold": "2021-02-11", "found": null, "ms": 42.06}
+{"tool": "date_guesser", "file": "e04ab815fc35b181", "gold": "2021-08-03", "found": null, "ms": 38.84}
+{"tool": "date_guesser", "file": "44b932ca6adb9459", "gold": "2023-07-01", "found": null, "ms": 26.41}
+{"tool": "date_guesser", "file": "611513422863491f", "gold": "2023-07-05", "found": null, "ms": 21.48}
+{"tool": "date_guesser", "file": "353648f60c17df92", "gold": "2023-07-13", "found": null, "ms": 42.73}
+{"tool": "date_guesser", "file": "9fb406e3a52ca7b1", "gold": "2023-01-10", "found": null, "ms": 21.79}
+{"tool": "date_guesser", "file": "f7a441e99eb4c59d", "gold": "2025-12-11", "found": null, "ms": 105.69}
+{"tool": "date_guesser", "file": "b4fb129c96e92e9a", "gold": "2025-06-16", "found": null, "ms": 24.53}
+{"tool": "date_guesser", "file": "14c533ced767edb3", "gold": "2025-06-20", "found": null, "ms": 174.38}
+{"tool": "date_guesser", "file": "4731511d2d78ffcc", "gold": "2025-06-26", "found": null, "ms": 73.2}
+{"tool": "date_guesser", "file": "ed2a3adcc6dba343", "gold": "2009-06-02", "found": null, "ms": 62.73}
+{"tool": "date_guesser", "file": "e30fe3d8f2252772", "gold": "2009-06-08", "found": null, "ms": 92.1}
+{"tool": "date_guesser", "file": "43dc944de22ff47d", "gold": "2009-06-13", "found": null, "ms": 203.65}
+{"tool": "date_guesser", "file": "929302b6b9803163", "gold": "2009-06-19", "found": null, "ms": 54.89}
+{"tool": "date_guesser", "file": "c8447c14f52003a5", "gold": "2009-12-02", "found": null, "ms": 532.17}
+{"tool": "date_guesser", "file": "3a2979c15030a3bf", "gold": "2009-12-04", "found": null, "ms": 375.78}
+{"tool": "date_guesser", "file": "ac441cfb09546d43", "gold": "2009-12-07", "found": null, "ms": 691.81}
+{"tool": "date_guesser", "file": "487aeefe7ecb2f9b", "gold": "2009-12-09", "found": null, "ms": 240.75}
+{"tool": "date_guesser", "file": "c2a04b232218faa9", "gold": "2012-11-02", "found": null, "ms": 62.39}
+{"tool": "date_guesser", "file": "359dcb25b8315ed0", "gold": "2012-11-06", "found": "2012-11-15", "ms": 79.12}
+{"tool": "date_guesser", "file": "1be75506181684ea", "gold": "2012-11-09", "found": null, "ms": 62.03}
+{"tool": "date_guesser", "file": "b1f3ca7bf3a18391", "gold": "2012-11-12", "found": "2012-11-15", "ms": 61.87}
+{"tool": "date_guesser", "file": "1ecec6882e917098", "gold": "2012-05-01", "found": null, "ms": 59.07}
+{"tool": "date_guesser", "file": "68249ec3ef106d8e", "gold": "2012-05-03", "found": null, "ms": 76.91}
+{"tool": "date_guesser", "file": "158fe273efde13f1", "gold": "2012-05-06", "found": "2012-05-15", "ms": 56.29}
+{"tool": "date_guesser", "file": "2c4cded46582d8a8", "gold": "2012-05-09", "found": "2012-05-15", "ms": 64.13}
+{"tool": "date_guesser", "file": "32803fed25af4188", "gold": "2015-04-02", "found": "2015-04-15", "ms": 48.09}
+{"tool": "date_guesser", "file": "81c7c9b13b74245d", "gold": "2015-04-06", "found": "2015-04-15", "ms": 49.26}
+{"tool": "date_guesser", "file": "44d2edf37517ff2f", "gold": "2015-04-07", "found": "2015-04-15", "ms": 42.65}
+{"tool": "date_guesser", "file": "ed86cd1b45eab47f", "gold": "2015-04-09", "found": "2015-04-09", "ms": 48.17}
+{"tool": "date_guesser", "file": "7ebbaf8e544020d8", "gold": "2015-10-02", "found": "2015-10-02", "ms": 47.21}
+{"tool": "date_guesser", "file": "690370a863309d9a", "gold": "2015-10-06", "found": "2015-10-06", "ms": 52.99}
+{"tool": "date_guesser", "file": "4ef656b9ede34d8b", "gold": "2015-10-09", "found": "2015-10-09", "ms": 43.76}
+{"tool": "date_guesser", "file": "47951aa17daa094a", "gold": "2015-10-14", "found": "2015-10-14", "ms": 62.88}
+{"tool": "date_guesser", "file": "5ce23edfc3bd8c8c", "gold": "2018-09-06", "found": "2018-09-07", "ms": 65.24}
+{"tool": "date_guesser", "file": "3c9732d482eb4682", "gold": "2018-09-12", "found": "2018-09-12", "ms": 70.8}
+{"tool": "date_guesser", "file": "85faaf2a002ae49e", "gold": "2018-09-18", "found": "2018-09-18", "ms": 63.96}
+{"tool": "date_guesser", "file": "68024e11a9348cef", "gold": "2018-09-21", "found": "2018-09-21", "ms": 89.45}
+{"tool": "date_guesser", "file": "951db20b56986516", "gold": "2018-03-02", "found": "2018-03-02", "ms": 93.48}
+{"tool": "date_guesser", "file": "0328c9d9e6303912", "gold": "2018-03-08", "found": "2018-03-08", "ms": 68.28}
+{"tool": "date_guesser", "file": "254a4930ed4da1a3", "gold": "2018-03-13", "found": "2018-03-13", "ms": 47.26}
+{"tool": "date_guesser", "file": "0370bcaf8a2824f5", "gold": "2018-03-17", "found": "2018-03-17", "ms": 53.19}
+{"tool": "date_guesser", "file": "69ab9b927390c91b", "gold": "2021-02-01", "found": "2021-02-01", "ms": 67.08}
+{"tool": "date_guesser", "file": "518e8fa986083071", "gold": "2021-02-04", "found": "2021-02-04", "ms": 89.46}
+{"tool": "date_guesser", "file": "10ac7a4b178a18d1", "gold": "2021-02-10", "found": "2021-02-10", "ms": 67.03}
+{"tool": "date_guesser", "file": "a234e1e85f793b75", "gold": "2021-02-16", "found": "2021-02-16", "ms": 91.74}
+{"tool": "date_guesser", "file": "57c6edfc17717806", "gold": "2021-08-05", "found": "2021-08-05", "ms": 118.87}
+{"tool": "date_guesser", "file": "3df1aa335d72a593", "gold": "2021-08-10", "found": "2021-08-10", "ms": 107.37}
+{"tool": "date_guesser", "file": "d4c1db0ac4ee0610", "gold": "2021-08-13", "found": "2021-08-13", "ms": 69.34}
+{"tool": "date_guesser", "file": "ea8d6231f91ad3fa", "gold": "2021-08-18", "found": "2021-08-18", "ms": 89.92}
+{"tool": "date_guesser", "file": "eb525d8e0521fafc", "gold": "2023-07-04", "found": "2023-07-04", "ms": 85.78}
+{"tool": "date_guesser", "file": "1781d1adef0ec755", "gold": "2023-07-09", "found": "2023-07-09", "ms": 106.63}
+{"tool": "date_guesser", "file": "717a79cd35850d75", "gold": "2023-07-13", "found": "2023-07-13", "ms": 104.58}
+{"tool": "date_guesser", "file": "adc70b51685c01dd", "gold": "2023-07-20", "found": "2023-07-20", "ms": 77.97}
+{"tool": "date_guesser", "file": "4ed34be7f7cbdd0c", "gold": "2023-01-01", "found": "2023-01-01", "ms": 74.7}
+{"tool": "date_guesser", "file": "38c92beb17e06851", "gold": "2023-01-04", "found": "2023-01-04", "ms": 97.63}
+{"tool": "date_guesser", "file": "1e58817ab9177c4e", "gold": "2023-01-08", "found": "2023-01-08", "ms": 94.22}
+{"tool": "date_guesser", "file": "b295db8ab60dcd2b", "gold": "2023-01-11", "found": "2023-01-11", "ms": 239.12}
+{"tool": "date_guesser", "file": "d3c03abf118cbb27", "gold": "2025-12-05", "found": "2025-12-05", "ms": 97.58}
+{"tool": "date_guesser", "file": "0c8e801e264a10bc", "gold": "2025-12-11", "found": "2025-12-11", "ms": 121.18}
+{"tool": "date_guesser", "file": "1296bc21eca06351", "gold": "2025-12-18", "found": "2025-12-18", "ms": 104.4}
+{"tool": "date_guesser", "file": "0fd6f3222f83cadb", "gold": "2025-12-29", "found": "2025-12-29", "ms": 76.46}
+{"tool": "date_guesser", "file": "08f8061a9590d46c", "gold": "2025-06-03", "found": "2025-06-03", "ms": 78.16}
+{"tool": "date_guesser", "file": "6d4dc6170cdcae34", "gold": "2025-06-10", "found": "2025-06-10", "ms": 87.89}
+{"tool": "date_guesser", "file": "8d4eb9e00082e78c", "gold": "2025-06-19", "found": "2025-06-19", "ms": 111.87}
+{"tool": "date_guesser", "file": "2a26cb67de8b557e", "gold": "2025-06-26", "found": "2025-06-26", "ms": 98.12}
+{"tool": "date_guesser", "file": "935a6ebb00f0b21c", "gold": "2012-11-01", "found": null, "ms": 70.02}
+{"tool": "date_guesser", "file": "40389da72c0b2b21", "gold": "2012-11-04", "found": null, "ms": 71.1}
+{"tool": "date_guesser", "file": "00f0c157962c2153", "gold": "2012-11-07", "found": null, "ms": 92.56}
+{"tool": "date_guesser", "file": "0e3fad747f218abb", "gold": "2012-11-08", "found": null, "ms": 85.04}
+{"tool": "date_guesser", "file": "25b8c3dc4cf3a074", "gold": "2012-05-01", "found": null, "ms": 92.74}
+{"tool": "date_guesser", "file": "5d68bf416d3cdfd9", "gold": "2012-05-03", "found": null, "ms": 72.43}
+{"tool": "date_guesser", "file": "983f7ded339ce062", "gold": "2012-05-07", "found": null, "ms": 78.66}
+{"tool": "date_guesser", "file": "f4a1a18e90cabe3e", "gold": "2015-04-04", "found": "2015-04-04", "ms": 93.4}
+{"tool": "date_guesser", "file": "efcbf968c7235728", "gold": "2015-04-07", "found": "2015-04-07", "ms": 94.05}
+{"tool": "date_guesser", "file": "77e879fdd3e818f1", "gold": "2015-04-10", "found": "2015-04-10", "ms": 363.0}
+{"tool": "date_guesser", "file": "41ebaeb310aac536", "gold": "2015-10-01", "found": "2015-10-02", "ms": 88.62}
+{"tool": "date_guesser", "file": "45884b6318470a7e", "gold": "2015-10-03", "found": "2015-10-03", "ms": 99.62}
+{"tool": "date_guesser", "file": "c2efba2cd06430e9", "gold": "2015-10-06", "found": "2015-10-06", "ms": 108.12}
+{"tool": "date_guesser", "file": "249639ed96df73ce", "gold": "2015-10-08", "found": "2015-10-08", "ms": 110.05}
+{"tool": "date_guesser", "file": "a6905494476620df", "gold": "2021-02-01", "found": "2021-02-01", "ms": 107.99}
+{"tool": "date_guesser", "file": "3d519ccd22117fa2", "gold": "2021-02-03", "found": "2021-02-03", "ms": 82.9}
+{"tool": "date_guesser", "file": "cb3a9c1537fa133f", "gold": "2021-08-10", "found": "2021-08-10", "ms": 87.2}
+{"tool": "date_guesser", "file": "68e1bacf5f28e0ee", "gold": "2021-08-13", "found": "2021-08-13", "ms": 108.97}
+{"tool": "date_guesser", "file": "14cc5f6afc16608d", "gold": "2023-07-01", "found": "2023-06-29", "ms": 48.72}
+{"tool": "date_guesser", "file": "d3eed18c52e94e64", "gold": "2023-07-03", "found": "2023-07-03", "ms": 61.5}
+{"tool": "date_guesser", "file": "e92f8a4d74c25b22", "gold": "2023-07-05", "found": "2023-07-05", "ms": 130.68}
+{"tool": "date_guesser", "file": "bb3124bdca35625a", "gold": "2023-07-06", "found": "2023-07-06", "ms": 60.43}
+{"tool": "date_guesser", "file": "4ec07e16aacf986f", "gold": "2023-01-04", "found": "2023-01-04", "ms": 88.64}
+{"tool": "date_guesser", "file": "794507c38a75bd93", "gold": "2023-01-05", "found": "2023-01-05", "ms": 48.32}
+{"tool": "date_guesser", "file": "f96ca66dad068af6", "gold": "2023-01-07", "found": "2023-01-07", "ms": 195.44}
+{"tool": "date_guesser", "file": "3ba77fc9f39d5ddc", "gold": "2025-12-01", "found": "2025-12-01", "ms": 42.9}
+{"tool": "date_guesser", "file": "59725b0fd7e58b97", "gold": "2025-12-02", "found": "2025-12-02", "ms": 58.43}
+{"tool": "date_guesser", "file": "a8ad8945701edff6", "gold": "2025-12-03", "found": "2025-12-03", "ms": 38.87}
+{"tool": "date_guesser", "file": "a7e6c2e4721ceb24", "gold": "2025-12-04", "found": "2025-12-04", "ms": 37.91}
+{"tool": "date_guesser", "file": "62cc0ca58e8df253", "gold": "2025-06-01", "found": "2025-06-01", "ms": 88.71}
+{"tool": "date_guesser", "file": "0b1b7953a463ee8c", "gold": "2025-06-08", "found": "2025-06-08", "ms": 50.9}
+{"tool": "date_guesser", "file": "13824e35969074d0", "gold": "2018-09-12", "found": "2018-09-12", "ms": 83.73}
+{"tool": "date_guesser", "file": "623bb222d99f21be", "gold": "2018-09-18", "found": "2018-09-18", "ms": 90.05}
+{"tool": "date_guesser", "file": "0aad96e61377ee1e", "gold": "2018-09-28", "found": "2018-09-28", "ms": 111.43}
+{"tool": "date_guesser", "file": "b5ebf16a433dda6e", "gold": "2018-03-12", "found": "2018-03-12", "ms": 92.83}
+{"tool": "date_guesser", "file": "57bd183813bc53c1", "gold": "2018-03-21", "found": "2018-03-21", "ms": 102.26}
+{"tool": "date_guesser", "file": "f6b08127da656854", "gold": "2018-03-28", "found": "2018-03-28", "ms": 110.34}
+{"tool": "date_guesser", "file": "9a4f8b3ee56fa6e7", "gold": "2021-02-03", "found": "2021-02-03", "ms": 119.93}
+{"tool": "date_guesser", "file": "d27fbcea64da79e6", "gold": "2021-02-10", "found": "2021-02-10", "ms": 88.15}
+{"tool": "date_guesser", "file": "e6c185e058db9b56", "gold": "2021-02-12", "found": "2021-02-12", "ms": 137.88}
+{"tool": "date_guesser", "file": "f06290212f39874a", "gold": "2021-02-24", "found": "2021-02-24", "ms": 107.66}
+{"tool": "date_guesser", "file": "78ebcf1e243458a7", "gold": "2021-08-12", "found": "2021-08-12", "ms": 106.19}
+{"tool": "date_guesser", "file": "194e81310fd89352", "gold": "2021-08-20", "found": "2021-08-20", "ms": 109.99}
+{"tool": "date_guesser", "file": "9d3451463fef893c", "gold": "2021-08-30", "found": "2021-08-30", "ms": 140.88}
+{"tool": "date_guesser", "file": "6af3e1bb6714a694", "gold": "2021-08-31", "found": "2021-08-31", "ms": 99.99}
+{"tool": "date_guesser", "file": "8741943b3467b955", "gold": "2023-07-01", "found": "2023-07-01", "ms": 103.7}
+{"tool": "date_guesser", "file": "8c7031cec127ae3b", "gold": "2023-07-05", "found": "2023-07-05", "ms": 103.05}
+{"tool": "date_guesser", "file": "8c23ce5be8db2910", "gold": "2023-07-13", "found": "2023-07-13", "ms": 94.31}
+{"tool": "date_guesser", "file": "a2a5d29c112b1461", "gold": "2023-07-20", "found": "2023-07-21", "ms": 98.7}
+{"tool": "date_guesser", "file": "23e9cc3a39545e95", "gold": "2023-01-06", "found": "2023-01-06", "ms": 108.87}
+{"tool": "date_guesser", "file": "823414c1c8b418fe", "gold": "2023-01-12", "found": "2023-01-12", "ms": 98.67}
+{"tool": "date_guesser", "file": "a91466a992d25ddb", "gold": "2023-01-17", "found": "2023-01-17", "ms": 110.81}
+{"tool": "date_guesser", "file": "d18ae7d38d014856", "gold": "2023-01-20", "found": "2023-01-20", "ms": 84.7}
+{"tool": "date_guesser", "file": "ade9b8685c16f1af", "gold": "2025-12-10", "found": "2025-12-10", "ms": 60.31}
+{"tool": "date_guesser", "file": "a158a00f53f22043", "gold": "2025-12-12", "found": "2025-12-12", "ms": 64.86}
+{"tool": "date_guesser", "file": "c509cdfcdf44fefe", "gold": "2025-12-15", "found": "2025-12-15", "ms": 60.75}
+{"tool": "date_guesser", "file": "3e62b45ebe7539ab", "gold": "2025-12-19", "found": "2025-12-19", "ms": 83.69}
+{"tool": "date_guesser", "file": "5cbd8b5c049f0fa5", "gold": "2025-06-25", "found": "2025-06-25", "ms": 55.19}
+{"tool": "date_guesser", "file": "ef4de420b3e9259b", "gold": "2026-07-28", "found": "2026-07-28", "ms": 81.43}
+{"tool": "date_guesser", "file": "6029c006928506a6", "gold": "2026-07-27", "found": "2026-07-27", "ms": 69.32}
+{"tool": "date_guesser", "file": "e5295cc3d40541a7", "gold": "2026-07-24", "found": "2026-07-24", "ms": 72.22}
+{"tool": "date_guesser", "file": "43044cc70d1d4b10", "gold": "2026-07-24", "found": "2026-07-24", "ms": 85.5}
+{"tool": "date_guesser", "file": "dce866d7f1ce7ced", "gold": "2026-07-23", "found": "2026-07-23", "ms": 70.7}
+{"tool": "date_guesser", "file": "bf75dfbcb61a7550", "gold": "2026-07-22", "found": "2026-07-22", "ms": 72.92}
+{"tool": "date_guesser", "file": "6db77ed6ec94d371", "gold": "2018-09-08", "found": "2018-09-08", "ms": 167.07}
+{"tool": "date_guesser", "file": "f3439870a2fad578", "gold": "2018-09-15", "found": "2018-09-15", "ms": 567.06}
+{"tool": "date_guesser", "file": "94a01354eba25c7c", "gold": "2018-09-22", "found": "2018-09-22", "ms": 279.95}
+{"tool": "date_guesser", "file": "8bd509cf109683df", "gold": "2018-03-03", "found": "2018-03-03", "ms": 267.3}
+{"tool": "date_guesser", "file": "90b06c68a48dcf84", "gold": "2018-03-09", "found": "2018-03-09", "ms": 93.19}
+{"tool": "date_guesser", "file": "85b692707e800b1f", "gold": "2018-03-14", "found": "2018-03-14", "ms": 113.86}
+{"tool": "date_guesser", "file": "c97513a92d25a961", "gold": "2015-04-14", "found": "2015-04-14", "ms": 25.9}
+{"tool": "date_guesser", "file": "33fadade9e811dd8", "gold": "2015-10-31", "found": "2015-10-31", "ms": 35.92}
+{"tool": "date_guesser", "file": "ae9cd1fc7e1eec9b", "gold": "2018-09-03", "found": null, "ms": 33.38}
+{"tool": "date_guesser", "file": "9ccd515fc58da393", "gold": "2018-09-22", "found": null, "ms": 22.81}
+{"tool": "date_guesser", "file": "eaf7c86f914d96fa", "gold": "2018-09-30", "found": null, "ms": 40.94}
+{"tool": "date_guesser", "file": "0e110232bc77191e", "gold": "2018-03-05", "found": null, "ms": 33.34}
+{"tool": "date_guesser", "file": "a17abadb8b65bfc4", "gold": "2018-03-26", "found": null, "ms": 26.53}
+{"tool": "date_guesser", "file": "b30933bd0f259f2d", "gold": "2018-03-31", "found": null, "ms": 44.19}
+{"tool": "date_guesser", "file": "ced87e9e767878fa", "gold": "2021-02-02", "found": null, "ms": 22.21}
+{"tool": "date_guesser", "file": "d4b9226693aefd1c", "gold": "2021-02-04", "found": null, "ms": 26.36}
+{"tool": "date_guesser", "file": "031aafe8166e0790", "gold": "2021-02-10", "found": null, "ms": 19.66}
+{"tool": "date_guesser", "file": "f0e4e96a64d5810e", "gold": "2023-07-08", "found": null, "ms": 22.53}
+{"tool": "date_guesser", "file": "ee67c4f0147c3468", "gold": "2023-07-10", "found": null, "ms": 27.89}
+{"tool": "date_guesser", "file": "51b3d6151bafbc36", "gold": "2023-07-28", "found": null, "ms": 44.19}
+{"tool": "date_guesser", "file": "219d5867ea4e3386", "gold": "2023-01-10", "found": null, "ms": 41.9}
+{"tool": "date_guesser", "file": "b99cc31c6acdbfc3", "gold": "2023-01-13", "found": null, "ms": 54.38}
+{"tool": "date_guesser", "file": "90cb6264603271ba", "gold": "2023-01-18", "found": null, "ms": 60.86}
+{"tool": "date_guesser", "file": "0926977dac85ae5e", "gold": "2025-06-10", "found": null, "ms": 56.02}
+{"tool": "date_guesser", "file": "b15e4d8cd6271cc0", "gold": "2009-06-15", "found": null, "ms": 13.01}
+{"tool": "date_guesser", "file": "2328702eea23a596", "gold": "2009-06-23", "found": null, "ms": 12.66}
+{"tool": "date_guesser", "file": "c36d0cb038d857ec", "gold": "2009-12-29", "found": null, "ms": 13.66}
+{"tool": "date_guesser", "file": "64cac4363fafa44f", "gold": "2012-11-05", "found": null, "ms": 13.32}
+{"tool": "date_guesser", "file": "8211e4925e36699f", "gold": "2012-11-27", "found": null, "ms": 16.94}
+{"tool": "date_guesser", "file": "746d21921d1d2c5c", "gold": "2015-04-07", "found": null, "ms": 15.6}
+{"tool": "date_guesser", "file": "28e37887014d5a65", "gold": "2015-04-18", "found": null, "ms": 19.35}
+{"tool": "date_guesser", "file": "7569a8c5de54ea73", "gold": "2015-04-28", "found": null, "ms": 28.41}
+{"tool": "date_guesser", "file": "da67c8b1fa061a85", "gold": "2015-10-04", "found": null, "ms": 16.47}
+{"tool": "date_guesser", "file": "7958733d76409d80", "gold": "2015-10-13", "found": null, "ms": 20.86}
+{"tool": "date_guesser", "file": "8075e1922d33e914", "gold": "2015-10-24", "found": null, "ms": 20.28}
+{"tool": "date_guesser", "file": "944c55bcecf80019", "gold": "2018-09-21", "found": null, "ms": 17.24}
+{"tool": "date_guesser", "file": "b1332d84f2c1e55f", "gold": "2018-09-28", "found": null, "ms": 21.37}
+{"tool": "date_guesser", "file": "3a4fdf3ffe026512", "gold": "2018-03-27", "found": null, "ms": 16.42}
+{"tool": "date_guesser", "file": "ad82957e50931a68", "gold": "2021-02-02", "found": null, "ms": 17.0}
+{"tool": "date_guesser", "file": "ec2260dfcdd9e057", "gold": "2021-02-12", "found": null, "ms": 21.46}
+{"tool": "date_guesser", "file": "59db525f0adae67b", "gold": "2021-02-19", "found": null, "ms": 21.44}
+{"tool": "date_guesser", "file": "27fbee71f11db470", "gold": "2021-08-09", "found": null, "ms": 27.73}
+{"tool": "date_guesser", "file": "f9f69c8f5cbc9069", "gold": "2021-08-13", "found": null, "ms": 24.62}
+{"tool": "date_guesser", "file": "cb5af453d9d8d5db", "gold": "2021-08-29", "found": null, "ms": 35.93}
+{"tool": "date_guesser", "file": "0bf275b9fb1b3b71", "gold": "2023-07-06", "found": null, "ms": 39.65}
+{"tool": "date_guesser", "file": "6967a7b06af4cbaf", "gold": "2023-07-16", "found": null, "ms": 30.41}
+{"tool": "date_guesser", "file": "173ec36ab9fa6675", "gold": "2023-01-01", "found": null, "ms": 31.65}
+{"tool": "date_guesser", "file": "e392a99d9bbd906e", "gold": "2023-01-13", "found": null, "ms": 33.02}
+{"tool": "date_guesser", "file": "1b045bc2f15d95ae", "gold": "2023-01-22", "found": null, "ms": 40.75}
+{"tool": "date_guesser", "file": "36f23adc20402ddd", "gold": "2025-12-08", "found": null, "ms": 46.09}
+{"tool": "date_guesser", "file": "f0e333ab0da88511", "gold": "2025-12-15", "found": null, "ms": 53.36}
+{"tool": "date_guesser", "file": "e3a50038700658c7", "gold": "2025-12-27", "found": null, "ms": 44.12}
+{"tool": "date_guesser", "file": "e343bff5377f96c5", "gold": "2025-06-04", "found": null, "ms": 44.28}
+{"tool": "date_guesser", "file": "59dcba3d2dd2461d", "gold": "2025-06-09", "found": null, "ms": 25.12}
+{"tool": "date_guesser", "file": "2a57b50a2e5a78d1", "gold": "2025-06-22", "found": null, "ms": 49.2}
+{"tool": "articleDateExtractor", "file": "7997467e71b1f729", "gold": "2006-01-25", "found": "2006-01-25", "ms": 33.7}
+{"tool": "articleDateExtractor", "file": "921bb454568653cb", "gold": "2006-07-08", "found": null, "ms": 41.36}
+{"tool": "articleDateExtractor", "file": "ae7a8dfaf51e1b4e", "gold": "2009-12-03", "found": null, "ms": 290.94}
+{"tool": "articleDateExtractor", "file": "412a711320a3ef4a", "gold": "2009-12-07", "found": null, "ms": 40.12}
+{"tool": "articleDateExtractor", "file": "983aa839ff9c2787", "gold": "2012-11-01", "found": "2013-01-31", "ms": 58.85}
+{"tool": "articleDateExtractor", "file": "c026b1b4612094e5", "gold": "2012-11-05", "found": "2013-01-31", "ms": 45.33}
+{"tool": "articleDateExtractor", "file": "19b2502e287b6dc1", "gold": "2012-11-07", "found": "2012-11-08", "ms": 59.13}
+{"tool": "articleDateExtractor", "file": "2d2bde2541fd7e20", "gold": "2012-11-09", "found": "2013-01-31", "ms": 47.79}
+{"tool": "articleDateExtractor", "file": "ce9dff8dcbb1778d", "gold": "2012-05-01", "found": "2012-05-19", "ms": 54.36}
+{"tool": "articleDateExtractor", "file": "f5f440b512c5a41c", "gold": "2012-05-02", "found": "2012-05-19", "ms": 65.68}
+{"tool": "articleDateExtractor", "file": "de1a6d0398e2e0d2", "gold": "2012-05-03", "found": "2012-05-19", "ms": 55.84}
+{"tool": "articleDateExtractor", "file": "b3062b03d70cfb15", "gold": "2012-05-06", "found": "2012-05-19", "ms": 51.28}
+{"tool": "articleDateExtractor", "file": "73ca7f92b0ea1f76", "gold": "2015-04-02", "found": "2015-04-02", "ms": 88.94}
+{"tool": "articleDateExtractor", "file": "b2810ae3f813fb0e", "gold": "2015-04-04", "found": "2015-04-04", "ms": 80.78}
+{"tool": "articleDateExtractor", "file": "fecf263fac1d3717", "gold": "2015-04-07", "found": "2015-04-07", "ms": 73.5}
+{"tool": "articleDateExtractor", "file": "600c06fbef7bbd81", "gold": "2015-04-08", "found": "2015-04-08", "ms": 67.93}
+{"tool": "articleDateExtractor", "file": "e2cf06176201ec29", "gold": "2015-10-01", "found": "2015-10-01", "ms": 79.09}
+{"tool": "articleDateExtractor", "file": "6ca06838e959d314", "gold": "2015-10-04", "found": "2015-10-05", "ms": 118.61}
+{"tool": "articleDateExtractor", "file": "13a64abb1d08c353", "gold": "2015-10-06", "found": "2015-10-06", "ms": 148.78}
+{"tool": "articleDateExtractor", "file": "96dffd4bdd83ddc8", "gold": "2015-10-07", "found": "2015-10-07", "ms": 419.33}
+{"tool": "articleDateExtractor", "file": "532ad6cff07d04fe", "gold": "2018-09-04", "found": "2018-09-04", "ms": 17.77}
+{"tool": "articleDateExtractor", "file": "62e7350984c52823", "gold": "2018-09-05", "found": "2018-09-05", "ms": 21.01}
+{"tool": "articleDateExtractor", "file": "b870e1b6115012ff", "gold": "2018-09-06", "found": "2018-09-06", "ms": 15.95}
+{"tool": "articleDateExtractor", "file": "c0e97ad2eb32fb72", "gold": "2018-09-07", "found": "2018-09-07", "ms": 17.75}
+{"tool": "articleDateExtractor", "file": "ee98b74a31a6abe8", "gold": "2018-03-02", "found": "2018-03-02", "ms": 118.51}
+{"tool": "articleDateExtractor", "file": "d19ffd7f609207cc", "gold": "2018-03-05", "found": "2018-03-05", "ms": 122.67}
+{"tool": "articleDateExtractor", "file": "e027ef88dc285693", "gold": "2018-03-06", "found": "2018-03-06", "ms": 13.11}
+{"tool": "articleDateExtractor", "file": "7346fcd27c215baf", "gold": "2021-02-01", "found": "2021-02-01", "ms": 12.11}
+{"tool": "articleDateExtractor", "file": "34ac3480b90a3311", "gold": "2021-02-01", "found": "2021-02-01", "ms": 17.5}
+{"tool": "articleDateExtractor", "file": "db0204c1a715e86b", "gold": "2021-02-02", "found": "2021-02-02", "ms": 17.71}
+{"tool": "articleDateExtractor", "file": "b1c421aa265f8b9c", "gold": "2021-02-02", "found": "2021-02-02", "ms": 21.59}
+{"tool": "articleDateExtractor", "file": "05d7434a093868a7", "gold": "2021-08-02", "found": "2021-08-02", "ms": 17.26}
+{"tool": "articleDateExtractor", "file": "a8b39959219f05ba", "gold": "2021-08-03", "found": "2021-08-03", "ms": 40.69}
+{"tool": "articleDateExtractor", "file": "249bda0763b1e1cc", "gold": "2021-08-04", "found": "2021-08-04", "ms": 19.72}
+{"tool": "articleDateExtractor", "file": "d589f2bae33dac67", "gold": "2021-08-04", "found": "2021-08-04", "ms": 18.59}
+{"tool": "articleDateExtractor", "file": "4623c6778a8406db", "gold": "2023-07-03", "found": "2023-07-03", "ms": 24.58}
+{"tool": "articleDateExtractor", "file": "1e9e4ce0ebe9932a", "gold": "2023-07-07", "found": "2023-07-07", "ms": 42.94}
+{"tool": "articleDateExtractor", "file": "af1fd3fd17d79fa4", "gold": "2023-07-11", "found": "2023-07-11", "ms": 35.46}
+{"tool": "articleDateExtractor", "file": "308811e724f533e5", "gold": "2023-07-12", "found": "2023-07-12", "ms": 31.14}
+{"tool": "articleDateExtractor", "file": "e96d496074a0375c", "gold": "2023-01-02", "found": "2023-01-02", "ms": 27.02}
+{"tool": "articleDateExtractor", "file": "7f23a15f44498c3b", "gold": "2023-01-03", "found": "2023-01-03", "ms": 24.66}
+{"tool": "articleDateExtractor", "file": "eb9f3c2469fd062e", "gold": "2023-01-04", "found": "2023-01-04", "ms": 20.08}
+{"tool": "articleDateExtractor", "file": "7dda065e8caa031c", "gold": "2023-01-05", "found": "2023-01-05", "ms": 24.07}
+{"tool": "articleDateExtractor", "file": "0f1a5a72f35630c5", "gold": "2025-12-03", "found": "2025-12-03", "ms": 79.12}
+{"tool": "articleDateExtractor", "file": "ff57bbb0f2922d34", "gold": "2025-12-06", "found": "2025-12-06", "ms": 74.86}
+{"tool": "articleDateExtractor", "file": "d9ca1b42b60911c3", "gold": "2025-12-10", "found": "2025-12-10", "ms": 71.94}
+{"tool": "articleDateExtractor", "file": "5cd072862b0e7828", "gold": "2025-12-15", "found": "2025-12-15", "ms": 59.17}
+{"tool": "articleDateExtractor", "file": "ea7eec478ff95e97", "gold": "2025-06-02", "found": "2025-06-02", "ms": 41.08}
+{"tool": "articleDateExtractor", "file": "1633be77fd01780c", "gold": "2025-06-06", "found": "2025-06-06", "ms": 52.44}
+{"tool": "articleDateExtractor", "file": "3280bf41435a4217", "gold": "2025-06-11", "found": "2025-06-11", "ms": 57.17}
+{"tool": "articleDateExtractor", "file": "11b3869440efe946", "gold": "2025-06-17", "found": "2025-06-17", "ms": 242.36}
+{"tool": "articleDateExtractor", "file": "943ca33c7b32ef14", "gold": "2025-12-03", "found": "2025-12-03", "ms": 25.54}
+{"tool": "articleDateExtractor", "file": "8fe2407952949782", "gold": "2025-12-07", "found": "2025-12-07", "ms": 45.56}
+{"tool": "articleDateExtractor", "file": "5bb72422b3b65e86", "gold": "2025-12-11", "found": "2025-12-11", "ms": 40.6}
+{"tool": "articleDateExtractor", "file": "0fe47caaaa593e99", "gold": "2025-12-15", "found": "2025-12-15", "ms": 41.36}
+{"tool": "articleDateExtractor", "file": "d7d14d23155896d3", "gold": "2025-06-02", "found": "2025-06-02", "ms": 21.97}
+{"tool": "articleDateExtractor", "file": "82acad553f1b81ec", "gold": "2025-06-05", "found": "2025-06-05", "ms": 24.79}
+{"tool": "articleDateExtractor", "file": "44af0135c1374b6d", "gold": "2025-06-08", "found": "2025-06-08", "ms": 26.74}
+{"tool": "articleDateExtractor", "file": "a72d6db71649cc57", "gold": "2025-06-11", "found": "2025-06-11", "ms": 23.56}
+{"tool": "articleDateExtractor", "file": "f78b72f8083ee249", "gold": "2025-12-02", "found": "2025-12-02", "ms": 51.35}
+{"tool": "articleDateExtractor", "file": "a7dac93929193d90", "gold": "2025-12-04", "found": "2025-12-05", "ms": 57.24}
+{"tool": "articleDateExtractor", "file": "e4251bbdb1502e57", "gold": "2025-12-06", "found": "2025-12-06", "ms": 54.17}
+{"tool": "articleDateExtractor", "file": "61760bd2876d0888", "gold": "2025-12-09", "found": "2025-12-09", "ms": 61.74}
+{"tool": "articleDateExtractor", "file": "4284e0bb8f7900be", "gold": "2025-06-01", "found": "2025-06-01", "ms": 65.07}
+{"tool": "articleDateExtractor", "file": "0667fad5bb7f6fff", "gold": "2025-06-03", "found": "2025-06-03", "ms": 50.9}
+{"tool": "articleDateExtractor", "file": "a0e54f7a402effdf", "gold": "2025-06-05", "found": "2025-06-05", "ms": 43.17}
+{"tool": "articleDateExtractor", "file": "31ae9a22d4f1a329", "gold": "2025-06-07", "found": "2025-06-08", "ms": 51.39}
+{"tool": "articleDateExtractor", "file": "f40a4aa9f0d116ce", "gold": "2015-04-03", "found": null, "ms": 26.13}
+{"tool": "articleDateExtractor", "file": "1cedf5235b827818", "gold": "2015-04-10", "found": null, "ms": 59.18}
+{"tool": "articleDateExtractor", "file": "1a0331dd32882e26", "gold": "2015-04-17", "found": null, "ms": 321.05}
+{"tool": "articleDateExtractor", "file": "20d89f2db8ba595a", "gold": "2015-04-24", "found": null, "ms": 32.07}
+{"tool": "articleDateExtractor", "file": "18f3873efda097ba", "gold": "2015-10-29", "found": null, "ms": 16.68}
+{"tool": "articleDateExtractor", "file": "e70f108714318193", "gold": "2018-09-13", "found": null, "ms": 43.93}
+{"tool": "articleDateExtractor", "file": "6b1db47d0bfa7f9a", "gold": "2018-09-25", "found": null, "ms": 19.28}
+{"tool": "articleDateExtractor", "file": "7993ced6e84507cc", "gold": "2018-03-12", "found": null, "ms": 37.66}
+{"tool": "articleDateExtractor", "file": "1c0ad49665b647ae", "gold": "2018-03-29", "found": null, "ms": 36.93}
+{"tool": "articleDateExtractor", "file": "72c5aa0c1992217b", "gold": "2021-02-11", "found": null, "ms": 20.32}
+{"tool": "articleDateExtractor", "file": "1088cc00736e5957", "gold": "2021-02-11", "found": null, "ms": 29.55}
+{"tool": "articleDateExtractor", "file": "e04ab815fc35b181", "gold": "2021-08-03", "found": null, "ms": 22.3}
+{"tool": "articleDateExtractor", "file": "44b932ca6adb9459", "gold": "2023-07-01", "found": null, "ms": 13.24}
+{"tool": "articleDateExtractor", "file": "611513422863491f", "gold": "2023-07-05", "found": null, "ms": 9.29}
+{"tool": "articleDateExtractor", "file": "353648f60c17df92", "gold": "2023-07-13", "found": null, "ms": 15.88}
+{"tool": "articleDateExtractor", "file": "9fb406e3a52ca7b1", "gold": "2023-01-10", "found": null, "ms": 8.75}
+{"tool": "articleDateExtractor", "file": "f7a441e99eb4c59d", "gold": "2025-12-11", "found": null, "ms": 47.49}
+{"tool": "articleDateExtractor", "file": "b4fb129c96e92e9a", "gold": "2025-06-16", "found": null, "ms": 8.95}
+{"tool": "articleDateExtractor", "file": "14c533ced767edb3", "gold": "2025-06-20", "found": null, "ms": 80.69}
+{"tool": "articleDateExtractor", "file": "4731511d2d78ffcc", "gold": "2025-06-26", "found": null, "ms": 28.7}
+{"tool": "articleDateExtractor", "file": "ed2a3adcc6dba343", "gold": "2009-06-02", "found": null, "ms": 23.56}
+{"tool": "articleDateExtractor", "file": "e30fe3d8f2252772", "gold": "2009-06-08", "found": null, "ms": 42.93}
+{"tool": "articleDateExtractor", "file": "43dc944de22ff47d", "gold": "2009-06-13", "found": null, "ms": 77.61}
+{"tool": "articleDateExtractor", "file": "929302b6b9803163", "gold": "2009-06-19", "found": null, "ms": 22.26}
+{"tool": "articleDateExtractor", "file": "c8447c14f52003a5", "gold": "2009-12-02", "found": null, "ms": 215.5}
+{"tool": "articleDateExtractor", "file": "3a2979c15030a3bf", "gold": "2009-12-04", "found": null, "ms": 282.89}
+{"tool": "articleDateExtractor", "file": "ac441cfb09546d43", "gold": "2009-12-07", "found": null, "ms": 195.3}
+{"tool": "articleDateExtractor", "file": "487aeefe7ecb2f9b", "gold": "2009-12-09", "found": null, "ms": 95.21}
+{"tool": "articleDateExtractor", "file": "c2a04b232218faa9", "gold": "2012-11-02", "found": null, "ms": 23.84}
+{"tool": "articleDateExtractor", "file": "359dcb25b8315ed0", "gold": "2012-11-06", "found": null, "ms": 26.98}
+{"tool": "articleDateExtractor", "file": "1be75506181684ea", "gold": "2012-11-09", "found": null, "ms": 20.36}
+{"tool": "articleDateExtractor", "file": "b1f3ca7bf3a18391", "gold": "2012-11-12", "found": null, "ms": 20.97}
+{"tool": "articleDateExtractor", "file": "1ecec6882e917098", "gold": "2012-05-01", "found": null, "ms": 18.24}
+{"tool": "articleDateExtractor", "file": "68249ec3ef106d8e", "gold": "2012-05-03", "found": null, "ms": 19.45}
+{"tool": "articleDateExtractor", "file": "158fe273efde13f1", "gold": "2012-05-06", "found": null, "ms": 17.95}
+{"tool": "articleDateExtractor", "file": "2c4cded46582d8a8", "gold": "2012-05-09", "found": "2012-05-20", "ms": 19.01}
+{"tool": "articleDateExtractor", "file": "32803fed25af4188", "gold": "2015-04-02", "found": null, "ms": 14.73}
+{"tool": "articleDateExtractor", "file": "81c7c9b13b74245d", "gold": "2015-04-06", "found": null, "ms": 17.71}
+{"tool": "articleDateExtractor", "file": "44d2edf37517ff2f", "gold": "2015-04-07", "found": null, "ms": 18.87}
+{"tool": "articleDateExtractor", "file": "ed86cd1b45eab47f", "gold": "2015-04-09", "found": "2015-04-09", "ms": 17.29}
+{"tool": "articleDateExtractor", "file": "7ebbaf8e544020d8", "gold": "2015-10-02", "found": "2015-10-02", "ms": 12.93}
+{"tool": "articleDateExtractor", "file": "690370a863309d9a", "gold": "2015-10-06", "found": "2015-10-06", "ms": 13.95}
+{"tool": "articleDateExtractor", "file": "4ef656b9ede34d8b", "gold": "2015-10-09", "found": "2015-10-09", "ms": 15.64}
+{"tool": "articleDateExtractor", "file": "47951aa17daa094a", "gold": "2015-10-14", "found": "2015-10-14", "ms": 15.06}
+{"tool": "articleDateExtractor", "file": "5ce23edfc3bd8c8c", "gold": "2018-09-06", "found": "2018-09-07", "ms": 23.48}
+{"tool": "articleDateExtractor", "file": "3c9732d482eb4682", "gold": "2018-09-12", "found": "2018-09-12", "ms": 21.39}
+{"tool": "articleDateExtractor", "file": "85faaf2a002ae49e", "gold": "2018-09-18", "found": "2018-09-18", "ms": 19.14}
+{"tool": "articleDateExtractor", "file": "68024e11a9348cef", "gold": "2018-09-21", "found": "2018-09-20", "ms": 17.31}
+{"tool": "articleDateExtractor", "file": "951db20b56986516", "gold": "2018-03-02", "found": "2018-03-02", "ms": 20.11}
+{"tool": "articleDateExtractor", "file": "0328c9d9e6303912", "gold": "2018-03-08", "found": "2018-03-08", "ms": 16.34}
+{"tool": "articleDateExtractor", "file": "254a4930ed4da1a3", "gold": "2018-03-13", "found": "2018-03-13", "ms": 39.28}
+{"tool": "articleDateExtractor", "file": "0370bcaf8a2824f5", "gold": "2018-03-17", "found": "2018-03-17", "ms": 33.49}
+{"tool": "articleDateExtractor", "file": "69ab9b927390c91b", "gold": "2021-02-01", "found": "2021-02-01", "ms": 34.23}
+{"tool": "articleDateExtractor", "file": "518e8fa986083071", "gold": "2021-02-04", "found": "2021-02-04", "ms": 42.78}
+{"tool": "articleDateExtractor", "file": "10ac7a4b178a18d1", "gold": "2021-02-10", "found": "2021-02-10", "ms": 25.37}
+{"tool": "articleDateExtractor", "file": "a234e1e85f793b75", "gold": "2021-02-16", "found": "2021-02-16", "ms": 213.32}
+{"tool": "articleDateExtractor", "file": "57c6edfc17717806", "gold": "2021-08-05", "found": "2021-08-05", "ms": 16.69}
+{"tool": "articleDateExtractor", "file": "3df1aa335d72a593", "gold": "2021-08-10", "found": "2021-08-10", "ms": 16.78}
+{"tool": "articleDateExtractor", "file": "d4c1db0ac4ee0610", "gold": "2021-08-13", "found": "2021-08-13", "ms": 21.43}
+{"tool": "articleDateExtractor", "file": "ea8d6231f91ad3fa", "gold": "2021-08-18", "found": "2021-08-18", "ms": 16.61}
+{"tool": "articleDateExtractor", "file": "eb525d8e0521fafc", "gold": "2023-07-04", "found": "2023-07-04", "ms": 19.84}
+{"tool": "articleDateExtractor", "file": "1781d1adef0ec755", "gold": "2023-07-09", "found": "2023-07-09", "ms": 29.09}
+{"tool": "articleDateExtractor", "file": "717a79cd35850d75", "gold": "2023-07-13", "found": "2023-07-13", "ms": 24.17}
+{"tool": "articleDateExtractor", "file": "adc70b51685c01dd", "gold": "2023-07-20", "found": "2023-07-20", "ms": 31.78}
+{"tool": "articleDateExtractor", "file": "4ed34be7f7cbdd0c", "gold": "2023-01-01", "found": "2023-01-01", "ms": 36.42}
+{"tool": "articleDateExtractor", "file": "38c92beb17e06851", "gold": "2023-01-04", "found": "2023-01-04", "ms": 21.82}
+{"tool": "articleDateExtractor", "file": "1e58817ab9177c4e", "gold": "2023-01-08", "found": "2023-01-08", "ms": 19.92}
+{"tool": "articleDateExtractor", "file": "b295db8ab60dcd2b", "gold": "2023-01-11", "found": "2023-01-11", "ms": 33.69}
+{"tool": "articleDateExtractor", "file": "d3c03abf118cbb27", "gold": "2025-12-05", "found": "2025-12-05", "ms": 21.46}
+{"tool": "articleDateExtractor", "file": "0c8e801e264a10bc", "gold": "2025-12-11", "found": "2025-12-11", "ms": 32.92}
+{"tool": "articleDateExtractor", "file": "1296bc21eca06351", "gold": "2025-12-18", "found": "2025-12-18", "ms": 31.33}
+{"tool": "articleDateExtractor", "file": "0fd6f3222f83cadb", "gold": "2025-12-29", "found": "2025-12-29", "ms": 19.51}
+{"tool": "articleDateExtractor", "file": "08f8061a9590d46c", "gold": "2025-06-03", "found": "2025-06-03", "ms": 20.97}
+{"tool": "articleDateExtractor", "file": "6d4dc6170cdcae34", "gold": "2025-06-10", "found": "2025-06-10", "ms": 34.43}
+{"tool": "articleDateExtractor", "file": "8d4eb9e00082e78c", "gold": "2025-06-19", "found": "2025-06-19", "ms": 41.15}
+{"tool": "articleDateExtractor", "file": "2a26cb67de8b557e", "gold": "2025-06-26", "found": "2025-06-26", "ms": 35.27}
+{"tool": "articleDateExtractor", "file": "935a6ebb00f0b21c", "gold": "2012-11-01", "found": null, "ms": 53.63}
+{"tool": "articleDateExtractor", "file": "40389da72c0b2b21", "gold": "2012-11-04", "found": null, "ms": 38.05}
+{"tool": "articleDateExtractor", "file": "00f0c157962c2153", "gold": "2012-11-07", "found": null, "ms": 76.48}
+{"tool": "articleDateExtractor", "file": "0e3fad747f218abb", "gold": "2012-11-08", "found": null, "ms": 81.79}
+{"tool": "articleDateExtractor", "file": "25b8c3dc4cf3a074", "gold": "2012-05-01", "found": null, "ms": 54.26}
+{"tool": "articleDateExtractor", "file": "5d68bf416d3cdfd9", "gold": "2012-05-03", "found": null, "ms": 46.87}
+{"tool": "articleDateExtractor", "file": "983f7ded339ce062", "gold": "2012-05-07", "found": null, "ms": 55.39}
+{"tool": "articleDateExtractor", "file": "f4a1a18e90cabe3e", "gold": "2015-04-04", "found": "2015-04-04", "ms": 64.3}
+{"tool": "articleDateExtractor", "file": "efcbf968c7235728", "gold": "2015-04-07", "found": "2015-04-07", "ms": 74.21}
+{"tool": "articleDateExtractor", "file": "77e879fdd3e818f1", "gold": "2015-04-10", "found": "2015-04-10", "ms": 121.57}
+{"tool": "articleDateExtractor", "file": "41ebaeb310aac536", "gold": "2015-10-01", "found": "2015-10-02", "ms": 17.23}
+{"tool": "articleDateExtractor", "file": "45884b6318470a7e", "gold": "2015-10-03", "found": "2015-10-03", "ms": 27.2}
+{"tool": "articleDateExtractor", "file": "c2efba2cd06430e9", "gold": "2015-10-06", "found": "2015-10-06", "ms": 15.6}
+{"tool": "articleDateExtractor", "file": "249639ed96df73ce", "gold": "2015-10-08", "found": "2015-10-08", "ms": 32.7}
+{"tool": "articleDateExtractor", "file": "a6905494476620df", "gold": "2021-02-01", "found": "2021-02-04", "ms": 21.49}
+{"tool": "articleDateExtractor", "file": "3d519ccd22117fa2", "gold": "2021-02-03", "found": "2021-02-03", "ms": 20.17}
+{"tool": "articleDateExtractor", "file": "cb3a9c1537fa133f", "gold": "2021-08-10", "found": "2021-08-10", "ms": 24.97}
+{"tool": "articleDateExtractor", "file": "68e1bacf5f28e0ee", "gold": "2021-08-13", "found": "2021-08-13", "ms": 236.72}
+{"tool": "articleDateExtractor", "file": "14cc5f6afc16608d", "gold": "2023-07-01", "found": "2023-06-29", "ms": 18.96}
+{"tool": "articleDateExtractor", "file": "d3eed18c52e94e64", "gold": "2023-07-03", "found": "2023-07-03", "ms": 28.01}
+{"tool": "articleDateExtractor", "file": "e92f8a4d74c25b22", "gold": "2023-07-05", "found": "2023-07-05", "ms": 65.94}
+{"tool": "articleDateExtractor", "file": "bb3124bdca35625a", "gold": "2023-07-06", "found": "2023-07-06", "ms": 19.36}
+{"tool": "articleDateExtractor", "file": "4ec07e16aacf986f", "gold": "2023-01-04", "found": "2023-01-04", "ms": 26.71}
+{"tool": "articleDateExtractor", "file": "794507c38a75bd93", "gold": "2023-01-05", "found": "2023-01-05", "ms": 17.95}
+{"tool": "articleDateExtractor", "file": "f96ca66dad068af6", "gold": "2023-01-07", "found": "2023-01-07", "ms": 23.0}
+{"tool": "articleDateExtractor", "file": "3ba77fc9f39d5ddc", "gold": "2025-12-01", "found": "2025-12-01", "ms": 30.11}
+{"tool": "articleDateExtractor", "file": "59725b0fd7e58b97", "gold": "2025-12-02", "found": "2025-12-02", "ms": 28.95}
+{"tool": "articleDateExtractor", "file": "a8ad8945701edff6", "gold": "2025-12-03", "found": "2025-12-03", "ms": 16.77}
+{"tool": "articleDateExtractor", "file": "a7e6c2e4721ceb24", "gold": "2025-12-04", "found": "2025-12-04", "ms": 26.78}
+{"tool": "articleDateExtractor", "file": "62cc0ca58e8df253", "gold": "2025-06-01", "found": "2025-06-01", "ms": 20.43}
+{"tool": "articleDateExtractor", "file": "0b1b7953a463ee8c", "gold": "2025-06-08", "found": "2025-06-08", "ms": 29.52}
+{"tool": "articleDateExtractor", "file": "13824e35969074d0", "gold": "2018-09-12", "found": "2018-09-12", "ms": 23.76}
+{"tool": "articleDateExtractor", "file": "623bb222d99f21be", "gold": "2018-09-18", "found": "2018-09-18", "ms": 26.01}
+{"tool": "articleDateExtractor", "file": "0aad96e61377ee1e", "gold": "2018-09-28", "found": "2018-09-28", "ms": 25.8}
+{"tool": "articleDateExtractor", "file": "b5ebf16a433dda6e", "gold": "2018-03-12", "found": "2018-03-12", "ms": 19.36}
+{"tool": "articleDateExtractor", "file": "57bd183813bc53c1", "gold": "2018-03-21", "found": "2018-03-21", "ms": 22.17}
+{"tool": "articleDateExtractor", "file": "f6b08127da656854", "gold": "2018-03-28", "found": "2018-03-28", "ms": 27.35}
+{"tool": "articleDateExtractor", "file": "9a4f8b3ee56fa6e7", "gold": "2021-02-03", "found": "2021-02-03", "ms": 21.28}
+{"tool": "articleDateExtractor", "file": "d27fbcea64da79e6", "gold": "2021-02-10", "found": "2021-02-10", "ms": 23.38}
+{"tool": "articleDateExtractor", "file": "e6c185e058db9b56", "gold": "2021-02-12", "found": "2021-02-12", "ms": 24.58}
+{"tool": "articleDateExtractor", "file": "f06290212f39874a", "gold": "2021-02-24", "found": "2021-02-24", "ms": 19.74}
+{"tool": "articleDateExtractor", "file": "78ebcf1e243458a7", "gold": "2021-08-12", "found": "2021-08-12", "ms": 23.46}
+{"tool": "articleDateExtractor", "file": "194e81310fd89352", "gold": "2021-08-20", "found": "2021-08-20", "ms": 17.92}
+{"tool": "articleDateExtractor", "file": "9d3451463fef893c", "gold": "2021-08-30", "found": "2021-08-30", "ms": 22.35}
+{"tool": "articleDateExtractor", "file": "6af3e1bb6714a694", "gold": "2021-08-31", "found": "2021-08-31", "ms": 19.4}
+{"tool": "articleDateExtractor", "file": "8741943b3467b955", "gold": "2023-07-01", "found": "2023-07-01", "ms": 16.78}
+{"tool": "articleDateExtractor", "file": "8c7031cec127ae3b", "gold": "2023-07-05", "found": "2023-07-05", "ms": 20.7}
+{"tool": "articleDateExtractor", "file": "8c23ce5be8db2910", "gold": "2023-07-13", "found": "2023-07-13", "ms": 18.38}
+{"tool": "articleDateExtractor", "file": "a2a5d29c112b1461", "gold": "2023-07-20", "found": "2023-07-21", "ms": 20.41}
+{"tool": "articleDateExtractor", "file": "23e9cc3a39545e95", "gold": "2023-01-06", "found": "2023-01-06", "ms": 31.04}
+{"tool": "articleDateExtractor", "file": "823414c1c8b418fe", "gold": "2023-01-12", "found": "2023-01-12", "ms": 29.44}
+{"tool": "articleDateExtractor", "file": "a91466a992d25ddb", "gold": "2023-01-17", "found": "2023-01-17", "ms": 24.74}
+{"tool": "articleDateExtractor", "file": "d18ae7d38d014856", "gold": "2023-01-20", "found": "2023-01-20", "ms": 22.32}
+{"tool": "articleDateExtractor", "file": "ade9b8685c16f1af", "gold": "2025-12-10", "found": "2025-12-10", "ms": 13.43}
+{"tool": "articleDateExtractor", "file": "a158a00f53f22043", "gold": "2025-12-12", "found": "2025-12-12", "ms": 12.77}
+{"tool": "articleDateExtractor", "file": "c509cdfcdf44fefe", "gold": "2025-12-15", "found": "2025-12-15", "ms": 14.53}
+{"tool": "articleDateExtractor", "file": "3e62b45ebe7539ab", "gold": "2025-12-19", "found": "2025-12-19", "ms": 15.37}
+{"tool": "articleDateExtractor", "file": "5cbd8b5c049f0fa5", "gold": "2025-06-25", "found": "2025-06-25", "ms": 13.36}
+{"tool": "articleDateExtractor", "file": "ef4de420b3e9259b", "gold": "2026-07-28", "found": "2026-07-28", "ms": 15.35}
+{"tool": "articleDateExtractor", "file": "6029c006928506a6", "gold": "2026-07-27", "found": "2026-07-27", "ms": 18.46}
+{"tool": "articleDateExtractor", "file": "e5295cc3d40541a7", "gold": "2026-07-24", "found": "2026-07-24", "ms": 15.07}
+{"tool": "articleDateExtractor", "file": "43044cc70d1d4b10", "gold": "2026-07-24", "found": "2026-07-24", "ms": 17.51}
+{"tool": "articleDateExtractor", "file": "dce866d7f1ce7ced", "gold": "2026-07-23", "found": "2026-07-23", "ms": 18.04}
+{"tool": "articleDateExtractor", "file": "bf75dfbcb61a7550", "gold": "2026-07-22", "found": "2026-07-22", "ms": 15.38}
+{"tool": "articleDateExtractor", "file": "6db77ed6ec94d371", "gold": "2018-09-08", "found": "2018-09-09", "ms": 28.93}
+{"tool": "articleDateExtractor", "file": "f3439870a2fad578", "gold": "2018-09-15", "found": "2018-09-16", "ms": 203.77}
+{"tool": "articleDateExtractor", "file": "94a01354eba25c7c", "gold": "2018-09-22", "found": "2018-09-22", "ms": 57.63}
+{"tool": "articleDateExtractor", "file": "8bd509cf109683df", "gold": "2018-03-03", "found": "2018-03-03", "ms": 60.94}
+{"tool": "articleDateExtractor", "file": "90b06c68a48dcf84", "gold": "2018-03-09", "found": "2018-03-09", "ms": 24.39}
+{"tool": "articleDateExtractor", "file": "85b692707e800b1f", "gold": "2018-03-14", "found": "2018-03-15", "ms": 28.76}
+{"tool": "articleDateExtractor", "file": "c97513a92d25a961", "gold": "2015-04-14", "found": "2015-04-14", "ms": 4.95}
+{"tool": "articleDateExtractor", "file": "33fadade9e811dd8", "gold": "2015-10-31", "found": "2015-10-31", "ms": 9.39}
+{"tool": "articleDateExtractor", "file": "ae9cd1fc7e1eec9b", "gold": "2018-09-03", "found": "2018-09-03", "ms": 9.4}
+{"tool": "articleDateExtractor", "file": "9ccd515fc58da393", "gold": "2018-09-22", "found": "2018-09-22", "ms": 7.23}
+{"tool": "articleDateExtractor", "file": "eaf7c86f914d96fa", "gold": "2018-09-30", "found": "2018-09-30", "ms": 8.88}
+{"tool": "articleDateExtractor", "file": "0e110232bc77191e", "gold": "2018-03-05", "found": "2018-03-05", "ms": 10.32}
+{"tool": "articleDateExtractor", "file": "a17abadb8b65bfc4", "gold": "2018-03-26", "found": "2018-03-26", "ms": 7.31}
+{"tool": "articleDateExtractor", "file": "b30933bd0f259f2d", "gold": "2018-03-31", "found": "2018-03-31", "ms": 11.17}
+{"tool": "articleDateExtractor", "file": "ced87e9e767878fa", "gold": "2021-02-02", "found": "2021-02-02", "ms": 6.7}
+{"tool": "articleDateExtractor", "file": "d4b9226693aefd1c", "gold": "2021-02-04", "found": "2021-02-04", "ms": 9.04}
+{"tool": "articleDateExtractor", "file": "031aafe8166e0790", "gold": "2021-02-10", "found": "2021-02-10", "ms": 8.25}
+{"tool": "articleDateExtractor", "file": "f0e4e96a64d5810e", "gold": "2023-07-08", "found": "2023-07-08", "ms": 6.13}
+{"tool": "articleDateExtractor", "file": "ee67c4f0147c3468", "gold": "2023-07-10", "found": "2023-07-10", "ms": 7.59}
+{"tool": "articleDateExtractor", "file": "51b3d6151bafbc36", "gold": "2023-07-28", "found": "2023-07-28", "ms": 13.92}
+{"tool": "articleDateExtractor", "file": "219d5867ea4e3386", "gold": "2023-01-10", "found": "2023-01-10", "ms": 9.91}
+{"tool": "articleDateExtractor", "file": "b99cc31c6acdbfc3", "gold": "2023-01-13", "found": "2023-01-13", "ms": 11.29}
+{"tool": "articleDateExtractor", "file": "90cb6264603271ba", "gold": "2023-01-18", "found": "2023-01-18", "ms": 20.16}
+{"tool": "articleDateExtractor", "file": "0926977dac85ae5e", "gold": "2025-06-10", "found": "2025-06-10", "ms": 25.02}
+{"tool": "articleDateExtractor", "file": "b15e4d8cd6271cc0", "gold": "2009-06-15", "found": null, "ms": 6.41}
+{"tool": "articleDateExtractor", "file": "2328702eea23a596", "gold": "2009-06-23", "found": null, "ms": 5.08}
+{"tool": "articleDateExtractor", "file": "c36d0cb038d857ec", "gold": "2009-12-29", "found": null, "ms": 5.28}
+{"tool": "articleDateExtractor", "file": "64cac4363fafa44f", "gold": "2012-11-05", "found": null, "ms": 5.44}
+{"tool": "articleDateExtractor", "file": "8211e4925e36699f", "gold": "2012-11-27", "found": null, "ms": 4.38}
+{"tool": "articleDateExtractor", "file": "746d21921d1d2c5c", "gold": "2015-04-07", "found": null, "ms": 4.55}
+{"tool": "articleDateExtractor", "file": "28e37887014d5a65", "gold": "2015-04-18", "found": null, "ms": 5.38}
+{"tool": "articleDateExtractor", "file": "7569a8c5de54ea73", "gold": "2015-04-28", "found": null, "ms": 5.27}
+{"tool": "articleDateExtractor", "file": "da67c8b1fa061a85", "gold": "2015-10-04", "found": null, "ms": 4.87}
+{"tool": "articleDateExtractor", "file": "7958733d76409d80", "gold": "2015-10-13", "found": null, "ms": 4.86}
+{"tool": "articleDateExtractor", "file": "8075e1922d33e914", "gold": "2015-10-24", "found": null, "ms": 8.31}
+{"tool": "articleDateExtractor", "file": "944c55bcecf80019", "gold": "2018-09-21", "found": null, "ms": 5.8}
+{"tool": "articleDateExtractor", "file": "b1332d84f2c1e55f", "gold": "2018-09-28", "found": null, "ms": 6.0}
+{"tool": "articleDateExtractor", "file": "3a4fdf3ffe026512", "gold": "2018-03-27", "found": null, "ms": 7.19}
+{"tool": "articleDateExtractor", "file": "ad82957e50931a68", "gold": "2021-02-02", "found": null, "ms": 12.12}
+{"tool": "articleDateExtractor", "file": "ec2260dfcdd9e057", "gold": "2021-02-12", "found": null, "ms": 6.23}
+{"tool": "articleDateExtractor", "file": "59db525f0adae67b", "gold": "2021-02-19", "found": null, "ms": 6.4}
+{"tool": "articleDateExtractor", "file": "27fbee71f11db470", "gold": "2021-08-09", "found": null, "ms": 7.01}
+{"tool": "articleDateExtractor", "file": "f9f69c8f5cbc9069", "gold": "2021-08-13", "found": null, "ms": 6.62}
+{"tool": "articleDateExtractor", "file": "cb5af453d9d8d5db", "gold": "2021-08-29", "found": null, "ms": 7.16}
+{"tool": "articleDateExtractor", "file": "0bf275b9fb1b3b71", "gold": "2023-07-06", "found": null, "ms": 7.72}
+{"tool": "articleDateExtractor", "file": "6967a7b06af4cbaf", "gold": "2023-07-16", "found": null, "ms": 7.15}
+{"tool": "articleDateExtractor", "file": "173ec36ab9fa6675", "gold": "2023-01-01", "found": null, "ms": 6.35}
+{"tool": "articleDateExtractor", "file": "e392a99d9bbd906e", "gold": "2023-01-13", "found": null, "ms": 5.32}
+{"tool": "articleDateExtractor", "file": "1b045bc2f15d95ae", "gold": "2023-01-22", "found": null, "ms": 5.73}
+{"tool": "articleDateExtractor", "file": "36f23adc20402ddd", "gold": "2025-12-08", "found": null, "ms": 7.09}
+{"tool": "articleDateExtractor", "file": "f0e333ab0da88511", "gold": "2025-12-15", "found": null, "ms": 9.18}
+{"tool": "articleDateExtractor", "file": "e3a50038700658c7", "gold": "2025-12-27", "found": null, "ms": 5.55}
+{"tool": "articleDateExtractor", "file": "e343bff5377f96c5", "gold": "2025-06-04", "found": null, "ms": 8.75}
+{"tool": "articleDateExtractor", "file": "59dcba3d2dd2461d", "gold": "2025-06-09", "found": null, "ms": 5.19}
+{"tool": "articleDateExtractor", "file": "2a57b50a2e5a78d1", "gold": "2025-06-22", "found": null, "ms": 5.4}

@@ -1,0 +1,11 @@
+
+90 pages, split=test, URL neutralised for all tools
+
+  tool                            exact  part  wrong  miss | precision  accuracy   ms/page
+  ----------------------------------------------------------------------------------------
+  pagedate (standard)               69     0      6    15 |    92.0%    76.7%     20.92
+  pagedate (extensive)              69     0      6    15 |    92.0%    76.7%     10.62
+  metascraper                       60     0     12    18 |    83.3%    66.7%     18.40
+  @extractus/article-extractor      53     0     11    26 |    82.8%    58.9%    129.59
+  pagedate (fast)                   44     0      5    41 |    89.8%    48.9%     13.11
+  unfluff                           38     0      2    50 |    95.0%    42.2%     87.04
