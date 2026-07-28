@@ -1,11 +1,11 @@
 {
   "url": "https://css-tricks.com/snippets/css/a-guide-to-flexbox/",
   "capturedAt": "2026-07-28",
-  "notes": "The famous 2013 flexbox guide. JSON-LD declares datePublished 2026-05-28, 22 minutes before dateModified — a CMS migration stamp, not a real publication. Comment <time> elements from 2013 reveal the true age. Expectation is what the site DECLARES, since the real date is nowhere machine-readable; the point of this fixture is that the 2013 comment dates must not leak into the result.",
+  "notes": "The famous 2013 flexbox guide. JSON-LD declares datePublished 2026-05-28, 22 minutes before dateModified — a CMS migration stamp, not a publication. Reader comments from 2014 onward prove the content predates that date, since nobody can comment on an article before it exists. The resolved pair is what the site declares; the conflict is the real finding.",
   "fetchedFeedUrl": "https://css-tricks.com/feed/",
   "expect": {
     "published": "2026-05-28",
     "modified": "2026-05-28",
-    "conflict": null
+    "conflict": "predated-content"
   }
 }

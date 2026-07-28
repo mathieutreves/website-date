@@ -103,7 +103,11 @@ export function extractJsonLd(doc: Document, opts: ParseOptions = {}): Candidate
         out.push({
           ...parsedDate,
           field,
-          source: 'jsonld',
+          // Container types rank below content types: a page carrying both
+          // usually has the real date on the Article and the site build time
+          // on the WebPage. Distinguishing them by source rather than by a
+          // note means ranking can actually act on it.
+          source: isArticle ? 'jsonld' : 'jsonld-container',
           confidence: 'declared',
           note: `schema.org ${key} on ${types[0] ?? 'node'}${isArticle ? '' : ' (container type)'}`,
         })
@@ -112,9 +116,4 @@ export function extractJsonLd(doc: Document, opts: ParseOptions = {}): Candidate
   }
 
   return out
-}
-
-/** Whether a JSON-LD candidate came from a content type rather than a container. */
-export function isArticleScoped(candidate: Candidate): boolean {
-  return candidate.source === 'jsonld' && !candidate.note?.includes('(container type)')
 }

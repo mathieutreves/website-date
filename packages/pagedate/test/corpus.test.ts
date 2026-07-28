@@ -53,6 +53,13 @@ describe('corpus evaluation', () => {
         { now: new Date('2026-07-29T00:00:00Z') },
       )
 
+      // Conflict detection is the differentiating behaviour, so it is asserted
+      // per fixture rather than folded into an aggregate — a false positive
+      // here is worse than a miss, since a permanently lit warning is ignored.
+      expect(result.conflict?.kind ?? null, `conflict mismatch on ${fixture.slug}`).toBe(
+        fixture.expect.conflict,
+      )
+
       const published = score(fixture.expect.published, toDay(result.published?.value))
       const modified = score(fixture.expect.modified, toDay(result.modified?.value))
 

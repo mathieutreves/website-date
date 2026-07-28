@@ -100,16 +100,38 @@ describe('conflict', () => {
     expect(html.indexOf('conflict')).toBeLessThan(html.indexOf('Published'))
   })
 
-  it('uses different wording for a stale declaration', () => {
+  it('says a page is older than claimed when its content predates the declared date', () => {
     const html = view(
       result({
-        published: candidate(),
-        conflict: { kind: 'stale-declaration', gapDays: 900, detail: 'archive shows later edits.' },
+        published: candidate({ value: '2026-05-28' }),
+        conflict: {
+          kind: 'predated-content',
+          gapDays: 4463,
+          detail: 'Declares 2026-05-28, but carries 8 dated elements from before then.',
+        },
       }),
-      'https://example.com/p',
+      'https://css-tricks.com/x/',
       false,
     )
+
     expect(html).toContain('older than it says')
+    expect(html).toContain('8 dated elements')
+  })
+
+  it('uses distinct wording for each conflict kind', () => {
+    const headings = (['declared-disagreement', 'predated-content', 'stale-declaration'] as const)
+      .map(
+        (kind) =>
+          view(
+            result({ conflict: { kind, gapDays: 900, detail: 'x' } }),
+            'https://example.com/p',
+            false,
+          ).match(/<div class="conflict-heading">([^<]+)</)?.[1],
+      )
+      .filter(Boolean)
+
+    // Three different problems must not read as the same warning.
+    expect(new Set(headings).size).toBe(3)
   })
 })
 

@@ -1,4 +1,4 @@
-import type { Candidate, DateResult } from 'pagedate'
+import { toInstant, type Candidate, type DateResult } from 'pagedate'
 
 /**
  * Pure view layer — no browser APIs, so it can be tested directly.
@@ -101,10 +101,11 @@ export function conflictBlock(result: DateResult): string {
   const conflict = result.conflict
   if (!conflict) return ''
 
-  const heading =
-    conflict.kind === 'declared-disagreement'
-      ? 'This page contradicts itself'
-      : 'This page may be older than it says'
+  const heading = {
+    'declared-disagreement': 'This page contradicts itself',
+    'predated-content': 'This page is probably older than it says',
+    'stale-declaration': 'This page may have changed since it says',
+  }[conflict.kind]
 
   return `
     <div class="conflict">
@@ -113,8 +114,23 @@ export function conflictBlock(result: DateResult): string {
     </div>`
 }
 
+/**
+ * Oldest first.
+ *
+ * Extraction order is an implementation detail and reads as arbitrary. Sorting
+ * chronologically makes the spread of dates legible at a glance, and puts the
+ * oldest evidence at the top — which is exactly what matters on a page
+ * declaring a recent date while carrying much older content.
+ */
+function byDateAscending(a: Candidate, b: Candidate): number {
+  const ta = toInstant(a.value)?.getTime() ?? Number.POSITIVE_INFINITY
+  const tb = toInstant(b.value)?.getTime() ?? Number.POSITIVE_INFINITY
+  return ta - tb
+}
+
 function candidateList(candidates: Candidate[]): string {
-  const rows = candidates
+  const rows = [...candidates]
+    .sort(byDateAscending)
     .map(
       (c) => `
         <li class="tier-${c.confidence}">
