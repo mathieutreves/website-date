@@ -18,13 +18,28 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/node/index.d.ts",
+      "import": "./dist/node/index.js"
     }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "pagedate": "./dist/node/cli.js"
+  },
   "files": [
     "dist"
   ],
+  "peerDependencies": {
+    "linkedom": ">=0.18"
+  },
+  "peerDependenciesMeta": {
+    "linkedom": {
+      "optional": true
+    }
+  },
   "scripts": {
     "build": "tsup",
     "test": "vitest run",
