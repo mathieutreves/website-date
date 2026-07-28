@@ -148,6 +148,28 @@ reporting success. Failed queries are now counted and printed. The cost of
 prefix matching is that only dates in the first path segment are found; a site
 publishing to `/blog/2015/08/05/` needs its seed written as `example.com/blog`.
 
+## Permalink labels carry ±1 day of timezone noise
+
+Measured, not theorised: of pagedate's 7 wrong answers on the dev split, **6 were
+exactly one day later than the label**, and every one came from a `declared`
+source — the site's own JSON-LD or OpenGraph.
+
+A post published at 23:30 local time gets a URL built from the local date and an
+`article:published_time` in UTC. The two disagree by a day, and both are correct.
+
+This is inherent to the source and cannot be fixed by better parsing:
+
+- A strict comparison charges the extractor for trusting the site's own
+  machine-readable metadata over a path segment, which is backwards.
+- Silently allowing ±1 day hides genuine off-by-one bugs.
+
+So report both, and say which you mean. Roughly 3% of entries sit on this
+boundary, which is larger than most of the differences a benchmark is used to
+argue about — enough to change a ranking on its own.
+
+The real fix is a label source without the ambiguity: `adjudicated` reads the
+date the page itself renders, in the page's own timezone.
+
 ## Capture lag
 
 Each entry records `captureLagDays`: the gap between the labelled publication
