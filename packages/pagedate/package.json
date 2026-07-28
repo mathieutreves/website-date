@@ -1,7 +1,17 @@
 {
   "name": "pagedate",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Extract publication and modification dates from web pages, with provenance and confidence. Browser-first, zero runtime dependencies.",
+  "author": "Mathieu Treves",
+  "homepage": "https://github.com/mathieutreves/website-date#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mathieutreves/website-date.git",
+    "directory": "packages/pagedate"
+  },
+  "bugs": {
+    "url": "https://github.com/mathieutreves/website-date/issues"
+  },
   "type": "module",
   "license": "MIT",
   "keywords": [
@@ -30,7 +40,8 @@
     "pagedate": "./dist/node/cli.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "NOTICE"
   ],
   "peerDependencies": {
     "linkedom": ">=0.18",
@@ -57,5 +68,12 @@
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }
