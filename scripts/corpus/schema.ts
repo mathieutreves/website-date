@@ -94,6 +94,8 @@ export type CorpusEntry = {
     lang?: string
     pageType?: string
     signals?: string[]
+    /** Does the label date appear in the page at all? Set by enrich.ts. */
+    labelInPage?: boolean
   }
 
   http: {
