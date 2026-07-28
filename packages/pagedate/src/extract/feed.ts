@@ -1,6 +1,7 @@
 import type { Candidate, Env } from '../types.js'
 import { parseDateString, type ParseOptions } from '../parse/normalize.js'
 import { canonicalUrl, childText, defaultParseXml, matchesPage } from './xml.js'
+import { isSafeFetchTarget } from './urlGuard.js'
 
 /**
  * RSS/Atom feed lookup — the signal that makes undated static-site posts
@@ -59,7 +60,12 @@ function declaredFeedUrls(doc: Document, pageUrl: URL): string[] {
     const href = link.getAttribute('href')
     if (!href) continue
     try {
-      out.push(new URL(href, pageUrl).toString())
+      const resolved = new URL(href, pageUrl)
+      // The page picks this URL, so it is filtered rather than trusted. Feeds
+      // are often off-origin (FeedBurner, Substack), so the test is "is this a
+      // public web address" and not "is this the page's own origin".
+      if (!isSafeFetchTarget(resolved)) continue
+      out.push(resolved.toString())
     } catch {
       // relative href we can't resolve — skip
     }

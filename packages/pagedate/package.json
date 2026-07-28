@@ -33,10 +33,14 @@
     "dist"
   ],
   "peerDependencies": {
-    "linkedom": ">=0.18"
+    "linkedom": ">=0.18",
+    "node-html-parser": ">=9"
   },
   "peerDependenciesMeta": {
     "linkedom": {
+      "optional": true
+    },
+    "node-html-parser": {
       "optional": true
     }
   },
@@ -49,6 +53,7 @@
   "devDependencies": {
     "@types/node": "^22.10.2",
     "linkedom": "^0.18.5",
+    "node-html-parser": "^9.0.0",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
