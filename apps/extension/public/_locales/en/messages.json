@@ -176,6 +176,45 @@
   "optArchiveAlways": {
     "message": "Always"
   },
+  "overlayNoDate": {
+    "message": "no date"
+  },
+  "optOverlayHeading": {
+    "message": "On the page"
+  },
+  "optOverlay": {
+    "message": "Show the age in the corner of the page"
+  },
+  "optOverlayHelp": {
+    "message": "Most pages never print their own date — it sits in metadata you cannot see — so this is usually the only place it appears. Needs automatic checking to be on."
+  },
+  "optOverlayNever": {
+    "message": "Never"
+  },
+  "optOverlayAlways": {
+    "message": "Always"
+  },
+  "optOverlayConflict": {
+    "message": "Only when contradicted"
+  },
+  "optOverlayPosition": {
+    "message": "Corner"
+  },
+  "optOverlayBottomLeft": {
+    "message": "Bottom left"
+  },
+  "optOverlayBottomRight": {
+    "message": "Bottom right"
+  },
+  "optOverlayTopLeft": {
+    "message": "Top left"
+  },
+  "optOverlayTopRight": {
+    "message": "Top right"
+  },
+  "optOverlayNeedsAutoRead": {
+    "message": "Turn on automatic checking above to use this."
+  },
   "optDisplayHeading": {
     "message": "Display"
   },

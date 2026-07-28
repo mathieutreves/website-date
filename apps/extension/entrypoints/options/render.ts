@@ -1,5 +1,11 @@
 import { t } from '../../lib/messages.js'
-import type { ArchiveMode, DateFormat, Settings } from '../../lib/settings.js'
+import type {
+  ArchiveMode,
+  DateFormat,
+  OverlayMode,
+  OverlayPosition,
+  Settings,
+} from '../../lib/settings.js'
 
 /**
  * Pure view layer, same split as the popup: no browser APIs here, so the
@@ -20,9 +26,15 @@ export function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
-const radio = (name: string, value: string, label: string, current: string): string => `
+const radio = (
+  name: string,
+  value: string,
+  label: string,
+  current: string,
+  disabled = false,
+): string => `
   <label class="choice">
-    <input type="radio" name="${name}" value="${escapeHtml(value)}" ${value === current ? 'checked' : ''} />
+    <input type="radio" name="${name}" value="${escapeHtml(value)}" ${value === current ? 'checked' : ''} ${disabled ? 'disabled' : ''} />
     ${escapeHtml(label)}
   </label>`
 
@@ -33,6 +45,13 @@ export function optionsView(settings: Settings, stats: CacheStats): string {
     radio('archive', value, label, settings.archive)
   const format = (value: DateFormat, label: string) =>
     radio('dateFormat', value, label, settings.dateFormat)
+  // The overlay is drawn by the background pass, so it cannot work without it.
+  // Disabled rather than hidden: a setting you cannot find is worse than one
+  // you can see the precondition for.
+  const overlay = (value: OverlayMode, label: string) =>
+    radio('overlay', value, label, settings.overlay, !settings.autoRead)
+  const corner = (value: OverlayPosition, label: string) =>
+    radio('overlayPosition', value, label, settings.overlayPosition)
 
   return `
     <header>
@@ -50,6 +69,37 @@ export function optionsView(settings: Settings, stats: CacheStats): string {
         <p class="help">${escapeHtml(t('optAutoReadHelp'))}</p>
         <p class="status" id="auto-read-status" hidden></p>
       </div>
+    </section>
+
+    <section>
+      <h2>${escapeHtml(t('optOverlayHeading'))}</h2>
+      <div class="field${settings.autoRead ? '' : ' disabled'}">
+        <div class="control"><span class="name">${escapeHtml(t('optOverlay'))}</span></div>
+        <p class="help">${escapeHtml(t('optOverlayHelp'))}</p>
+        <div class="choices">
+          ${overlay('always', t('optOverlayAlways'))}
+          ${overlay('conflict', t('optOverlayConflict'))}
+          ${overlay('never', t('optOverlayNever'))}
+        </div>
+        ${
+          settings.autoRead
+            ? ''
+            : `<p class="status">${escapeHtml(t('optOverlayNeedsAutoRead'))}</p>`
+        }
+      </div>
+      ${
+        settings.overlay === 'never'
+          ? ''
+          : `<div class="field">
+        <div class="control"><span class="name">${escapeHtml(t('optOverlayPosition'))}</span></div>
+        <div class="choices">
+          ${corner('bottom-left', t('optOverlayBottomLeft'))}
+          ${corner('bottom-right', t('optOverlayBottomRight'))}
+          ${corner('top-left', t('optOverlayTopLeft'))}
+          ${corner('top-right', t('optOverlayTopRight'))}
+        </div>
+      </div>`
+      }
     </section>
 
     <section>

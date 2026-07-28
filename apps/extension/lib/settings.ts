@@ -9,6 +9,8 @@
 
 export type ArchiveMode = 'off' | 'ask' | 'always'
 export type DateFormat = 'relative' | 'absolute'
+export type OverlayMode = 'never' | 'always' | 'conflict'
+export type OverlayPosition = 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right'
 
 export type Settings = {
   /** Read every page as you browse and show its age on the toolbar icon. */
@@ -17,17 +19,27 @@ export type Settings = {
   archive: ArchiveMode
   /** Whether the headline leads with the age or the calendar date. */
   dateFormat: DateFormat
+  /** Show the age in the corner of the page itself. */
+  overlay: OverlayMode
+  overlayPosition: OverlayPosition
 }
 
 /**
  * Defaults are the privacy-preserving answer in every case. Anything that
  * widens access starts off and is turned on deliberately, by someone reading
  * the sentence next to it.
+ *
+ * `overlay` defaults to `never` even though it needs no permission beyond the
+ * one `autoRead` already took: enabling automatic checking is a decision about
+ * *reading* pages, and does not imply consent to draw on them. Two decisions,
+ * two controls.
  */
 export const DEFAULTS: Settings = {
   autoRead: false,
   archive: 'off',
   dateFormat: 'relative',
+  overlay: 'never',
+  overlayPosition: 'bottom-left',
 }
 
 const KEY = 'settings'
