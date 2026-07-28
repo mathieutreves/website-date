@@ -1,8 +1,8 @@
 import type { Candidate } from '../types.js'
 import { parseDateString, type ParseOptions } from '../parse/normalize.js'
 import { foldCase } from '../parse/locale.js'
-import { scoreContext } from './context.js'
-import { DATE_ANYWHERE, isBorrowedContent, MAYBE_DATE, TEXT_CANDIDATE_SELECTOR, NOT_A_DATE } from './patterns.js'
+import { marksPageRegion, scoreContext } from './context.js'
+import { collapse, DATE_ANYWHERE, directText, isBorrowedContent, MAYBE_DATE, textCandidates, NOT_A_DATE } from './patterns.js'
 
 /**
  * Dates in rendered text with no label attached — a bare "December 11, 2023"
@@ -43,7 +43,7 @@ export function extractBareText(
   const seen = new Set<string>()
   const pageHost = pageUrl?.hostname ?? null
 
-  for (const el of doc.querySelectorAll(TEXT_CANDIDATE_SELECTOR)) {
+  for (const el of textCandidates(doc)) {
     if (out.length >= MAX_CANDIDATES) break
 
     // Same cheap rejection as visibleText, before any allocation.
@@ -65,8 +65,15 @@ export function extractBareText(
 
     // In byline-marked markup the surrounding words are expected ("by Dan ·
     // 5 min read"); elsewhere the date has to carry the element.
+    //
+    // Page-region markers do not earn the exemption — see {@link marksPageRegion}
+    // for what a footer costs. Narrowing further, to markers that positively
+    // name a date block, was measured and refused: it also discards genuine
+    // bylines marked only `entry-meta` or `author`, which is two real pages lost
+    // against one artifact suppressed.
     const ratio = match[0].length / measurableLength(text)
-    if (!context.strong && text.length > ALWAYS_ACCEPT_LENGTH && ratio < MIN_DATE_RATIO) continue
+    const bylineMarked = context.strong && !marksPageRegion(context.marker)
+    if (!bylineMarked && text.length > ALWAYS_ACCEPT_LENGTH && ratio < MIN_DATE_RATIO) continue
 
     const parsed = parseDateString(match[0], opts)
     if (!parsed) continue
@@ -79,7 +86,7 @@ export function extractBareText(
       field: 'unknown',
       source: 'text-date',
       confidence: 'inferred',
-      note: context.strong
+      note: bylineMarked
         ? `unlabelled date in byline markup: "${match[0].trim()}"`
         : `unlabelled date in text: "${match[0].trim()}"`,
     })
@@ -123,31 +130,3 @@ function dateBearingText(el: Element): string {
   return own
 }
 
-/**
- * Text belonging to this element rather than its descendants, so a wrapper
- * doesn't inherit every date its children contain.
- */
-function directText(el: Element): string {
-  let out = ''
-  for (const node of el.childNodes) {
-    // Node.TEXT_NODE === 3 / ELEMENT_NODE === 1; compared numerically because
-    // the Node constants are not globals under linkedom.
-    // `textContent` is the fallback because some non-browser DOM
-    // implementations (node-html-parser) leave `nodeValue` undefined on text
-    // nodes. On a text node the two are defined to be equal, so this costs
-    // nothing on a real DOM and keeps the extractor parser-agnostic.
-    if (node.nodeType === 3) out += node.nodeValue ?? node.textContent ?? ''
-    else if (node.nodeType === 1) {
-      const tag = (node as Element).tagName?.toUpperCase()
-      if (tag === 'TIME' || tag === 'SPAN' || tag === 'B' || tag === 'STRONG' || tag === 'EM') {
-        out += (node as Element).textContent ?? ''
-      }
-    }
-  }
-  return out
-}
-
-/** Whitespace collapsing, deferred until an element is known to be worth it. */
-function collapse(text: string): string {
-  return text.replace(/\s+/g, ' ').trim()
-}

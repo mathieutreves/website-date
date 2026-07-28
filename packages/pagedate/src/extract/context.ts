@@ -6,6 +6,8 @@
  * usually has *more* dates and they're usually *newer*.
  */
 
+import { boundedText, parentOf } from './patterns.js'
+
 /**
  * Class/id tokens that mark listing furniture across most themes.
  *
@@ -120,6 +122,26 @@ const DATE_BLOCK_MARKERS = new Set([
 export const marksDateBlock = (marker: string | undefined): boolean =>
   marker !== undefined && DATE_BLOCK_MARKERS.has(marker)
 
+/**
+ * Markers naming a region of the *page* rather than metadata about the article.
+ *
+ * `footer` is in {@link ARTICLE_PATTERN} because documentation sites put their
+ * "Last updated" line in a page-level footer and the header/footer rule would
+ * otherwise discard it. That is a reason to read a *labelled* date there. It is
+ * not a reason to accept a bare date buried in a footer sentence: Il Post ends
+ * every page with "Il Post è una testata registrata presso il Tribunale di
+ * Milano, 419 del 28 settembre 2009", and on the strength of `footer` alone that
+ * registration date was read as the publication date of every article on the
+ * site.
+ *
+ * Distinguished here rather than by removing `footer` from the vocabulary,
+ * because the two extractors genuinely want different answers from it.
+ */
+const PAGE_REGION_MARKERS = new Set(['footer'])
+
+export const marksPageRegion = (marker: string | undefined): boolean =>
+  marker !== undefined && PAGE_REGION_MARKERS.has(marker)
+
 export function fieldFromMarker(marker: string | undefined): 'published' | 'modified' | 'unknown' {
   if (marksModification(marker)) return 'modified'
   if (marksPublication(marker)) return 'published'
@@ -169,7 +191,7 @@ export function scoreContext(el: Element): ContextScore {
       }
     }
 
-    node = node.parentElement
+    node = parentOf(node)
     depth++
   }
 
@@ -192,13 +214,26 @@ export function scoreContext(el: Element): ContextScore {
   return marker ? { usable: true, strong, marker } : { usable: true, strong }
 }
 
+/** How much text around an element is enough to tell "published" from "updated". */
+const NEARBY_LIMIT = 400
+
 /**
  * Nearby text used to tell "published" from "updated". Looks at the element,
  * its parent, and the text immediately preceding it.
+ *
+ * Each piece is gathered through {@link boundedText} rather than `textContent`,
+ * and the label is capped too: the result is truncated to {@link NEARBY_LIMIT}
+ * either way, so reading a whole subtree — or a whole `title` attribute — to
+ * throw all but the first 400 characters away is pure cost, and cost the page
+ * gets to choose. Same answer on any real document; bounded on a hostile one.
  */
 export function surroundingText(el: Element): string {
-  const own = el.textContent ?? ''
-  const parent = el.parentElement?.textContent ?? ''
-  const label = el.getAttribute('aria-label') ?? el.getAttribute('title') ?? ''
-  return `${label} ${parent} ${own}`.slice(0, 400)
+  const own = boundedText(el, NEARBY_LIMIT)
+  const parentEl = parentOf(el)
+  const parent = parentEl ? boundedText(parentEl, NEARBY_LIMIT) : ''
+  const label = (el.getAttribute('aria-label') ?? el.getAttribute('title') ?? '').slice(
+    0,
+    NEARBY_LIMIT,
+  )
+  return `${label} ${parent} ${own}`.slice(0, NEARBY_LIMIT)
 }
