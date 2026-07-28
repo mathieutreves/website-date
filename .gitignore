@@ -19,3 +19,6 @@ web-ext-artifacts/
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# Local Python venv for the htmldate comparison
+.venv-eval/
