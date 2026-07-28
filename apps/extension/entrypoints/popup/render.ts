@@ -79,11 +79,14 @@ export function headline(
   format: DateFormat,
 ): string {
   const age = relativeAge(candidate, now)
-  const exact = `<time datetime="${escapeHtml(candidate.value)}">${escapeHtml(display(candidate))}</time>`
+  const exact = `<time datetime="${escapeHtml(candidate.value)}">${escapeHtml(display(candidate, format))}</time>`
 
-  // Same DOM either way; only which fact is given the 21px slot changes.
-  const lead = format === 'absolute' ? exact : age ? escapeHtml(age) : exact
-  const support = format === 'absolute' ? (age ? escapeHtml(age) : '') : age ? exact : ''
+  // Same DOM either way; only which fact is given the 21px slot changes. `iso`
+  // is an absolute format too — the difference is how the date is written, not
+  // which of the two facts leads.
+  const datesLead = format !== 'relative'
+  const lead = datesLead ? exact : age ? escapeHtml(age) : exact
+  const support = datesLead ? (age ? escapeHtml(age) : '') : age ? exact : ''
 
   return `
     <header class="headline tier-${candidate.confidence}${disputed ? ' disputed' : ''}">
@@ -104,7 +107,11 @@ export function headline(
  * didn't check", and the difference between *absent* and *unlooked-for* is
  * the whole reason to trust the rest of the panel.
  */
-export function dateRow(label: string, candidate: Candidate | undefined): string {
+export function dateRow(
+  label: string,
+  candidate: Candidate | undefined,
+  format: DateFormat = 'absolute',
+): string {
   if (!candidate) {
     return `
       <div class="row absent">
@@ -117,7 +124,7 @@ export function dateRow(label: string, candidate: Candidate | undefined): string
     <div class="row tier-${candidate.confidence}">
       <div class="line">
         <span class="field">${escapeHtml(label)}</span>
-        <time class="value" datetime="${escapeHtml(candidate.value)}">${escapeHtml(display(candidate))}</time>
+        <time class="value" datetime="${escapeHtml(candidate.value)}">${escapeHtml(display(candidate, format))}</time>
       </div>
       ${provenance(candidate)}
       ${candidate.note ? `<p class="note">${escapeHtml(candidate.note)}</p>` : ''}
@@ -160,12 +167,12 @@ export function conflictBlock(result: DateResult): string {
  * screen reader: the disclosure list below is already the accessible table, and
  * duplicating it as unlabelled positions helps nobody.
  */
-export function spreadAxis(spread: Spread): string {
+export function spreadAxis(spread: Spread, format: DateFormat = 'absolute'): string {
   const summary = t('spreadSummary', String(spread.total), spread.spanLabel)
 
   const dots = spread.points
     .map((point) => {
-      const label = `${display(point.candidate)} — ${tierWord(point.candidate.confidence)}, ${sourceLabel(point.candidate.source)}`
+      const label = `${display(point.candidate, format)} — ${tierWord(point.candidate.confidence)}, ${sourceLabel(point.candidate.source)}`
       // Inline `left` because the position is data, not style. 5px of inset
       // keeps the endpoint dots fully on the track rather than half off it.
       return `<span
@@ -209,14 +216,14 @@ function byDateAscending(a: Candidate, b: Candidate): number {
   return ta - tb
 }
 
-function candidateList(candidates: Candidate[]): string {
+function candidateList(candidates: Candidate[], format: DateFormat = 'absolute'): string {
   const rows = [...candidates]
     .sort(byDateAscending)
     .map(
       (c) => `
         <li class="tier-${c.confidence}">
           ${tierMarker()}
-          <span class="c-value">${escapeHtml(display(c))}</span>
+          <span class="c-value">${escapeHtml(display(c, format))}</span>
           <span class="c-field">${escapeHtml(fieldLabel(c.field))}</span>
           <span class="c-source">${escapeHtml(sourceLabel(c.source))}</span>
         </li>`,
@@ -267,18 +274,18 @@ export function view(result: DateResult, url: string, options: ViewOptions = {})
     // never claimed a publication date.
     parts.push(
       result.published
-        ? dateRow(t('fieldModified'), result.modified)
-        : dateRow(t('fieldPublished'), undefined),
+        ? dateRow(t('fieldModified'), result.modified, dateFormat)
+        : dateRow(t('fieldPublished'), undefined, dateFormat),
     )
   } else {
     parts.push(`<p class="empty">${escapeHtml(t('emptyNoDate'))}</p>`)
   }
 
   const spread = computeSpread(result)
-  if (isSpreadWorthShowing(spread, result) && spread) parts.push(spreadAxis(spread))
+  if (isSpreadWorthShowing(spread, result) && spread) parts.push(spreadAxis(spread, dateFormat))
 
   const others = result.candidates.filter((c) => c !== result.published && c !== result.modified)
-  if (others.length > 0) parts.push(candidateList(others))
+  if (others.length > 0) parts.push(candidateList(others, dateFormat))
 
   // Offered, never taken automatically: the lookup tells web.archive.org which
   // page is being read, so in "ask" mode the click is both the consent and the

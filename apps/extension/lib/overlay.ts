@@ -2,7 +2,7 @@ import type { DateResult } from 'pagedate'
 import { display, relativeAge, sourceLabel, tierWord } from './format.js'
 import { oldestCounterEvidence } from './evidence.js'
 import { t } from './messages.js'
-import type { OverlayMode, OverlayPosition } from './settings.js'
+import type { DateFormat, OverlayMode, OverlayPosition } from './settings.js'
 
 /**
  * The on-page readout.
@@ -53,6 +53,7 @@ export function overlayData(
   now: Date,
   mode: OverlayMode,
   position: OverlayPosition,
+  format: DateFormat = 'absolute',
 ): OverlayData | null {
   if (mode === 'never') return null
 
@@ -97,11 +98,11 @@ export function overlayData(
   }
 
   const label = result.published ? t('fieldPublished') : t('fieldModified')
-  const age = relativeAge(primary, now) ?? display(primary)
-  const detail = `${label} ${display(primary)} — ${tierWord(primary.confidence)}, ${sourceLabel(primary.source)}`
+  const age = relativeAge(primary, now) ?? display(primary, format)
+  const detail = `${label} ${display(primary, format)} — ${tierWord(primary.confidence)}, ${sourceLabel(primary.source)}`
 
   const counter = oldestCounterEvidence(result)
-  const counterAge = counter ? (relativeAge(counter, now) ?? display(counter)) : null
+  const counterAge = counter ? (relativeAge(counter, now) ?? display(counter, format)) : null
 
   return {
     age: counter ? t('overlaySays', age) : age,
@@ -112,7 +113,7 @@ export function overlayData(
     counterDetail: counter
       ? t(
           'overlayOldestDetail',
-          display(counter),
+          display(counter, format),
           `${tierWord(counter.confidence)}, ${sourceLabel(counter.source)}`,
         )
       : null,

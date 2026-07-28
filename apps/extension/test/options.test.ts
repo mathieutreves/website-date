@@ -45,6 +45,14 @@ describe('controls reflect stored state', () => {
     expect(view({ archive: 'always' })).not.toMatch(/value="off"[^>]*checked/)
   })
 
+  it('offers all three date formats and selects the stored one', () => {
+    const html = view({ dateFormat: 'iso' })
+    expect(html).toMatch(/name="dateFormat"[^>]*value="iso"[^>]*checked/)
+    expect(html).not.toMatch(/name="dateFormat"[^>]*value="relative"[^>]*checked/)
+    // Shown by shape rather than named: "ISO 8601" means nothing to most people.
+    expect(html).toContain('2024-03-12')
+  })
+
   it('uses real radios and checkboxes, not div-based fakes', () => {
     // A settings page is the last place to lose keyboard and screen-reader
     // behaviour in exchange for styling.

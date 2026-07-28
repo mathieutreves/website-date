@@ -1,5 +1,6 @@
 import { toInstant, type Candidate } from 'pagedate'
 import { t, type MessageKey } from './messages.js'
+import type { DateFormat } from './settings.js'
 
 /**
  * Turning a candidate into words. Pure, and shared by all three surfaces —
@@ -39,6 +40,7 @@ const SOURCE_KEYS: Record<string, MessageKey> = {
   sitemap: 'srcSitemap',
   'meta-date': 'srcMetaDate',
   'url-slug': 'srcUrlSlug',
+  'image-path': 'srcImagePath',
   'visible-text': 'srcVisibleText',
   'text-date': 'srcTextDate',
   'http-last-modified': 'srcHttpLastModified',
@@ -94,9 +96,15 @@ export function relativeAge(candidate: Candidate, now: Date): string | null {
  * inventing a day the page never stated is the same dishonesty the library
  * refuses at the parse layer. The rule cuts both ways: a `minute` candidate
  * keeps its clock time rather than being flattened to a bare day.
+ *
+ * `iso` short-circuits the locale formatting entirely. The candidate's value is
+ * already ISO 8601 truncated to its precision, so honesty about precision comes
+ * for free: a month-precision candidate is `2024-03`, never `2024-03-01`.
  */
-export function display(candidate: Candidate): string {
+export function display(candidate: Candidate, format: DateFormat = 'absolute'): string {
   const value = candidate.value
+
+  if (format === 'iso') return value
 
   if (candidate.precision === 'year') return value
 
