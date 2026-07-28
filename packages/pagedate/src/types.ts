@@ -38,6 +38,12 @@ export type ConflictKind =
   | 'declared-disagreement'
   /** A declared publish date long predates a strong modification signal the site doesn't show. */
   | 'stale-declaration'
+  /**
+   * The page carries dated content older than the publication date it declares.
+   * Timestamps cannot precede the thing they belong to, so the declared date is
+   * a republication or migration stamp rather than when the content was written.
+   */
+  | 'predated-content'
 
 export type Conflict = {
   kind: ConflictKind

@@ -24,6 +24,9 @@ const SOURCE_RANK: Record<string, number> = {
   jsonld: 90,
   'atom-feed': 85,
   opengraph: 80,
+  // Below OpenGraph: a WebPage node's dates are frequently the site build
+  // time rather than anything about the content.
+  'jsonld-container': 75,
   itemprop: 70,
   'rss-feed': 65,
   'dublin-core': 60,
@@ -48,6 +51,19 @@ const DECLARED_DISAGREEMENT_DAYS = 30
 
 /** A publish date this far ahead of an unshown modification is a stale declaration. */
 const STALE_DECLARATION_DAYS = 365
+
+/** How much older page content must be than the declared date to count as evidence. */
+const PREDATED_CONTENT_DAYS = 365
+
+/**
+ * How many independently dated elements must predate the declared publication
+ * date before it is called out.
+ *
+ * Set high enough that an article legitimately *discussing* older events, with
+ * a stray dated element or two, does not trip it — the signal we want is a body
+ * of timestamps that could not exist yet, such as reader comments.
+ */
+const PREDATED_CONTENT_MIN_COUNT = 3
 
 /** Exported so the corpus evaluation can rank within a tier the same way. */
 export function rankCandidate(c: Candidate): number {
@@ -127,6 +143,7 @@ export function resolveCandidates(
   const conflict = detectConflict({
     published,
     modified,
+    all: usable,
     resolvedPublished,
     resolvedModified,
     archiveLastEdit: options.archiveLastEdit,
@@ -143,11 +160,12 @@ function unlabelledNote(c: Candidate): string {
 function detectConflict(input: {
   published: Candidate[]
   modified: Candidate[]
+  all: Candidate[]
   resolvedPublished: Candidate | undefined
   resolvedModified: Candidate | undefined
   archiveLastEdit: string | undefined
 }): Conflict | undefined {
-  const { published, modified, resolvedPublished, resolvedModified, archiveLastEdit } = input
+  const { published, modified, all, resolvedPublished, resolvedModified, archiveLastEdit } = input
 
   // (a) The site contradicts itself: two things it declared don't agree.
   for (const group of [published, modified]) {
@@ -168,7 +186,40 @@ function detectConflict(input: {
     }
   }
 
-  // (b) The stale-declaration case: a publish date long predates evidence of
+  // (b) The page carries content older than the date it claims to be from.
+  // A timestamp cannot precede the thing it belongs to: readers cannot comment
+  // on an article before it exists. So a body of dated elements older than the
+  // declared publication date means that date is a republication or CMS
+  // migration stamp, not when the content was written.
+  if (resolvedPublished?.confidence === 'declared') {
+    const declaredAt = toInstant(resolvedPublished.value)
+    if (declaredAt) {
+      const older = all.filter((c) => {
+        if (c === resolvedPublished) return false
+        // Only machine-readable timestamps count. Dates lifted from prose are
+        // too often a mention of a past event rather than a page's own date.
+        if (c.confidence === 'inferred') return false
+        const at = toInstant(c.value)
+        return at !== null && (declaredAt.getTime() - at.getTime()) / DAY_MS > PREDATED_CONTENT_DAYS
+      })
+
+      const distinct = new Set(older.map((c) => c.value.slice(0, 10)))
+      if (distinct.size >= PREDATED_CONTENT_MIN_COUNT) {
+        const oldest = older.reduce((a, b) =>
+          (toInstant(b.value)?.getTime() ?? 0) < (toInstant(a.value)?.getTime() ?? 0) ? b : a,
+        )
+        const gap = (declaredAt.getTime() - (toInstant(oldest.value)?.getTime() ?? 0)) / DAY_MS
+
+        return {
+          kind: 'predated-content',
+          gapDays: Math.round(gap),
+          detail: `Declares ${resolvedPublished.value.slice(0, 10)}, but carries ${distinct.size} dated elements from before then, back to ${oldest.value.slice(0, 10)}. The declared date is likely a republication, not when this was written.`,
+        }
+      }
+    }
+  }
+
+  // (c) The stale-declaration case: a publish date long predates evidence of
   // modification that the page itself doesn't show.
   if (resolvedPublished && !resolvedModified && archiveLastEdit) {
     const publishedInstant = toInstant(resolvedPublished.value)

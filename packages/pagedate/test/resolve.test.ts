@@ -152,6 +152,75 @@ describe('conflict detection', () => {
     expect(result.conflict).toBeUndefined()
   })
 
+  describe('content older than the declared date', () => {
+    const withComments = (years: string[]) => [
+      candidate({ value: '2026-05-28', source: 'jsonld', confidence: 'declared' }),
+      ...years.map((v) =>
+        candidate({ value: v, source: 'time-tag', confidence: 'derived', field: 'unknown' }),
+      ),
+    ]
+
+    it('flags a page carrying timestamps from before it claims to exist', () => {
+      // Nobody can comment on an article before it is published, so the
+      // declared date must be a republication stamp.
+      const result = resolveCandidates(
+        withComments(['2014-03-10', '2015-06-19', '2016-01-15', '2020-03-18']),
+        { now: NOW },
+      )
+
+      expect(result.conflict?.kind).toBe('predated-content')
+      expect(result.conflict?.detail).toContain('2014-03-10')
+    })
+
+    it('ignores a stray old date — an article may simply discuss the past', () => {
+      const result = resolveCandidates(withComments(['2014-03-10']), { now: NOW })
+      expect(result.conflict).toBeUndefined()
+    })
+
+    it('does not count prose dates, which are usually mentions of past events', () => {
+      const result = resolveCandidates(
+        [
+          candidate({ value: '2026-05-28', source: 'jsonld', confidence: 'declared' }),
+          ...['2014-03-10', '2015-06-19', '2016-01-15'].map((v) =>
+            candidate({ value: v, source: 'visible-text', confidence: 'inferred' }),
+          ),
+        ],
+        { now: NOW },
+      )
+
+      expect(result.conflict).toBeUndefined()
+    })
+
+    it('does not fire when the resolved date is already the oldest', () => {
+      // The Stack Overflow shape: a 2012 question with answers edited later.
+      const result = resolveCandidates(
+        [
+          candidate({ value: '2012-06-27', source: 'jsonld', confidence: 'declared' }),
+          ...['2018-05-11', '2020-10-05', '2021-03-31'].map((v) =>
+            candidate({ value: v, source: 'time-tag', confidence: 'derived', field: 'unknown' }),
+          ),
+        ],
+        { now: NOW },
+      )
+
+      expect(result.conflict).toBeUndefined()
+    })
+
+    it('requires the declared date to be declared, not guessed', () => {
+      const result = resolveCandidates(
+        [
+          candidate({ value: '2026-05-28', source: 'url-slug', confidence: 'inferred' }),
+          ...['2014-03-10', '2015-06-19', '2016-01-15'].map((v) =>
+            candidate({ value: v, source: 'time-tag', confidence: 'derived', field: 'unknown' }),
+          ),
+        ],
+        { now: NOW },
+      )
+
+      expect(result.conflict).toBeUndefined()
+    })
+  })
+
   it('flags a stale declaration when the archive shows an edit the page hides', () => {
     const result = resolveCandidates([candidate({ value: '2019-03-01', field: 'published' })], {
       now: NOW,
