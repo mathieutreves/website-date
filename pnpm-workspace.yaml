@@ -4,3 +4,5 @@ packages:
 allowBuilds:
   # esbuild ships a platform-specific binary; tsup and vitest both need it.
   esbuild: true
+  # WXT's dependency-status check shells out through spawn-sync.
+  spawn-sync: true
