@@ -48,6 +48,19 @@ const RULES: MetaRule[] = [
 
 const RULE_BY_KEY = new Map(RULES.map((r) => [r.key, r]))
 
+/**
+ * Vendor-namespaced meta properties that name a date.
+ *
+ * Sites invent their own: 500px declares `five_hundred_pixels:uploaded`, and
+ * plenty of CMSes emit `<publisher>:published_at`. The namespace is
+ * unguessable but the last segment is not, so the property is matched on its
+ * tail rather than enumerated.
+ */
+const VENDOR_DATE_KEY =
+  /(?:^|[:._-])(published?|published_?at|publish_?date|uploaded|upload_?date|created_?at|release_?date|pubdate|date)$/i
+
+const VENDOR_MODIFIED_KEY = /(?:^|[:._-])(modified|modified_?at|updated|updated_?at|lastmod)$/i
+
 export function extractMeta(doc: Document, opts: ParseOptions = {}): Candidate[] {
   const out: Candidate[] = []
 
@@ -62,7 +75,18 @@ export function extractMeta(doc: Document, opts: ParseOptions = {}): Candidate[]
       .toLowerCase()
     if (!key) continue
 
-    const rule = RULE_BY_KEY.get(key)
+    let rule = RULE_BY_KEY.get(key)
+
+    // Fall back to the property's own wording. Only namespaced keys qualify:
+    // a bare `date` is already handled above, and matching every unprefixed
+    // property that ends in a date-ish word invites noise.
+    if (!rule && key.includes(':')) {
+      if (VENDOR_MODIFIED_KEY.test(key)) {
+        rule = { key, field: 'modified', confidence: 'derived', source: 'meta-date' }
+      } else if (VENDOR_DATE_KEY.test(key)) {
+        rule = { key, field: 'published', confidence: 'derived', source: 'meta-date' }
+      }
+    }
     if (!rule) continue
 
     const raw = el.getAttribute('content')?.trim()

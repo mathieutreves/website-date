@@ -99,11 +99,14 @@ const DATE_BLOCK_MARKERS = new Set([
   'fecha',
   'parution',
   'dateline',
+  'post-meta',
 ])
 
 /*
- * Deliberately excluded from the set above: post-meta, entry-meta, meta, info,
- * footer, subline. Adding them wins three pages on the external corpus — 58.2%
+ * Deliberately excluded from the set above: entry-meta, meta, info, footer,
+ * subline. `info` was tested on its own and wins two external pages while
+ * costing a local false positive; `post-meta` wins the same and costs nothing,
+ * so it is in and `info` is not. Adding them wins three pages on the external corpus — 58.2%
  * to 63.6% — and costs two false positives locally, including a Korean
  * newspaper's registration date lifted out of a page footer.
  *

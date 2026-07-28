@@ -1,0 +1,78 @@
+{
+  "_readme": [
+    "Pages where htmldate's eval_default.json gold is judged wrong, with the reason.",
+    "",
+    "Used ONLY to produce a second scoreboard alongside the original — never to",
+    "replace it. Both are always reported. A benchmark author who quietly edits",
+    "the answer key has measured nothing.",
+    "",
+    "Rules applied to every entry here:",
+    "  1. The reason must be checkable from the cached HTML, and the evidence is",
+    "     quoted below so anyone can disagree.",
+    "  2. Corrections are scored symmetrically. Where the corrected answer is",
+    "     null, a tool that reports any date is wrong — pagedate included.",
+    "  3. Doubt resolves in favour of the original gold. eff.org.2015 was",
+    "     considered and left alone: its gold comes from a path segment in an",
+    "     og:image URL, which is weak evidence but not obviously wrong for an",
+    "     annual report.",
+    "",
+    "Three pages were on an earlier version of this list and have been removed,",
+    "because re-reading the HTML showed the gold was right and the miss was ours:",
+    "  scs78.de          <p class=\"info\">10.06.2018 22:00</p> is the real date line",
+    "  ldt.de            <a class=\"post-meta-time\">08/08/2017</a> is a real byline",
+    "  500px.com         <meta property='five_hundred_pixels:uploaded'> is declared",
+    "The date also appeared in an image filename or href on those pages, which is",
+    "what the first pass found and stopped at."
+  ],
+
+  "corrections": {
+    "creativecommons.org.html": {
+      "gold": "2016-05-22",
+      "corrected": null,
+      "kind": "belongs-to-another-document",
+      "reason": "The page is Creative Commons' \"What we do\" and states no date of its own. 2016-05-22 appears only inside data-permalink on an embedded image, pointing at a different post: creativecommons.org/2016/05/22/happybdaybassel/",
+      "evidence": "data-permalink=\"https://creativecommons.org/2016/05/22/happybdaybassel/1024px-bassel_khartabil_safadi/\""
+    },
+
+    "hertie-school.org.leyen.html": {
+      "gold": "2019-12-02",
+      "corrected": null,
+      "kind": "belongs-to-another-document",
+      "reason": "The page is \"What's on the cards for von der Leyen?\". 2019-12-02 appears only in an href to an unrelated article about health workers in Syria.",
+      "evidence": "href=\"/en/2019-12-02-health-workers-in-syria-podcast/\""
+    },
+
+    "stuttgart.de.html": {
+      "gold": "2017-10-09",
+      "corrected": null,
+      "kind": "crawl-artifact",
+      "reason": "The homepage of the city of Stuttgart. 2017-10-09 appears only in the query string of a \"Heute\" (today) events link, generated at the moment the page was fetched. It records when the crawler visited, not when anything was published.",
+      "evidence": "href=\"/veranstaltungen/suche?from=09.10.2017&to=09.10.2017\">Heute</a>"
+    },
+
+    "austria.info.html": {
+      "gold": "2017-09-07",
+      "corrected": null,
+      "kind": "crawl-artifact",
+      "reason": "A travel-guide homepage. 2017-09-07 is the default value of a journey-date picker, which renders as the current date when the page is served.",
+      "evidence": "<input type=\"text\" class=\"calendar date\" name=\"REQ0JourneyDate\" value=\"07.09.2017\">"
+    },
+
+    "pixabay.com.tos.html": {
+      "gold": "2017-08-09",
+      "corrected": null,
+      "correctedModified": "2017-08-09",
+      "kind": "wrong-field",
+      "reason": "The date is real but is a modification, not a publication: the page labels it \"Date of Last Revision\". A terms-of-service page has no publication date in the ordinary sense. The single-date gold cannot express the distinction.",
+      "evidence": "<p>Date of Last Revision: August 9, 2017</p>"
+    },
+
+    "gnu.org.gpl.html": {
+      "gold": "2016-11-18",
+      "corrected": "2007-06-29",
+      "kind": "wrong-field",
+      "reason": "The document is GPL v3, whose publication date the page prints in its own body. The gold 2016-11-18 comes from a $Date: keyword under the heading \"Updated:\" — when the page was last touched, not when the licence was published.",
+      "evidence": "<p>Version 3, 29 June 2007</p> … <p class=\"unprintable\">Updated: $Date: 2016/11/18 06:31:41 $"
+    }
+  }
+}
