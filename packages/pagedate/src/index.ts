@@ -53,7 +53,11 @@ export function extractFromDocument(doc: Document, url: string): Candidate[] {
   if (parsedUrl) candidates.push(...extractUrlSlug(parsedUrl))
 
   // Last, and only as a fallback: unlabelled text dates are the noisiest
-  // signal, so they run when the labelled paths found nothing to say.
+  // signal, so they run only when the labelled paths found nothing to say.
+  //
+  // Running them unconditionally was tried and measured: it gained nothing on
+  // the external corpus and turned a correct "no date here" into a false
+  // positive locally. The gate stays.
   if (!candidates.some((c) => c.field !== 'unknown')) {
     candidates.push(...extractBareText(doc, parsedUrl, opts))
   }

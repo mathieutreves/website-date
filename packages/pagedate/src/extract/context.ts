@@ -18,7 +18,16 @@ const EXCLUDED_PATTERN =
   /^(related|recent|popular|trending|sidebar|widget|nav|menu|comment|reply|breadcrumb|pagination|newsletter|promo|advert|teaser|card-list|post-list|archive-list)([-_]|$)/i
 
 /** Containers that positively indicate article body content. */
-const ARTICLE_PATTERN = /(^|[-_\s])(byline|dateline|post-meta|entry-meta|article-meta|published|posted-on|pubdate|last-updated|lastmod|updated)([-_\s]|$)/i
+/**
+ * Markup that positively marks a date block.
+ *
+ * Includes bare `date`/`datum` because CMS themes name these containers
+ * literally — `news-list-date`, `PublishDate_date`, `blogData` — and German
+ * sites in particular put the date in a labelled block with a weekday and a
+ * time around it, which the ratio guard would otherwise reject.
+ */
+const ARTICLE_PATTERN =
+  /(^|[-_\s])(byline|dateline|post-meta|entry-meta|article-meta|published|publish-date|posted-on|posted|pubdate|last-updated|lastmod|updated|submitted|created|date|datum|erstellt|veroffentlicht)([-_\s]|$)/i
 
 /**
  * Split camelCase so framework class names match the patterns above:
