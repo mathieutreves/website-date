@@ -73,5 +73,44 @@ export function extractTimeTags(doc: Document, opts: ParseOptions = {}): Candida
     })
   }
 
-  return out
+  return demoteListing(out)
+}
+
+/**
+ * More unlabelled `<time>` tags than an article has is a listing, not an article.
+ *
+ * A related-articles rail is a run of `<time>` elements that no context marker
+ * can reach: modern builds hash their class names (`css-dozr74`), so the
+ * sidebar/related/widget vocabulary has nothing to match and every teaser scores
+ * as "article context". BBC Chinese renders fifteen that way, six of them years
+ * old, which was enough to trip `predated-content` and tell the reader a
+ * correctly-dated article had been republished.
+ *
+ * Counting is what distinguishes them. An article states its own date once or
+ * twice; it does not state fifteen. The same reasoning already caps
+ * {@link extractBareText} at six candidates.
+ *
+ * Demoted rather than dropped — a reader inspecting every date on the page
+ * should still see them. `inferred` keeps them out of the `predated-content`
+ * evidence set, which counts only machine-readable timestamps, and ranks them
+ * below anything that speaks about this document.
+ *
+ * Tags carrying a field label are left alone: a page that says "published" and
+ * "updated" in markup is describing itself however many times it does it.
+ */
+const MAX_UNLABELLED_TIME_TAGS = 5
+
+function demoteListing(candidates: Candidate[]): Candidate[] {
+  const unlabelled = candidates.filter((c) => c.field === 'unknown')
+  if (unlabelled.length <= MAX_UNLABELLED_TIME_TAGS) return candidates
+
+  return candidates.map((c) =>
+    c.field === 'unknown'
+      ? {
+          ...c,
+          confidence: 'inferred',
+          note: `<time> in a run of ${unlabelled.length} unlabelled ones — a listing, not this page's date`,
+        }
+      : c,
+  )
 }

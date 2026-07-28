@@ -122,3 +122,30 @@ describe('noise guards', () => {
     expect(bare(`<article><ul>${items}</ul></article>`).length).toBeLessThanOrEqual(6)
   })
 })
+
+describe('page-region markers', () => {
+  it("does not read a newspaper's registration date out of a page footer", () => {
+    // Il Post ends every page with this line. `footer` is a positive marker —
+    // documentation sites put "Last updated" there — but it is a reason to read
+    // a *labelled* date, not to accept one buried in a sentence.
+    const doc = documentFrom(`
+      <html><body>
+        <article><h1>I danni causati da Sandy</h1><p>Le foto della tempesta.</p></article>
+        <div id="footer"><div class="group">
+          <p>Il Post è una testata registrata presso il Tribunale di Milano, 419 del 28 settembre 2009</p>
+        </div></div>
+      </body></html>`)
+
+    expect(extractBareText(doc, new URL('https://www.ilpost.it/2012/05/01/sandy/'))).toEqual([])
+  })
+
+  it('still reads a bare date from byline markup, where words around it are expected', () => {
+    const doc = documentFrom(`
+      <html><body><article>
+        <p class="entry-meta">by Dan Luu · 5 min read · December 11, 2023 · tagged performance</p>
+      </article></body></html>`)
+
+    const found = extractBareText(doc, new URL('https://danluu.com/post/'))
+    expect(found[0]?.value).toBe('2023-12-11')
+  })
+})
