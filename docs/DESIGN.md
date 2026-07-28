@@ -300,6 +300,33 @@ What is left is still poor. Measured over the five local fixtures whose capture 
 
 So it exists, because it is real information on the hosts where it is real; it is `inferred`; it ranks below every other source; and the caller has to ask for it (`httpHeaders: true`, or `--headers`). Enabling it by default would have cost accuracy on the corpus, which is the whole argument.
 
+### 4.11 What the library will fetch, and what it refuses
+
+*Built, `src/extract/urlGuard.ts`.*
+
+Feed and sitemap discovery reads URLs the **analysed page wrote** — `<link rel="alternate">`, `<link rel="sitemap">`, and `<loc>` inside a sitemap index. That is the correct design, and it means a page chooses what the analysing host connects to. Unguarded, a document only has to say
+
+```html
+<link rel="sitemap" href="http://169.254.169.254/latest/meta-data/">
+```
+
+to have a server fetch its own cloud credentials endpoint. Response bodies never reach the caller, but reachability, timing, and any `<lastmod>`-shaped bytes in the reply do.
+
+`isSafeFetchTarget` is the filter, and the rule is **public hosts only, not same-origin**. Feeds legitimately live off-origin — FeedBurner, Substack — so refusing those would cost real accuracy to solve a problem that address filtering already solves. What is refused:
+
+- anything that is not `http:` or `https:` — `file:`, `data:`, `gopher:`
+- URLs carrying credentials, which would be handed to whatever host the page named
+- loopback, RFC 1918, carrier-grade NAT, link-local (including `169.254.169.254`), multicast and reserved IPv4; the IPv6 equivalents; and the IPv4-mapped and NAT64 spellings of all of them
+- `localhost`, `.local`, `.internal`, `.home.arpa`, and single-label hostnames, which resolve through the resolver's search domain
+
+Alternative encodings — `http://2130706433/`, `http://0177.0.0.1/` — need no special handling because `URL` normalises them to dotted decimal before the guard sees them. `test/urlGuard.test.ts` asserts that, since it is someone else's behaviour being relied on.
+
+`nodeEnv` applies the same filter to every request including its own, follows redirects **by hand** so each hop is re-checked (`redirect: 'follow'` would let a public URL bounce to a private one), and caps response bodies at 5 MB — a timeout does not bound memory, because a server drip-feeding inside the deadline stays inside it the whole time it fills the heap.
+
+Analysing your own dev server is an ordinary thing to want, so `blockPrivateNetwork: 'off'` drops the address check — keeping the scheme test, because "fetch this page" never meant "read the local disk". The opt-out exists so that wanting `http://localhost:3000/` does not push anyone off the guarded path and into hand-rolling an `Env`.
+
+Two limits are worth stating plainly. The guard never resolves DNS, so a public hostname pointing at a private address passes; `blockPrivateNetwork: 'strict'` adds a resolution preflight, which closes that but not DNS rebinding — the socket is not pinned to the address that was checked. And this is the *Node* path. The extension is stricter and always was: `apps/extension/lib/analyze.ts` refuses anything cross-origin outright and fetches with `credentials: 'omit'`.
+
 ---
 
 ## 5. Fixture harness & testing
