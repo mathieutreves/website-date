@@ -1,11 +1,11 @@
 {
   "url": "https://danluu.com/everything-is-broken/",
   "capturedAt": "2026-07-28",
-  "notes": "Deliberate true negative. Bare HTML with no date of its own; the only dates present belong to quoted third-party links. Correct behaviour is to return nothing. htmldate-style corpora exclude pages like this by construction, so this case is unscored by their metric.",
+  "notes": "The page is bare HTML with no date of its own, and the only dates in its text belong to quoted third-party links — inventing a publication date from those is still wrong, so `published` stays null and this remains the true-negative case for the text extractors. What the page does not say, the site does: sitemap.xml lists this URL with <lastmod>2014-11-18</lastmod>, and 134 distinct lastmods across 145 URLs say those are per-page mtimes rather than a build stamp. Corroborated from the page itself, which links to two articles published in November 2014 (greghendershott.com/2014/11/, lcamtuf.blogspot.com/2014/11/), so the post cannot predate them. Expectation changed when the sitemap extractor landed; before it, returning nothing was the best available answer.",
   "fetchedFeedUrl": null,
   "expect": {
     "published": null,
-    "modified": null,
+    "modified": "2014-11-18",
     "conflict": null
   }
 }
