@@ -1,6 +1,6 @@
 import type { Candidate } from '../types.js'
 import { parseDateString, type ParseOptions } from '../parse/normalize.js'
-import { scoreContext, surroundingText } from './context.js'
+import { marksPublication, scoreContext, surroundingText } from './context.js'
 import { fieldFromLabel } from './labels.js'
 
 /**
@@ -28,6 +28,11 @@ export function extractTimeTags(doc: Document, opts: ParseOptions = {}): Candida
 
     // The legacy `pubdate` attribute is an explicit publication marker.
     if (field === 'unknown' && el.hasAttribute('pubdate')) field = 'published'
+
+    // Markup naming the container a publication block is a clearer statement
+    // than the absence of wording around the date: `<p class="publication">
+    // <time datetime=…>` says what it is without a label to read.
+    if (field === 'unknown' && marksPublication(context.marker)) field = 'published'
 
     // An itemprop on the element itself beats guessing from prose.
     const itemprop = el.getAttribute('itemprop')?.toLowerCase()

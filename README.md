@@ -16,7 +16,7 @@ stores yet.
 
 On the local corpus of 17 annotated pages: **100%** published accuracy, **94.1%**
 modified. On [htmldate](https://github.com/adbar/htmldate)'s public cached
-subset: **43.6%** — second of ten tools measured, and first among JavaScript
+subset: **54.5%** — second of ten tools measured, and first among JavaScript
 ones. See [Against other tools](#against-other-tools).
 
 ## Usage
@@ -108,7 +108,7 @@ Measured on the same pages, current versions — see [docs/BENCHMARK.md](docs/BE
 |---|---|---|
 | htmldate (extensive) | 90.9% | 75.5 |
 | htmldate (fast) | 78.2% | 11.2 |
-| **pagedate (standard)** | **43.6%** | **5.4** |
+| **pagedate (standard)** | **54.5%** | **5.4** |
 | date_guesser | 25.5% | 115.6 |
 | newspaper4k | 20.0% | 148.8 |
 | @extractus/article-extractor | 14.5% | 85.5 |
@@ -118,7 +118,7 @@ Measured on the same pages, current versions — see [docs/BENCHMARK.md](docs/BE
 htmldate is the better general-purpose extractor and it is not close. What
 pagedate offers is a different shape: it runs in a browser where htmldate
 cannot, it is the fastest of the group, and among JavaScript libraries nothing
-else is within 3x of it. It also reports published *and* modified dates with
+else is within 3.5x of it. It also reports published *and* modified dates with
 provenance and conflict detection, none of which this benchmark measures.
 
 Note htmldate's published 1000-page benchmark is **not** reproducible — only ~55

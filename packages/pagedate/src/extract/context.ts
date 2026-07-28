@@ -27,7 +27,7 @@ const EXCLUDED_PATTERN =
  * time around it, which the ratio guard would otherwise reject.
  */
 const ARTICLE_PATTERN =
-  /(^|[-_\s])(byline|dateline|post-meta|entry-meta|article-meta|published|publish-date|posted-on|posted|pubdate|last-updated|lastmod|updated|submitted|created|date|datum|erstellt|veroffentlicht)([-_\s]|$)/i
+  /(^|[-_\s])(byline|dateline|post-meta|entry-meta|article-meta|published|publish-date|posted-on|posted|pubdate|last-updated|lastmod|updated|submitted|created|publication|post-date|entry-date|date|datum|erstellt|veroffentlicht)([-_\s]|$)/i
 
 /**
  * Split camelCase so framework class names match the patterns above:
@@ -43,12 +43,60 @@ export type ContextScore = {
   usable: boolean
   /** True when the element sits in markup that positively signals a byline. */
   strong: boolean
+  /** Which positive marker matched, when one did — e.g. `entry-date`, `byline`. */
+  marker?: string
+}
+
+/**
+ * Markers that name the element as a *publication* date specifically, rather
+ * than merely as article furniture. Enough on their own to label a bare `<time>`
+ * that carries no wording around it.
+ */
+const PUBLICATION_MARKERS = new Set([
+  'byline',
+  'dateline',
+  'published',
+  'publication',
+  'publish-date',
+  'posted-on',
+  'posted',
+  'pubdate',
+  'entry-date',
+  'post-date',
+])
+
+export const marksPublication = (marker: string | undefined): boolean =>
+  marker !== undefined && PUBLICATION_MARKERS.has(marker)
+
+/** Markers naming the element as a *modification* date. */
+const MODIFICATION_MARKERS = new Set(['last-updated', 'lastmod', 'updated'])
+
+export const marksModification = (marker: string | undefined): boolean =>
+  marker !== undefined && MODIFICATION_MARKERS.has(marker)
+
+/**
+ * The field a container's own markup asserts, if any.
+ *
+ * `<span class="PublishDate_date">29. Januar 2019</span>` states what it holds
+ * as plainly as the words "Published on" would. Treating the class name as the
+ * label is what lets a bare date in a marked container be read confidently,
+ * rather than being left unlabelled and outranked by something worse.
+ */
+export function fieldFromMarker(marker: string | undefined): 'published' | 'modified' | 'unknown' {
+  if (marksModification(marker)) return 'modified'
+  if (marksPublication(marker)) return 'published'
+  return 'unknown'
 }
 
 export function scoreContext(el: Element): ContextScore {
   let strong = false
+  let marker: string | undefined
   let sawArticle = false
   let sawHeaderFooter = false
+  // Depths are tracked so proximity can decide between a positive and a
+  // negative signal, rather than whichever happens to be met first.
+  let strongDepth = Infinity
+  let excludedDepth = Infinity
   let node: Element | null = el
   let depth = 0
 
@@ -58,7 +106,7 @@ export function scoreContext(el: Element): ContextScore {
   while (node && depth < 24) {
     const tag = node.tagName?.toUpperCase()
 
-    if (tag === 'NAV' || tag === 'ASIDE') return { usable: false, strong: false }
+    if (tag === 'NAV' || tag === 'ASIDE') excludedDepth = Math.min(excludedDepth, depth)
     if (tag === 'HEADER' || tag === 'FOOTER') sawHeaderFooter = true
     if (tag === 'ARTICLE' || tag === 'MAIN') sawArticle = true
 
@@ -68,13 +116,34 @@ export function scoreContext(el: Element): ContextScore {
       // matched per token and anchored; the positive hint stays unanchored
       // because a missed hint only reorders, while a wrong exclusion is fatal.
       const tokens = rawMarker.split(/\s+/).filter(Boolean).map(normaliseMarker)
-      if (tokens.some((t) => EXCLUDED_PATTERN.test(t))) return { usable: false, strong: false }
-      if (tokens.some((t) => ARTICLE_PATTERN.test(t))) strong = true
+
+      if (excludedDepth === Infinity && tokens.some((t) => EXCLUDED_PATTERN.test(t))) {
+        excludedDepth = depth
+      }
+
+      if (!strong) {
+        const hit = tokens.map((t) => ARTICLE_PATTERN.exec(t)?.[2]).find(Boolean)
+        if (hit) {
+          strong = true
+          marker = hit
+          strongDepth = depth
+        }
+      }
     }
 
     node = node.parentElement
     depth++
   }
+
+  // Proximity decides. A `<time class="entry-date">` inside `<span
+  // class="byline">` is a byline whatever a distant layout wrapper's class
+  // says — and wrappers routinely carry names like `site-content sidebar-left`
+  // describing the *page*, not the element. Excluding on those discards the
+  // whole article; requiring the positive marker to be nearer than the negative
+  // one keeps genuine furniture (comment blocks, promo lists) excluded, because
+  // there the negative marker is the closer of the two.
+  const excluded = excludedDepth !== Infinity && strongDepth > excludedDepth
+  if (excluded) return { usable: false, strong: false }
 
   // A header or footer nested inside the article is exactly where bylines live;
   // one at page level is site furniture — unless the element itself is marked as
@@ -82,7 +151,7 @@ export function scoreContext(el: Element): ContextScore {
   // "Last updated" in a page-level footer, which the plain rule would discard.
   if (sawHeaderFooter && !sawArticle && !strong) return { usable: false, strong: false }
 
-  return { usable: true, strong }
+  return marker ? { usable: true, strong, marker } : { usable: true, strong }
 }
 
 /**

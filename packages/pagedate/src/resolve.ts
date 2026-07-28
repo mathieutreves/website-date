@@ -34,6 +34,7 @@ const SOURCE_RANK: Record<string, number> = {
   parsely: 50,
   sailthru: 50,
   'time-tag': 45,
+  'marked-date': 42,
   sitemap: 40,
   'meta-date': 35,
   'url-slug': 20,
