@@ -1,0 +1,11 @@
+{
+  "url": "https://blog.rust-lang.org/2024/09/05/Rust-1.81.0/",
+  "capturedAt": "2026-07-28",
+  "notes": "Rust release announcement. No inline date metadata at all — the date is recoverable only from the URL slug and the site feed. Direct test of the feed-as-primary-signal claim.",
+  "fetchedFeedUrl": "https://blog.rust-lang.org/feed.xml",
+  "expect": {
+    "published": "2024-09-05",
+    "modified": null,
+    "conflict": null
+  }
+}

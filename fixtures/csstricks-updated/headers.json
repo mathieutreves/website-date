@@ -1,0 +1,23 @@
+{
+  "age": "0",
+  "cache-control": "max-age=0, s-maxage=2592000",
+  "cf-cache-status": "DYNAMIC",
+  "cf-edge-cache": "cache,platform=wordpress",
+  "cf-ray": "a22291b6ffc67677-FCO",
+  "connection": "keep-alive",
+  "content-encoding": "gzip",
+  "content-type": "text/html; charset=UTF-8",
+  "date": "Tue, 28 Jul 2026 08:38:44 GMT",
+  "expires": "Tue, 28 Jul 2026 08:38:43 GMT",
+  "link": "<https://css-tricks.com/wp-json/>; rel=\"https://api.w.org/\", <https://css-tricks.com/wp-json/wp/v2/pages/21059>; rel=\"alternate\"; title=\"JSON\"; type=\"application/json\", <https://css-tricks.com/?p=21059>; rel=shortlink",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "server": "cloudflare",
+  "set-cookie": "__cf_bm=UyTyJdZAhxu_Tb.qH4xQpBlzMhNOYWjH22gKs38ew7o-1785227923.0387645-1.0.1.1-I0rfM0FaAERM2lY08HWv4XEsuhVoHxM_2fXg1OsqtT5jFXYFQYbxo8VqvLnMpsficz1YoNvubmynIbnB6KzB45ToKJa158TazTjvr.xXgU0qDCQWfPWAIIHZtWqTPt0t; HttpOnly; SameSite=None; Secure; Path=/; Domain=css-tricks.com; Expires=Tue, 28 Jul 2026 09:08:44 GMT",
+  "strict-transport-security": "max-age=31536000",
+  "transfer-encoding": "chunked",
+  "vary": "Accept-Encoding, accept,content-type,Accept-Encoding,User-Agent",
+  "x-cache": "MISS",
+  "x-content-type-options": "nosniff",
+  "x-frame-options": "SAMEORIGIN",
+  "x-xss-protection": "1; mode=block"
+}

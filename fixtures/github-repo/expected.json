@@ -1,0 +1,12 @@
+{
+  "url": "https://github.com/adbar/htmldate",
+  "capturedAt": "2026-07-28",
+  "notes": "GitHub repository landing page. Meaningful date is the last commit, exposed via <relative-time datetime>. Needs the github adapter.",
+  "fetchedFeedUrl": null,
+  "expect": {
+    "published": null,
+    "modified": null,
+    "conflict": null
+  },
+  "knownMiss": "needs the github adapter, which is not built yet."
+}

@@ -1,0 +1,11 @@
+{
+  "url": "https://www.ilpost.it/2026/07/28/paolo-maldini-leonardo-dimissioni-figc/",
+  "capturedAt": "2026-07-28",
+  "notes": "Italian news, clean JSON-LD + OpenGraph. Baseline easy case. Note the site declares a dateModified EARLIER than its datePublished.",
+  "fetchedFeedUrl": null,
+  "expect": {
+    "published": "2026-07-28",
+    "modified": "2026-07-28",
+    "conflict": null
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "url": "https://vitepress.dev/guide/what-is-vitepress",
+  "capturedAt": "2026-07-28",
+  "notes": "VitePress docs. Only signal is <p class=\"VPLastUpdated\">Last updated: <time datetime=...>. Tests label-driven field assignment: this is a modification, not a publication.",
+  "fetchedFeedUrl": null,
+  "expect": {
+    "published": null,
+    "modified": "2026-07-25",
+    "conflict": null
+  }
+}

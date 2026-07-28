@@ -1,0 +1,17 @@
+{
+  "age": "4305",
+  "cache-control": "public, max-age=300, s-maxage=28800, stale-while-revalidate=7200, stale-if-error=86400",
+  "connection": "keep-alive",
+  "content-encoding": "br",
+  "content-type": "text/html; charset=utf-8",
+  "date": "Tue, 28 Jul 2026 07:26:54 GMT",
+  "etag": "W/\"zm5hrqtpqd2b6u\"",
+  "server": "awselb/2.0",
+  "transfer-encoding": "chunked",
+  "vary": "Accept-Encoding",
+  "via": "1.1 f859d884343143b5336c769cb249a0d4.cloudfront.net (CloudFront)",
+  "x-amz-cf-id": "5hquT8Q6tOa_fpc-onx7KPgFksoaHXVbZhLlKu3WnvvFE1kh2EMSrw==",
+  "x-amz-cf-pop": "MXP53-P6",
+  "x-cache": "Hit from cloudfront",
+  "x-powered-by": "Next.js"
+}

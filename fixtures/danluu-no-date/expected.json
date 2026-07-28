@@ -1,0 +1,11 @@
+{
+  "url": "https://danluu.com/everything-is-broken/",
+  "capturedAt": "2026-07-28",
+  "notes": "Deliberate true negative. Bare HTML with no date of its own; the only dates present belong to quoted third-party links. Correct behaviour is to return nothing. htmldate-style corpora exclude pages like this by construction, so this case is unscored by their metric.",
+  "fetchedFeedUrl": null,
+  "expect": {
+    "published": null,
+    "modified": null,
+    "conflict": null
+  }
+}

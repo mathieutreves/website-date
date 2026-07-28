@@ -1,0 +1,22 @@
+{
+  "cache-control": "private",
+  "cf-cache-status": "DYNAMIC",
+  "cf-ray": "a2229189fd34b5d3-FCO",
+  "connection": "keep-alive",
+  "content-encoding": "gzip",
+  "content-security-policy": "upgrade-insecure-requests; frame-ancestors 'self' https://stackexchange.com",
+  "content-type": "text/html; charset=utf-8",
+  "date": "Tue, 28 Jul 2026 08:38:36 GMT",
+  "feature-policy": "microphone 'none'; speaker 'none'",
+  "server": "cloudflare",
+  "set-cookie": "__cf_bm=5ENpBC7Pb_eKAQ8AyjdCPSxDsLtBUslmw02JZtJzcVA-1785227915.8377514-1.0.1.1-fy_tOVFutJAaQvWxyC5VL5jRKUTqf2bf9jQdt96.oGvrX64LkeN1kr5fcc3KhLMH8PcH5ML.92sirUhNhjcqIWJVeBmFZYniiHdgd4EFoPZG.OoZHX7imRhbjWjWuYEpY0Azp_WRfHmZ0vzbJ8BQOuc.VhYxHt2bDqpxyqUjYW0; HttpOnly; SameSite=None; Secure; Path=/; Domain=stackoverflow.com; Expires=Tue, 28 Jul 2026 09:08:36 GMT",
+  "strict-transport-security": "max-age=31536000; includeSubDomains",
+  "transfer-encoding": "chunked",
+  "vary": "Accept-Encoding",
+  "x-clacks-overhead": "GNU Terry Pratchett",
+  "x-dns-prefetch-control": "off",
+  "x-frame-options": "SAMEORIGIN",
+  "x-read-only": "1",
+  "x-request-guid": "d911fd41-e102-4cc0-86f7-be159646f616",
+  "x-worker-origin-response-time": "409000000"
+}
