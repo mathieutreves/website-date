@@ -1,0 +1,11 @@
+{
+  "url": "https://www.bbc.com/hindi/articles/c3d3kgj5yxjo",
+  "capturedAt": "2026-07-28",
+  "notes": "BBC Hindi article. Carries a Devanagari date (25 जुलाई 2026) inside a Promo_timestamp element belonging to a different, linked article. Also exercises the AnalysisNewsArticle schema type, which was previously misread as a container.",
+  "fetchedFeedUrl": null,
+  "expect": {
+    "published": "2026-07-28",
+    "modified": "2026-07-28",
+    "conflict": null
+  }
+}

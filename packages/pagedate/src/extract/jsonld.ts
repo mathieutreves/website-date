@@ -8,17 +8,27 @@ import type { ParseOptions } from '../parse/normalize.js'
  * and the site build date on the WebPage.
  */
 const ARTICLE_TYPES = new Set([
-  'article',
-  'blogposting',
-  'newsarticle',
-  'techarticle',
-  'scholarlyarticle',
   'report',
-  'socialmediaposting',
-  'liveblogposting',
   'question',
+  'answer',
   'webpageelement',
+  'creativework',
+  'blog',
+  'podcastepisode',
+  'newsletter',
 ])
+
+/**
+ * schema.org has a long tail of Article and Posting subtypes —
+ * AnalysisNewsArticle, ReportageNewsArticle, OpinionNewsArticle,
+ * SatiricalArticle, DiscussionForumPosting — and enumerating them was already
+ * wrong in practice: BBC's AnalysisNewsArticle was being treated as a mere
+ * container and ranked below its own OpenGraph tags. Matching the suffix covers
+ * the whole family, including subtypes that do not exist yet.
+ */
+function isContentType(type: string): boolean {
+  return type.endsWith('article') || type.endsWith('posting') || ARTICLE_TYPES.has(type)
+}
 
 type JsonValue = unknown
 
@@ -84,7 +94,7 @@ export function extractJsonLd(doc: Document, opts: ParseOptions = {}): Candidate
 
     for (const node of walk(parsed)) {
       const types = typesOf(node)
-      const isArticle = types.some((t) => ARTICLE_TYPES.has(t))
+      const isArticle = types.some(isContentType)
       // Only trust dates on nodes that declare a type; an untyped object with a
       // `datePublished` key is usually a fragment we've walked into by accident.
       if (types.length === 0) continue

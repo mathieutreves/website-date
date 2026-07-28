@@ -1,0 +1,11 @@
+{
+  "url": "https://www.hani.co.kr/arti/society/society_general/1270376.html",
+  "capturedAt": "2026-07-28",
+  "notes": "Korean news article. The only native-format date on the page is 2011년 7월 19일 in the footer — the newspaper's own registration date, not the article's. Guards against a Korean date in site furniture being taken for the publication date.",
+  "fetchedFeedUrl": null,
+  "expect": {
+    "published": "2026-07-28",
+    "modified": null,
+    "conflict": null
+  }
+}
