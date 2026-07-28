@@ -1,5 +1,6 @@
 import type { Candidate } from '../types.js'
 import { parseDateString } from '../parse/normalize.js'
+import { scriptSource } from './patterns.js'
 import type { ParseOptions } from '../parse/normalize.js'
 
 /**
@@ -81,7 +82,10 @@ export function extractJsonLd(doc: Document, opts: ParseOptions = {}): Candidate
   const scripts = doc.querySelectorAll('script[type="application/ld+json"]')
 
   for (const script of scripts) {
-    const text = script.textContent?.trim()
+    // Not `textContent`: see scriptSource. A parser that entity-decodes a
+    // raw-text element turns valid JSON-LD into a parse error, and the `catch`
+    // below would swallow it as "malformed JSON-LD" without a trace.
+    const text = scriptSource(script).trim()
     if (!text) continue
 
     let parsed: JsonValue
