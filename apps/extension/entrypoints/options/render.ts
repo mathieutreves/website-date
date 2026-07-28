@@ -16,8 +16,14 @@ import type {
  * manifest's — "read every site you visit", not "<all_urls>".
  */
 
+/** Kept identical to the popup's, including `'`, so the two cannot drift apart. */
 export const escapeHtml = (value: string): string =>
-  value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
 
 /** Kept simple on purpose: this is a reassurance, not an accounting figure. */
 export function formatBytes(bytes: number): string {
