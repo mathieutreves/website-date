@@ -36,7 +36,7 @@ async function runPopup(slug: string, url: string): Promise<string> {
   // The popup uses the browser's own DOMParser; linkedom stands in for it here.
   const doc = new DOMParser().parseFromString(html, 'text/html') as unknown as Document
   const result = await resolve(extractFromDocument(doc, url), url, offlineEnv(), { now: NOW })
-  return view(result, url, false)
+  return view(result, url, { now: NOW })
 }
 
 describe('popup pipeline on real pages', () => {
@@ -55,8 +55,9 @@ describe('popup pipeline on real pages', () => {
     const html = await runPopup('vitepress-docs', 'https://vitepress.dev/guide/what-is-vitepress')
 
     expect(html).toContain('Last modified')
-    // Nothing on the page claims a publication date, so none is invented.
-    expect(html).toMatch(/Published[\s\S]{0,200}—/)
+    // Nothing on the page claims a publication date, so none is invented — and
+    // the absence is stated rather than left as silence.
+    expect(html).toMatch(/Published[\s\S]{0,200}not declared/)
   })
 
   it('reports honestly when a page has no date', async () => {
@@ -85,7 +86,7 @@ describe('popup pipeline on real pages', () => {
     ] as const) {
       const html = await runPopup(slug, url)
       // Only our own markup should contain tags; notes quote page text.
-      const inNotes = html.match(/<div class="note">([^<]*)<\/div>/g) ?? []
+      const inNotes = html.match(/<p class="note">([^<]*)<\/p>/g) ?? []
       for (const note of inNotes) expect(note).not.toMatch(/<(script|img|iframe)/i)
     }
   })
