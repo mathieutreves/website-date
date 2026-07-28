@@ -24,10 +24,13 @@ USAGE
 OPTIONS
   --json        machine-readable output
   --all         list every candidate, not just the resolved pair
-  --offline     skip network signals (feed lookup) when analysing a URL
+  --offline     skip network signals (feed, sitemap) when analysing a URL
   --mode M      fast | standard (default) | extensive
                 fast reads declared metadata only and is ~4x quicker
   --declared    only report dates the site states itself, never inference
+  --no-sitemap  skip the sitemap <lastmod> lookup
+  --headers     also read Last-Modified from the response headers; off by
+                default because behind a CDN it reports the serve time
   -h, --help    show this
 
 EXIT CODES
@@ -40,18 +43,28 @@ type Options = {
   json: boolean
   all: boolean
   offline: boolean
+  sitemap: boolean
+  httpHeaders: boolean
   mode?: Mode
   minConfidence?: Confidence
 }
 
 function parseArgs(argv: string[]): Options {
-  const options: Options = { json: false, all: false, offline: false }
+  const options: Options = {
+    json: false,
+    all: false,
+    offline: false,
+    sitemap: true,
+    httpHeaders: false,
+  }
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!
     if (arg === '--json') options.json = true
     else if (arg === '--all') options.all = true
     else if (arg === '--offline') options.offline = true
+    else if (arg === '--no-sitemap') options.sitemap = false
+    else if (arg === '--headers') options.httpHeaders = true
     else if (arg === '--declared') options.minConfidence = 'declared'
     else if (arg === '--mode') {
       const value = argv[++i]
@@ -113,11 +126,20 @@ function render(result: DateResult, options: Options): string {
   return lines.join('\n')
 }
 
+type AnalysisOptions = {
+  mode?: Mode
+  minConfidence?: Confidence
+  sitemap?: boolean
+  httpHeaders?: boolean
+}
+
 /** Only set keys the user actually supplied — exactOptionalPropertyTypes. */
-function analysisOptions(options: Options): { mode?: Mode; minConfidence?: Confidence } {
-  const out: { mode?: Mode; minConfidence?: Confidence } = {}
+function analysisOptions(options: Options): AnalysisOptions {
+  const out: AnalysisOptions = {}
   if (options.mode) out.mode = options.mode
   if (options.minConfidence) out.minConfidence = options.minConfidence
+  if (!options.sitemap) out.sitemap = false
+  if (options.httpHeaders) out.httpHeaders = true
   return out
 }
 
