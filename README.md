@@ -46,6 +46,36 @@ await findDatesFromUrl('https://example.com/post')   // fetches, incl. feed look
 await findDatesFromHtml(html, url)                    // offline
 ```
 
+### Options
+
+```js
+extractFromDocument(document, url, {
+  mode: 'fast',              // 'fast' | 'standard' (default) | 'extensive'
+  dayFirst: 'day-first',     // override the DD/MM vs MM/DD heuristic
+  minConfidence: 'declared', // ignore anything the site did not state itself
+})
+```
+
+Text scanning is ~80% of extraction cost, so `mode` is the main performance lever:
+
+| mode | ms/page | correct, modern sites | correct, metadata-poor sites |
+|---|---|---|---|
+| `fast` | 1.3 | 16 / 17 | 8 / 55 |
+| `standard` | 4.9 | 17 / 17 | 24 / 55 |
+| `extensive` | 5.3 | 16 / 17 | 24 / 55 |
+
+`fast` reads declared metadata only. It costs almost nothing on sites that emit
+JSON-LD or OpenGraph — which is most of them — and is the right choice when
+checking every page rather than one on demand. It is blind to pages whose date
+exists only in prose.
+
+`extensive` does **not** improve accuracy; it was measured and does not. It
+exists to populate `candidates` for conflict detection and for showing a reader
+everything a page contains.
+
+`minConfidence: 'declared'` answers "what does this site actually claim", with
+no inference at all — including returning nothing.
+
 ### CLI
 
 ```bash

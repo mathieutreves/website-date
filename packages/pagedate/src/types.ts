@@ -96,6 +96,35 @@ export type Env = {
 }
 
 /**
+ * How hard to look.
+ *
+ * Text scanning is ~80% of extraction cost, so this is the main performance
+ * lever as well as an accuracy one — worth setting deliberately when running
+ * over every page rather than one on demand.
+ */
+export type Mode =
+  /**
+   * Declared metadata only: JSON-LD, meta tags, `<time>`, the URL. No text
+   * scanning, roughly five times faster, and it still answers most pages
+   * because most sites emit metadata.
+   */
+  | 'fast'
+  /**
+   * The default. Adds labelled text ("Published on…"), and falls back to
+   * unlabelled text only when nothing labelled was found.
+   */
+  | 'standard'
+  /**
+   * Also collects unlabelled text dates even when metadata already answered.
+   *
+   * Measured, it does **not** improve accuracy: identical on the external
+   * corpus and one false positive worse on ours. Its use is populating
+   * `candidates` for conflict detection and for showing a reader everything the
+   * page contains — not for finding a better answer.
+   */
+  | 'extensive'
+
+/**
  * Per-domain override. Adapters short-circuit nothing — generic extractors
  * still run, so contradictions between the two remain visible.
  */

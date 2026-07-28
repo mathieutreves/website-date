@@ -25,6 +25,19 @@ export const DATE_BODY = [
 export const DATE_ANYWHERE = new RegExp(DATE_BODY, 'i')
 
 /**
+ * Cheap rejection test, run before any expensive work.
+ *
+ * Every date form supported here contains a four-digit year or a CJK year
+ * marker, so text failing this cannot contain a date. The overwhelming majority
+ * of elements on a page fail it, which lets them skip a Unicode normalisation
+ * and two large regex alternations each — the single biggest cost in
+ * extraction. Digit ranges cover the non-ASCII numeral systems the parser
+ * normalises later.
+ */
+export const MAYBE_DATE =
+  /[0-9٠-٩۰-۹०-९๐-๙０-９]{4}|[年년]/
+
+/**
  * Elements whose text is worth scanning for a date.
  *
  * `abbr` earns its place: the hAtom microformat convention is

@@ -12,7 +12,7 @@
 
 import { DOMParser, parseHTML } from 'linkedom'
 import type { DateResult, Env } from '../types.js'
-import { findDates, resolve, extractFromDocument } from '../index.js'
+import { findDates, resolve, extractFromDocument, type ExtractOptions } from '../index.js'
 import type { ResolveOptions } from '../resolve.js'
 
 export type { Candidate, DateResult, Env, Confidence, Conflict, Field, Precision } from '../types.js'
@@ -92,7 +92,7 @@ export function nodeEnv(options: NodeEnvOptions = {}): Env {
   return env
 }
 
-export type FromHtmlOptions = ResolveOptions & {
+export type FromHtmlOptions = ResolveOptions & ExtractOptions & {
   /** Set to enable feed lookup, which needs network access. */
   env?: Env
 }
@@ -108,11 +108,11 @@ export async function findDatesFromHtml(
 
   // Without an env there is no network, so the feed path is skipped and this
   // reduces to pure DOM extraction.
-  if (!env) return resolve(extractFromDocument(doc, url), url, {}, resolveOptions)
+  if (!env) return resolve(extractFromDocument(doc, url, options), url, {}, resolveOptions)
   return findDates(doc, url, env, resolveOptions)
 }
 
-export type FromUrlOptions = ResolveOptions &
+export type FromUrlOptions = ResolveOptions & ExtractOptions &
   NodeEnvOptions & {
     /** Supply your own Env to override the default network implementation. */
     env?: Env

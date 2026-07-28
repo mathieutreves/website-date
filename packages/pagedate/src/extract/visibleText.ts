@@ -3,7 +3,7 @@ import { parseDateString, type ParseOptions } from '../parse/normalize.js'
 import { foldCase } from '../parse/locale.js'
 import { scoreContext } from './context.js'
 import { MODIFIED_LABEL_PATTERN, PUBLISHED_LABEL_PATTERN } from './labels.js'
-import { DATE_BODY, isBorrowedContent, TEXT_CANDIDATE_SELECTOR } from './patterns.js'
+import { DATE_BODY, isBorrowedContent, MAYBE_DATE, TEXT_CANDIDATE_SELECTOR } from './patterns.js'
 
 /**
  * Prose like "Last updated on 3 March 2024".
@@ -42,10 +42,16 @@ export function extractVisibleText(
   for (const el of doc.querySelectorAll(TEXT_CANDIDATE_SELECTOR)) {
     // Only look at elements whose own text is short — a <div> wrapping the
     // whole article would otherwise match its first byline over and over.
+    const raw = directText(el)
+    if (!raw || raw.length > MAX_TEXT_LENGTH) continue
+    // Reject before normalising. Folding is two Unicode normalisation passes
+    // and the label patterns are large alternations; almost every element on a
+    // page has no year in it and can skip both.
+    if (!MAYBE_DATE.test(raw)) continue
+
     // Folded, because both the label and month-name patterns are built from
     // diacritic-stripped keys — see parse/locale.ts.
-    const text = foldCase(directText(el))
-    if (!text || text.length > MAX_TEXT_LENGTH) continue
+    const text = foldCase(raw)
 
     const context = scoreContext(el)
     if (!context.usable) continue
