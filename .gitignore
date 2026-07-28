@@ -22,3 +22,7 @@ web-ext-artifacts/
 
 # Local Python venv for the htmldate comparison
 .venv-eval/
+
+# Competitor packages for benchmarking, installed on demand
+bench/node_modules/
+bench/package-lock.json

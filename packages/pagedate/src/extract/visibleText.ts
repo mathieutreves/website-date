@@ -42,16 +42,19 @@ export function extractVisibleText(
   for (const el of doc.querySelectorAll(TEXT_CANDIDATE_SELECTOR)) {
     // Only look at elements whose own text is short — a <div> wrapping the
     // whole article would otherwise match its first byline over and over.
+    // Reject before any string work. Collapsing whitespace allocates, folding
+    // is up to two Unicode normalisation passes, and the label patterns are
+    // large alternations — almost every element on a page has no year in it and
+    // can skip all three.
     const raw = directText(el)
-    if (!raw || raw.length > MAX_TEXT_LENGTH) continue
-    // Reject before normalising. Folding is two Unicode normalisation passes
-    // and the label patterns are large alternations; almost every element on a
-    // page has no year in it and can skip both.
-    if (!MAYBE_DATE.test(raw)) continue
+    if (!raw || !MAYBE_DATE.test(raw)) continue
+
+    const collapsed = collapse(raw)
+    if (collapsed.length > MAX_TEXT_LENGTH) continue
 
     // Folded, because both the label and month-name patterns are built from
     // diacritic-stripped keys — see parse/locale.ts.
-    const text = foldCase(raw)
+    const text = foldCase(collapsed)
 
     const context = scoreContext(el)
     if (!context.usable) continue
@@ -102,5 +105,10 @@ function directText(el: Element): string {
       }
     }
   }
-  return out.replace(/\s+/g, ' ').trim()
+  return out
+}
+
+/** Whitespace collapsing, deferred until an element is known to be worth it. */
+function collapse(text: string): string {
+  return text.replace(/\s+/g, ' ').trim()
 }

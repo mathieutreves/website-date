@@ -46,13 +46,14 @@ export function extractBareText(
   for (const el of doc.querySelectorAll(TEXT_CANDIDATE_SELECTOR)) {
     if (out.length >= MAX_CANDIDATES) break
 
+    // Same cheap rejection as visibleText, before any allocation.
     const raw = dateBearingText(el)
-    if (!raw || raw.length > MAX_TEXT_LENGTH) continue
-    // Same cheap rejection as visibleText: skip folding and the alternation
-    // for the many elements that cannot contain a date at all.
-    if (!MAYBE_DATE.test(raw)) continue
+    if (!raw || !MAYBE_DATE.test(raw)) continue
 
-    const text = foldCase(raw)
+    const collapsed = collapse(raw)
+    if (collapsed.length > MAX_TEXT_LENGTH) continue
+
+    const text = foldCase(collapsed)
     const match = DATE_ANYWHERE.exec(text)
     if (!match) continue
 
@@ -137,5 +138,10 @@ function directText(el: Element): string {
       }
     }
   }
-  return out.replace(/\s+/g, ' ').trim()
+  return out
+}
+
+/** Whitespace collapsing, deferred until an element is known to be worth it. */
+function collapse(text: string): string {
+  return text.replace(/\s+/g, ' ').trim()
 }

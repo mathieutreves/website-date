@@ -1,0 +1,10 @@
+{
+  "name": "pagedate-bench",
+  "private": true,
+  "type": "module",
+  "description": "Isolated workspace for competitor benchmarking. Not part of the build.",
+  "dependencies": {
+    "@extractus/article-extractor": "^8.1.0",
+    "unfluff": "^3.2.0"
+  }
+}
