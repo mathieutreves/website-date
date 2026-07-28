@@ -16,7 +16,7 @@ stores yet.
 
 On the local corpus of 17 annotated pages: **100%** published accuracy, **94.1%**
 modified. On [htmldate](https://github.com/adbar/htmldate)'s public cached
-subset: **54.5%** — second of ten tools measured, and first among JavaScript
+subset: **63.6%** — second of ten tools measured, and first among JavaScript
 ones. See [Against other tools](#against-other-tools).
 
 ## Usage
@@ -46,7 +46,7 @@ pnpm add pagedate linkedom
 ```js
 import { findDatesFromUrl, findDatesFromHtml } from 'pagedate/node'
 
-await findDatesFromUrl('https://example.com/post')   // fetches, incl. feed lookup
+await findDatesFromUrl('https://example.com/post')   // fetches, incl. feed and sitemap
 await findDatesFromHtml(html, url)                    // offline
 ```
 
@@ -64,9 +64,9 @@ Text scanning is ~80% of extraction cost, so `mode` is the main performance leve
 
 | mode | ms/page | correct, modern sites | correct, metadata-poor sites |
 |---|---|---|---|
-| `fast` | 1.3 | 16 / 17 | 8 / 55 |
-| `standard` | 4.9 | 17 / 17 | 24 / 55 |
-| `extensive` | 5.3 | 16 / 17 | 24 / 55 |
+| `fast` | 1.3 | 16 / 17 | 12 / 55 |
+| `standard` | 4.9 | 17 / 17 | 35 / 55 |
+| `extensive` | 5.3 | 16 / 17 | 35 / 55 |
 
 `fast` reads declared metadata only. It costs almost nothing on sites that emit
 JSON-LD or OpenGraph — which is most of them — and is the right choice when
@@ -80,12 +80,43 @@ everything a page contains.
 `minConfidence: 'declared'` answers "what does this site actually claim", with
 no inference at all — including returning nothing.
 
+### Network signals
+
+`findDates` and the Node helpers can also ask the site about the page, rather
+than only the page about itself. Each costs at least one request, so each is a
+decision:
+
+```js
+await findDatesFromUrl(url, {
+  sitemap: true,      // default. Looks the page up in the site's sitemap.
+  httpHeaders: false, // default. Reads Last-Modified from the response headers.
+})
+```
+
+**Feed** entries (`<published>`, `<updated>`, `<pubDate>`) are `declared` and
+always looked for — they are what makes an undated static-site post solvable.
+
+**Sitemap `<lastmod>`** is `derived`, and reports `modified` rather than
+`published`, because that is what `<lastmod>` means. It is skipped when the page
+already declares a modification date, and ignored entirely when every entry in
+the sitemap carries the same timestamp — that is a build stamp, not a fact about
+any page. It is what lets the library answer a hand-written page with no date
+anywhere in its markup.
+
+**HTTP `Last-Modified`** is off by default and that is a measured decision, not
+a cautious one: behind a CDN it is the serve time, and on the local corpus it
+invented two edits and found nothing new. Responses that set a cookie, forbid
+caching, or stamp `Last-Modified` within five minutes of their own `Date` are
+discarded before the rest is even considered. See
+[§4.10 of the design doc](docs/DESIGN.md#410-transport-signals--http-last-modified).
+
 ### CLI
 
 ```bash
 npx pagedate https://example.com/post
 npx pagedate --file page.html --url https://example.com/post --all
 cat page.html | npx pagedate --url https://example.com/post --json
+npx pagedate --headers --no-sitemap https://example.com/post
 ```
 
 Exit codes: `0` a date was found, `1` none found, `2` the page could not be read.
@@ -108,7 +139,7 @@ Measured on the same pages, current versions — see [docs/BENCHMARK.md](docs/BE
 |---|---|---|
 | htmldate (extensive) | 90.9% | 75.5 |
 | htmldate (fast) | 78.2% | 11.2 |
-| **pagedate (standard)** | **54.5%** | **5.4** |
+| **pagedate (standard)** | **63.6%** | **5.4** |
 | date_guesser | 25.5% | 115.6 |
 | newspaper4k | 20.0% | 148.8 |
 | @extractus/article-extractor | 14.5% | 85.5 |
