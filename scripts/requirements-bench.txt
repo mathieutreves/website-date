@@ -1,0 +1,11 @@
+# Python date extractors compared against, in scripts/bench_python.py.
+#
+# Benchmark-only: nothing here is a dependency of the library, which has none.
+# Versions are pinned because the point of running these ourselves rather than
+# citing a published table is that the tools move — and some have moved
+# backwards. A reader reproducing our numbers needs the versions we measured.
+htmldate==1.10.0
+newspaper4k==0.9.6
+goose3==3.1.22
+date-guesser==2.1.4
+articleDateExtractor==0.20

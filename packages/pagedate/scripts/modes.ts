@@ -10,7 +10,10 @@
 
 import { readFile, readdir } from 'node:fs/promises'
 import { join } from 'node:path'
-import { parseHTML } from 'linkedom'
+// Parses with the library's own `parseHtml` — node-html-parser, the parser
+// `pagedate/node` ships. Measuring through a different one would publish a
+// figure that describes nothing anyone runs; see bench/parity.mjs.
+import { parseHtml } from '../dist/node/index.js'
 import { extractFromDocument, resolveCandidates, type Mode } from '../dist/index.js'
 
 const CORPUS = join(import.meta.dirname, '..', '..', '..', 'corpus-external', 'htmldate')
@@ -27,7 +30,7 @@ async function main(): Promise<void> {
   const pages: Array<{ url: string; doc: Document; gold: string }> = []
   for (const [url, entry] of Object.entries(index)) {
     if (!cached.has(entry.file)) continue
-    const { document } = parseHTML(await readFile(join(CACHE, entry.file), 'utf8'))
+    const document = parseHtml(await readFile(join(CACHE, entry.file), 'utf8'))
     pages.push({ url, doc: document as unknown as Document, gold: entry.date })
   }
 

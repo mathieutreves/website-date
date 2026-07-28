@@ -12,7 +12,10 @@
 
 import { readFile, readdir } from 'node:fs/promises'
 import { join } from 'node:path'
-import { parseHTML } from 'linkedom'
+// Parses with the library's own `parseHtml` — node-html-parser, the parser
+// `pagedate/node` ships. Measuring through a different one would publish a
+// figure that describes nothing anyone runs; see bench/parity.mjs.
+import { parseHtml } from '../dist/node/index.js'
 import { extractFromDocument, resolveCandidates, type Mode } from '../dist/index.js'
 
 const ROOT = join(import.meta.dirname, '..', '..', '..')
@@ -110,7 +113,7 @@ async function main(): Promise<void> {
   const pages: Array<{ url: string; doc: Document; gold: string; file: string }> = []
   for (const [url, entry] of Object.entries(index)) {
     if (!cached.has(entry.file)) continue
-    const { document } = parseHTML(await readFile(join(CACHE, entry.file), 'utf8'))
+    const document = parseHtml(await readFile(join(CACHE, entry.file), 'utf8'))
     pages.push({ url, doc: document as unknown as Document, gold: entry.date, file: entry.file })
   }
 
@@ -129,7 +132,13 @@ async function main(): Promise<void> {
     results.set(`pagedate (${mode})`, t)
   }
 
-  for (const path of ['/tmp/bench-python.jsonl', '/tmp/bench-js.jsonl']) {
+  // Paths may be given as arguments so scripts/validate.sh can keep its outputs
+  // in results/ rather than /tmp, where they would be lost between runs and
+  // could not be committed alongside the tables they produced.
+  const inputs =
+    process.argv.length > 2 ? process.argv.slice(2) : ['/tmp/bench-python.jsonl', '/tmp/bench-js.jsonl']
+
+  for (const path of inputs) {
     for (const row of await readJsonl(path)) {
       const t = results.get(row.tool) ?? empty()
       tally(t, row.gold, row.found, row.ms)

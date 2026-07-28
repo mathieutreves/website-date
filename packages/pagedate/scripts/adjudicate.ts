@@ -15,7 +15,10 @@
 
 import { readFile, readdir } from 'node:fs/promises'
 import { join } from 'node:path'
-import { parseHTML } from 'linkedom'
+// Parses with the library's own `parseHtml` — node-html-parser, the parser
+// `pagedate/node` ships. Measuring through a different one would publish a
+// figure that describes nothing anyone runs; see bench/parity.mjs.
+import { parseHtml } from '../dist/node/index.js'
 import { extractFromDocument, resolveCandidates } from '../dist/index.js'
 
 const ROOT = join(import.meta.dirname, '..', '..', '..')
@@ -92,7 +95,7 @@ async function main(): Promise<void> {
   for (const [url, entry] of Object.entries(index)) {
     if (!cached.has(entry.file)) continue
     const html = await readFile(join(CACHE, entry.file), 'utf8')
-    const { document } = parseHTML(html)
+    const document = parseHtml(html)
 
     let ours: string | null = null
     try {
