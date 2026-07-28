@@ -11,15 +11,24 @@ export default defineConfig({
     description:
       'Shows when a page was published and last modified, with where each date came from and how much to trust it.',
     version: '0.1.0',
+    default_locale: 'en',
 
     // On-demand only. An extension that reads every page you visit is a
     // browsing-history side channel; activeTab grants access to one tab, on
-    // your click, and asks for nothing at install time. The always-on banner
-    // is deliberately deferred — it would require <all_urls>.
+    // your click, and asks for nothing at install time.
     permissions: ['activeTab', 'storage', 'scripting'],
 
-    // Requested at the moment a feature needing them is enabled, never upfront.
-    optional_host_permissions: ['*://web.archive.org/*'],
+    // Requested at the moment a feature needing them is enabled, never upfront,
+    // and handed back when it is switched off again. `*://*/*` backs the
+    // opt-in "check every page automatically" setting: it is what turns the
+    // always-on badge from impossible into a choice the reader makes knowingly,
+    // rather than a cost silently folded into installing the extension.
+    optional_host_permissions: ['*://*/*', '*://web.archive.org/*'],
+
+    options_ui: {
+      page: 'options.html',
+      open_in_tab: false,
+    },
 
     browser_specific_settings: {
       gecko: {
