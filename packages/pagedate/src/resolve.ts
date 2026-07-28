@@ -38,6 +38,9 @@ const SOURCE_RANK: Record<string, number> = {
   sitemap: 40,
   'meta-date': 35,
   'url-slug': 20,
+  // Below url-slug: a post's URL is minted with the post, but the image it
+  // previews with can be a stock banner uploaded years earlier.
+  'image-path': 18,
   'visible-text': 15,
   // Below url-slug: an unlabelled date is weaker evidence than a date the
   // site committed to in its own URL structure.
