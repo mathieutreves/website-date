@@ -1,7 +1,7 @@
 import type { Candidate } from '../types.js'
 import { parseDateString, type ParseOptions } from '../parse/normalize.js'
 import { foldCase } from '../parse/locale.js'
-import { fieldFromMarker, scoreContext } from './context.js'
+import { fieldFromMarker, marksDateBlock, scoreContext } from './context.js'
 import { MODIFIED_LABEL_PATTERN, PUBLISHED_LABEL_PATTERN } from './labels.js'
 import { DATE_ANYWHERE, DATE_BODY, isBorrowedContent, MAYBE_DATE, TEXT_CANDIDATE_SELECTOR, NOT_A_DATE } from './patterns.js'
 
@@ -86,8 +86,13 @@ export function extractVisibleText(
     // container the site named `PublishDate_date` or `entry-date` is a stated
     // publication date, and reading it as one keeps it from being left
     // unlabelled and outranked by a worse candidate elsewhere on the page.
+    // A generic marker — `date`, `datum`, `time`, `meta` — says a date lives
+    // here without saying which kind. That is still worth far more than
+    // guessing from prose, so it yields an `unknown` candidate at derived
+    // confidence rather than nothing: `<span class="press_location_time">
+    // Schengen, 3. Juli 2018</span>` is plainly the article's date block.
     const markerField = fieldFromMarker(context.marker)
-    if (markerField !== 'unknown' && !MODIFIED_RE.test(text) && !PUBLISHED_RE.test(text)) {
+    if (marksDateBlock(context.marker) && !MODIFIED_RE.test(text) && !PUBLISHED_RE.test(text)) {
       // hAtom writes `<abbr class="published" title="2016-12-23T05:11:00-05:00">
       // 5:11 AM</abbr>` — the marker names it a publication date and the machine
       // value is in the attribute, while the text alone says only a time.
