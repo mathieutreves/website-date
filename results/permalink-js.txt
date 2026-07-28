@@ -3,9 +3,9 @@
 
   tool                            exact  part  wrong  miss | precision  accuracy   ms/page
   ----------------------------------------------------------------------------------------
-  pagedate (standard)              235     0     13    14 |    94.8%    89.7%      4.39
-  pagedate (extensive)             235     0     13    14 |    94.8%    89.7%      4.29
-  metascraper                      159     0     52    51 |    75.4%    60.7%     13.29
-  pagedate (fast)                  157     0     10    95 |    94.0%    59.9%      4.20
-  unfluff                          145     0     16   101 |    90.1%    55.3%     52.39
-  @extractus/article-extractor     126     0     34   102 |    78.8%    48.1%     62.64
+  pagedate (standard)              235     0     13    14 |    94.8%    89.7%      4.58
+  pagedate (extensive)             235     0     13    14 |    94.8%    89.7%      4.47
+  metascraper                      159     0     52    51 |    75.4%    60.7%     12.09
+  pagedate (fast)                  157     0     10    95 |    94.0%    59.9%      3.80
+  unfluff                          145     0     16   101 |    90.1%    55.3%     50.96
+  @extractus/article-extractor     126     0     34   102 |    78.8%    48.1%     58.69
