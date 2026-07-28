@@ -1,6 +1,7 @@
 import type { Candidate, Env } from '../types.js'
 import { parseDateString, type ParseOptions } from '../parse/normalize.js'
 import { canonicalUrl, childText, defaultParseXml, matchesPage, normalisePath } from './xml.js'
+import { isSafeFetchTarget } from './urlGuard.js'
 
 /**
  * `<lastmod>` from the site's own sitemap.
@@ -85,7 +86,9 @@ function declaredSitemapUrls(doc: Document, pageUrl: URL): string[] {
     const href = link.getAttribute('href')
     if (!href) continue
     try {
-      out.push(new URL(href, pageUrl).toString())
+      const resolved = new URL(href, pageUrl)
+      if (!isSafeFetchTarget(resolved)) continue
+      out.push(resolved.toString())
     } catch {
       // relative href we can't resolve — skip
     }
@@ -181,7 +184,12 @@ function indexChildren(sitemapDoc: Document, pageUrl: URL): string[] {
     // fetching one buys a parse failure at the price of a request.
     if (/\.gz(?:\?|$)/i.test(loc)) continue
     try {
-      children.push(new URL(loc, pageUrl).toString())
+      const resolved = new URL(loc, pageUrl)
+      // A step further from the page than the `<link>` tags: this URL comes out
+      // of XML the page told us to fetch, and children are queued ahead of the
+      // well-known guesses, so an unfiltered one would be tried first.
+      if (!isSafeFetchTarget(resolved)) continue
+      children.push(resolved.toString())
     } catch {
       // ignore
     }

@@ -82,7 +82,12 @@ export function extractHttpHeaders(
  * lowercases them, a hand-rolled shim may not.
  */
 function lowercased(headers: Record<string, string>): Record<string, string> {
-  const out: Record<string, string> = {}
+  // Null-prototype: the keys are header names off the wire, so the server picks
+  // them. `Object.prototype` currently has nothing that collides with the four
+  // names read below, and V8's `__proto__` setter ignores string values — but
+  // that is a fact about today's reads and today's engine, not a property of
+  // this function.
+  const out: Record<string, string> = Object.create(null)
   for (const [key, value] of Object.entries(headers)) out[key.toLowerCase()] = value
   return out
 }

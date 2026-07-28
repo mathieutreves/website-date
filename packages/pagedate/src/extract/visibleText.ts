@@ -3,7 +3,7 @@ import { parseDateString, type ParseOptions } from '../parse/normalize.js'
 import { foldCase } from '../parse/locale.js'
 import { fieldFromMarker, marksDateBlock, scoreContext } from './context.js'
 import { MODIFIED_LABEL_PATTERN, PUBLISHED_LABEL_PATTERN } from './labels.js'
-import { DATE_ANYWHERE, DATE_BODY, isBorrowedContent, MAYBE_DATE, TEXT_CANDIDATE_SELECTOR, NOT_A_DATE } from './patterns.js'
+import { collapse, DATE_ANYWHERE, DATE_BODY, directText, isBorrowedContent, MAYBE_DATE, textCandidates, NOT_A_DATE } from './patterns.js'
 
 /**
  * Prose like "Last updated on 3 March 2024".
@@ -59,7 +59,7 @@ export function extractVisibleText(
   const seen = new Set<string>()
   const pageHost = pageUrl?.hostname ?? null
 
-  for (const el of doc.querySelectorAll(TEXT_CANDIDATE_SELECTOR)) {
+  for (const el of textCandidates(doc)) {
     // Only look at elements whose own text is short — a <div> wrapping the
     // whole article would otherwise match its first byline over and over.
     // Reject before any string work. Collapsing whitespace allocates, folding
@@ -145,32 +145,3 @@ export function extractVisibleText(
   return out
 }
 
-/**
- * Text belonging to this element rather than its descendants, so a wrapper
- * doesn't inherit every date its children contain.
- */
-function directText(el: Element): string {
-  let out = ''
-  for (const node of el.childNodes) {
-    // Node.TEXT_NODE === 3; comparing numerically keeps this working under
-    // linkedom, where the Node constants aren't globals.
-    // `textContent` is the fallback because some non-browser DOM
-    // implementations (node-html-parser) leave `nodeValue` undefined on text
-    // nodes. On a text node the two are defined to be equal, so this costs
-    // nothing on a real DOM and keeps the extractor parser-agnostic.
-    if (node.nodeType === 3) out += node.nodeValue ?? node.textContent ?? ''
-    else if (node.nodeType === 1) {
-      const tag = (node as Element).tagName?.toUpperCase()
-      // Inline wrappers are part of the same phrase.
-      if (tag === 'TIME' || tag === 'SPAN' || tag === 'B' || tag === 'STRONG' || tag === 'EM') {
-        out += (node as Element).textContent ?? ''
-      }
-    }
-  }
-  return out
-}
-
-/** Whitespace collapsing, deferred until an element is known to be worth it. */
-function collapse(text: string): string {
-  return text.replace(/\s+/g, ' ').trim()
-}
