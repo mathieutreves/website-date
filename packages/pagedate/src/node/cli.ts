@@ -11,7 +11,7 @@
  */
 
 import { readFile } from 'node:fs/promises'
-import type { Candidate, DateResult } from '../types.js'
+import type { Candidate, Confidence, DateResult, Mode } from '../types.js'
 import { findDatesFromHtml, findDatesFromUrl, nodeEnv } from './index.js'
 
 const HELP = `pagedate — find when a web page was published and last modified
@@ -25,6 +25,9 @@ OPTIONS
   --json        machine-readable output
   --all         list every candidate, not just the resolved pair
   --offline     skip network signals (feed lookup) when analysing a URL
+  --mode M      fast | standard (default) | extensive
+                fast reads declared metadata only and is ~4x quicker
+  --declared    only report dates the site states itself, never inference
   -h, --help    show this
 
 EXIT CODES
@@ -37,6 +40,8 @@ type Options = {
   json: boolean
   all: boolean
   offline: boolean
+  mode?: Mode
+  minConfidence?: Confidence
 }
 
 function parseArgs(argv: string[]): Options {
@@ -47,6 +52,15 @@ function parseArgs(argv: string[]): Options {
     if (arg === '--json') options.json = true
     else if (arg === '--all') options.all = true
     else if (arg === '--offline') options.offline = true
+    else if (arg === '--declared') options.minConfidence = 'declared'
+    else if (arg === '--mode') {
+      const value = argv[++i]
+      if (value !== 'fast' && value !== 'standard' && value !== 'extensive') {
+        process.stderr.write('--mode must be fast, standard or extensive\n')
+        process.exit(2)
+      }
+      options.mode = value
+    }
     else if (arg === '--url' || arg === '--file') {
       const value = argv[++i]
       // A trailing `--url` with nothing after it is a typo, not an empty value.
@@ -99,6 +113,14 @@ function render(result: DateResult, options: Options): string {
   return lines.join('\n')
 }
 
+/** Only set keys the user actually supplied — exactOptionalPropertyTypes. */
+function analysisOptions(options: Options): { mode?: Mode; minConfidence?: Confidence } {
+  const out: { mode?: Mode; minConfidence?: Confidence } = {}
+  if (options.mode) out.mode = options.mode
+  if (options.minConfidence) out.minConfidence = options.minConfidence
+  return out
+}
+
 async function main(): Promise<void> {
   const options = parseArgs(process.argv.slice(2))
 
@@ -113,7 +135,7 @@ async function main(): Promise<void> {
       process.exit(2)
     }
     // URL-derived signals still work offline; only the feed needs network.
-    result = await findDatesFromHtml(html, options.url)
+    result = await findDatesFromHtml(html, options.url, analysisOptions(options))
   } else if (options.file) {
     process.stderr.write(`could not read ${options.file}\n`)
     process.exit(2)
@@ -126,9 +148,9 @@ async function main(): Promise<void> {
         process.stderr.write(`could not fetch ${options.url}\n`)
         process.exit(2)
       }
-      result = await findDatesFromHtml(page, options.url)
+      result = await findDatesFromHtml(page, options.url, analysisOptions(options))
     } else {
-      result = await findDatesFromUrl(options.url)
+      result = await findDatesFromUrl(options.url, analysisOptions(options))
     }
     if (!result) {
       process.stderr.write(`could not fetch ${options.url}\n`)

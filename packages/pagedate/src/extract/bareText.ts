@@ -2,7 +2,7 @@ import type { Candidate } from '../types.js'
 import { parseDateString, type ParseOptions } from '../parse/normalize.js'
 import { foldCase } from '../parse/locale.js'
 import { scoreContext } from './context.js'
-import { DATE_ANYWHERE, isBorrowedContent, TEXT_CANDIDATE_SELECTOR } from './patterns.js'
+import { DATE_ANYWHERE, isBorrowedContent, MAYBE_DATE, TEXT_CANDIDATE_SELECTOR } from './patterns.js'
 
 /**
  * Dates in rendered text with no label attached — a bare "December 11, 2023"
@@ -46,9 +46,13 @@ export function extractBareText(
   for (const el of doc.querySelectorAll(TEXT_CANDIDATE_SELECTOR)) {
     if (out.length >= MAX_CANDIDATES) break
 
-    const text = foldCase(dateBearingText(el))
-    if (!text || text.length > MAX_TEXT_LENGTH) continue
+    const raw = dateBearingText(el)
+    if (!raw || raw.length > MAX_TEXT_LENGTH) continue
+    // Same cheap rejection as visibleText: skip folding and the alternation
+    // for the many elements that cannot contain a date at all.
+    if (!MAYBE_DATE.test(raw)) continue
 
+    const text = foldCase(raw)
     const match = DATE_ANYWHERE.exec(text)
     if (!match) continue
 
