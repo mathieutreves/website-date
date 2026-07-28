@@ -104,17 +104,22 @@
 body {
   margin: 0;
   /*
-   * `width` is what a desktop popup sizes itself from, so it stays. `max-width`
-   * clamps it on Firefox for Android — the one mobile browser this can realistically
-   * run in — where the panel is bounded by the screen rather than by us.
+   * The one number a popup stylesheet cannot get wrong.
    *
-   * Deliberately not a `max-width` media query: inside a desktop popup the
-   * viewport *is* this width, so any narrow-viewport query matches there too
-   * and the rule feeds back on itself. `pointer: coarse` is the honest test for
-   * "this is a touch device", and is what the touch rules below use.
+   * A desktop popup has no viewport until it has been laid out, and it lays out
+   * from its own content — so anything here expressed in viewport units resolves
+   * against a provisional width, clamps the body to it, and the popup then
+   * confirms that clamped size. It is a feedback loop, and it collapses the
+   * panel to the width of its longest unbreakable word.
+   *
+   * That applies to `100vw` exactly as it applies to a narrow-viewport media
+   * query. Both are questions about a viewport that does not exist yet. So this
+   * width is absolute and unconditional, and the mobile clamp — for Firefox for
+   * Android, where the panel really is bounded by the screen — lives under
+   * `pointer: coarse` with the other touch rules, which is a question about the
+   * device rather than about the box being measured.
    */
   width: 360px;
-  max-width: 100vw;
   background: var(--surface);
   color: var(--fg);
   font:
@@ -633,6 +638,12 @@ button.icon:hover {
  * the same way on both.
  */
 @media (pointer: coarse) {
+  /* Safe here, and only here: a touch panel has a real viewport before it is
+     laid out, so this cannot feed back into the popup's own measurement. */
+  body {
+    max-width: 100vw;
+  }
+
   #app {
     padding: var(--s4);
   }
