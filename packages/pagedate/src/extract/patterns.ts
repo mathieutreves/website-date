@@ -1,4 +1,4 @@
-import { MONTH_NAME_PATTERN } from '../parse/locale.js'
+import { CJK_DATE_PATTERN, MONTH_NAME_PATTERN } from '../parse/locale.js'
 
 /**
  * Date shapes recognisable in rendered text, in any supported language.
@@ -7,8 +7,10 @@ import { MONTH_NAME_PATTERN } from '../parse/locale.js'
  * drift apart on what counts as a date.
  */
 export const DATE_BODY = [
-  // "12 March 2024", "12 de marzo de 2024", "19. Juli 2014"
-  `\\d{1,2}\\.?\\s+(?:de\\s+)?(?:${MONTH_NAME_PATTERN})\\.?\\s+(?:de\\s+|del\\s+)?\\d{4}`,
+  // CJK first: `2024年3月12日` has no separators the Latin patterns would find.
+  CJK_DATE_PATTERN,
+  // "12 March 2024", "12 de marzo de 2024", "19. Juli 2014", "12 марта 2024"
+  `\\d{1,2}\\.?\\s+(?:de\\s+)?(?:${MONTH_NAME_PATTERN})\\.?\\s+(?:de\\s+|del\\s+|r\\.?\\s*)?\\d{4}`,
   // "March 12, 2024"
   `(?:${MONTH_NAME_PATTERN})\\.?\\s+\\d{1,2},?\\s+\\d{4}`,
   // "March 2024"

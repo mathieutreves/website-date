@@ -14,8 +14,14 @@ import { DATE_BODY, isBorrowedContent, TEXT_CANDIDATE_SELECTOR } from './pattern
  * more noise than signal.
  */
 
-/** Separator between the label and the date: "updated: 3 March", "updated on 3 March". */
-const GAP = `[\\s:—–\\-,]{0,4}(?:on|il|am|le|el|em|op|the)?[\\s:—–\\-,]{0,4}`
+/**
+ * Separator between the label and the date: "updated: 3 March", "updated on
+ * 3 March", "公開日：2024年3月12日".
+ *
+ * Includes the full-width colon and ideographic space, without which every CJK
+ * label sits flush against its date and never matches.
+ */
+const GAP = `[\\s:：、,，—–\\-]{0,4}(?:on|il|am|le|el|em|op|the|v|dnia)?[\\s:：、,，—–\\-]{0,4}`
 
 const MODIFIED_RE = new RegExp(`(?:${MODIFIED_LABEL_PATTERN})${GAP}(${DATE_BODY})`, 'i')
 const PUBLISHED_RE = new RegExp(`(?:${PUBLISHED_LABEL_PATTERN})${GAP}(${DATE_BODY})`, 'i')

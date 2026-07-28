@@ -1,0 +1,11 @@
+{
+  "url": "https://ria.ru/20260728/putin-2107472305.html",
+  "capturedAt": "2026-07-28",
+  "notes": "Russian news article. Cyrillic page with clean JSON-LD; guards against non-Latin markup breaking extraction. The body also carries an unrelated Cyrillic date (08 апреля 2014) that must not surface.",
+  "fetchedFeedUrl": "https://ria.ru/export/rss2/archive/index.xml",
+  "expect": {
+    "published": "2026-07-28",
+    "modified": "2026-07-28",
+    "conflict": null
+  }
+}

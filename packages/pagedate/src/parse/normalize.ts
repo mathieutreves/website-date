@@ -1,5 +1,11 @@
 import type { Precision } from '../types.js'
-import { type DayFirstHint, foldCase, MONTH_NAME_PATTERN, monthFromName } from './locale.js'
+import {
+  type DayFirstHint,
+  foldCase,
+  MONTH_NAME_PATTERN,
+  monthFromName,
+  normaliseDigits,
+} from './locale.js'
 
 export type ParsedDate = {
   /** ISO 8601 truncated to `precision`. */
@@ -38,15 +44,45 @@ function ymd(y: number, m: number, d: number): ParsedDate | null {
  * Returns `null` for anything unrecognised or structurally invalid.
  */
 export function parseDateString(raw: string, opts: ParseOptions = {}): ParsedDate | null {
-  const input = raw.trim()
+  // Arabic, Persian and Indic pages render dates in their own digit systems;
+  // without this a parser that only knows 0-9 sees no date at all.
+  const input = normaliseDigits(raw.trim())
   if (!input) return null
 
   return (
     parseIso(input) ??
+    parseCjk(input) ??
     parseRfc2822(input) ??
     parseNumeric(input, opts.dayFirst ?? 'unknown') ??
     parseTextualMonth(input)
   )
+}
+
+/**
+ * CJK dates are structural rather than named: `2024年3月12日`, or `2024년 3월
+ * 12일` in Korean. Japanese shares the Chinese markers.
+ *
+ * Year-month-day order makes these unambiguous, so no locale hint is needed.
+ */
+function parseCjk(input: string): ParsedDate | null {
+  const full = /(\d{4})\s*[年년]\s*(\d{1,2})\s*[月월]\s*(\d{1,2})\s*[日일]?/.exec(input)
+  if (full) {
+    const parsed = ymd(Number(full[1]), Number(full[2]), Number(full[3]))
+    if (parsed) return parsed
+  }
+
+  const monthOnly = /(\d{4})\s*[年년]\s*(\d{1,2})\s*[月월]/.exec(input)
+  if (monthOnly) {
+    const m = Number(monthOnly[2])
+    if (m >= 1 && m <= 12) {
+      return { value: `${monthOnly[1]}-${pad(m)}`, precision: 'month' }
+    }
+  }
+
+  const yearOnly = /(\d{4})\s*[年년]/.exec(input)
+  if (yearOnly) return { value: yearOnly[1]!, precision: 'year' }
+
+  return null
 }
 
 /** ISO 8601 and its common near-misses, including the `YYYY-MM` / `YYYY` prefixes. */
