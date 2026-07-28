@@ -119,12 +119,20 @@ export function resolve(
   env?: Env,
 ): Promise<DateResult>
 
-// Convenience wrapper for Node/tests/simple use:
+// Convenience wrapper for Node/tests/simple use. This is the only entry point
+// that fetches: feed (§4.4), sitemap (§4.5) and, on request, response headers
+// (§4.10). Each network signal is a decision, so each is an option.
 export function findDates(
   doc: Document,
   url: string,
   env?: Env,
+  options?: ResolveOptions & ExtractOptions & NetworkOptions,
 ): Promise<DateResult>
+
+export type NetworkOptions = {
+  sitemap?: boolean      // default true, skipped when the page declares `modified`
+  httpHeaders?: boolean  // default false — see §4.10
+}
 ```
 
 ### 4.2 Types
@@ -192,7 +200,8 @@ The `Env` injection point is load-bearing. It keeps the library pure with respec
 **`inferred` — guessed**
 
 - **URL slug** patterns: `/2024/03/12/`, `/2024-03-12-`, `/2024/03/`. Precision follows what's present.
-- **HTTP `Last-Modified`** via HEAD — **conditionally trusted**. Discard if within ~24h of now, or if `Cache-Control: no-store/no-cache/max-age=0`, or if `Set-Cookie` is present (all indicate a dynamic response). Genuinely meaningful for static hosts — GitHub Pages, Netlify, Cloudflare Pages, plain nginx — which is precisely the undated-blog case. **Never use `document.lastModified`**: it silently falls back to *now* when the header is absent, which makes it worse than useless.
+- **Image upload path** — the `/2016/05/04/` in the `og:image` a page declares. Day-partitioned paths only; monthly buckets were measured and are wrong more often than right. See §4.9.
+- **HTTP `Last-Modified`** via HEAD — **opt-in**, ranked last, and off by default on measured evidence. See §4.10. **Never use `document.lastModified`**: it silently falls back to *now* when the header is absent, which makes it worse than useless.
 - **Visible-text patterns** — multilingual from day one, Italian included: `Updated on`, `Last updated`, `Posted`, `Published`, `Pubblicato il`, `Ultimo aggiornamento`, `Aggiornato il`, `Veröffentlicht`, `Publié le`, `Actualizado`. Scoped to article context, same exclusions as `<time>`.
 
 **External provenance (separate field, never merged into `published`/`modified`)**
@@ -211,9 +220,17 @@ Feeds usually list only recent entries, so this succeeds most often on recent po
 
 ### 4.5 Sitemap handling
 
-`/sitemap.xml`, then `/sitemap_index.xml`. Handle sitemap **index** files by following at most one nested level, and only into a child whose `<loc>` looks plausibly related to the target path. Bail after ~2 MB read — some sitemaps are enormous and this is a background nicety, not a blocking path. Find `<url>` whose `<loc>` matches the page, read `<lastmod>`.
+*Built. `src/extract/sitemap.ts`.*
 
-`<lastmod>` reflects the *sitemap generator's* notion of change, which for most SSGs is the source file mtime — good — but for some CMSes is the build time, in which case it collapses to "now" for every URL. Detect that: if the first three `<lastmod>` values sampled are all identical, mark the signal untrustworthy and drop it.
+`<link rel="sitemap">` if the page declares one, otherwise `/sitemap.xml`, `/sitemap_index.xml`, `/sitemap-index.xml`. Sitemap **index** files are followed, with the whole lookup sharing a budget of three fetched documents; children are tried in order of how much path they share with the page, since a post at `/guide/install/` is far likelier to be listed in `/guide/sitemap.xml` than in the first child alphabetically. Gzipped children are skipped — we have no unzip, and fetching one buys a parse failure at the price of a request. Find `<url>` whose `<loc>` matches the page (exact → canonical → path-only), read `<lastmod>`.
+
+The signal says **`modified`, not `published`**. `<lastmod>` is defined as when the file changed; on a page never edited the two coincide, but laundering one into the other would be exactly the invention this library refuses elsewhere. A page whose only date comes from the sitemap therefore reports a modification date and an explicitly undeclared publication date.
+
+`<lastmod>` reflects the *sitemap generator's* notion of change, which for most SSGs is the source file mtime — good — but for some CMSes is the build time, in which case it collapses to one instant for every URL. Detect that: if **every** entry carries an identical `<lastmod>` and there are at least ten of them, drop the signal. The plan originally said "sample the first three"; that was tightened during implementation because a small site published in one sitting legitimately has three identical values, and dropping a real signal is the more expensive error here.
+
+The lookup is skipped entirely when the page already declares a modification date — the only field a sitemap can speak to — so the request is spent only where it can change the answer.
+
+Measured: on the local corpus it answers `danluu.com/everything-is-broken/`, a hand-written page with no date anywhere in its markup, with `2014-11-18` — corroborated by the page's own links to articles published in November 2014. That fixture's expectation was changed when this landed, and the reasoning is recorded in `fixtures/danluu-no-date/expected.json`.
 
 ### 4.6 Per-domain adapters
 
@@ -251,6 +268,37 @@ Adapter output is `declared` confidence and short-circuits nothing — generic e
 ```
 
 `published` and `modified` simply *differing* is normal and is **not** a conflict. Encoding that distinction correctly is what keeps the conflict flag meaningful rather than permanently lit.
+
+### 4.9 Image upload paths
+
+*Built. `src/extract/imagePath.ts`.*
+
+WordPress files uploads under `/wp-content/uploads/2016/05/`, Drupal under `/files/2016/05/04/`, and the image a post declares as its `og:image` or `twitter:image` is usually the one uploaded with it. On CMS-shaped sites emitting no other date, it can be the only machine-readable signal on the page.
+
+Only paths carrying a **day** are accepted. This is measured, not squeamishness. Six of the 55 pages in the external corpus declare a dated image path:
+
+| shape | pages | agree with the page's real date |
+|---|---|---|
+| `/2016/05/04/` (day) | 2 | 2 |
+| `/2016/05/` (month) | 4 | 1 |
+
+A monthly bucket holds every image a site used that month, including the stock banner it has reused since — `verfassungsblog.de` previews a 2014 photo on a 2019 article, `wara-enforcement.org` a resized elephant thumbnail. Accepting months scored +1 exact and +1 false positive; accepting only days scored +1 exact and nothing else. On the external corpus this signal takes strict accuracy from 61.8% to 63.6%, and does the same against the corrected answer key (67.3% → 69.1%).
+
+It is `inferred` and ranks *below* `url-slug`: a post's URL is minted with the post, but its preview image is reusable.
+
+### 4.10 Transport signals — HTTP `Last-Modified`
+
+*Built, `src/extract/headers.ts`, and off by default.*
+
+On a static host this is a file's mtime and is real information. Behind a CDN or any dynamic renderer it is the moment the response was assembled. Three filters try to tell those apart:
+
+1. Discard when `Last-Modified` is within five minutes of the response's own `Date` header — that is a page built for this request.
+2. Discard when `Cache-Control` says `no-store`, `no-cache` or `max-age=0`.
+3. Discard when the response sets a cookie while serving itself.
+
+What is left is still poor. Measured over the five local fixtures whose capture recorded a `Last-Modified`: one filtered correctly, one was right by coincidence (a news page published the same day), one was outranked by a date the page declared, and **two were false** — a GitHub Pages rebuild reported as an edit to a year-old release announcement, and a static-site deploy reported as an edit to a page that has none.
+
+So it exists, because it is real information on the hosts where it is real; it is `inferred`; it ranks below every other source; and the caller has to ask for it (`httpHeaders: true`, or `--headers`). Enabling it by default would have cost accuracy on the corpus, which is the whole argument.
 
 ---
 
@@ -428,7 +476,9 @@ Per §7.
 |---|---|
 | Candidates + conflict, not a single date | A single-date API cannot express "claims 2019, edited 2024" — the core complaint |
 | Feeds as a top-tier signal | Site-declared, present on exactly the SSG blogs where inline metadata is missing |
-| `Last-Modified` kept, conditionally | Worthless on SSR/CDN sites (which already have JSON-LD), often correct on static hosts (which don't) |
+| `Last-Modified` kept, but opt-in | Measured: two false positives and no gains on the local corpus. Real on static hosts, so it stays — behind a flag, ranked last (§4.10) |
+| Sitemap `<lastmod>` says `modified` | It is defined as when the file changed. Reading it as a publication date would invent the one thing the site did not say (§4.5) |
+| Image paths: days only, never months | A monthly upload bucket is where stock banners live. Days are per-upload directories; measured 2/2 against 1/4 (§4.9) |
 | `Env` network injection | Keeps the library pure → testable in Node → WSL2 viable for Phases 0–2 → clean MV3 split |
 | Popup-first, banner opt-in | Privacy, and it's the difference between `activeTab` and `<all_urls>` at install time |
 | Per-domain adapters | Generic heuristics optimize for news — the case where help isn't needed |
