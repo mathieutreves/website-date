@@ -1,0 +1,23 @@
+
+55 pages
+
+  pagedate (fast)
+    extraction only          1.50 ms/page
+    including HTML parsing   10.63 ms/page
+  pagedate (standard)
+    extraction only          6.09 ms/page
+    including HTML parsing   15.89 ms/page
+
+  htmldate for comparison, both including lxml parsing:
+    fast                      11.17 ms/page
+    extensive                 75.53 ms/page
+
+  Which number is the honest one depends on the caller:
+
+  * In a browser extension, the DOM already exists and nothing pays for
+    parsing. "Extraction only" is the real cost, and htmldate cannot run there
+    at any speed.
+  * In Node, a caller hands over HTML and pays for parsing. "Including HTML
+    parsing" is the real cost, and linkedom is the dominant term — the
+    comparison there is really linkedom vs lxml, not pagedate vs htmldate.
+

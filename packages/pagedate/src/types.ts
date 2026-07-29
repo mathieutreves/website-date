@@ -45,12 +45,59 @@ export type ConflictKind =
    */
   | 'predated-content'
 
-export type Conflict = {
-  kind: ConflictKind
+/**
+ * What a conflict is made of, as data rather than as a sentence.
+ *
+ * `detail` is English, so each kind also carries the values that sentence was
+ * built from. A caller that wants prose takes `detail`; a caller that wants to
+ * write its own sentence in its own language takes the fields and never has to
+ * parse the English. Without them a translated UI has to either ship an English
+ * paragraph under a translated heading, or re-derive the facts from `candidates`
+ * and hope it reaches the same conclusion the detector did.
+ *
+ * The union discriminates on `kind`, so narrowing on it gives exactly the fields
+ * that kind has and no others.
+ */
+type ConflictBase = {
   gapDays: number
-  /** Rendered verbatim in the UI. */
+  /**
+   * English, always. Suitable for a CLI, a log line, or a UI that has no
+   * translations; anything localised should build its own from the fields
+   * beside it.
+   */
   detail: string
 }
+
+/** One side of a disagreement: what said it, and what it said. */
+export type DateClaim = {
+  /** Extractor id — `opengraph`, `jsonld` — not a label for a reader. */
+  source: string
+  value: string
+}
+
+export type Conflict =
+  | (ConflictBase & {
+      kind: 'declared-disagreement'
+      /** The two declarations that disagree, oldest first. */
+      earlier: DateClaim
+      later: DateClaim
+    })
+  | (ConflictBase & {
+      kind: 'predated-content'
+      /** The publication date the page declares, as `YYYY-MM-DD`. */
+      declared: string
+      /** How many distinct earlier days the page carries. Always at least 3. */
+      olderCount: number
+      /** The oldest of them, as `YYYY-MM-DD`. */
+      oldest: string
+    })
+  | (ConflictBase & {
+      kind: 'stale-declaration'
+      /** The publication date the page declares. */
+      declared: string
+      /** The day the archive first saw the content change, as `YYYY-MM-DD`. */
+      archived: string
+    })
 
 export type ArchiveEvent = {
   /** ISO 8601 instant of the capture that first showed changed content. */
@@ -117,10 +164,14 @@ export type Mode =
   /**
    * Also collects unlabelled text dates even when metadata already answered.
    *
-   * Measured, it does **not** improve accuracy: identical on the external
-   * corpus and one false positive worse on ours. Its use is populating
-   * `candidates` for conflict detection and for showing a reader everything the
-   * page contains — not for finding a better answer.
+   * Measured, this buys recall rather than accuracy. On the permalink held-out
+   * split it finds the same 230 correct answers as `standard` and converts one
+   * abstention into a wrong answer; on the 55-page external corpus it recovers
+   * two pages nothing else dates, 67.3% -> 69.1%, which is barely above that
+   * corpus's noise floor. Its use is populating `candidates` for conflict
+   * detection and for showing a reader everything the page contains — and it
+   * will date a page that has no date, which is the property `standard` exists
+   * to protect.
    */
   | 'extensive'
 

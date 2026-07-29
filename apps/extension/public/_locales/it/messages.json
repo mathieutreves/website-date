@@ -1,0 +1,341 @@
+{
+  "extName": {
+    "message": "Page Date"
+  },
+  "extDescription": {
+    "message": "Mostra quando una pagina è stata pubblicata e modificata l’ultima volta, da dove viene ogni data e quanto fidarsi."
+  },
+  "fieldPublished": {
+    "message": "Pubblicata"
+  },
+  "fieldModified": {
+    "message": "Ultima modifica"
+  },
+  "notDeclared": {
+    "message": "non dichiarata"
+  },
+  "tierDeclared": {
+    "message": "dichiarata dal sito"
+  },
+  "tierDerived": {
+    "message": "dal markup della pagina"
+  },
+  "tierInferred": {
+    "message": "dedotta"
+  },
+  "ageApprox": {
+    "message": "circa {1}"
+  },
+  "ageFuture": {
+    "message": "datata nel futuro"
+  },
+  "conflictDisagreement": {
+    "message": "Questa pagina si contraddice"
+  },
+  "conflictPredated": {
+    "message": "Questa pagina è probabilmente più vecchia di quanto dichiari"
+  },
+  "conflictStale": {
+    "message": "Questa pagina potrebbe essere cambiata dopo la data dichiarata"
+  },
+  "conflictDisagreementDetail": {
+    "message": "{1} indica {2}, mentre {3} indica {4} per lo stesso campo."
+  },
+  "conflictPredatedDetail": {
+    "message": "Dichiara {1}, ma contiene {2} elementi datati prima di allora, fino a {3}. La data dichiarata è probabilmente una ripubblicazione, non quando è stata scritta."
+  },
+  "conflictStaleDetail": {
+    "message": "La pagina dichiara {1} e non mostra alcun aggiornamento, ma l’archivio registra una modifica il {2}."
+  },
+  "spreadTitle": {
+    "message": "Dispersione degli indizi"
+  },
+  "spreadSummary": {
+    "message": "{1} date trovate, distribuite su {2}"
+  },
+  "spreadOldest": {
+    "message": "più antica"
+  },
+  "spreadDeclared": {
+    "message": "dichiarata"
+  },
+  "candidatesOne": {
+    "message": "{1} altra candidata"
+  },
+  "candidatesMany": {
+    "message": "{1} altre candidate"
+  },
+  "candidateFieldPublished": {
+    "message": "pubblicata"
+  },
+  "candidateFieldModified": {
+    "message": "aggiornata"
+  },
+  "candidateFieldUnknown": {
+    "message": "senza etichetta"
+  },
+  "loading": {
+    "message": "Lettura della pagina…"
+  },
+  "badgeNoDate": {
+    "message": "Nessuna data trovata"
+  },
+  "emptyNoDate": {
+    "message": "Nessuna data trovata. A volte è la risposta giusta: può darsi che questa pagina davvero non dichiari quando è stata scritta."
+  },
+  "emptyUnsupported": {
+    "message": "Apri una pagina web per sapere quando è stata scritta."
+  },
+  "errorUnreadable": {
+    "message": "Impossibile leggere questa pagina. Le pagine di impostazioni del browser e le gallerie di estensioni sono precluse alle estensioni."
+  },
+  "recheck": {
+    "message": "Ricontrolla"
+  },
+  "settings": {
+    "message": "Impostazioni"
+  },
+  "archiveCheck": {
+    "message": "Cerca nell’archivio modifiche nascoste"
+  },
+  "archiveChecking": {
+    "message": "Interrogazione dell’archivio…"
+  },
+  "archiveNothing": {
+    "message": "L’archivio non registra modifiche dalla pubblicazione."
+  },
+  "srcAdapter": {
+    "message": "una regola specifica del sito"
+  },
+  "srcJsonld": {
+    "message": "metadati JSON-LD"
+  },
+  "srcJsonldContainer": {
+    "message": "i metadati JSON-LD del sito"
+  },
+  "srcAtomFeed": {
+    "message": "il feed Atom del sito"
+  },
+  "srcRssFeed": {
+    "message": "il feed RSS del sito"
+  },
+  "srcOpengraph": {
+    "message": "un tag OpenGraph"
+  },
+  "srcItemprop": {
+    "message": "microdati"
+  },
+  "srcDublinCore": {
+    "message": "un tag Dublin Core"
+  },
+  "srcCitation": {
+    "message": "un tag citation"
+  },
+  "srcParsely": {
+    "message": "un tag Parse.ly"
+  },
+  "srcSailthru": {
+    "message": "un tag Sailthru"
+  },
+  "srcTimeTag": {
+    "message": "un elemento <time>"
+  },
+  "srcSitemap": {
+    "message": "la sitemap del sito"
+  },
+  "srcMetaDate": {
+    "message": "un tag meta"
+  },
+  "srcUrlSlug": {
+    "message": "l’URL della pagina"
+  },
+  "srcImagePath": {
+    "message": "il percorso di caricamento dell’immagine di anteprima"
+  },
+  "srcVisibleText": {
+    "message": "testo nella pagina"
+  },
+  "srcTextDate": {
+    "message": "testo senza etichetta nella pagina"
+  },
+  "srcHttpLastModified": {
+    "message": "l’header Last-Modified"
+  },
+  "optTitle": {
+    "message": "Impostazioni di Page Date"
+  },
+  "optPrivacyNote": {
+    "message": "Questa estensione non chiede nulla al momento dell’installazione. Ogni impostazione qui sotto che richiede un accesso più ampio lo chiede quando la attivi, e lo restituisce quando la disattivi."
+  },
+  "optReadingHeading": {
+    "message": "Lettura delle pagine"
+  },
+  "optAutoRead": {
+    "message": "Controlla automaticamente ogni pagina"
+  },
+  "optAutoReadHelp": {
+    "message": "Mostra l’età sull’icona nella barra degli strumenti senza aprire questo pannello. Richiede il permesso di leggere ogni sito che visiti: il browser lo chiederà quando la attivi."
+  },
+  "optAutoReadDenied": {
+    "message": "Il permesso è stato negato, quindi è rimasta disattivata."
+  },
+  "optArchiveHeading": {
+    "message": "Internet Archive"
+  },
+  "optArchive": {
+    "message": "Cerca nell’archivio modifiche che una pagina non ammette"
+  },
+  "optArchiveHelp": {
+    "message": "Trovare modifiche che una pagina nasconde significa chiedere a web.archive.org che cosa ha conservato, il che gli rivela l’indirizzo della pagina su cui sei."
+  },
+  "optArchiveOff": {
+    "message": "Mai"
+  },
+  "optArchiveAsk": {
+    "message": "Chiedi ogni volta"
+  },
+  "optArchiveAlways": {
+    "message": "Sempre"
+  },
+  "overlayNoDate": {
+    "message": "nessuna data"
+  },
+  "overlaySays": {
+    "message": "dichiara {1}"
+  },
+  "overlayOldest": {
+    "message": "più antica: {1}"
+  },
+  "overlayCounterLabel": {
+    "message": "La pagina dichiara {1}, ma la data più antica che contiene risale a {2}."
+  },
+  "overlayOldestDetail": {
+    "message": "Data più antica nella pagina: {1} — {2}."
+  },
+  "optOverlayHeading": {
+    "message": "Sulla pagina"
+  },
+  "optOverlay": {
+    "message": "Mostra l’età in un angolo della pagina"
+  },
+  "optOverlayHelp": {
+    "message": "La maggior parte delle pagine non stampa mai la propria data — sta in metadati che non puoi vedere — quindi di solito è l’unico posto in cui appare. Richiede il controllo automatico."
+  },
+  "optOverlayNever": {
+    "message": "Mai"
+  },
+  "optOverlayAlways": {
+    "message": "Sempre"
+  },
+  "optOverlayConflict": {
+    "message": "Solo in caso di contraddizione"
+  },
+  "optOverlayPosition": {
+    "message": "Angolo"
+  },
+  "optOverlayBottomLeft": {
+    "message": "In basso a sinistra"
+  },
+  "optOverlayBottomRight": {
+    "message": "In basso a destra"
+  },
+  "optOverlayTopLeft": {
+    "message": "In alto a sinistra"
+  },
+  "optOverlayTopRight": {
+    "message": "In alto a destra"
+  },
+  "optOverlayNeedsAutoRead": {
+    "message": "Attiva il controllo automatico qui sopra per usarla."
+  },
+  "menuCheckLink": {
+    "message": "Quando è stata scritta questa pagina?"
+  },
+  "menuChecking": {
+    "message": "Verifica in corso…"
+  },
+  "menuResultFor": {
+    "message": "Per {1}"
+  },
+  "menuNoDate": {
+    "message": "Nessuna data trovata per questo link."
+  },
+  "menuUnreachable": {
+    "message": "Impossibile leggere quella pagina."
+  },
+  "menuNeedsPermission": {
+    "message": "L’autorizzazione a leggere quel sito è stata negata."
+  },
+  "annotateFromUrl": {
+    "message": "dedotta dall’indirizzo del link"
+  },
+  "optSearchHeading": {
+    "message": "Risultati di ricerca"
+  },
+  "optSearchAnnotate": {
+    "message": "Mostra l’età accanto ai risultati di ricerca"
+  },
+  "optSearchAnnotateHelp": {
+    "message": "Aggiunge l’età di ogni risultato su Google, Bing, DuckDuckGo, Hacker News e il vecchio Reddit, così una pagina del 2013 si riconosce prima di aprirla."
+  },
+  "optSearchOff": {
+    "message": "Mai"
+  },
+  "optSearchUrl": {
+    "message": "Solo dall’indirizzo del link — non effettua richieste"
+  },
+  "optSearchFetch": {
+    "message": "Leggi anche le pagine stesse"
+  },
+  "optSearchFetchHelp": {
+    "message": "Leggere i risultati stessi risponde per molti più casi e comporta che questa estensione richieda pagine a siti che non hai aperto. Limitato ai primi {1} risultati di una pagina, e i cookie non vengono mai inviati."
+  },
+  "optSearchDenied": {
+    "message": "L’autorizzazione è stata negata, quindi è rimasto disattivato."
+  },
+  "optSearchPartial": {
+    "message": "L’autorizzazione a leggere tutti i siti è stata negata, quindi si usa solo l’indirizzo del link."
+  },
+  "optLinksHeading": {
+    "message": "Link"
+  },
+  "optLinkMenu": {
+    "message": "Aggiungi «Quando è stata scritta questa pagina?» al menu contestuale"
+  },
+  "optLinkMenuHelp": {
+    "message": "Controlla un link senza aprirlo. Chiede l’accesso a quel singolo sito nel momento in cui lo usi, e solo se l’indirizzo da solo non basta."
+  },
+  "optDisplayHeading": {
+    "message": "Visualizzazione"
+  },
+  "optDateFormat": {
+    "message": "Mostra per prima"
+  },
+  "optDateFormatRelative": {
+    "message": "Quanto tempo fa"
+  },
+  "optDateFormatAbsolute": {
+    "message": "La data esatta"
+  },
+  "optDateFormatIso": {
+    "message": "La data esatta, come 2024-03-12"
+  },
+  "optDataHeading": {
+    "message": "Risultati salvati"
+  },
+  "optCacheSummary": {
+    "message": "{1} pagine memorizzate, per {2}."
+  },
+  "optCacheEmpty": {
+    "message": "Niente salvato."
+  },
+  "optCacheHelp": {
+    "message": "I risultati sono conservati per una settimana, così riaprire una pagina è immediato. Restano solo su questo dispositivo e non vengono inviati da nessuna parte."
+  },
+  "optCacheClear": {
+    "message": "Cancella i risultati salvati"
+  },
+  "optCacheCleared": {
+    "message": "Cancellati."
+  }
+}

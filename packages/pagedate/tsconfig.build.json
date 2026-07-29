@@ -1,0 +1,20 @@
+// Declaration emit only. The JS is tsup's job; this produces the `.d.ts` tree
+// beside it, from the same compiler that typechecks the source — see the note
+// in tsup.config.ts for why tsup does not do it.
+//
+// `rootDir` is src rather than the package root, so `src/index.ts` emits to
+// `dist/index.d.ts` and the paths in the `exports` map resolve. The default
+// tsconfig includes test/ and config files, which would push everything down a
+// level into `dist/src/`.
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["src/**/*.ts"]
+}

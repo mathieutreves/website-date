@@ -54,9 +54,13 @@ async function fetchWithHeaders(
       redirect: 'follow',
     })
 
+    // `set-cookie` is dropped rather than saved. It carries a session
+    // identifier minted for whoever ran this script — a bot-management token, a
+    // login session — and fixtures are committed, so keeping it would publish a
+    // credential that has nothing to do with the date on the page.
     const headers: Record<string, string> = {}
     response.headers.forEach((value, key) => {
-      headers[key] = value
+      if (key.toLowerCase() !== 'set-cookie') headers[key] = value
     })
 
     return { body: await response.text(), headers, status: response.status }

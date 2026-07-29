@@ -164,3 +164,191 @@ describe('locale wiring', () => {
     expect(found[0]?.value).toBe('2024-04-03')
   })
 })
+
+describe('reading a class name for what it says', () => {
+  it('takes the most specific vocabulary word in a class, not the leftmost', () => {
+    // Meduza's date block. `meta` says "metadata lives here" and `time` says
+    // "and it is a date"; position in the string means nothing, specificity does.
+    const doc = documentFrom(`
+      <html lang="ru"><body><article>
+        <div class="MaterialMeta MaterialMeta--time">06:00, 21 сентября 2018</div>
+        <p>Текст статьи.</p>
+      </article></body></html>`)
+
+    const found = find(extractFromDocument(doc, 'https://meduza.io/feature/x'), 'marked-date')
+    expect(found[0]?.value).toBe('2018-09-21')
+  })
+
+  it('still reports the generic marker when that is all the class says', () => {
+    const doc = documentFrom(`
+      <html lang="en"><body><article>
+        <div class="entry-meta">Some text 2018</div>
+        <p>Body.</p>
+      </article></body></html>`)
+
+    // `entry-meta` is a reason to look, not an assertion that this is the date.
+    expect(find(extractFromDocument(doc, 'https://example.com/p'), 'marked-date')).toHaveLength(0)
+  })
+})
+
+describe('a date followed by the word "published"', () => {
+  it('is a byline when the markup says the element is one', () => {
+    const doc = documentFrom(`
+      <html lang="de"><body><article>
+        <p class="entry-meta">Dieser Artikel wurde am 14. Dezember 2015 veröffentlicht</p>
+        <p>Fließtext.</p>
+      </article></body></html>`)
+
+    const found = find(extractFromDocument(doc, 'https://example.de/artikel'), 'visible-text')
+    expect(found[0]?.value).toBe('2015-12-14')
+    expect(found[0]?.field).toBe('published')
+  })
+
+  it('is a sentence when it is not', () => {
+    // Daring Fireball, quoting a report. Read as a byline this dated the page
+    // two and a half years early.
+    const doc = documentFrom(`
+      <html lang="en"><body><div id="Main"><dl class="linkedlist"><dd>
+        <p>Bloomberg’s Michael Riley, on 5 October 2018, just after the original
+        report was published:</p>
+      </dd></dl></div></body></html>`)
+
+    const found = extractFromDocument(doc, 'https://daringfireball.net/linked/x')
+    expect(found.some((c) => c.value.startsWith('2018-10-05'))).toBe(false)
+  })
+})
+
+describe('<aside> is furniture only outside an article', () => {
+  it('reads a metadata block an article keeps in its own <aside>', () => {
+    // ebene11.com. A blanket exclusion of <aside> threw away the only date the
+    // page has.
+    const doc = documentFrom(`
+      <html lang="de"><body>
+        <article id="content">
+          <header><h1>Fremde DWG-Dateien in AutoCAD</h1></header>
+          <aside class="blogData"><dl><dt>Datum</dt><dd>12.01.2017</dd></dl></aside>
+          <p>Fließtext.</p>
+        </article>
+      </body></html>`)
+
+    const found = extractFromDocument(doc, 'https://ebene11.com/autocad', { mode: 'extensive' })
+    expect(found.some((c) => c.value === '2017-01-12')).toBe(true)
+  })
+
+  it('still ignores a page-level sidebar', () => {
+    const doc = documentFrom(`
+      <html lang="en"><body>
+        <main><p>Body with no date.</p></main>
+        <aside class="recent-posts"><p>3 March 2024</p></aside>
+      </body></html>`)
+
+    const found = extractFromDocument(doc, 'https://example.com/p', { mode: 'extensive' })
+    expect(found.some((c) => c.value.startsWith('2024-03-03'))).toBe(false)
+  })
+})
+
+describe('extensive mode: the page-frequency last resort', () => {
+  const undatedProse = `
+    <html lang="en"><body><main>
+      <h1>Notes on build systems</h1>
+      <p>Bazel was open-sourced on 21 March 2015, and Buck a year earlier.</p>
+      <p>The 2015 release changed how large repos are built.</p>
+    </main></body></html>`
+
+  it('answers a page whose only date is buried in prose, with nowhere to look it up', () => {
+    // The gap this extractor exists for, and the only one it has to itself:
+    // the date is not the element's text, it is a few characters inside a
+    // paragraph. `extractBareText` requires the date to carry the element
+    // (MIN_DATE_RATIO) and caps the element at 120 characters, so it declines —
+    // correctly, on its own terms. Frequency is the only remaining handle.
+    const doc = documentFrom(`
+      <html lang="de"><body><div id="page"><div class="postcontent">
+        <h1>MIDP Emulator und Brick Challenge</h1>
+        <p>Ein etwas laengerer Absatz ueber das Projekt, der irgendwo mitten im
+        Fliesstext das Datum 15.2.2018 nennt und danach noch weitergeht, ohne dass
+        es irgendwo als Byline oder als Datumsblock ausgezeichnet waere.</p>
+      </div></div></body></html>`)
+
+    const found = find(extractFromDocument(doc, 'https://blog.example.net/x', { mode: 'extensive' }), 'page-scan')
+    expect(found[0]?.value).toBe('2018-02-15')
+    expect(found[0]).toMatchObject({ confidence: 'inferred', field: 'unknown' })
+  })
+
+  /**
+   * The other half of "last resort", and the reason the case above had to be
+   * built so carefully: a date in a `<small>` byline is answered by
+   * `extractBareText` in standard mode, so `page-scan` must never be reached
+   * for it — the gate in `extractFromDocument` is `candidates.length === 0`.
+   * A fixture the cheaper extractor already handles tests nothing here.
+   */
+  it('does not run on a page a cheaper extractor already answered', () => {
+    const doc = documentFrom(`
+      <html lang="de"><body><div id="page"><div class="postcontent">
+        <h1>MIDP Emulator und Brick Challenge</h1>
+        <small>Donnerstag, 15.2.2018, 19:51</small>
+        <p>Freitext ohne weitere Daten.</p>
+      </div></div></body></html>`)
+
+    const all = extractFromDocument(doc, 'https://blog.example.net/x', { mode: 'extensive' })
+    expect(find(all, 'page-scan')).toHaveLength(0)
+    expect(all.some((c) => c.value === '2018-02-15')).toBe(true)
+  })
+
+  /**
+   * The exclusion this extractor is most likely to revoke by accident.
+   *
+   * It runs only when every other extractor declined — which on a page whose
+   * only date sits in a sidebar is precisely because they *correctly* excluded
+   * that sidebar. Reading every element regardless of position would make this
+   * the one extractor that turns a rejected `<aside class="recent-posts">` into
+   * the page's publication date. Measured on the htmldate corpus, adding the
+   * furniture gate cost nothing (69.1% accuracy either way) and turned one
+   * wrong answer into an abstention, 76.0% → 77.6% precision.
+   */
+  it('respects the furniture exclusions the other extractors apply', () => {
+    const doc = documentFrom(`
+      <html lang="en"><body>
+        <main><p>Body with no date.</p></main>
+        <nav><p>Archive for 4 April 2021</p></nav>
+        <aside class="recent-posts"><p>3 March 2024</p></aside>
+      </body></html>`)
+
+    expect(find(extractFromDocument(doc, 'https://example.com/p', { mode: 'extensive' }), 'page-scan')).toEqual([])
+  })
+
+  it('does not run in standard mode', () => {
+    const doc = documentFrom(undatedProse)
+    expect(find(extractFromDocument(doc, 'https://example.com/x', { mode: 'standard' }), 'page-scan')).toHaveLength(0)
+  })
+
+  it('does not run when any other extractor found something', () => {
+    const doc = documentFrom(`
+      <html lang="en"><body>
+        <meta property="article:published_time" content="2023-04-11T10:00:00Z">
+        <main><p>Also mentions 1 January 2020 and 1 January 2020 again.</p></main>
+      </body></html>`)
+
+    expect(find(extractFromDocument(doc, 'https://example.com/x', { mode: 'extensive' }), 'page-scan')).toHaveLength(0)
+  })
+
+  /**
+   * The cost, asserted rather than described. `extensive` will date a page that
+   * has no date, which is the property `standard` exists to protect and the
+   * reason this extractor is not in it. If this test starts failing because the
+   * answer became `undefined`, the recall it was added for went with it.
+   */
+  it('will date an undated page — which is what opting into extensive means', () => {
+    const doc = documentFrom(undatedProse)
+    const found = find(extractFromDocument(doc, 'https://example.com/x', { mode: 'extensive' }), 'page-scan')
+    expect(found).toHaveLength(1)
+    expect(found[0]?.confidence).toBe('inferred')
+
+    // And it is filterable, which is the mitigation on offer.
+    expect(
+      extractFromDocument(doc, 'https://example.com/x', {
+        mode: 'extensive',
+        minConfidence: 'derived',
+      }).some((c) => c.source === 'page-scan'),
+    ).toBe(false)
+  })
+})

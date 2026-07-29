@@ -71,8 +71,12 @@ const PUBLISHED_PHRASES = [
   'posted on', 'posted at', 'date published', 'published', 'posted',
   // Italian
   'pubblicato il', 'data di pubblicazione', 'pubblicato',
-  // German
+  // German. `geschrieben` and `verfasst` are here because German blog templates
+  // overwhelmingly phrase the byline as a passive with the verb last — "Dieser
+  // Artikel wurde am 14. Dezember 2015 um 14:48 von Heiner geschrieben" — and
+  // the participle is the only word in the sentence that says what the date is.
   'veroffentlicht am', 'veroffentlicht', 'erstellt am', 'erschienen am',
+  'geschrieben am', 'geschrieben', 'verfasst am', 'verfasst', 'gepostet am', 'gepostet',
   // French
   'publie le', 'date de publication', 'publie',
   // Spanish

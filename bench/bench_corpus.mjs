@@ -39,7 +39,25 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(HERE, '..')
 const MANIFEST = join(ROOT, 'corpus', 'manifest.jsonl')
 const CACHE = join(ROOT, 'corpus', 'cache')
-const NOW = new Date('2026-01-01T00:00:00Z')
+/**
+ * "Now" is when the page was captured, per page.
+ *
+ * A frozen constant here is wrong in one direction only, which is what makes it
+ * dangerous. Every competitor reads the system clock, which is later than any
+ * capture in this corpus and so never rejects anything; pagedate handed a fixed
+ * date has its plausibility check discard the correct declared date on every
+ * page harvested after it. The table then measures a harness constant.
+ *
+ * The capture instant restores parity and is the honest simulation besides: it
+ * is the moment this HTML was actually in front of a reader. It is also
+ * *stricter* than what the competitors get, which is the right direction for a
+ * benchmark whose author is one of the entrants.
+ */
+const capturedAt = (snapshot) =>
+  new Date(
+    `${snapshot.slice(0, 4)}-${snapshot.slice(4, 6)}-${snapshot.slice(6, 8)}T` +
+      `${snapshot.slice(8, 10)}:${snapshot.slice(10, 12)}:${snapshot.slice(12, 14)}Z`,
+  )
 
 const { values } = parseArgs({
   options: {
@@ -106,10 +124,10 @@ async function buildTools() {
   const { parseHtml } = await import(join(ROOT, 'packages', 'pagedate', 'dist', 'node', 'index.js'))
 
   for (const mode of ['fast', 'standard', 'extensive']) {
-    tools[`pagedate (${mode})`] = (html, url) => {
+    tools[`pagedate (${mode})`] = (html, url, now) => {
       const document = parseHtml(html)
       const candidates = pagedate.extractFromDocument(document, url, { mode })
-      return pagedate.resolveCandidates(candidates, { now: NOW }).published?.value ?? null
+      return pagedate.resolveCandidates(candidates, { now }).published?.value ?? null
     }
   }
 
@@ -169,6 +187,7 @@ async function main() {
         html: values['raw-url'] ? html : neutraliseHtml(html),
         url: values['raw-url'] ? entry.url : neutralise(entry.url),
         gold: entry.label.published,
+        now: capturedAt(entry.snapshot),
       })
     } catch {
       /* not fetched */
@@ -183,14 +202,35 @@ async function main() {
         : 'URL neutralised for all tools\n'),
   )
 
+  /**
+   * Pages run untimed before a tool's measured pass, so the timing is not
+   * dominated by JIT compilation.
+   *
+   * This is not a refinement. Without it the first tool measured pays to compile
+   * every shared code path — the parser, the regex engine's caches, the resolver
+   * — and later tools inherit all of it warm. The symptom is an impossible
+   * table: whichever of `pagedate (standard)` and `pagedate (extensive)` runs
+   * second comes out faster, when extensive is standard plus an extra extractor
+   * and can never do less work.
+   */
+  const WARMUP_PAGES = 25
+
   const results = []
   for (const [name, run] of Object.entries(tools)) {
+    for (const page of pages.slice(0, WARMUP_PAGES)) {
+      try {
+        await run(page.html, page.url, page.now)
+      } catch {
+        /* a tool that throws here will throw in the measured pass too */
+      }
+    }
+
     const t = { exact: 0, partial: 0, wrong: 0, missed: 0 }
     const started = performance.now()
     for (const page of pages) {
       let found = null
       try {
-        found = norm(await run(page.html, page.url))
+        found = norm(await run(page.html, page.url, page.now))
       } catch {
         found = null
       }

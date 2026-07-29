@@ -1,0 +1,14 @@
+// Declaration emit only — see packages/pagedate/tsconfig.build.json for why the
+// build is split this way.
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["src/**/*.ts"]
+}

@@ -1,0 +1,341 @@
+{
+  "extName": {
+    "message": "Page Date"
+  },
+  "extDescription": {
+    "message": "显示网页的发布时间和最后修改时间，以及每个日期的来源和可信程度。"
+  },
+  "fieldPublished": {
+    "message": "发布"
+  },
+  "fieldModified": {
+    "message": "最后修改"
+  },
+  "notDeclared": {
+    "message": "未标明"
+  },
+  "tierDeclared": {
+    "message": "由网站标明"
+  },
+  "tierDerived": {
+    "message": "来自页面标记"
+  },
+  "tierInferred": {
+    "message": "推断"
+  },
+  "ageApprox": {
+    "message": "大约{1}"
+  },
+  "ageFuture": {
+    "message": "日期在未来"
+  },
+  "conflictDisagreement": {
+    "message": "此页面自相矛盾"
+  },
+  "conflictPredated": {
+    "message": "此页面很可能比它标明的更早"
+  },
+  "conflictStale": {
+    "message": "此页面可能在标明日期之后有过改动"
+  },
+  "conflictDisagreementDetail": {
+    "message": "对于同一字段，{1} 显示 {2}，而 {3} 显示 {4}。"
+  },
+  "conflictPredatedDetail": {
+    "message": "标明为 {1}，但包含 {2} 个早于该日期的元素，最早可追溯到 {3}。标明的日期很可能是重新发布的日期，而非撰写时间。"
+  },
+  "conflictStaleDetail": {
+    "message": "页面标明 {1} 且未显示任何更新，但存档记录了 {2} 的一次改动。"
+  },
+  "spreadTitle": {
+    "message": "证据分布"
+  },
+  "spreadSummary": {
+    "message": "找到 {1} 个日期，跨度 {2}"
+  },
+  "spreadOldest": {
+    "message": "最早"
+  },
+  "spreadDeclared": {
+    "message": "标明"
+  },
+  "candidatesOne": {
+    "message": "另有 {1} 个候选"
+  },
+  "candidatesMany": {
+    "message": "另有 {1} 个候选"
+  },
+  "candidateFieldPublished": {
+    "message": "发布"
+  },
+  "candidateFieldModified": {
+    "message": "更新"
+  },
+  "candidateFieldUnknown": {
+    "message": "无标注"
+  },
+  "loading": {
+    "message": "正在读取页面…"
+  },
+  "badgeNoDate": {
+    "message": "未找到日期"
+  },
+  "emptyNoDate": {
+    "message": "未找到日期。有时这就是正确答案——此页面可能确实没有说明写于何时。"
+  },
+  "emptyUnsupported": {
+    "message": "打开一个网页，即可查看它写于何时。"
+  },
+  "errorUnreadable": {
+    "message": "无法读取此页面。浏览器的设置页面和扩展商店对扩展程序不开放。"
+  },
+  "recheck": {
+    "message": "重新检查"
+  },
+  "settings": {
+    "message": "设置"
+  },
+  "archiveCheck": {
+    "message": "在存档中查找隐藏的改动"
+  },
+  "archiveChecking": {
+    "message": "正在询问存档…"
+  },
+  "archiveNothing": {
+    "message": "存档中没有发布之后的改动记录。"
+  },
+  "srcAdapter": {
+    "message": "针对该网站的专门规则"
+  },
+  "srcJsonld": {
+    "message": "JSON-LD 元数据"
+  },
+  "srcJsonldContainer": {
+    "message": "网站级 JSON-LD 元数据"
+  },
+  "srcAtomFeed": {
+    "message": "网站的 Atom 源"
+  },
+  "srcRssFeed": {
+    "message": "网站的 RSS 源"
+  },
+  "srcOpengraph": {
+    "message": "OpenGraph 标签"
+  },
+  "srcItemprop": {
+    "message": "微数据"
+  },
+  "srcDublinCore": {
+    "message": "Dublin Core 标签"
+  },
+  "srcCitation": {
+    "message": "citation 标签"
+  },
+  "srcParsely": {
+    "message": "Parse.ly 标签"
+  },
+  "srcSailthru": {
+    "message": "Sailthru 标签"
+  },
+  "srcTimeTag": {
+    "message": "<time> 元素"
+  },
+  "srcSitemap": {
+    "message": "网站的站点地图"
+  },
+  "srcMetaDate": {
+    "message": "meta 标签"
+  },
+  "srcUrlSlug": {
+    "message": "页面网址"
+  },
+  "srcImagePath": {
+    "message": "预览图的上传路径"
+  },
+  "srcVisibleText": {
+    "message": "页面上的文字"
+  },
+  "srcTextDate": {
+    "message": "页面上无标注的文字"
+  },
+  "srcHttpLastModified": {
+    "message": "Last-Modified 响应头"
+  },
+  "optTitle": {
+    "message": "Page Date 设置"
+  },
+  "optPrivacyNote": {
+    "message": "此扩展在安装时不索取任何权限。下面每一项需要更大权限的设置，都会在你打开它时才请求，并在你关闭它时交还。"
+  },
+  "optReadingHeading": {
+    "message": "读取页面"
+  },
+  "optAutoRead": {
+    "message": "自动检查每个页面"
+  },
+  "optAutoReadHelp": {
+    "message": "无需打开此面板，直接在工具栏图标上显示页面的新旧程度。需要读取你访问的所有网站的权限——打开时浏览器会询问。"
+  },
+  "optAutoReadDenied": {
+    "message": "权限被拒绝，因此该项保持关闭。"
+  },
+  "optArchiveHeading": {
+    "message": "Internet Archive"
+  },
+  "optArchive": {
+    "message": "在存档中查找页面未承认的改动"
+  },
+  "optArchiveHelp": {
+    "message": "要找出页面隐瞒的改动，就得询问 web.archive.org 保存了什么，这会让对方知道你当前所在页面的地址。"
+  },
+  "optArchiveOff": {
+    "message": "从不"
+  },
+  "optArchiveAsk": {
+    "message": "每次询问"
+  },
+  "optArchiveAlways": {
+    "message": "总是"
+  },
+  "overlayNoDate": {
+    "message": "无日期"
+  },
+  "overlaySays": {
+    "message": "标明 {1}"
+  },
+  "overlayOldest": {
+    "message": "最早 {1}"
+  },
+  "overlayCounterLabel": {
+    "message": "页面标明 {1}，但它包含的最早日期来自 {2}。"
+  },
+  "overlayOldestDetail": {
+    "message": "页面上最早的日期：{1} — {2}。"
+  },
+  "optOverlayHeading": {
+    "message": "页面上"
+  },
+  "optOverlay": {
+    "message": "在页面角落显示新旧程度"
+  },
+  "optOverlayHelp": {
+    "message": "大多数页面从不显示自己的日期——它藏在你看不到的元数据里——所以这里通常是它唯一出现的地方。需要先开启自动检查。"
+  },
+  "optOverlayNever": {
+    "message": "从不"
+  },
+  "optOverlayAlways": {
+    "message": "总是"
+  },
+  "optOverlayConflict": {
+    "message": "仅在自相矛盾时"
+  },
+  "optOverlayPosition": {
+    "message": "位置"
+  },
+  "optOverlayBottomLeft": {
+    "message": "左下角"
+  },
+  "optOverlayBottomRight": {
+    "message": "右下角"
+  },
+  "optOverlayTopLeft": {
+    "message": "左上角"
+  },
+  "optOverlayTopRight": {
+    "message": "右上角"
+  },
+  "optOverlayNeedsAutoRead": {
+    "message": "先打开上面的自动检查才能使用。"
+  },
+  "menuCheckLink": {
+    "message": "这个页面是什么时候写的？"
+  },
+  "menuChecking": {
+    "message": "正在检查…"
+  },
+  "menuResultFor": {
+    "message": "关于 {1}"
+  },
+  "menuNoDate": {
+    "message": "未找到该链接的日期。"
+  },
+  "menuUnreachable": {
+    "message": "无法读取该页面。"
+  },
+  "menuNeedsPermission": {
+    "message": "读取该网站的权限被拒绝。"
+  },
+  "annotateFromUrl": {
+    "message": "根据链接地址推断"
+  },
+  "optSearchHeading": {
+    "message": "搜索结果"
+  },
+  "optSearchAnnotate": {
+    "message": "在搜索结果旁显示时间"
+  },
+  "optSearchAnnotateHelp": {
+    "message": "在 Google、Bing、DuckDuckGo、Hacker News 和旧版 Reddit 的每条结果旁标注其时间，让 2013 年的页面在点击前就一目了然。"
+  },
+  "optSearchOff": {
+    "message": "从不"
+  },
+  "optSearchUrl": {
+    "message": "仅根据链接地址 — 不发起任何请求"
+  },
+  "optSearchFetch": {
+    "message": "同时读取页面本身"
+  },
+  "optSearchFetchHelp": {
+    "message": "读取结果页面本身能判断出更多结果，但这意味着本扩展会向你并未打开的网站发起请求。每页最多读取前 {1} 条结果，且从不发送 Cookie。"
+  },
+  "optSearchDenied": {
+    "message": "权限被拒绝，因此该项保持关闭。"
+  },
+  "optSearchPartial": {
+    "message": "读取所有网站的权限被拒绝，因此仅使用链接地址。"
+  },
+  "optLinksHeading": {
+    "message": "链接"
+  },
+  "optLinkMenu": {
+    "message": "在右键菜单中加入“这个页面是什么时候写的？”"
+  },
+  "optLinkMenuHelp": {
+    "message": "不打开链接即可查询。在你使用时才请求对该单个网站的访问权限，且仅在仅凭地址无法判断时才会读取。"
+  },
+  "optDisplayHeading": {
+    "message": "显示"
+  },
+  "optDateFormat": {
+    "message": "优先显示"
+  },
+  "optDateFormatRelative": {
+    "message": "距今多久"
+  },
+  "optDateFormatAbsolute": {
+    "message": "确切日期"
+  },
+  "optDateFormatIso": {
+    "message": "确切日期，形如 2024-03-12"
+  },
+  "optDataHeading": {
+    "message": "已保存的结果"
+  },
+  "optCacheSummary": {
+    "message": "已记住 {1} 个页面，占用 {2}。"
+  },
+  "optCacheEmpty": {
+    "message": "没有保存任何内容。"
+  },
+  "optCacheHelp": {
+    "message": "结果会保留一周，因此重新打开页面时可立即显示。它们只存放在本设备上，绝不会发送到任何地方。"
+  },
+  "optCacheClear": {
+    "message": "清除已保存的结果"
+  },
+  "optCacheCleared": {
+    "message": "已清除。"
+  }
+}

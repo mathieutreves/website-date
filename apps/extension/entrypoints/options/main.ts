@@ -1,14 +1,16 @@
 import { cacheStats, clearCache } from '../../lib/analyze.js'
-import { t } from '../../lib/messages.js'
+import { t, uiLanguage } from '../../lib/messages.js'
 import {
   ARCHIVE_ORIGINS,
   getSettings,
   saveSettings,
   setAutoRead,
+  setSearchAnnotate,
   type ArchiveMode,
   type DateFormat,
   type OverlayMode,
   type OverlayPosition,
+  type SearchAnnotate,
 } from '../../lib/settings.js'
 import { optionsView } from './render.js'
 
@@ -22,6 +24,12 @@ import { optionsView } from './render.js'
  */
 
 const app = document.getElementById('app') as HTMLElement
+
+// Corrected from the static English in index.html. Unlike the popup this one
+// has a visible tab title, which is the string a reader sees while the page is
+// still loading.
+document.documentElement.lang = uiLanguage()
+document.title = t('optTitle')
 
 void render()
 
@@ -97,6 +105,41 @@ function wire(): void {
       await saveSettings({ archive: mode })
     })
   }
+
+  const searchStatus = document.getElementById('search-status') as HTMLElement
+
+  for (const input of document.querySelectorAll<HTMLInputElement>('input[name="searchAnnotate"]')) {
+    input.addEventListener('change', async () => {
+      const wanted = input.value as SearchAnnotate
+      const reached = await setSearchAnnotate(wanted)
+
+      // The radio reflects what the browser granted, not what was clicked. Two
+      // distinct shortfalls, and they are different news: nothing was granted,
+      // or the engines were but the whole web was not — in which case the
+      // cheap tier is live and saying "declined" alone would be wrong.
+      if (reached !== wanted) {
+        const actual = document.querySelector<HTMLInputElement>(
+          `input[name="searchAnnotate"][value="${reached}"]`,
+        )
+        if (actual) actual.checked = true
+      }
+
+      searchStatus.hidden = reached === wanted
+      searchStatus.textContent =
+        reached === wanted
+          ? ''
+          : reached === 'url'
+            ? t('optSearchPartial')
+            : t('optSearchDenied')
+    })
+  }
+
+  const linkMenu = document.getElementById('link-menu') as HTMLInputElement
+  linkMenu.addEventListener('change', () => {
+    // No permission to negotiate: the entry exists or it does not, and the
+    // background worker rebuilds the menu when the setting lands in storage.
+    void saveSettings({ linkMenu: linkMenu.checked })
+  })
 
   for (const input of document.querySelectorAll<HTMLInputElement>('input[name="dateFormat"]')) {
     input.addEventListener('change', () => {

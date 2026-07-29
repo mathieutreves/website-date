@@ -8,12 +8,12 @@ import type { Candidate, Env } from '../src/types.js'
 /**
  * The input to this library is whatever the open web hands it, so "a page built
  * to be expensive" is a normal input rather than an exotic one. These are the
- * shapes that used to be pathological, kept here so a future change cannot
- * quietly restore the quadratic.
+ * shapes that go quadratic under the obvious implementation of each pass, kept
+ * here so a future change cannot quietly reintroduce one.
  *
- * Timing assertions carry a wide margin deliberately — each of these was
- * *seconds* before, and the bound is set to catch a return of the old
- * complexity, not to measure this machine.
+ * Timing assertions carry a wide margin deliberately. The bound is set to catch
+ * a jump from linear to quadratic — which on these inputs is milliseconds
+ * against seconds — not to measure this machine.
  */
 
 const BUDGET_MS = 2_000
@@ -26,9 +26,9 @@ function elapsed(work: () => void): number {
 
 describe('cost bounds on hostile documents', () => {
   it('resolves a page repeating one declared date without going quadratic', () => {
-    // The worst case for the old all-pairs conflict check: every pair agrees, so
-    // the early exit never fired and all n²/2 comparisons ran. 3000 of these is
-    // 183 KB of HTML and used to be 6.6 seconds.
+    // The worst case for an all-pairs conflict check: every pair agrees, so an
+    // early exit on disagreement never fires and all n²/2 comparisons run. 3000
+    // of these is 183 KB of HTML, and quadratic here costs seconds.
     const html = `<html><head>${'<meta property="article:published_time" content="2020-01-01T00:00:00Z">'.repeat(3000)}</head><body>x</body></html>`
     const doc = documentFrom(html)
 

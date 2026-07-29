@@ -9,6 +9,7 @@ import { extractHttpHeaders } from './extract/headers.js'
 import { extractImagePath } from './extract/imagePath.js'
 import { extractInlineState } from './extract/inlineState.js'
 import { extractJsonLd } from './extract/jsonld.js'
+import { extractPageScan } from './extract/pageScan.js'
 import { rootElement } from './extract/patterns.js'
 import { extractMeta } from './extract/meta.js'
 import { extractSitemap } from './extract/sitemap.js'
@@ -26,6 +27,7 @@ export type {
   Confidence,
   Conflict,
   ConflictKind,
+  DateClaim,
   DateResult,
   Env,
   Field,
@@ -40,9 +42,25 @@ export { extractHttpHeaders } from './extract/headers.js'
 export { extractImagePath } from './extract/imagePath.js'
 export { extractInlineState } from './extract/inlineState.js'
 export { extractSitemap } from './extract/sitemap.js'
+/**
+ * Exported for callers who have a URL and no document — a search-results
+ * annotator, a crawl frontier deciding what to prioritise, a link preview. It
+ * is the one signal that costs no network and no parse, which makes "date this
+ * URL for free, then decide whether fetching it is worth it" a strategy the
+ * library can support rather than one every caller reimplements badly.
+ */
+export { extractUrlSlug } from './extract/urlSlug.js'
 export { isSafeFetchTarget } from './extract/urlGuard.js'
 export { resolveCandidates } from './resolve.js'
 export type { ResolveOptions } from './resolve.js'
+export { isStale, staleness, toInterval } from './staleness.js'
+export type {
+  IsStaleOptions,
+  Staleness,
+  StalenessBasis,
+  StalenessOptions,
+  StalenessReason,
+} from './staleness.js'
 
 /**
  * Options controlling extraction.
@@ -120,6 +138,15 @@ export function extractFromDocument(
     const nothingLabelled = !candidates.some((c) => c.field !== 'unknown')
     if (mode === 'extensive' || nothingLabelled) {
       candidates.push(...safely(() => extractBareText(doc, parsedUrl, opts)))
+    }
+
+    // Genuinely last: only in `extensive`, and only when everything above came
+    // back with nothing at all. See {@link extractPageScan} — it asks nothing
+    // about where a date sits, so it is the one extractor here that can answer a
+    // page with no date furniture of any kind, and equally the one that will
+    // answer a page that has no date to give.
+    if (mode === 'extensive' && candidates.length === 0) {
+      candidates.push(...safely(() => extractPageScan(doc, opts)))
     }
   }
 

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { Candidate, DateResult } from 'pagedate'
 import { badgeFor, compactAge } from '../lib/badge.js'
+import { t } from '../lib/messages.js'
 
 const NOW = new Date('2026-07-28T12:00:00Z')
 
@@ -50,7 +51,10 @@ describe('what the icon says', () => {
       NOW,
     )
     expect(badge.text).toBe('!')
-    expect(badge.title).toContain('older content')
+    // The translated heading rather than `conflict.detail`. The detail is the
+    // library's and is English in every locale; a tooltip is one string with
+    // nothing beside it, so it cannot afford to be the untranslatable half.
+    expect(badge.title).toBe(t('conflictPredated'))
   })
 
   it('says it does not know rather than showing nothing', () => {

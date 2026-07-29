@@ -73,6 +73,37 @@ itmedia.co.jp
 ruliweb.com
 solidot.org
 
+# --- Confirmed date-permalink seeds outside English ------------------------
+#
+# The first pass at the languages below returned nothing, and the reason was
+# never the language: CDX prefix matching resolves a contiguous index range, so
+# it only sees dates in the *first* path segment. `nrc.nl` publishes to
+# `/nieuws/2015/06/01/…` and `lemonde.fr` to `/international/article/2015/06/…`,
+# and both are invisible to a seed written as the bare host. Every entry here
+# was probed before being added — the seed as written yields day-precision
+# permalinks, and hosts that yielded none were dropped rather than left in to
+# look thorough.
+#
+# German is the one genuine scarcity rather than a seeding mistake. German news
+# sites overwhelmingly use opaque article IDs (`heise.de`, `spiegel.de`,
+# `zeit.de`, `taz.de`, `golem.de` were all probed and all yield zero), so the
+# two seeds below are blogs and German stays the thinnest stratum here. That
+# matters because the external corpus is German-heavy: it is the language where
+# we can least afford to be measuring ourselves on somebody else's test set.
+nrc.nl/nieuws
+lemonde.fr/international/article
+liberation.fr/france
+lenta.ru/news
+meduza.io/feature
+publico.pt
+observador.pt
+aljazeera.net/news
+jp.techcrunch.com
+wired.jp
+japanese.engadget.com
+deutsche-startups.de
+sprachlog.de
+
 # --- Non-news page types: standards bodies, NGOs, government ---------------
 eff.org
 creativecommons.org

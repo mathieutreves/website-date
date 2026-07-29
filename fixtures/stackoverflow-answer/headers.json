@@ -9,7 +9,6 @@
   "date": "Tue, 28 Jul 2026 08:38:36 GMT",
   "feature-policy": "microphone 'none'; speaker 'none'",
   "server": "cloudflare",
-  "set-cookie": "__cf_bm=5ENpBC7Pb_eKAQ8AyjdCPSxDsLtBUslmw02JZtJzcVA-1785227915.8377514-1.0.1.1-fy_tOVFutJAaQvWxyC5VL5jRKUTqf2bf9jQdt96.oGvrX64LkeN1kr5fcc3KhLMH8PcH5ML.92sirUhNhjcqIWJVeBmFZYniiHdgd4EFoPZG.OoZHX7imRhbjWjWuYEpY0Azp_WRfHmZ0vzbJ8BQOuc.VhYxHt2bDqpxyqUjYW0; HttpOnly; SameSite=None; Secure; Path=/; Domain=stackoverflow.com; Expires=Tue, 28 Jul 2026 09:08:36 GMT",
   "strict-transport-security": "max-age=31536000; includeSubDomains",
   "transfer-encoding": "chunked",
   "vary": "Accept-Encoding",

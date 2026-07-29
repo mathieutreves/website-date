@@ -1,12 +1,13 @@
 # Building a corpus
 
-The benchmark in [BENCHMARK.md](BENCHMARK.md) runs on 55 pages, because that is
+The external corpus in [BENCHMARK.md](BENCHMARK.md) is 55 pages, because that is
 all of htmldate's 800-URL evaluation set that is still reachable. 55 pages puts
 one page at 1.8 points and makes any gap under ~5 points noise. It is also
 German-heavy news, which is htmldate's home ground and nothing like the
 technical content this library targets.
 
-This directory of scripts builds a bigger one. The hard part is not volume.
+`scripts/corpus/` builds the other one: 1248 entries, 33 hosts, 10 declared
+languages, 2005–2026. The hard part is not volume.
 
 ## The problem is labels, not pages
 
@@ -30,16 +31,24 @@ corpus measure itself.
 | `adjudicated` | machine-readable markup | expensive | gold |
 | `none` | — | manual | gold |
 
-Only `url-permalink` is implemented so far. It is the best starting point: a
-path like `/2019/08/05/slug` is exact to the day, available on every
-WordPress-shaped site on the web, and derived from something no HTML extractor
-reads.
+`url-permalink` carries the corpus: 1236 of the 1248 entries. A path like
+`/2019/08/05/slug` is exact to the day, available on every WordPress-shaped site
+on the web, and derived from something no HTML extractor reads.
 
-`none` — pages with no publication date at all — is the gap worth caring about
-next. htmldate's corpus includes only documents with clearly determinable dates,
-so false positives are *structurally unmeasurable* there, and every precision
-figure in this field inherits that. Refusing to answer is what the confidence
-tiers exist for, and nothing currently scores it.
+`feed` is the second tier, 12 entries via `harvest-feed.ts`. It exists because
+every `url-permalink` entry holds `url-slug` out, which leaves the value of
+reading a URL unmeasurable. A feed's `<pubDate>` is independent of the URL, so
+on that tier `url-slug` runs and can be scored. It is **not** independent of
+`<meta>` — the feed and `article:published_time` usually come from the same CMS
+field — so it referees the URL and text paths and cannot referee metadata
+extractors.
+
+`adjudicated` and `none` are not built. `none` — pages with no publication date
+at all — is the gap worth caring about most. htmldate's corpus includes only
+documents with clearly determinable dates, so false positives are *structurally
+unmeasurable* there, and every precision figure in this field inherits that.
+Refusing to answer is what the confidence tiers exist for, and only the
+17-fixture local suite scores it.
 
 ## Pinning, so the corpus does not rot
 
@@ -64,11 +73,14 @@ they have to trust.
 
 ```bash
 node scripts/corpus/harvest.ts --per-domain 60   # seeds.txt -> corpus/manifest.jsonl
+node scripts/corpus/harvest-feed.ts              # the feed-labelled tier
 node scripts/corpus/fetch.ts                     # manifest  -> corpus/cache/
-node scripts/corpus/score.ts                     # dev split, standard mode
+node scripts/corpus/enrich.ts                    # fills strata.lang and labelInPage
+node scripts/corpus/verify.ts                    # cache is byte-identical to the manifest
+node scripts/corpus/score.ts                     # dev split, standard mode, per stratum
 ```
 
-All three are deliberately slow. CDX and Wayback are free services with no SLA,
+The harvest and fetch stages are deliberately slow. CDX and Wayback are free services with no SLA,
 and getting this project blocked from the Internet Archive would be a poor trade
 for a faster harvest.
 
@@ -122,42 +134,45 @@ with a principled frame: Tranco for the head of the web, a Common Crawl index
 slice for a population nobody curated, or feed directories for the long tail.
 
 Within a domain the harvester queries each sampled (year, month) separately and
-strides through the results. CDX's URL-key sort is the reason, and it bit three
-times while this was being built — each one found by looking at the output, not
-by reading the code:
+strides through the results with a rotating phase. CDX's URL-key sort is the
+reason, and it skews the sample at three different scales:
 
 - **Across years.** An unrestricted domain query returns the alphabetically
   first URLs, which for a date-permalink site means its earliest years and
-  nothing else. A first attempt produced 3 pages, all from 2005.
-- **Within a year.** `/2015/01/…` sorts before `/2015/12/…`, so per-year queries
-  return January. Widening the window did not fix it — a busy site has more URLs
-  in January than the window holds. Twelve pages came back labelled 1 or 2
-  January. Hence sampling a month at a time.
-- **Within a month.** With a quota of one per sample point, the stride always
-  took index 0 — the 1st of the month, every time. Hence the `phase` argument to
-  `stride`.
+  nothing else — a whole-domain query yields a handful of pages, all from the
+  site's first year.
+- **Within a year.** `/2015/01/…` sorts before `/2015/12/…`, so a per-year query
+  returns January. Widening the result window does not help: a busy site has
+  more URLs in January than any window holds. Hence sampling a month at a time.
+- **Within a month.** With a quota of one page per sample point, an unphased
+  stride always takes index 0 — the 1st of the month, every time. Hence the
+  `phase` argument to `stride`.
 
-Each fix was only visible in the labels themselves. A corpus can be perfectly
-well-formed and still be a sample of one week.
+None of this is visible in the code or in the manifest's shape, only in the
+labels themselves. A corpus can be perfectly well-formed and still be a sample of
+one week.
 
 The queries are prefix matches (`url=example.com/2015&matchType=prefix`), not
 domain matches with a regex filter. The regex form makes the Archive scan every
-capture a domain has and answers large sites with a 504 — and an early version
-of this script counted that as "no matches", silently dropping whole eras while
-reporting success. Failed queries are now counted and printed. The cost of
-prefix matching is that only dates in the first path segment are found; a site
+capture a domain has and answers large sites with a 504, which is
+indistinguishable from an empty result unless you look — so failed queries are
+counted and printed rather than folded into "no matches". The cost of prefix
+matching is that only dates in the first path segment are found; a site
 publishing to `/blog/2015/08/05/` needs its seed written as `example.com/blog`.
 
 ## Permalink labels carry ±1 day of timezone noise
 
-Measured, not theorised: of pagedate's 7 wrong answers on the dev split, **6 were
-exactly one day later than the label**, and every one came from a `declared`
-source — the site's own JSON-LD or OpenGraph.
+Measured, not theorised: of pagedate's 11 wrong answers on the dev split **7 are
+exactly one day away from the label**, and of its 16 on the held-out split, 11
+are. They come from `declared` sources — the site's own JSON-LD or OpenGraph.
 
 A post published at 23:30 local time gets a URL built from the local date and an
 `article:published_time` in UTC. The two disagree by a day, and both are correct.
 
-This is inherent to the source and cannot be fixed by better parsing:
+Part of it is recoverable. When a page stamps a UTC timestamp *and* renders the
+same instant in its own zone, the day it shows its readers is the day to report,
+and `localise` in `resolve.ts` does that. What is left is the genuinely
+undecidable part, and it cannot be fixed by better parsing:
 
 - A strict comparison charges the extractor for trusting the site's own
   machine-readable metadata over a path segment, which is backwards.
@@ -165,7 +180,15 @@ This is inherent to the source and cannot be fixed by better parsing:
 
 So report both, and say which you mean. Roughly 3% of entries sit on this
 boundary, which is larger than most of the differences a benchmark is used to
-argue about — enough to change a ranking on its own.
+argue about — enough to change a ranking on its own. `--tolerance 1` reports
+95.3% against 90.9% strict on the held-out split.
+
+There is a deeper problem, and it is the reason no amount of extraction work
+closes this. The label *is* a local-versus-UTC choice, made independently by each
+site's CMS: two European papers in this corpus mint the permalink on one
+convention and print the byline on the other. A rule that reads the site's own
+civil day is right in general and will still win pages on one split and lose them
+on the other here, because the answer key disagrees with itself.
 
 The real fix is a label source without the ambiguity: `adjudicated` reads the
 date the page itself renders, in the page's own timezone.
@@ -202,8 +225,8 @@ version number, or a recycled permalink — not a date.
 
 ## Still to build
 
-- `feed` and `adjudicated` label sources
+- an `adjudicated` label source, reading the date the page itself renders in the
+  page's own timezone — the only way out of the ±1 day ambiguity above
 - negative examples, which need deliberate sampling rather than harvesting
-- an enrichment pass over fetched HTML to fill `strata.lang`, `pageType` and
-  `signals` (which of JSON-LD / meta / text / URL each page actually carries)
-- a scorer that honours `holdOut` and reports per stratum instead of one number
+- `pageType` and `signals` strata (which of JSON-LD / meta / text / URL each page
+  actually carries). `enrich.ts` fills `lang` and `labelInPage` today

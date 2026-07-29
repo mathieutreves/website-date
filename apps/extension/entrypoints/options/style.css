@@ -12,7 +12,7 @@
   --surface-sunken: #f7f8f9;
   --fg: #16181d;
   --fg-muted: #5f6673;
-  --fg-subtle: #8b929e;
+  --fg-subtle: #6b7280;
   --line: #e6e8ec;
   --line-strong: #d3d7de;
   --accent: #0f766e;
@@ -39,8 +39,8 @@
     --surface: #17191e;
     --surface-sunken: #1d2026;
     --fg: #e9ebef;
-    --fg-muted: #a1a8b4;
-    --fg-subtle: #767d89;
+    --fg-muted: #d8dde5;
+    --fg-subtle: #bcc4cf;
     --line: #2a2e36;
     --line-strong: #3a3f49;
     --accent: #0d9488;
@@ -63,8 +63,8 @@
 @media (prefers-contrast: more) and (prefers-color-scheme: dark) {
   :root {
     --fg: #ffffff;
-    --fg-muted: #d2d7dd;
-    --fg-subtle: #b3bac2;
+    --fg-muted: #eef1f5;
+    --fg-subtle: #dbe0e7;
     --line: #5a626c;
     --line-strong: #8b939d;
     --accent: #2dd4bf;
@@ -118,12 +118,14 @@ h2 {
   color: var(--fg-subtle);
 }
 
+/* Set apart by measure and position rather than by an accent rule down its
+   left edge — it is the paragraph directly under the title, which is already
+   the most-read position on the page. */
 .privacy {
   margin: var(--s2) 0 0;
   color: var(--fg-muted);
   font-size: var(--text-md);
-  border-left: 2px solid var(--accent);
-  padding-left: var(--s3);
+  max-width: 62ch;
 }
 
 section {

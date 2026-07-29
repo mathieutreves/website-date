@@ -1,9 +1,11 @@
+import { MAX_FETCHES_PER_PAGE } from '../../lib/annotate.js'
 import { t } from '../../lib/messages.js'
 import type {
   ArchiveMode,
   DateFormat,
   OverlayMode,
   OverlayPosition,
+  SearchAnnotate,
   Settings,
 } from '../../lib/settings.js'
 
@@ -58,6 +60,8 @@ export function optionsView(settings: Settings, stats: CacheStats): string {
     radio('overlay', value, label, settings.overlay, !settings.autoRead)
   const corner = (value: OverlayPosition, label: string) =>
     radio('overlayPosition', value, label, settings.overlayPosition)
+  const search = (value: SearchAnnotate, label: string) =>
+    radio('searchAnnotate', value, label, settings.searchAnnotate)
 
   return `
     <header>
@@ -106,6 +110,32 @@ export function optionsView(settings: Settings, stats: CacheStats): string {
         </div>
       </div>`
       }
+    </section>
+
+    <section>
+      <h2>${escapeHtml(t('optSearchHeading'))}</h2>
+      <div class="field">
+        <div class="control"><span class="name">${escapeHtml(t('optSearchAnnotate'))}</span></div>
+        <p class="help">${escapeHtml(t('optSearchAnnotateHelp'))}</p>
+        <div class="choices">
+          ${search('off', t('optSearchOff'))}
+          ${search('url', t('optSearchUrl'))}
+          ${search('fetch', t('optSearchFetch'))}
+        </div>
+        <p class="help">${escapeHtml(t('optSearchFetchHelp', String(MAX_FETCHES_PER_PAGE)))}</p>
+        <p class="status" id="search-status" hidden></p>
+      </div>
+    </section>
+
+    <section>
+      <h2>${escapeHtml(t('optLinksHeading'))}</h2>
+      <div class="field">
+        <div class="control">
+          <label class="name" for="link-menu">${escapeHtml(t('optLinkMenu'))}</label>
+          <input type="checkbox" id="link-menu" ${settings.linkMenu ? 'checked' : ''} />
+        </div>
+        <p class="help">${escapeHtml(t('optLinkMenuHelp'))}</p>
+      </div>
     </section>
 
     <section>

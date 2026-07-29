@@ -8,7 +8,6 @@
   "etag": "W/\"fcba6355db8b396dbcee0a2109323782\"",
   "referrer-policy": "no-referrer-when-downgrade",
   "server": "github.com",
-  "set-cookie": "logged_in=no; expires=Wed, 28 Jul 2027 08:38:37 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax",
   "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
   "transfer-encoding": "chunked",
   "vary": "X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, X-GitHub-Client-Version, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With",

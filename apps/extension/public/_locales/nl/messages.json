@@ -1,0 +1,341 @@
+{
+  "extName": {
+    "message": "Page Date"
+  },
+  "extDescription": {
+    "message": "Laat zien wanneer een pagina is gepubliceerd en gewijzigd, waar elke datum vandaan komt en hoe betrouwbaar die is."
+  },
+  "fieldPublished": {
+    "message": "Gepubliceerd"
+  },
+  "fieldModified": {
+    "message": "Laatst gewijzigd"
+  },
+  "notDeclared": {
+    "message": "niet vermeld"
+  },
+  "tierDeclared": {
+    "message": "vermeld door de site"
+  },
+  "tierDerived": {
+    "message": "uit de opmaak van de pagina"
+  },
+  "tierInferred": {
+    "message": "afgeleid"
+  },
+  "ageApprox": {
+    "message": "ongeveer {1}"
+  },
+  "ageFuture": {
+    "message": "gedateerd in de toekomst"
+  },
+  "conflictDisagreement": {
+    "message": "Deze pagina spreekt zichzelf tegen"
+  },
+  "conflictPredated": {
+    "message": "Deze pagina is waarschijnlijk ouder dan ze zegt"
+  },
+  "conflictStale": {
+    "message": "Deze pagina is mogelijk gewijzigd na de vermelde datum"
+  },
+  "conflictDisagreementDetail": {
+    "message": "{1} zegt {2}, terwijl {3} {4} zegt voor hetzelfde veld."
+  },
+  "conflictPredatedDetail": {
+    "message": "Vermeldt {1}, maar bevat {2} gedateerde elementen van daarvóór, terug tot {3}. De vermelde datum is waarschijnlijk een herpublicatie, niet wanneer dit is geschreven."
+  },
+  "conflictStaleDetail": {
+    "message": "De pagina vermeldt {1} en toont geen wijziging, maar het archief registreert een wijziging op {2}."
+  },
+  "spreadTitle": {
+    "message": "Spreiding van de aanwijzingen"
+  },
+  "spreadSummary": {
+    "message": "{1} datums gevonden, verspreid over {2}"
+  },
+  "spreadOldest": {
+    "message": "oudste"
+  },
+  "spreadDeclared": {
+    "message": "vermeld"
+  },
+  "candidatesOne": {
+    "message": "{1} andere kandidaat"
+  },
+  "candidatesMany": {
+    "message": "{1} andere kandidaten"
+  },
+  "candidateFieldPublished": {
+    "message": "gepubliceerd"
+  },
+  "candidateFieldModified": {
+    "message": "bijgewerkt"
+  },
+  "candidateFieldUnknown": {
+    "message": "zonder label"
+  },
+  "loading": {
+    "message": "Pagina lezen…"
+  },
+  "badgeNoDate": {
+    "message": "Geen datum gevonden"
+  },
+  "emptyNoDate": {
+    "message": "Geen datum gevonden. Soms is dat het juiste antwoord — mogelijk vermeldt deze pagina werkelijk niet wanneer ze is geschreven."
+  },
+  "emptyUnsupported": {
+    "message": "Open een webpagina om te zien wanneer die is geschreven."
+  },
+  "errorUnreadable": {
+    "message": "Kon deze pagina niet lezen. Instellingenpagina’s van de browser en extensiegalerijen zijn verboden terrein voor extensies."
+  },
+  "recheck": {
+    "message": "Opnieuw controleren"
+  },
+  "settings": {
+    "message": "Instellingen"
+  },
+  "archiveCheck": {
+    "message": "Zoek in het archief naar verzwegen wijzigingen"
+  },
+  "archiveChecking": {
+    "message": "Archief raadplegen…"
+  },
+  "archiveNothing": {
+    "message": "Het archief kent geen wijzigingen sinds de publicatie."
+  },
+  "srcAdapter": {
+    "message": "een regel speciaal voor deze site"
+  },
+  "srcJsonld": {
+    "message": "JSON-LD-metadata"
+  },
+  "srcJsonldContainer": {
+    "message": "de JSON-LD-metadata van de site"
+  },
+  "srcAtomFeed": {
+    "message": "de Atom-feed van de site"
+  },
+  "srcRssFeed": {
+    "message": "de RSS-feed van de site"
+  },
+  "srcOpengraph": {
+    "message": "een OpenGraph-tag"
+  },
+  "srcItemprop": {
+    "message": "microdata"
+  },
+  "srcDublinCore": {
+    "message": "een Dublin Core-tag"
+  },
+  "srcCitation": {
+    "message": "een citation-tag"
+  },
+  "srcParsely": {
+    "message": "een Parse.ly-tag"
+  },
+  "srcSailthru": {
+    "message": "een Sailthru-tag"
+  },
+  "srcTimeTag": {
+    "message": "een <time>-element"
+  },
+  "srcSitemap": {
+    "message": "de sitemap van de site"
+  },
+  "srcMetaDate": {
+    "message": "een meta-tag"
+  },
+  "srcUrlSlug": {
+    "message": "de URL van de pagina"
+  },
+  "srcImagePath": {
+    "message": "het uploadpad van de voorbeeldafbeelding"
+  },
+  "srcVisibleText": {
+    "message": "tekst op de pagina"
+  },
+  "srcTextDate": {
+    "message": "tekst zonder label op de pagina"
+  },
+  "srcHttpLastModified": {
+    "message": "de Last-Modified-header"
+  },
+  "optTitle": {
+    "message": "Instellingen van Page Date"
+  },
+  "optPrivacyNote": {
+    "message": "Deze extensie vraagt bij de installatie om niets. Elke instelling hieronder die ruimere toegang nodig heeft, vraagt die pas als je haar aanzet, en geeft die terug als je haar uitzet."
+  },
+  "optReadingHeading": {
+    "message": "Pagina’s lezen"
+  },
+  "optAutoRead": {
+    "message": "Elke pagina automatisch controleren"
+  },
+  "optAutoReadHelp": {
+    "message": "Toont de leeftijd op het pictogram in de werkbalk zonder dit paneel te openen. Vereist toestemming om elke site die je bezoekt te lezen — de browser vraagt erom als je dit aanzet."
+  },
+  "optAutoReadDenied": {
+    "message": "De toestemming is geweigerd, dus dit bleef uit."
+  },
+  "optArchiveHeading": {
+    "message": "Internet Archive"
+  },
+  "optArchive": {
+    "message": "Zoek in het archief naar bewerkingen die een pagina niet toegeeft"
+  },
+  "optArchiveHelp": {
+    "message": "Bewerkingen vinden die een pagina verzwijgt betekent web.archive.org vragen wat het bewaard heeft, waarmee je het adres van de pagina waar je bent prijsgeeft."
+  },
+  "optArchiveOff": {
+    "message": "Nooit"
+  },
+  "optArchiveAsk": {
+    "message": "Elke keer vragen"
+  },
+  "optArchiveAlways": {
+    "message": "Altijd"
+  },
+  "overlayNoDate": {
+    "message": "geen datum"
+  },
+  "overlaySays": {
+    "message": "zegt {1}"
+  },
+  "overlayOldest": {
+    "message": "oudste: {1}"
+  },
+  "overlayCounterLabel": {
+    "message": "De pagina zegt {1}, maar de oudste datum die ze bevat is van {2}."
+  },
+  "overlayOldestDetail": {
+    "message": "Oudste datum op de pagina: {1} — {2}."
+  },
+  "optOverlayHeading": {
+    "message": "Op de pagina"
+  },
+  "optOverlay": {
+    "message": "De leeftijd in een hoek van de pagina tonen"
+  },
+  "optOverlayHelp": {
+    "message": "De meeste pagina’s tonen hun eigen datum nooit — die zit in metadata die je niet ziet — dus meestal is dit de enige plek waar hij verschijnt. Vereist automatisch controleren."
+  },
+  "optOverlayNever": {
+    "message": "Nooit"
+  },
+  "optOverlayAlways": {
+    "message": "Altijd"
+  },
+  "optOverlayConflict": {
+    "message": "Alleen bij tegenspraak"
+  },
+  "optOverlayPosition": {
+    "message": "Hoek"
+  },
+  "optOverlayBottomLeft": {
+    "message": "Linksonder"
+  },
+  "optOverlayBottomRight": {
+    "message": "Rechtsonder"
+  },
+  "optOverlayTopLeft": {
+    "message": "Linksboven"
+  },
+  "optOverlayTopRight": {
+    "message": "Rechtsboven"
+  },
+  "optOverlayNeedsAutoRead": {
+    "message": "Zet hierboven automatisch controleren aan om dit te gebruiken."
+  },
+  "menuCheckLink": {
+    "message": "Wanneer is deze pagina geschreven?"
+  },
+  "menuChecking": {
+    "message": "Bezig met controleren…"
+  },
+  "menuResultFor": {
+    "message": "Voor {1}"
+  },
+  "menuNoDate": {
+    "message": "Geen datum gevonden voor deze link."
+  },
+  "menuUnreachable": {
+    "message": "Kon die pagina niet lezen."
+  },
+  "menuNeedsPermission": {
+    "message": "Toestemming om die site te lezen is geweigerd."
+  },
+  "annotateFromUrl": {
+    "message": "afgeleid uit het linkadres"
+  },
+  "optSearchHeading": {
+    "message": "Zoekresultaten"
+  },
+  "optSearchAnnotate": {
+    "message": "Leeftijd naast zoekresultaten tonen"
+  },
+  "optSearchAnnotateHelp": {
+    "message": "Voegt de leeftijd van elk resultaat toe op Google, Bing, DuckDuckGo, Hacker News en het oude Reddit, zodat een pagina uit 2013 al vóór het klikken opvalt."
+  },
+  "optSearchOff": {
+    "message": "Nooit"
+  },
+  "optSearchUrl": {
+    "message": "Alleen uit het linkadres — doet geen verzoeken"
+  },
+  "optSearchFetch": {
+    "message": "Lees ook de pagina’s zelf"
+  },
+  "optSearchFetchHelp": {
+    "message": "De resultaten zelf lezen levert veel vaker een antwoord op, en betekent dat deze extensie pagina’s opvraagt bij sites die je niet hebt geopend. Beperkt tot de eerste {1} resultaten op een pagina, en cookies worden nooit meegestuurd."
+  },
+  "optSearchDenied": {
+    "message": "Toestemming is geweigerd, dus dit bleef uit."
+  },
+  "optSearchPartial": {
+    "message": "Toestemming om alle sites te lezen is geweigerd, dus alleen het linkadres wordt gebruikt."
+  },
+  "optLinksHeading": {
+    "message": "Links"
+  },
+  "optLinkMenu": {
+    "message": "“Wanneer is deze pagina geschreven?” aan het rechtsklikmenu toevoegen"
+  },
+  "optLinkMenuHelp": {
+    "message": "Controleert een link zonder hem te openen. Vraagt op het moment van gebruik toegang tot alleen die ene site, en alleen als het adres zelf geen antwoord geeft."
+  },
+  "optDisplayHeading": {
+    "message": "Weergave"
+  },
+  "optDateFormat": {
+    "message": "Begin met"
+  },
+  "optDateFormatRelative": {
+    "message": "Hoe lang geleden"
+  },
+  "optDateFormatAbsolute": {
+    "message": "De exacte datum"
+  },
+  "optDateFormatIso": {
+    "message": "De exacte datum, als 2024-03-12"
+  },
+  "optDataHeading": {
+    "message": "Bewaarde resultaten"
+  },
+  "optCacheSummary": {
+    "message": "{1} pagina’s onthouden, goed voor {2}."
+  },
+  "optCacheEmpty": {
+    "message": "Niets bewaard."
+  },
+  "optCacheHelp": {
+    "message": "Resultaten blijven een week bewaard zodat een pagina opnieuw openen meteen gaat. Ze staan alleen op dit apparaat en worden nergens heen gestuurd."
+  },
+  "optCacheClear": {
+    "message": "Bewaarde resultaten wissen"
+  },
+  "optCacheCleared": {
+    "message": "Gewist."
+  }
+}

@@ -1,17 +1,45 @@
-# Publish pagedate to npm via trusted publishing.
+# Publish pagedate and pagedate-mcp to npm, and pagedate-mcp to the MCP
+# Registry, via trusted publishing.
 #
-# INERT until two things are done, both of which are yours:
-#   1. On npmjs.com, add a trusted publisher for the `pagedate` package pointing
-#      at this repository and this workflow file.
-#   2. Create a GitHub release. Nothing else triggers this.
+# INERT until the setup below is done, all of which is yours.
+#
+# OIDC cannot perform a package's FIRST publish: npm's trusted-publisher setting
+# only exists on a package page, and there is no page until the package exists.
+# (npm/cli#8544 tracks closing that gap; PyPI allows pre-registration, npm does
+# not.) So the first release of each package is manual and every one after it is
+# not:
+#
+#   1. Publish `pagedate` by hand, then `pagedate-mcp`. In that order: the
+#      second depends on the first by version range, and a range naming a
+#      version nobody can download is an uninstallable package.
+#      Use `pnpm publish`, NOT `npm publish` — see the note on workspace: below.
+#   2. Create the GitHub environment named `npm` (Settings → Environments), so
+#      it matches the `environment:` key below.
+#   3. On npmjs.com → each package → Settings → Trusted Publisher → GitHub
+#      Actions, enter: mathieutreves / website-date / publish.yml / environment
+#      `npm`. The workflow filename and environment must match this file exactly
+#      or the OIDC exchange is refused. Do this for BOTH packages.
+#   4. Then, and only then, revoke any classic publish token and require 2FA.
+#   5. From here on: create a GitHub release. Nothing else triggers this.
 #
 # Trusted publishing means npm authenticates this workflow over OIDC, so no
 # long-lived token exists in the repo to leak, and each published version
-# carries a provenance attestation linking it to the commit that built it.
+# carries a provenance attestation linking it to the commit that built it. The
+# MCP Registry authenticates the same way, over `mcp-publisher login
+# github-oidc`, so it needs no secret either.
 #
-# The version is NOT bumped here. Set it in packages/pagedate/package.json,
-# commit, tag, then release — so the tag, the commit and the registry always
-# agree, and a failed publish leaves nothing half-done.
+# `pnpm publish`, not `npm publish`. pagedate-mcp depends on pagedate as
+# `workspace:^`, which is a pnpm protocol npm does not understand: `npm publish`
+# ships that string verbatim and every install of the result fails with
+# `Unsupported URL Type "workspace:"`. pnpm rewrites it to the real range at
+# pack time. (pnpm 11.0.8 could not do OIDC — pnpm/pnpm#11513, fixed in #11526 —
+# so the pinned pnpm must stay well ahead of that, as `packageManager` does.)
+#
+# Versions are NOT bumped here. Set them in each package.json, commit, tag, then
+# release — so the tag, the commit and the registry always agree, and a failed
+# publish leaves nothing half-done. The two packages version independently; a
+# package whose version is already on npm is skipped rather than failing the run,
+# which is what makes releasing one of them a normal thing to do.
 name: Publish
 
 on:
@@ -26,7 +54,8 @@ on:
 
 permissions:
   contents: read
-  # Required for OIDC. Without it npm cannot verify who is publishing.
+  # Required for OIDC, by both npm and the MCP Registry. Without it neither can
+  # verify who is publishing.
   id-token: write
 
 jobs:
@@ -34,9 +63,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: npm
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
@@ -44,32 +73,88 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter pagedate build
+      - run: pnpm --filter pagedate-mcp build
 
       # Publishing something that does not typecheck or pass its tests is worse
       # than not publishing: npm allows unpublish only within 72 hours, and
       # after that a bad version can only be deprecated, never removed.
       - run: pnpm -r typecheck
-      - run: pnpm --filter pagedate test
-      - run: pnpm --filter @website-date/extension test
+      - run: pnpm -r test
 
-      - name: Tag matches package version
-        if: github.event_name == 'release'
-        working-directory: packages/pagedate
+      # The MCP Registry refuses a server whose npm package does not carry a
+      # matching `mcpName`, and it refuses a server.json whose version does not
+      # exist on npm. Both are cheap to assert here and confusing to debug in
+      # the registry's error messages.
+      - name: MCP metadata agrees with itself
         run: |
-          pkg=$(node -p "require('./package.json').version")
+          cd packages/pagedate-mcp
+          pkg_name=$(node -p "require('./package.json').mcpName || ''")
+          pkg_ver=$(node -p "require('./package.json').version")
+          srv_name=$(node -p "require('./server.json').name")
+          srv_ver=$(node -p "require('./server.json').version")
+          srv_pkg_ver=$(node -p "require('./server.json').packages[0].version")
+          srv_pkg_id=$(node -p "require('./server.json').packages[0].identifier")
+          fail=0
+          [ "$pkg_name" = "$srv_name" ] || { echo "package.json mcpName '$pkg_name' != server.json name '$srv_name'" >&2; fail=1; }
+          [ "$pkg_ver" = "$srv_ver" ] || { echo "package.json version $pkg_ver != server.json version $srv_ver" >&2; fail=1; }
+          [ "$pkg_ver" = "$srv_pkg_ver" ] || { echo "package.json version $pkg_ver != server.json packages[0].version $srv_pkg_ver" >&2; fail=1; }
+          [ "$srv_pkg_id" = "pagedate-mcp" ] || { echo "server.json packages[0].identifier is '$srv_pkg_id'" >&2; fail=1; }
+          exit $fail
+
+      # A release tag that matches neither package is a typo, and the failure it
+      # otherwise produces is "nothing published" with a green tick.
+      - name: Release tag matches a package version
+        if: github.event_name == 'release'
+        run: |
           tag="${GITHUB_REF_NAME#v}"
-          if [ "$pkg" != "$tag" ]; then
-            echo "release tag $tag does not match package version $pkg" >&2
+          lib=$(node -p "require('./packages/pagedate/package.json').version")
+          mcp=$(node -p "require('./packages/pagedate-mcp/package.json').version")
+          if [ "$tag" != "$lib" ] && [ "$tag" != "$mcp" ]; then
+            echo "release tag $tag matches neither pagedate@$lib nor pagedate-mcp@$mcp" >&2
             exit 1
           fi
-          echo "publishing pagedate@$pkg"
+          echo "tag $tag matches at least one package"
 
-      - name: Publish
-        if: github.event_name == 'release' && !inputs.dry-run
-        working-directory: packages/pagedate
-        run: npm publish
+      # Skipping an already-published version rather than failing is what lets a
+      # release of one package run this workflow without the other one erroring.
+      # `npm view` exits non-zero when the version does not exist, which is the
+      # signal we want and not an error.
+      - name: Decide what needs publishing
+        id: what
+        run: |
+          for p in pagedate pagedate-mcp; do
+            v=$(node -p "require('./packages/$p/package.json').version")
+            if npm view "$p@$v" version >/dev/null 2>&1; then
+              echo "$p@$v already on npm — skipping"
+              echo "${p//-/_}=skip" >> "$GITHUB_OUTPUT"
+            else
+              echo "$p@$v will be published"
+              echo "${p//-/_}=publish" >> "$GITHUB_OUTPUT"
+            fi
+          done
+
+      # Order matters: pagedate-mcp names pagedate by range, so the range has to
+      # resolve to something downloadable by the time anyone installs it.
+      - name: Publish pagedate
+        if: github.event_name == 'release' && !inputs.dry-run && steps.what.outputs.pagedate == 'publish'
+        run: pnpm --filter pagedate publish --no-git-checks
+
+      - name: Publish pagedate-mcp
+        if: github.event_name == 'release' && !inputs.dry-run && steps.what.outputs.pagedate_mcp == 'publish'
+        run: pnpm --filter pagedate-mcp publish --no-git-checks
+
+      # The registry stores metadata and verifies it against the npm package, so
+      # this has to come after the npm publish above, not beside it.
+      - name: Publish to the MCP Registry
+        if: github.event_name == 'release' && !inputs.dry-run && steps.what.outputs.pagedate_mcp == 'publish'
+        working-directory: packages/pagedate-mcp
+        run: |
+          curl -sL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+          ./mcp-publisher login github-oidc
+          ./mcp-publisher publish
 
       - name: Dry run
         if: github.event_name != 'release' || inputs.dry-run
-        working-directory: packages/pagedate
-        run: npm publish --dry-run
+        run: |
+          pnpm --filter pagedate publish --dry-run --no-git-checks
+          pnpm --filter pagedate-mcp publish --dry-run --no-git-checks

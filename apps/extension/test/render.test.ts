@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { Candidate, DateResult } from 'pagedate'
+import type { Candidate, ConflictKind, DateResult } from 'pagedate'
 import {
   display,
   escapeHtml,
@@ -21,6 +21,44 @@ const candidate = (over: Partial<Candidate> = {}): Candidate => ({
 })
 
 const result = (over: Partial<DateResult> = {}): DateResult => ({ candidates: [], ...over })
+
+/**
+ * A conflict of each kind, with the fields that kind actually carries.
+ *
+ * The view builds its sentence from those fields rather than from `detail`, so
+ * a fixture that supplies only `kind` and `detail` is not a conflict this code
+ * can render — it is the shape the library stopped emitting when the warning
+ * needed to be translatable.
+ */
+const conflict = (kind: ConflictKind, gapDays = 900): NonNullable<DateResult['conflict']> => {
+  switch (kind) {
+    case 'declared-disagreement':
+      return {
+        kind,
+        gapDays,
+        earlier: { source: 'jsonld', value: '2019-03-01' },
+        later: { source: 'opengraph', value: '2023-11-15' },
+        detail: 'jsonld says 2019-03-01, opengraph says 2023-11-15.',
+      }
+    case 'predated-content':
+      return {
+        kind,
+        gapDays,
+        declared: '2026-05-28',
+        olderCount: 8,
+        oldest: '2014-03-10',
+        detail: 'Declares 2026-05-28, but carries 8 dated elements from before then.',
+      }
+    case 'stale-declaration':
+      return {
+        kind,
+        gapDays,
+        declared: '2019-03-01',
+        archived: '2024-06-01',
+        detail: 'Page declares 2019-03-01 … archive records a change on 2024-06-01.',
+      }
+  }
+}
 
 const show = (r: DateResult, options: ViewOptions = {}): string =>
   view(r, 'https://example.com/p', { now: NOW, ...options })
@@ -190,11 +228,7 @@ describe('conflict', () => {
     const html = show(
       result({
         published: candidate(),
-        conflict: {
-          kind: 'declared-disagreement',
-          gapDays: 1700,
-          detail: 'jsonld says 2019-03-01, opengraph says 2023-11-15.',
-        },
+        conflict: conflict('declared-disagreement', 1700),
       }),
     )
 
@@ -206,11 +240,7 @@ describe('conflict', () => {
     const html = view(
       result({
         published: candidate({ value: '2026-05-28' }),
-        conflict: {
-          kind: 'predated-content',
-          gapDays: 4463,
-          detail: 'Declares 2026-05-28, but carries 8 dated elements from before then.',
-        },
+        conflict: conflict('predated-content', 4463),
       }),
       'https://css-tricks.com/x/',
       { now: NOW },
@@ -224,8 +254,8 @@ describe('conflict', () => {
     const headings = (['declared-disagreement', 'predated-content', 'stale-declaration'] as const)
       .map(
         (kind) =>
-          show(result({ conflict: { kind, gapDays: 900, detail: 'x' } })).match(
-            /<p class="conflict-heading">([^<]+)</,
+          show(result({ conflict: conflict(kind) })).match(
+            /<span class="conflict-title">([^<]+)</,
           )?.[1],
       )
       .filter(Boolean)
@@ -236,7 +266,7 @@ describe('conflict', () => {
 
   it('reserves the alert treatment for conflicts that undermine the date shown', () => {
     const at = (kind: 'declared-disagreement' | 'predated-content' | 'stale-declaration') =>
-      show(result({ published: candidate(), conflict: { kind, gapDays: 900, detail: 'x' } }))
+      show(result({ published: candidate(), conflict: conflict(kind) }))
 
     // The first two mean the headline date is wrong; the third means it is
     // right but incomplete. A flag that is always lit is furniture.
@@ -249,7 +279,7 @@ describe('conflict', () => {
     const disputed = show(
       result({
         published: candidate(),
-        conflict: { kind: 'predated-content', gapDays: 900, detail: 'x' },
+        conflict: conflict('predated-content'),
       }),
     )
 
@@ -287,7 +317,7 @@ describe('the spread axis earns its space', () => {
   it('appears for a two-date contradiction, where the gap is the whole point', () => {
     const html = show({
       ...spread(['2019-03-01', '2023-11-15']),
-      conflict: { kind: 'declared-disagreement', gapDays: 1720, detail: 'x' },
+      conflict: conflict('declared-disagreement', 1720),
     })
     expect(html).toContain('class="spread"')
   })

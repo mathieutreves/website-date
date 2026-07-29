@@ -124,6 +124,13 @@ describe('conflict detection', () => {
     expect(result.conflict?.kind).toBe('declared-disagreement')
     expect(result.conflict?.detail).toContain('2019-03-01')
     expect(result.conflict?.detail).toContain('2023-11-15')
+
+    // The same facts as data, so a UI can say this in its own language instead
+    // of parsing them back out of the English above. Oldest first, whatever
+    // order they were found in.
+    if (result.conflict?.kind !== 'declared-disagreement') throw new Error('narrowing')
+    expect(result.conflict.earlier).toEqual({ source: 'jsonld', value: '2019-03-01' })
+    expect(result.conflict.later).toEqual({ source: 'opengraph', value: '2023-11-15' })
   })
 
   it('does NOT flag published and modified merely differing', () => {
@@ -170,6 +177,12 @@ describe('conflict detection', () => {
 
       expect(result.conflict?.kind).toBe('predated-content')
       expect(result.conflict?.detail).toContain('2014-03-10')
+
+      if (result.conflict?.kind !== 'predated-content') throw new Error('narrowing')
+      expect(result.conflict.declared).toBe('2026-05-28')
+      expect(result.conflict.oldest).toBe('2014-03-10')
+      // Distinct *days*, which is what the threshold counts — not candidates.
+      expect(result.conflict.olderCount).toBe(4)
     })
 
     it('ignores a stray old date — an article may simply discuss the past', () => {
@@ -229,6 +242,12 @@ describe('conflict detection', () => {
 
     expect(result.conflict?.kind).toBe('stale-declaration')
     expect(result.conflict?.gapDays).toBeGreaterThan(365)
+
+    if (result.conflict?.kind !== 'stale-declaration') throw new Error('narrowing')
+    expect(result.conflict.declared).toBe('2019-03-01')
+    // Truncated to the day: the archive's capture instant is more precision
+    // than the claim "it changed on this date" can carry.
+    expect(result.conflict.archived).toBe('2024-06-01')
   })
 
   it('does not flag a stale declaration when the page shows its own modified date', () => {
@@ -271,5 +290,162 @@ describe('findDates end to end', () => {
     expect(result.modified?.value).toBe('2025-02-18T14:20Z')
     expect(result.conflict).toBeUndefined()
     expect(result.candidates.some((c) => c.value.startsWith('2026-07-01'))).toBe(false)
+  })
+})
+
+/**
+ * A publication date is a civil date somewhere, and UTC is not automatically
+ * that somewhere. See `localise` in resolve.ts.
+ */
+describe('reporting the day the site published on', () => {
+  it('renders a UTC declaration in the zone a naive sibling timestamp reveals', () => {
+    const result = resolveCandidates(
+      [
+        candidate({ value: '2025-12-05T05:50Z', precision: 'minute', source: 'jsonld' }),
+        // The same instant as the site itself wrote it: 23:50 the previous day.
+        candidate({
+          value: '2025-12-04T23:50',
+          precision: 'minute',
+          source: 'time-tag',
+          confidence: 'derived',
+          field: 'unknown',
+        }),
+      ],
+      { now: NOW },
+    )
+
+    expect(result.published?.value).toBe('2025-12-04T23:50-06:00')
+    // Still the JSON-LD's claim — only the rendering moved.
+    expect(result.published?.source).toBe('jsonld')
+    expect(result.published?.precision).toBe('minute')
+  })
+
+  it("takes the day from a date the markup labels as the page's own publication", () => {
+    const result = resolveCandidates(
+      [
+        candidate({ value: '2023-01-22T23:20Z', precision: 'minute', source: 'jsonld' }),
+        candidate({ value: '2023-01-23', source: 'marked-date', confidence: 'derived' }),
+      ],
+      { now: NOW },
+    )
+
+    expect(result.published?.value).toBe('2023-01-23')
+    // No offset was recoverable, so precision drops rather than being invented.
+    expect(result.published?.precision).toBe('day')
+  })
+
+  it('ignores an unlabelled neighbouring day, which every sidebar is full of', () => {
+    const result = resolveCandidates(
+      [
+        candidate({ value: '2023-01-22T23:20Z', precision: 'minute', source: 'jsonld' }),
+        candidate({ value: '2023-01-23', source: 'marked-date', confidence: 'derived', field: 'unknown' }),
+      ],
+      { now: NOW },
+    )
+
+    expect(result.published?.value).toBe('2023-01-22T23:20Z')
+  })
+
+  it('leaves a declaration alone when the gap is bigger than a timezone', () => {
+    const result = resolveCandidates(
+      [
+        candidate({ value: '2023-01-22T23:20Z', precision: 'minute', source: 'jsonld' }),
+        // Two days out. Offsets span 26 hours, so a *one*-day disagreement is
+        // always explicable by some zone and only the ±1 window is checked;
+        // beyond it the page and its metadata genuinely disagree, and this
+        // declines to paper over that.
+        candidate({ value: '2023-01-24', source: 'marked-date', confidence: 'derived' }),
+      ],
+      { now: NOW },
+    )
+
+    expect(result.published?.value).toBe('2023-01-22T23:20Z')
+  })
+
+  it('rejects an implied offset no timezone uses', () => {
+    const result = resolveCandidates(
+      [
+        candidate({ value: '2021-02-01T02:30Z', precision: 'minute', source: 'jsonld' }),
+        // 14 hours behind UTC. The range runs to −12, so this is not a zone —
+        // it is an unrelated timestamp that happens to share a minute hand.
+        candidate({
+          value: '2021-01-31T12:30',
+          precision: 'minute',
+          source: 'time-tag',
+          confidence: 'derived',
+          field: 'unknown',
+        }),
+      ],
+      { now: NOW },
+    )
+
+    expect(result.published?.value).toBe('2021-02-01T02:30Z')
+  })
+
+  it('leaves a declaration that already carries a real offset alone', () => {
+    const result = resolveCandidates(
+      [
+        candidate({ value: '2023-06-29T18:37+02:00', precision: 'minute', source: 'opengraph' }),
+        candidate({ value: '2023-06-30', source: 'marked-date', confidence: 'derived' }),
+      ],
+      { now: NOW },
+    )
+
+    expect(result.published?.value).toBe('2023-06-29T18:37+02:00')
+  })
+})
+
+describe('an unlabelled date against a labelled one', () => {
+  it('does not let a higher-ranked source overturn a field label at the same tier', () => {
+    // Horizont.net: the article's own marked publication date, against a <time>
+    // from a related-articles rail. Both derived; `time-tag` merely sorts above
+    // `marked-date` and carries a minute.
+    const result = resolveCandidates(
+      [
+        candidate({
+          value: '2019-01-29',
+          source: 'marked-date',
+          confidence: 'derived',
+          field: 'published',
+        }),
+        candidate({
+          value: '2018-03-12T19:30+00:00',
+          precision: 'minute',
+          source: 'time-tag',
+          confidence: 'derived',
+          field: 'unknown',
+        }),
+      ],
+      { now: NOW },
+    )
+
+    expect(result.published?.value).toBe('2019-01-29')
+    expect(result.published?.source).toBe('marked-date')
+  })
+
+  it('still promotes an unlabelled date that is genuinely better evidence', () => {
+    // The case the promotion rule exists for: a marked date block should beat a
+    // month guessed from the URL, and there the tiers really do differ.
+    const result = resolveCandidates(
+      [
+        candidate({
+          value: '2019-01',
+          precision: 'month',
+          source: 'url-slug',
+          confidence: 'inferred',
+          field: 'published',
+        }),
+        candidate({
+          value: '2019-01-29',
+          source: 'marked-date',
+          confidence: 'derived',
+          field: 'unknown',
+        }),
+      ],
+      { now: NOW },
+    )
+
+    expect(result.published?.value).toBe('2019-01-29')
+    expect(result.published?.note).toContain('unlabelled')
   })
 })
