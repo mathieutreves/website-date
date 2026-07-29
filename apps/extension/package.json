@@ -1,6 +1,6 @@
 {
   "name": "@website-date/extension",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,6 +10,8 @@
     "build:firefox": "wxt build -b firefox",
     "zip": "wxt zip",
     "gen:locales": "npx tsx scripts/gen-locales.ts",
+    "gen:icons": "npx tsx scripts/gen-icons.ts",
+    "gen:screenshots": "npx tsx scripts/gen-screenshots.ts",
     "typecheck": "tsc --noEmit",
     "postinstall": "wxt prepare",
     "test": "vitest run"
@@ -19,8 +21,8 @@
   },
   "devDependencies": {
     "linkedom": "^0.18.13",
-    "typescript": "^5.7.2",
-    "vitest": "^2.1.8",
-    "wxt": "^0.19.13"
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10",
+    "wxt": "^0.21.2"
   }
 }

@@ -1,0 +1,63 @@
+{
+  "name": "pagedate-mcp",
+  "version": "0.1.0",
+  "description": "MCP server exposing pagedate: when was this page published, when was it last changed, and how much should you trust that",
+  "mcpName": "io.github.mathieutreves/pagedate",
+  "author": "Mathieu Treves",
+  "homepage": "https://github.com/mathieutreves/website-date#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mathieutreves/website-date.git",
+    "directory": "packages/pagedate-mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/mathieutreves/website-date/issues"
+  },
+  "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "pagedate",
+    "publication-date",
+    "freshness",
+    "rag"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "pagedate-mcp": "./dist/server.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "linkedom": "^0.18.13",
+    "node-html-parser": "^9.0.0",
+    "pagedate": "workspace:^",
+    "zod": "^3.25.0 || ^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "tsup": "^8.5.1",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  },
+  "scripts": {
+    "build": "tsup && tsc -p tsconfig.build.json",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}
