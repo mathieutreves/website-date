@@ -1,11 +1,11 @@
 
-262 pages, split=dev, URL neutralised for all tools
+475 pages, split=dev, URL neutralised for all tools
 
   tool                            exact  part  wrong  miss | precision  accuracy   ms/page
   ----------------------------------------------------------------------------------------
-  pagedate (standard)              235     0     13    14 |    94.8%    89.7%      4.58
-  pagedate (extensive)             235     0     13    14 |    94.8%    89.7%      4.47
-  metascraper                      159     0     52    51 |    75.4%    60.7%     12.09
-  pagedate (fast)                  157     0     10    95 |    94.0%    59.9%      3.80
-  unfluff                          145     0     16   101 |    90.1%    55.3%     50.96
-  @extractus/article-extractor     126     0     34   102 |    78.8%    48.1%     58.69
+  pagedate (extensive)             457     0     14     4 |    97.0%    96.2%      7.02
+  pagedate (standard)              456     0     11     8 |    97.6%    96.0%      6.59
+  metascraper                      320     0     86    69 |    78.8%    67.4%     17.84
+  pagedate (fast)                  304     0     12   159 |    96.2%    64.0%      4.84
+  @extractus/article-extractor     232     0     58   185 |    80.0%    48.8%     82.44
+  unfluff                          205     0     28   242 |    88.0%    43.2%     84.59

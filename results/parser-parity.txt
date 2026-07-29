@@ -2,10 +2,10 @@
   htmldate corpus — 55 pages
     same answer               55
     DIFFERENT answer           0
-    different #candidates      1
+    different #candidates      2
 
-  permalink corpus — 590 pages
-    same answer              590
+  permalink corpus — 1242 pages
+    same answer             1242
     DIFFERENT answer           0
     different #candidates      1
 
