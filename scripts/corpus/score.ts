@@ -30,7 +30,30 @@ import { readManifest, type CorpusEntry } from './schema.ts'
 const ROOT = join(import.meta.dirname, '..', '..')
 const MANIFEST = join(ROOT, 'corpus', 'manifest.jsonl')
 const CACHE = join(ROOT, 'corpus', 'cache')
-const NOW = new Date('2026-01-01T00:00:00Z')
+
+/**
+ * "Now", for a page, is the moment it was archived.
+ *
+ * A constant is the wrong shape for this, and not merely inelegant: the
+ * plausibility check rejects future dates, so any page published after the
+ * constant has its correct, declared date discarded and scored as a miss. On
+ * this corpus that is the twelve pages captured during the 2026 harvest — 6 of
+ * the dev split, 6 of the held-out one, and the whole of one host. A constant
+ * cannot be right for a corpus that keeps growing, and it is not what a caller
+ * experiences either, since their clock is always later than the page they are
+ * reading.
+ *
+ * The capture instant is the honest simulation: it is when this exact HTML was
+ * in front of a reader. It also makes the guard mean something on old pages,
+ * where a frozen 2026 would accept any date up to twenty years past the
+ * capture.
+ */
+function capturedAt(entry: CorpusEntry): Date {
+  const s = entry.snapshot
+  return new Date(
+    `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}T${s.slice(8, 10)}:${s.slice(10, 12)}:${s.slice(12, 14)}Z`,
+  )
+}
 
 // linkedom and the built library both live under the package, not the root.
 const require = createRequire(join(ROOT, 'packages', 'pagedate', 'package.json'))
@@ -65,7 +88,7 @@ const { values } = parseArgs({
      *
      * Permalink labels carry inherent ±1 day noise: a post published at 23:30
      * local gets a local-date URL and a UTC `article:published_time`, and both
-     * are correct. Measured on the dev split, 6 of 7 "wrong" answers were
+     * are correct. Measured on the dev split, 14 of 20 "wrong" answers are
      * exactly this. Strict scoring charges the extractor for trusting the site's
      * own machine-readable metadata over a path segment, which is backwards.
      *
@@ -91,9 +114,9 @@ function neutralise(rawUrl: string): string {
  *
  * Neutralising only the fetched URL does not hold the label out: `<link
  * rel="canonical">` and `og:url` carry the permalink verbatim, one hop away,
- * and `extractDeclaredUrlSlug` reads exactly there. Measured when that
- * extractor was added — without this the corpus reported +10 pages and zero
- * misses, all of it the holdout leaking rather than a signal being found.
+ * and `extractDeclaredUrlSlug` reads exactly there. Measured: without this the
+ * corpus reports +10 pages and zero misses, all of it the holdout leaking rather
+ * than a signal being found.
  *
  * Mutating the parsed document rather than filtering candidates afterwards, for
  * the same reason `neutralise` exists at all: `extractFromDocument` gates the
@@ -246,7 +269,7 @@ async function main(): Promise<void> {
     const scoringUrl = values['no-holdout'] ? entry.url : neutralise(entry.url)
     if (!values['no-holdout']) neutraliseDeclaredUrls(document)
     const candidates = extractFromDocument(document, scoringUrl, { mode: values.mode })
-    const published = resolveCandidates(candidates, { now: NOW }).published
+    const published = resolveCandidates(candidates, { now: capturedAt(entry) }).published
     const found = published?.value.slice(0, 10) ?? null
 
     const outcome = judge(overall, entry.label.published!, found, TOLERANCE)
