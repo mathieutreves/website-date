@@ -47,8 +47,24 @@ const PUBLISHED_AFTER_RE = new RegExp(
 )
 
 
-/** Long blocks are article prose, not a byline. */
-const MAX_TEXT_LENGTH = 220
+/**
+ * Long blocks are article prose, not a byline.
+ *
+ * Generous, because what actually keeps this extractor honest is the adjacency
+ * requirement in the patterns above — a label and a date more than ~48
+ * characters apart are not describing each other — and not this cap. At 220 the
+ * cap was overriding that judgement rather than supporting it: a German
+ * WordPress byline reads "Dieser Beitrag wurde am 3. Dezember 2011 um 14:48
+ * veröffentlicht und unter …" and then lists every category and tag on the post,
+ * which runs past 220 characters *after* the part that identifies the date.
+ * Rejecting the element loses a byline that the adjacency rule had already
+ * accepted.
+ *
+ * Note this is measured on {@link directText}, which stops at block-level
+ * children, so even a large value here reads one run of text rather than a whole
+ * article.
+ */
+const MAX_TEXT_LENGTH = 600
 
 export function extractVisibleText(
   doc: Document,
@@ -116,12 +132,21 @@ export function extractVisibleText(
       }
     }
 
-    for (const [regex, field] of [
-      [MODIFIED_RE, 'modified'],
-      [PUBLISHED_RE, 'published'],
-      [MODIFIED_AFTER_RE, 'modified'],
-      [PUBLISHED_AFTER_RE, 'published'],
+    for (const [regex, field, needsMarkup] of [
+      [MODIFIED_RE, 'modified', false],
+      [PUBLISHED_RE, 'published', false],
+      [MODIFIED_AFTER_RE, 'modified', true],
+      [PUBLISHED_AFTER_RE, 'published', true],
     ] as const) {
+      // The date-then-label form only inside markup that names the element as
+      // article furniture. "Published on 3 March" labels itself whatever it sits
+      // in; a date followed 48 characters later by the word "published" is only
+      // a byline if the markup says the element is one. In running prose it is a
+      // sentence — Daring Fireball links to a report "on 5 October 2018, just
+      // after the original report was published", and read as a byline that
+      // dates the page two and a half years early.
+      if (needsMarkup && !context.strong) continue
+
       const match = regex.exec(text)
       if (!match?.[1]) continue
 

@@ -18,6 +18,14 @@ export const DATE_BODY = [
   `(?:${MONTH_NAME_PATTERN})\\.?\\s+\\d{4}`,
   // ISO
   `\\d{4}-\\d{2}-\\d{2}`,
+  // Year-first with a separator other than the ISO hyphen: "2015.4.23",
+  // "2024/03/12". This is the ordinary written form in Japan, China, Korea and
+  // Hungary, and its absence was not a rounding error — every Japanese page in
+  // the corpus whose date is written this way returned *no candidates at all*,
+  // because nothing else on those pages carries a date either. The leading
+  // four-digit year makes it unambiguous, so unlike the day-first form below it
+  // needs no locale guess.
+  `\\d{4}[/.]\\d{1,2}[/.]\\d{1,2}`,
   // "12/03/2024", "19.07.2014", "12-03-2024"
   `\\d{1,2}[/.\\-]\\d{1,2}[/.\\-]\\d{4}`,
 ].join('|')
@@ -166,10 +174,11 @@ export const rootElement = (doc: Document): Element | null =>
  * entity-decoded, so `textContent` is the source verbatim. node-html-parser
  * decodes them anyway, which turns any JSON-LD block containing `&quot;` — a
  * headline with a quoted phrase in it, which is common — into invalid JSON. The
- * result was not a wrong date but a silent one: `JSON.parse` threw, the whole
- * block was skipped as malformed, and the page fell through to whatever weaker
- * signal it had. JSON-LD is the strongest signal there is, so this quietly cost
- * the most reliable answer on exactly the pages that had one.
+ * failure is not a wrong date but a silent one: `JSON.parse` throws, the whole
+ * block is skipped as malformed, and the page falls through to whatever weaker
+ * signal it has. JSON-LD is the strongest signal there is, so reading it through
+ * `textContent` loses the most reliable answer on exactly the pages that have
+ * one.
  *
  * `innerHTML` is the fallback rather than node-html-parser's `rawText` because
  * it is standard DOM: on a real `<script>` element the two are identical, so
@@ -228,7 +237,7 @@ export function directText(el: Element): string {
  * characters near an element then pay for the whole document — and on a page
  * with many such elements they pay for it once each, which is quadratic in a
  * quantity the page controls. 4000 `<time>` tags beside a megabyte of filler is
- * 1.1 MB of HTML and was thirteen seconds.
+ * 1.1 MB of HTML and, done that way, thirteen seconds.
  *
  * Descends depth-first in document order so the prefix returned is the same
  * prefix `textContent` would have produced, and carries a node budget as well as

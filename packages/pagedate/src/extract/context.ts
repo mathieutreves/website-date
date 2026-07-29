@@ -16,8 +16,25 @@ import { boundedText, parentOf } from './patterns.js'
  * sidebar" — as if the element *were* a sidebar, which discards the whole page.
  * A false exclusion loses the date permanently, so this side errs strict.
  */
+/*
+ * `logo`, `masthead`, `banner` and `brand` name the site's identity block, and
+ * a great many news sites print today's date in it. That date is the clock, not
+ * the article: on the Russian pages in the corpus it is the only thing standing
+ * between a correct answer and a confident wrong one, because the masthead date
+ * comes first in document order and ties there fall to document order. Nothing
+ * legitimately dates an article from inside its own logo, so this is the rare
+ * exclusion with no plausible false positive.
+ *
+ * `current`, `clock` and `today` are here for the same reason one step further
+ * in. `<div id="current-time">` is a clock, but the generic `time` marker in
+ * ARTICLE_PATTERN reads it as a date block and promotes it to `derived` — which
+ * is *above* the tier a genuine byline reaches on those pages, so the clock does
+ * not merely tie with the article date, it beats it. A container that names
+ * itself for the present moment is asserting the reader's clock, never the
+ * document's date.
+ */
 const EXCLUDED_PATTERN =
-  /^(related|recent|popular|trending|sidebar|widget|nav|menu|comment|reply|breadcrumb|pagination|newsletter|promo|advert|teaser|card-list|post-list|archive-list)([-_]|$)/i
+  /^(related|recent|popular|trending|sidebar|widget|nav|menu|comment|reply|breadcrumb|pagination|newsletter|promo|advert|teaser|card-list|post-list|archive-list|logo|masthead|banner|brand|current|clock|today)([-_]|$)/i
 
 /** Containers that positively indicate article body content. */
 /**
@@ -28,8 +45,46 @@ const EXCLUDED_PATTERN =
  * sites in particular put the date in a labelled block with a weekday and a
  * time around it, which the ratio guard would otherwise reject.
  */
-const ARTICLE_PATTERN =
-  /(^|[-_\s])(byline|dateline|post-meta|entry-meta|article-meta|published|publish-date|posted-on|posted|pubdate|last-updated|lastmod|updated|submitted|created|publication|post-date|entry-date|date|datum|erstellt|veroffentlicht|author|autor|fecha|parution|subline|info|meta|footer|time|publish|created-post|post-detail|field-content)([-_\s]|$)/i
+const MARKER_VOCABULARY =
+  'byline|dateline|post-meta|entry-meta|article-meta|published|publish-date|posted-on|posted|pubdate|last-updated|lastmod|updated|submitted|created|publication|post-date|entry-date|date|datum|erstellt|veroffentlicht|author|autor|fecha|parution|subline|info|meta|footer|time|publish|created-post|post-detail|field-content'
+
+const ARTICLE_PATTERN = new RegExp(`(^|[-_\\s])(${MARKER_VOCABULARY})([-_\\s]|$)`, 'i')
+
+/**
+ * The same vocabulary, scanned repeatedly across one token.
+ *
+ * The trailing boundary is a lookahead so it is not consumed: a separator has to
+ * be available again to open the next match, and `post-meta-date` would
+ * otherwise report only `post-meta`.
+ */
+const MARKER_SCAN = new RegExp(`(?:^|[-_\\s])(${MARKER_VOCABULARY})(?=[-_\\s]|$)`, 'gi')
+
+/** Every vocabulary word in one class token, in order. */
+function markersIn(token: string): string[] {
+  MARKER_SCAN.lastIndex = 0
+  const out: string[] = []
+  for (const m of token.matchAll(MARKER_SCAN)) out.push(m[1]!.toLowerCase())
+  return out
+}
+
+/**
+ * The strongest thing a set of markers says.
+ *
+ * One class name routinely contains two vocabulary words of very different
+ * strength — Meduza's date block is `MaterialMeta--time`, which says both `meta`
+ * ("metadata lives here") and `time` ("and it is a date"). Taking whichever came
+ * first in the string picked `meta`, so the element was worth *looking* at but
+ * asserted nothing, and the article's own date was left unlabelled while a rail
+ * of neighbouring `<time>` tags outranked it. Position in a class name carries no
+ * meaning; specificity does.
+ */
+function mostSpecific(markers: string[]): string | undefined {
+  return (
+    markers.find((m) => marksPublication(m) || marksModification(m)) ??
+    markers.find(marksDateBlock) ??
+    markers[0]
+  )
+}
 
 /**
  * Split camelCase so framework class names match the patterns above:
@@ -166,8 +221,15 @@ export function scoreContext(el: Element): ContextScore {
   while (node && depth < 24) {
     const tag = node.tagName?.toUpperCase()
 
-    if (tag === 'NAV' || tag === 'ASIDE') excludedDepth = Math.min(excludedDepth, depth)
-    if (tag === 'HEADER' || tag === 'FOOTER') sawHeaderFooter = true
+    // `<nav>` is navigation and never dates the article. `<aside>` is not the
+    // same thing: at page level it is a sidebar, but *inside* an article it is
+    // routinely that article's own metadata block — ebene11.com puts the whole
+    // byline in `<aside class="blogData">` inside `<article>`, and a blanket
+    // exclusion threw the only date on the page away. So it is deferred to the
+    // end and decided by whether an `<article>` encloses it, exactly as
+    // `<header>` and `<footer>` already are.
+    if (tag === 'NAV') excludedDepth = Math.min(excludedDepth, depth)
+    if (tag === 'HEADER' || tag === 'FOOTER' || tag === 'ASIDE') sawHeaderFooter = true
     if (tag === 'ARTICLE' || tag === 'MAIN') sawArticle = true
 
     const rawMarker = `${node.getAttribute?.('class') ?? ''} ${node.getAttribute?.('id') ?? ''}`
@@ -181,8 +243,17 @@ export function scoreContext(el: Element): ContextScore {
         excludedDepth = depth
       }
 
+      // One token cannot both condemn an element and vouch for it. `current-time`
+      // matches the exclusion on `current` and the date-block vocabulary on
+      // `time`, at identical depth — and since proximity decides ties in favour
+      // of the positive marker, the exclusion would never once have fired.
+      // Scanning only the tokens that did not exclude keeps the two vocabularies
+      // from cancelling out, without weakening the proximity rule that resolves
+      // genuine disagreements between *different* ancestors.
       if (!strong) {
-        const hit = tokens.map((t) => ARTICLE_PATTERN.exec(t)?.[2]).find(Boolean)
+        const hit = mostSpecific(
+          tokens.filter((t) => !EXCLUDED_PATTERN.test(t)).flatMap(markersIn),
+        )
         if (hit) {
           strong = true
           marker = hit

@@ -36,14 +36,20 @@ import {
   type NetworkOptions,
 } from '../index.js'
 import { isSafeFetchTarget } from '../extract/urlGuard.js'
+import { fetchEnv, type FetchEnvOptions } from '../fetchEnv.js'
 import type { ResolveOptions } from '../resolve.js'
 
 export type { Candidate, DateResult, Env, Confidence, Conflict, Field, Precision } from '../types.js'
 export { extractFromDocument, resolve, findDates } from '../index.js'
 export { parseDateString, toInstant } from '../parse/normalize.js'
-
-const USER_AGENT =
-  'Mozilla/5.0 (compatible; pagedate/0.1; +https://github.com/mathieutreves/website-date)'
+export { isStale, staleness, toInterval } from '../staleness.js'
+export type {
+  IsStaleOptions,
+  Staleness,
+  StalenessBasis,
+  StalenessOptions,
+  StalenessReason,
+} from '../staleness.js'
 
 /**
  * Largest HTML string parsed, in characters. Documents above this are truncated.
@@ -51,8 +57,8 @@ const USER_AGENT =
  * Every date this library looks for is metadata in `<head>` or content near the
  * top of the body, so the tail of a very large document is the part least likely
  * to hold the answer — and the part most likely to be padding. Truncating rather
- * than throwing keeps a partial page answerable, which is the same trade
- * {@link readCapped} makes.
+ * than throwing keeps a partial page answerable, which is the same trade the
+ * capped body read in `fetchEnv` makes.
  */
 const DEFAULT_MAX_HTML = 10 * 1024 * 1024
 
@@ -122,196 +128,52 @@ export type NodeEnvOptions = {
   blockPrivateNetwork?: 'literal' | 'strict' | 'off'
 }
 
-/** Redirect hops followed by hand, so each one can be re-checked. */
-const MAX_REDIRECTS = 3
-
-const DEFAULT_MAX_BYTES = 5 * 1024 * 1024
-
 /**
  * An `Env` backed by real network access.
+ *
+ * The transport — redirect walk, timeout, capped read — is
+ * {@link fetchEnv}, shared with `pagedate/edge` so that the two cannot drift.
+ * What is added here is the two things only Node can supply: a DNS resolver to
+ * back `blockPrivateNetwork: 'strict'`, and linkedom as an XML parser, since
+ * Node has no global `DOMParser` for `fetchEnv` to find.
  *
  * Failures resolve to `null` rather than throwing: a missing feed or a server
  * that refuses HEAD is a normal condition, not an error worth aborting for.
  */
 export function nodeEnv(options: NodeEnvOptions = {}): Env {
-  const timeoutMs = options.timeoutMs ?? 8000
-  const userAgent = options.userAgent ?? USER_AGENT
-  const maxBytes = options.maxBytes ?? DEFAULT_MAX_BYTES
-  const policy = options.blockPrivateNetwork ?? 'literal'
+  const forwarded: FetchEnvOptions = { ...options, resolveHostname }
 
-  const allowed = async (url: string): Promise<boolean> => {
-    // `file:` and friends are refused whatever the policy: a URL scheme that
-    // reads the local disk is never what "fetch this page" meant.
-    if (policy === 'off') return hasWebScheme(url)
-    if (!isSafeFetchTarget(url)) return false
-    return policy === 'strict' ? await resolvesPublicly(url) : true
-  }
-
-  /**
-   * Redirects are followed by hand rather than by `fetch`.
-   *
-   * `redirect: 'follow'` checks the URL we chose and then goes wherever the
-   * server sends it, which hands the redirect target the same power the
-   * `<link>` tag had — a public URL answering `302 Location:
-   * http://169.254.169.254/` walks straight through a guard applied only to the
-   * first hop. Node's fetch, unlike a browser's, exposes the 3xx response and
-   * its headers, so re-checking each hop is cheap.
-   */
-  const request = async (url: string, method: 'GET' | 'HEAD'): Promise<Response | null> => {
-    let target = url
-
-    for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
-      if (!(await allowed(target))) return null
-
-      const controller = new AbortController()
-      const timer = setTimeout(() => controller.abort(), timeoutMs)
-      let response: Response
-      try {
-        response = await fetch(target, {
-          method,
-          headers: { 'user-agent': userAgent, accept: '*/*' },
-          redirect: 'manual',
-          signal: controller.signal,
-        })
-      } catch {
-        return null
-      } finally {
-        clearTimeout(timer)
-      }
-
-      if (response.status < 300 || response.status > 399) return response.ok ? response : null
-
-      const location = response.headers.get('location')
-      if (!location) return null
-      try {
-        target = new URL(location, target).toString()
-      } catch {
-        return null
-      }
+  const parseXml = (xml: string): Document | null => {
+    const Parser = xmlParser()
+    if (!Parser) return null
+    try {
+      return new Parser().parseFromString(xml, 'text/xml') as unknown as Document
+    } catch {
+      return null
     }
-
-    // Out of hops. A redirect chain this long is either a loop or a server
-    // trying to outlast the check, and neither is worth another request.
-    return null
   }
+  forwarded.parseXml = parseXml
 
-  const env: Env = {
-    fetchText: async (url) => {
-      const response = await request(url, 'GET')
-      return response ? await readCapped(response, maxBytes) : null
-    },
-    fetchHeaders: async (url) => {
-      const response = await request(url, 'HEAD')
-      if (!response) return null
-      const headers: Record<string, string> = {}
-      response.headers.forEach((value, key) => {
-        headers[key.toLowerCase()] = value
-      })
-      return headers
-    },
-    parseXml: (xml) => {
-      const Parser = xmlParser()
-      if (!Parser) return null
-      try {
-        return new Parser().parseFromString(xml, 'text/xml') as unknown as Document
-      } catch {
-        return null
-      }
-    },
-  }
-
-  if (options.now) env.now = options.now
-
-  return env
+  return fetchEnv(forwarded)
 }
 
 /**
- * Read a response body, stopping at `maxBytes`.
+ * Resolve a hostname and report whether every address it answers with is
+ * public. Passed to {@link fetchEnv}, which owns the decision about when to
+ * call it.
  *
- * `response.text()` reads whatever arrives, and the abort timer does not help:
- * a server drip-feeding inside the deadline fills the heap without ever being
- * slow enough to cancel. Truncation beats rejection here — the signals this
- * library reads out of a feed or sitemap sit near the top of the document, so a
- * capped read usually still answers, and a partial answer beats an exception.
+ * `createRequire` rather than a static import so that a bundler targeting a
+ * non-Node runtime does not pull `node:dns` in on the strength of a path that
+ * only `blockPrivateNetwork: 'strict'` reaches.
  */
-async function readCapped(response: Response, maxBytes: number): Promise<string | null> {
-  // The cheap check first: a server that declares an oversized body is taken at
-  // its word rather than being streamed to find out.
-  const declared = Number(response.headers.get('content-length'))
-  if (Number.isFinite(declared) && declared > maxBytes) return null
-
-  const body = response.body
-  if (!body) return await response.text()
-
-  const decoder = new TextDecoder('utf-8')
-  const reader = body.getReader()
-  let out = ''
-  let read = 0
-
-  try {
-    for (;;) {
-      const { done, value } = await reader.read()
-      if (done) break
-      if (!value) continue
-
-      const remaining = maxBytes - read
-      if (value.byteLength >= remaining) {
-        out += decoder.decode(value.subarray(0, remaining))
-        break
-      }
-      read += value.byteLength
-      out += decoder.decode(value, { stream: true })
-    }
-  } catch {
-    return out === '' ? null : out
-  } finally {
-    // Releases the socket rather than leaving the rest of an oversized body
-    // streaming into a reader nobody is draining.
-    await reader.cancel().catch(() => {})
-  }
-
-  return out
-}
-
-/** The one check `blockPrivateNetwork: 'off'` still keeps. */
-function hasWebScheme(url: string): boolean {
-  try {
-    const { protocol } = new URL(url)
-    return protocol === 'http:' || protocol === 'https:'
-  } catch {
-    return false
-  }
-}
-
-/**
- * Does every address this hostname resolves to sit on the public internet?
- *
- * Used only by `blockPrivateNetwork: 'strict'`. See the caveat on that option:
- * this closes "a public name pointing at 127.0.0.1", not "a name that answers
- * differently the second time it is asked".
- */
-async function resolvesPublicly(url: string): Promise<boolean> {
-  let host: string
-  try {
-    host = new URL(url).hostname
-  } catch {
-    return false
-  }
-
-  // Literals were already judged by `isSafeFetchTarget`; there is nothing to
-  // resolve and `lookup` would just hand the same string back.
-  if (host.startsWith('[') || /^\d{1,3}(\.\d{1,3}){3}$/.test(host)) return true
-
-  try {
-    const { lookup } = createRequire(import.meta.url)('node:dns/promises') as typeof import('node:dns/promises')
-    const results = await lookup(host, { all: true })
-    return results.every(({ address, family }) =>
-      isSafeFetchTarget(family === 6 ? `http://[${address}]/` : `http://${address}/`),
-    )
-  } catch {
-    // A name that will not resolve is not a name worth fetching.
-    return false
-  }
+async function resolveHostname(host: string): Promise<boolean> {
+  const { lookup } = createRequire(import.meta.url)(
+    'node:dns/promises',
+  ) as typeof import('node:dns/promises')
+  const results = await lookup(host, { all: true })
+  return results.every(({ address, family }) =>
+    isSafeFetchTarget(family === 6 ? `http://[${address}]/` : `http://${address}/`),
+  )
 }
 
 export type FromHtmlOptions = ResolveOptions & ExtractOptions & NetworkOptions & {

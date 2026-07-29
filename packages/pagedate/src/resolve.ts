@@ -62,9 +62,21 @@ const SOURCE_RANK: Record<string, number> = Object.assign(Object.create(null), {
   // site committed to in its own URL structure.
   'text-date': 12,
   'http-last-modified': 10,
+  // Bottom of the table, below everything. A frequency count over rendered text
+  // knows nothing about what the page meant by any of it.
+  'page-scan': 5,
 })
 
 const DAY_MS = 24 * 60 * 60 * 1000
+
+/**
+ * The real range of UTC offsets, Baker Island to Kiritimati.
+ *
+ * Used as a physical bound rather than a tuning knob: it is what decides whether
+ * a one-day disagreement *could* be a timezone at all. See {@link localise}.
+ */
+const MIN_OFFSET_MIN = -12 * 60
+const MAX_OFFSET_MIN = 14 * 60
 
 /** Two `declared` values for one field further apart than this is a contradiction. */
 const DECLARED_DISAGREEMENT_DAYS = 30
@@ -118,16 +130,113 @@ function best(candidates: Candidate[]): Candidate | undefined {
   return candidates.reduce((a, b) => (rank(b) > rank(a) ? b : a))
 }
 
+/** The zone a value carries, or `null` when it is timezone-naive. */
+function zoneOf(value: string): string | null {
+  const match = /T\d{2}:\d{2}(Z|[+-]\d{2}:\d{2})?$/.exec(value)
+  return match ? (match[1] ?? null) : null
+}
+
+const civilDay = (value: string): string => value.slice(0, 10)
+
+const shiftDay = (day: string, days: number): string =>
+  new Date(Date.parse(`${day}T00:00:00Z`) + days * DAY_MS).toISOString().slice(0, 10)
+
+/** Render an instant at a given offset, to minute precision. */
+function atOffset(instantMs: number, offsetMin: number): string {
+  const shifted = new Date(instantMs + offsetMin * 60_000).toISOString()
+  const sign = offsetMin < 0 ? '-' : '+'
+  const abs = Math.abs(offsetMin)
+  const hh = String(Math.floor(abs / 60)).padStart(2, '0')
+  const mm = String(abs % 60).padStart(2, '0')
+  return `${shifted.slice(0, 16)}${sign}${hh}:${mm}`
+}
+
+/**
+ * Report the day the site says it published on, not the day UTC happens to fall on.
+ *
+ * A publication date is a civil date somewhere. A site that posts at 23:50 local
+ * and stamps `2025-12-05T05:50Z` in its JSON-LD has not published on the 5th by
+ * any account its own readers would recognise — the byline underneath says
+ * December 4, and so does its permalink. Rendering the instant in UTC and
+ * slicing off the day silently disagrees with the page about what the page said.
+ *
+ * So when the page carries its own rendering of the *same* date and the two
+ * differ by exactly one day, the page wins. Two things may corroborate:
+ *
+ * - a timezone-naive timestamp whose difference from the declared instant is a
+ *   whole quarter-hour inside the real range of UTC offsets — that is the same
+ *   moment written in the site's own zone, and it hands us the offset, so the
+ *   result keeps minute precision and gains the correct one;
+ * - a day-precision candidate the markup explicitly labels as *this page's*
+ *   publication date. That gives the day but not the offset, so the result drops
+ *   to day precision rather than inventing one.
+ *
+ * Nothing else counts. Sidebar rails and neighbouring articles are full of
+ * adjacent days, and letting an unlabelled one override a declared timestamp
+ * loses more pages than it wins — measured, on this corpus, as many again.
+ *
+ * The near-midnight guard is arithmetic rather than a threshold: with offsets
+ * bounded to [−12, +14], only a UTC hour before 12 can fall back a day, and only
+ * one from 10 onwards can roll forward.
+ */
+function localise(published: Candidate, all: Candidate[]): Candidate | undefined {
+  if (published.precision !== 'minute') return undefined
+  const zone = zoneOf(published.value)
+  if (zone !== 'Z' && zone !== '+00:00') return undefined
+
+  const instant = toInstant(published.value)
+  if (!instant) return undefined
+
+  const utcDay = civilDay(published.value)
+  const hour = instant.getUTCHours()
+  const earlier = hour * 60 + instant.getUTCMinutes() + MIN_OFFSET_MIN < 0 ? shiftDay(utcDay, -1) : null
+  const later = hour * 60 + instant.getUTCMinutes() + MAX_OFFSET_MIN >= 24 * 60 ? shiftDay(utcDay, 1) : null
+  if (!earlier && !later) return undefined
+
+  for (const c of all) {
+    if (c === published || c.field === 'modified') continue
+
+    if (c.precision === 'minute' && zoneOf(c.value) === null) {
+      const local = toInstant(`${c.value}Z`)
+      if (!local) continue
+      const offsetMin = (local.getTime() - instant.getTime()) / 60_000
+      if (offsetMin === 0 || offsetMin % 15 !== 0) continue
+      if (offsetMin < MIN_OFFSET_MIN || offsetMin > MAX_OFFSET_MIN) continue
+      const day = civilDay(c.value)
+      if (day !== earlier && day !== later) continue
+      return {
+        ...published,
+        value: atOffset(instant.getTime(), offsetMin),
+        note: appendNote(published, `rendered in the site's own zone, per ${c.source}`),
+      }
+    }
+
+    if (c.precision === 'day' && c.field === 'published') {
+      if (c.value !== earlier && c.value !== later) continue
+      return {
+        ...published,
+        value: c.value,
+        precision: 'day',
+        note: appendNote(published, `day taken from ${c.source}, which the page states and UTC would shift`),
+      }
+    }
+  }
+
+  return undefined
+}
+
+const appendNote = (c: Candidate, extra: string): string => (c.note ? `${c.note} — ${extra}` : extra)
+
 /**
  * The furthest-apart pair in a group, or nothing if they all agree.
  *
  * "Do any two of these disagree by more than a month" is decided entirely by the
  * extremes, so this is a single pass tracking min and max rather than a
- * comparison of every pair. The pairwise form was quadratic in a group with no
+ * comparison of every pair. The pairwise form is quadratic in a group with no
  * size limit — nothing caps how many `<meta article:published_time>` tags a page
- * may carry, and because the early exit only fired on a *disagreement*, a page
- * repeating one date was the worst case rather than the cheapest. 3000 of them
- * is 183 KB of HTML and was six and a half seconds of blocked event loop.
+ * may carry, and since an early exit can only fire on a *disagreement*, a page
+ * repeating one date is its worst case rather than its cheapest. 3000 of them is
+ * 183 KB of HTML and seconds of blocked event loop.
  *
  * Reporting the widest pair rather than the first-found one is also the better
  * answer: it names the two sources actually furthest apart.
@@ -140,8 +249,8 @@ function widestDisagreement(
   let min = Infinity
   let max = -Infinity
 
-  // One parse per candidate. The pairwise form re-parsed both values on every
-  // comparison, so the same string was parsed O(n) times.
+  // One parse per candidate. The pairwise form re-parses both values on every
+  // comparison, which parses the same string O(n) times.
   for (const candidate of candidates) {
     const at = toInstant(candidate.value)
     if (!at) continue
@@ -191,6 +300,43 @@ export function resolveCandidates(
   let resolvedPublished = best(published)
   const resolvedModified = best(modified)
 
+  // Among publication dates the site declared *at the same strength*, the
+  // earliest is the publication. A later one is a republication stamp — the same
+  // reasoning the `predated-content` conflict already rests on.
+  //
+  // Source ranking alone gets this wrong systematically rather than
+  // occasionally. Every El País article carries an `itemprop datepublished` of
+  // the writing time and an `article:published_time` dated a day later, and
+  // because OpenGraph outranks itemprop the wrong one won on every Spanish page
+  // in the corpus.
+  //
+  // Restricted to the `declared` tier, and that restriction is the whole rule
+  // rather than caution. A declared date is a document-level assertion: the page
+  // states one `article:published_time`, one `datePublished`, and they are about
+  // *this* document. Weaker sources repeat per element and describe other
+  // documents freely — a `<time>` in byline markup appears once per item in a
+  // related-articles rail, so "earliest" there means the oldest article in the
+  // sidebar. Applied to the derived tier this rule cost 16 of 39 Japanese pages,
+  // every one of them a 2009 sidebar entry beating the 2015 article.
+  //
+  // Two further guards: the candidate must be no coarser, so this never trades
+  // "31 December 2024" for "December 2024"; and the gap must be under the
+  // threshold at which the library already calls two declarations a
+  // contradiction. Past that point this stops guessing and
+  // `declared-disagreement` reports the disagreement instead.
+  if (resolvedPublished?.confidence === 'declared') {
+    const incumbent = resolvedPublished
+    const limit = DECLARED_DISAGREEMENT_DAYS * DAY_MS
+    resolvedPublished = published.reduce((bestSoFar, c) => {
+      if (c.confidence !== 'declared') return bestSoFar
+      if (PRECISION_RANK[c.precision] < PRECISION_RANK[incumbent.precision]) return bestSoFar
+      const a = toInstant(c.value)
+      const b = toInstant(bestSoFar.value)
+      if (!a || !b || a >= b) return bestSoFar
+      return b.getTime() - a.getTime() <= limit ? c : bestSoFar
+    }, incumbent)
+  }
+
   // An unlabelled date is more likely to be the publication date than the
   // modification date — sites that bother to distinguish usually label the edit.
   //
@@ -203,6 +349,23 @@ export function resolveCandidates(
     bestUnknown !== undefined &&
     resolvedPublished !== undefined &&
     rank(bestUnknown) > rank(resolvedPublished) &&
+    // Outranking has to mean *better evidence*, not merely a higher-ranked
+    // source within the same tier. A field label is a claim the page made about
+    // which date this is; an unlabelled candidate makes no claim at all, and
+    // source rank is a tie-break between things of equal standing, not grounds
+    // for overturning one.
+    //
+    // Horizont.net is the case: the article's own `<span
+    // class="PublishDate_date">29. Januar 2019</span>` is read as a publication
+    // date, and a `<time>` from a related-articles rail — unlabelled, but
+    // `time-tag` sits three places above `marked-date` and carries a minute —
+    // outranked it and moved the page ten months. Both are `derived`, so
+    // nothing about the rail was better evidence; it merely sorted higher.
+    //
+    // A genuinely stronger tier still wins, which is the case the rule was
+    // written for: a date in a container the site marked as its date block
+    // (`derived`) should displace a month inferred from the URL (`inferred`).
+    CONFIDENCE_RANK[bestUnknown.confidence] > CONFIDENCE_RANK[resolvedPublished.confidence] &&
     // Never trade precision for source rank. A month from a marked date block
     // outranks a day from the URL on tier alone, but "December 2024" is a worse
     // answer than "31 December 2024" and replacing one with the other loses
@@ -221,6 +384,12 @@ export function resolveCandidates(
         resolvedPublished = { ...promoted, field: 'published', note: unlabelledNote(promoted) }
       }
     }
+  }
+
+  // Last, so it operates on whatever the ranking above settled on, and only ever
+  // moves the day the answer is reported under — never which candidate won.
+  if (resolvedPublished) {
+    resolvedPublished = localise(resolvedPublished, usable) ?? resolvedPublished
   }
 
   const result: DateResult = { candidates: usable }
@@ -262,6 +431,8 @@ function detectConflict(input: {
       return {
         kind: 'declared-disagreement',
         gapDays: Math.round(gap),
+        earlier: { source: earliest.source, value: earliest.value },
+        later: { source: latest.source, value: latest.value },
         detail: `${earliest.source} says ${earliest.value}, ${latest.source} says ${latest.value} for the same field.`,
       }
     }
@@ -291,10 +462,16 @@ function detectConflict(input: {
         )
         const gap = (declaredAt.getTime() - (toInstant(oldest.value)?.getTime() ?? 0)) / DAY_MS
 
+        const declared = resolvedPublished.value.slice(0, 10)
+        const oldestDay = oldest.value.slice(0, 10)
+
         return {
           kind: 'predated-content',
           gapDays: Math.round(gap),
-          detail: `Declares ${resolvedPublished.value.slice(0, 10)}, but carries ${distinct.size} dated elements from before then, back to ${oldest.value.slice(0, 10)}. The declared date is likely a republication, not when this was written.`,
+          declared,
+          olderCount: distinct.size,
+          oldest: oldestDay,
+          detail: `Declares ${declared}, but carries ${distinct.size} dated elements from before then, back to ${oldestDay}. The declared date is likely a republication, not when this was written.`,
         }
       }
     }
@@ -308,10 +485,14 @@ function detectConflict(input: {
     if (publishedInstant && editInstant) {
       const gap = (editInstant.getTime() - publishedInstant.getTime()) / DAY_MS
       if (gap > STALE_DECLARATION_DAYS) {
+        const archived = archiveLastEdit.slice(0, 10)
+
         return {
           kind: 'stale-declaration',
           gapDays: Math.round(gap),
-          detail: `Page declares ${resolvedPublished.value} and shows no update, but the archive records a change on ${archiveLastEdit.slice(0, 10)}.`,
+          declared: resolvedPublished.value,
+          archived,
+          detail: `Page declares ${resolvedPublished.value} and shows no update, but the archive records a change on ${archived}.`,
         }
       }
     }

@@ -122,10 +122,15 @@ function parseIso(input: string): ParsedDate | null {
   const yearOnly = /^(\d{4})$/.exec(input)
   if (yearOnly) return { value: yearOnly[1]!, precision: 'year' }
 
-  // Slash-separated ISO order, e.g. `2024/03/12` — unambiguous because the
-  // 4-digit year comes first.
-  const slashIso = /^(\d{4})\/(\d{1,2})\/(\d{1,2})$/.exec(input)
-  if (slashIso) return ymd(Number(slashIso[1]), Number(slashIso[2]), Number(slashIso[3]))
+  // Year-first with a non-ISO separator, e.g. `2024/03/12` or `2015.4.23` —
+  // unambiguous because the 4-digit year comes first, so there is no
+  // day-versus-month guess to make.
+  //
+  // The separator is backreferenced rather than matched twice independently:
+  // `2015/4.23` is not a form anyone writes, and accepting it would let two
+  // unrelated numbers either side of a full stop parse as a date.
+  const yearFirst = /^(\d{4})([/.])(\d{1,2})\2(\d{1,2})$/.exec(input)
+  if (yearFirst) return ymd(Number(yearFirst[1]), Number(yearFirst[3]), Number(yearFirst[4]))
 
   return null
 }
