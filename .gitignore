@@ -13,6 +13,11 @@ corpus-external/
 .output/
 web-ext-artifacts/
 
+# Generated store screenshots. `pnpm gen:screenshots` rebuilds them from the
+# real UI in seconds, and the captured PNGs live in the store listing rather
+# than here.
+apps/extension/screenshots/
+
 # editor / OS
 .DS_Store
 *.log
@@ -32,3 +37,6 @@ bench/package-lock.json
 # scripts/corpus/fetch.ts. The HTML itself is other people's, under no license
 # we control, so it stays local.
 corpus/cache/
+
+# Browser bundle built on demand by bench/parity-browser.mjs.
+bench/.pagedate-browser.js
