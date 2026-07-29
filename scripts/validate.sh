@@ -71,6 +71,17 @@ else
   SKIPPED+=("parser parity")
 fi
 
+# The parser the extension actually runs. Both checks above compare two Node
+# libraries; this one compares against a real browser DOM, which is what the
+# content script gets. Skipped rather than failed when Chromium is absent —
+# it is a ~170 MB download and not every checkout will want it.
+if node -e "require('$ROOT/bench/node_modules/playwright-core')" 2>/dev/null; then
+  node bench/parity-browser.mjs | tee "$RESULTS/parser-parity-browser.txt" || FAILED=1
+else
+  note "no Chromium — (cd bench && npm install && npx playwright install chromium)"
+  SKIPPED+=("browser parity")
+fi
+
 step "6. pagedate on the permalink corpus, by stratum"
 node scripts/corpus/score.ts | tee "$RESULTS/permalink-pagedate.txt"
 
@@ -98,6 +109,13 @@ fi
 step "9. The htmldate corpus (their test set, for continuity with their table)"
 if [ -d "$ROOT/corpus-external/htmldate/cache" ]; then
   node packages/pagedate/scripts/eval-htmldate.ts | tee "$RESULTS/htmldate-pagedate.txt"
+
+  # The two tables that describe our own cost rather than anyone's accuracy.
+  # Regenerated here rather than by hand, so results/ holds no file that no
+  # documented command produces — the one thing this script exists to prevent.
+  node packages/pagedate/scripts/modes.ts | tee "$RESULTS/modes.txt"
+  node packages/pagedate/scripts/speed-fair.ts | tee "$RESULTS/speed-fair.txt"
+
   if [ "$QUICK" = "0" ] && python3 -c 'import htmldate' 2>/dev/null; then
     python3 scripts/bench_python.py > "$RESULTS/htmldate-python.jsonl"
     [ -d "$ROOT/bench/node_modules" ] && node bench/bench_js.mjs > "$RESULTS/htmldate-js.jsonl"

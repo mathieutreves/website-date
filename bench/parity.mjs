@@ -14,10 +14,10 @@
  *
  * So the numbers are produced by a parser the Node path does not use. That is
  * only acceptable while the two agree, and "a faster parser that silently sees
- * less of the page" is precisely the failure mode — an earlier measurement had
- * node-html-parser losing 14 of 55 pages, always by returning `null`, until the
- * extractors stopped assuming `parentElement` and `<script>` bodies were
- * preserved. This is the regression test for that.
+ * less of the page" is precisely the failure mode: an extractor that assumes
+ * `parentElement`, `nextSibling` or a preserved `<script>` body returns `null`
+ * on node-html-parser and a date on linkedom, with nothing to say so. This is
+ * the regression test for that.
  *
  * A difference here does not mean the parser is wrong; it means the published
  * accuracy figure does not describe the Node path, and one of the two has to
