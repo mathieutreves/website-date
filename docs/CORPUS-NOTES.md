@@ -11,9 +11,14 @@ gold dates, but only ~69 of the cached pages are in the public repo; the rest 40
 Every number we produce is on that ~55-page annotated subset, which is also their
 unit-test set and therefore biased toward cases they handle.
 
-Our metric implementation does reproduce their published figure on that subset —
-0.903 published vs 0.909 measured for extensive mode — so the harness is measuring
-what they measure.
+The subset is not directly comparable to their published 0.903 for extensive
+mode, and the reason is a deliberate choice on our side rather than a discrepancy
+to be explained away. `bench_python.py` calls `find_date` with
+`original_date=True`, because every gold label in both corpora here is a
+*publication* date and that flag is what asks for one; on that invocation
+extensive mode scores 96.4% on the subset. A harness leaving the flag at its
+default measures a different question. Both numbers are honest about different
+things, and neither validates the other.
 
 ## Some gold dates are artifacts
 
@@ -43,8 +48,8 @@ document was published. For "how old is this content", ours is the better answer
 
 ## What this does and does not excuse
 
-Roughly five to seven of the ~29 pages we lose on look artifactual — call it a
-fifth. The rest are real misses: German byline formats, dates in `title`
+Roughly five to seven of the 17 pages we lose on look artifactual — 9 wrong and 8
+missed, of 55. The rest are real misses: German byline formats, dates in `title`
 attributes, CMS date blocks. The gap is genuinely mostly ours.
 
 The useful conclusion is not "their corpus is bad". It is that a single-date gold
@@ -63,3 +68,8 @@ pnpm --filter pagedate build
 node packages/pagedate/scripts/compare.ts         # head to head
 node packages/pagedate/scripts/diagnose-misses.ts # where the misses live
 ```
+
+`compare_htmldate.py` is a triage tool and calls `find_date` at its default,
+without `original_date=True`. Its output is therefore *not* comparable to the
+tables in [BENCHMARK.md](BENCHMARK.md), which come from `bench_python.py` and do
+set the flag. Use it to look at individual pages, not to quote a figure.
