@@ -27,7 +27,14 @@
   --surface-sunken: #f7f8f9;
   --fg: #16181d;
   --fg-muted: #5f6673;
-  --fg-subtle: #8b929e;
+  /*
+   * The bottom of the text ramp, and the one that has to be defended. Every
+   * label, source and caption in this panel is 11px, which is where a "quiet
+   * grey" stops being quiet and starts being unreadable — so the weakest step
+   * still clears 4.5:1 against its surface, in both schemes. Recession is
+   * carried by size and weight, which cost nothing to read.
+   */
+  --fg-subtle: #6b7280;
   --line: #e6e8ec;
   --line-strong: #d3d7de;
 
@@ -45,12 +52,18 @@
   --derived: #c2410c;
   --inferred: #6b7280;
 
+  /*
+   * Tint and line are the warning's presence when it is not being read — the
+   * thing that makes a reader look at it before parsing a word of it. Both are
+   * pitched well clear of the surface: a tint close to it makes the box read as
+   * another section rather than as an interruption.
+   */
   --alert: #b3261e;
-  --alert-tint: #fdf3f2;
-  --alert-line: #f0c9c5;
+  --alert-tint: #fdeae8;
+  --alert-line: #e8a49d;
   --notice: #8a5a00;
-  --notice-tint: #fdf8ef;
-  --notice-line: #ecd9b4;
+  --notice-tint: #fdf3e0;
+  --notice-line: #e3c286;
 
   --focus: #2563eb;
 
@@ -75,8 +88,15 @@
     --surface: #17191e;
     --surface-sunken: #1d2026;
     --fg: #e9ebef;
-    --fg-muted: #a1a8b4;
-    --fg-subtle: #767d89;
+    /*
+     * Both steps sit much closer to the foreground than their light-mode
+     * counterparts. Grey text on a dark surface loses contrast faster than the
+     * hex pair suggests — the ramp is compressed at the dark end and thin
+     * strokes bloom against it — so the mirror image of the light ramp reads
+     * as washed out rather than as recessive.
+     */
+    --fg-muted: #d8dde5;
+    --fg-subtle: #bcc4cf;
     --line: #2a2e36;
     --line-strong: #3a3f49;
 
@@ -84,14 +104,30 @@
        #17191e so they stay inside the lightness band and above 4.5:1. */
     --declared: #0d9488;
     --derived: #d97706;
-    --inferred: #7c8797;
+    --inferred: #99a3b1;
 
-    --alert: #f2837a;
-    --alert-tint: #2a1a19;
-    --alert-line: #56302d;
-    --notice: #e0aa3e;
-    --notice-tint: #262019;
-    --notice-line: #4b3d24;
+    /*
+     * The hardest pair on the dark surface. A conventional dark tint such as
+     * #2a1a19 is 1.06:1 against #17191e — a fill that exists in the file and
+     * not on the screen, leaving the warning as coloured text with no box
+     * around it.
+     *
+     * Fill and heading are therefore set together, and have to be. Deepening
+     * the fill alone runs straight into the heading sitting on it: at a fill
+     * strong enough to read as a box, a #f2837a heading falls under 4.5:1 and
+     * the words become the thing that is hard to see. Pitching the heading at
+     * the brighter step pays for a fill at 1.5:1 — a box you cannot miss —
+     * while the heading reads at 5.8:1 on it.
+     *
+     * The border does most of the delineating at 4:1 against the panel; a
+     * conventional dark border lands near 1.55:1 and is effectively absent.
+     */
+    --alert: #ff9d94;
+    --alert-tint: #5c2924;
+    --alert-line: #b8615a;
+    --notice: #f0be55;
+    --notice-tint: #523e1d;
+    --notice-line: #a88546;
 
     --focus: #6ea8fe;
   }
@@ -377,42 +413,83 @@ body {
 /* ------------------------------------------------------------- conflict */
 
 /*
- * A tint plus a rule, not a saturated slab. The point is to be read first,
- * which a 360px panel achieves through contrast against surrounding calm —
- * shouting louder than that just makes the panel feel broken.
+ * The one loud thing, and it has to look like it.
+ *
+ * Still a tint and an even hairline rather than a saturated slab or a coloured
+ * left rule — but pitched well clear of the panel behind it. A tint quiet
+ * enough to blend into a dark surface is the one failure a warning cannot have,
+ * so the fill and the edge below are several steps stronger than the rest of
+ * the ramp, the box owns a full step of padding, and the disc gives the state a
+ * shape.
+ *
+ * Loudness is bounded by what it is being contrasted against, not by absolute
+ * saturation: everything around this is deliberately calm, so a box that is
+ * merely *distinctly* coloured already reads as an interruption. That is why the
+ * fill stops well short of the alert colour itself.
  */
 .conflict {
   margin: 0 0 var(--s3);
-  padding: var(--s2) var(--s3);
+  padding: var(--s3);
   border: 1px solid;
-  border-left-width: 3px;
   border-radius: 6px;
 }
 
 .conflict.alert {
   background: var(--alert-tint);
   border-color: var(--alert-line);
-  border-left-color: var(--alert);
 }
 
 .conflict.notice {
   background: var(--notice-tint);
   border-color: var(--notice-line);
-  border-left-color: var(--notice);
 }
 
 .conflict-heading {
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
   font-size: var(--text-md);
-  font-weight: 620;
+  font-weight: 650;
+}
+
+/*
+ * The third encoding, after colour and words — and the only one that survives
+ * both a monochrome screen and a reader who does not separate red from amber.
+ * A filled disc rather than a bare glyph for the same reason the overlay uses
+ * one: at this size an exclamation mark is a few pixels of ink and reads as a
+ * speck of dust on the panel.
+ */
+.conflict-flag {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  /* The panel's own background, so the glyph is legible in both schemes
+     without either being named here. */
+  color: var(--surface);
 }
 
 .conflict.alert .conflict-heading {
   color: var(--alert);
 }
 
+.conflict.alert .conflict-flag {
+  background: var(--alert);
+}
+
 .conflict.notice .conflict-heading {
   color: var(--notice);
+}
+
+.conflict.notice .conflict-flag {
+  background: var(--notice);
 }
 
 .conflict-detail {
@@ -617,8 +694,10 @@ button.icon:hover {
 @media (prefers-contrast: more) and (prefers-color-scheme: dark) {
   :root {
     --fg: #ffffff;
-    --fg-muted: #d2d7dd;
-    --fg-subtle: #b3bac2;
+    /* Above the standard dark ramp, not beside it: this branch is the stronger
+       of the two, so both steps move up rather than being restated. */
+    --fg-muted: #eef1f5;
+    --fg-subtle: #dbe0e7;
     --line: #5a626c;
     --line-strong: #8b939d;
     --declared: #2dd4bf;

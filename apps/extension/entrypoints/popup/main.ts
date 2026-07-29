@@ -1,6 +1,6 @@
 import { analyze, cacheKey } from '../../lib/analyze.js'
 import { ARCHIVE_ORIGINS, getSettings } from '../../lib/settings.js'
-import { t } from '../../lib/messages.js'
+import { t, uiLanguage } from '../../lib/messages.js'
 import { errorView, unsupportedView, view } from './render.js'
 
 /**
@@ -17,6 +17,18 @@ import { errorView, unsupportedView, view } from './render.js'
  */
 
 const app = document.getElementById('app') as HTMLElement
+
+/*
+ * index.html is a static file, so its `lang` and its first line of text are
+ * necessarily English. Both are corrected here before anything else runs.
+ *
+ * The English stays in the file rather than being blanked: module scripts are
+ * deferred, so the markup paints first, and an empty panel for that frame is a
+ * worse trade than one word in the wrong language.
+ */
+document.documentElement.lang = uiLanguage()
+const placeholder = document.getElementById('loading')
+if (placeholder) placeholder.textContent = t('loading')
 
 void main()
 

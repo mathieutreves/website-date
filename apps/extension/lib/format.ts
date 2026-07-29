@@ -1,4 +1,4 @@
-import { toInstant, type Candidate } from 'pagedate'
+import { toInstant, type Candidate, type DateResult } from 'pagedate'
 import { t, type MessageKey } from './messages.js'
 import type { DateFormat } from './settings.js'
 
@@ -49,6 +49,64 @@ const SOURCE_KEYS: Record<string, MessageKey> = {
 export const sourceLabel = (source: string): string => {
   const key = SOURCE_KEYS[source]
   return key ? t(key) : source.replace(/[-_]/g, ' ')
+}
+
+export type ConflictKind = NonNullable<DateResult['conflict']>['kind']
+
+/**
+ * What a contradiction is called, and how loudly to say it.
+ *
+ * Three surfaces show this — the popup's warning block, the on-page readout and
+ * the badge tooltip — and all three read the mapping from here. Three copies of
+ * a table with three rows is where a fourth kind gets added to two of them.
+ *
+ * Only two of the three are loud. `stale-declaration` is informational: the date
+ * shown is real, there is just more to the story. Giving all three the same red
+ * treatment would make the flag constant, and a constant flag is furniture.
+ */
+const CONFLICTS = {
+  'declared-disagreement': { key: 'conflictDisagreement', tone: 'alert' },
+  'predated-content': { key: 'conflictPredated', tone: 'alert' },
+  'stale-declaration': { key: 'conflictStale', tone: 'notice' },
+} as const satisfies Record<ConflictKind, { key: MessageKey; tone: 'alert' | 'notice' }>
+
+export const conflictHeading = (kind: ConflictKind): string => t(CONFLICTS[kind].key)
+
+export const conflictTone = (kind: ConflictKind): 'alert' | 'notice' => CONFLICTS[kind].tone
+
+/**
+ * The sentence under the heading.
+ *
+ * `conflict.detail` says the same thing and is right there, which is exactly
+ * why this exists: it is English in every locale, and rendering it underneath a
+ * translated heading gives a warning that switches language halfway through.
+ * The library carries the facts alongside the prose, so the sentence is rebuilt
+ * here from those instead of being taken ready-made.
+ *
+ * Sources go through {@link sourceLabel} on the way, which the library's own
+ * version cannot do: it only has extractor ids, so its English reads
+ * "opengraph says …" where this reads "an OpenGraph tag says …".
+ */
+export function conflictDetail(conflict: NonNullable<DateResult['conflict']>): string {
+  switch (conflict.kind) {
+    case 'declared-disagreement':
+      return t(
+        'conflictDisagreementDetail',
+        sourceLabel(conflict.earlier.source),
+        conflict.earlier.value,
+        sourceLabel(conflict.later.source),
+        conflict.later.value,
+      )
+    case 'predated-content':
+      return t(
+        'conflictPredatedDetail',
+        conflict.declared,
+        String(conflict.olderCount),
+        conflict.oldest,
+      )
+    case 'stale-declaration':
+      return t('conflictStaleDetail', conflict.declared, conflict.archived)
+  }
 }
 
 /** Same reasoning as {@link sourceLabel}: `unknown` is a type name, not a word. */

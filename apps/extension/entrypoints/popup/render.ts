@@ -1,6 +1,15 @@
 import { toInstant, type Candidate, type DateResult } from 'pagedate'
 import { t, type MessageKey } from '../../lib/messages.js'
-import { display, fieldLabel, relativeAge, sourceLabel, tierWord } from '../../lib/format.js'
+import {
+  conflictDetail,
+  conflictHeading,
+  conflictTone,
+  display,
+  fieldLabel,
+  relativeAge,
+  sourceLabel,
+  tierWord,
+} from '../../lib/format.js'
 import { computeSpread, isSpreadWorthShowing, type Spread } from '../../lib/spread.js'
 import type { ArchiveMode, DateFormat } from '../../lib/settings.js'
 
@@ -132,26 +141,25 @@ export function dateRow(
 }
 
 /**
- * The one element allowed to be loud — and only two of the three kinds are.
+ * The one element allowed to be loud — and, per {@link conflictTone}, only two
+ * of the three kinds are.
  *
- * `stale-declaration` is informational: the date shown is real, there is just
- * more to the story. Giving all three the same red treatment would make the
- * flag constant, and a constant flag is furniture.
+ * Heading and detail are both built from the conflict's fields, so the whole
+ * block is in one language. The disc carrying `!` is the third encoding of the
+ * same fact, after colour and words: it is the one part that survives both a
+ * monochrome screen and a reader who does not separate red from amber.
  */
 export function conflictBlock(result: DateResult): string {
   const conflict = result.conflict
   if (!conflict) return ''
 
-  const { key, level } = {
-    'declared-disagreement': { key: 'conflictDisagreement', level: 'alert' },
-    'predated-content': { key: 'conflictPredated', level: 'alert' },
-    'stale-declaration': { key: 'conflictStale', level: 'notice' },
-  }[conflict.kind] as { key: MessageKey; level: string }
-
   return `
-    <div class="conflict ${level}" role="note">
-      <p class="conflict-heading">${escapeHtml(t(key))}</p>
-      <p class="conflict-detail">${escapeHtml(conflict.detail)}</p>
+    <div class="conflict ${conflictTone(conflict.kind)}" role="note">
+      <p class="conflict-heading">
+        <span class="conflict-flag" aria-hidden="true">!</span>
+        <span class="conflict-title">${escapeHtml(conflictHeading(conflict.kind))}</span>
+      </p>
+      <p class="conflict-detail">${escapeHtml(conflictDetail(conflict))}</p>
     </div>`
 }
 

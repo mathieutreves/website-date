@@ -11,6 +11,17 @@ describe('defaults', () => {
     // defaults are the privacy-preserving answer in every case.
     expect(DEFAULTS.autoRead).toBe(false)
     expect(DEFAULTS.archive).toBe('off')
+    expect(DEFAULTS.searchAnnotate).toBe('off')
+  })
+
+  /*
+   * The one default that is on, and the reason it is allowed to be: it adds an
+   * entry to a menu. It reaches no site, holds no grant, and does nothing at all
+   * until it is clicked — and the click is what authorises the single page it
+   * then reads.
+   */
+  it('leaves the right-click entry on, because it costs nothing until used', () => {
+    expect(DEFAULTS.linkMenu).toBe(true)
   })
 })
 
@@ -41,8 +52,12 @@ describe('controls reflect stored state', () => {
   })
 
   it('selects the stored archive mode', () => {
-    expect(view({ archive: 'always' })).toMatch(/value="always"[^>]*checked/)
-    expect(view({ archive: 'always' })).not.toMatch(/value="off"[^>]*checked/)
+    // Scoped by `name`, like the dateFormat assertion below. An unscoped
+    // `value="off"` also matches the searchAnnotate group, whose own "off" is
+    // checked by default — so without the name this passed only for as long as
+    // `archive` was the one setting with an off switch.
+    expect(view({ archive: 'always' })).toMatch(/name="archive"[^>]*value="always"[^>]*checked/)
+    expect(view({ archive: 'always' })).not.toMatch(/name="archive"[^>]*value="off"[^>]*checked/)
   })
 
   it('offers all three date formats and selects the stored one', () => {

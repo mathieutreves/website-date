@@ -1,5 +1,5 @@
 import type { DateResult } from 'pagedate'
-import { display, relativeAge, sourceLabel, tierWord } from './format.js'
+import { conflictHeading, conflictTone, display, relativeAge, sourceLabel, tierWord } from './format.js'
 import { oldestCounterEvidence } from './evidence.js'
 import { t } from './messages.js'
 import type { DateFormat, OverlayMode, OverlayPosition } from './settings.js'
@@ -63,23 +63,8 @@ export function overlayData(
 
   if (mode === 'conflict' && !result.conflict) return null
 
-  const tone: OverlayTone = !result.conflict
-    ? 'normal'
-    : result.conflict.kind === 'stale-declaration'
-      ? 'notice'
-      : 'alert'
-
-  const conflict = result.conflict
-    ? t(
-        (
-          {
-            'declared-disagreement': 'conflictDisagreement',
-            'predated-content': 'conflictPredated',
-            'stale-declaration': 'conflictStale',
-          } as const
-        )[result.conflict.kind],
-      )
-    : null
+  const tone: OverlayTone = result.conflict ? conflictTone(result.conflict.kind) : 'normal'
+  const conflict = result.conflict ? conflictHeading(result.conflict.kind) : null
 
   const primary = result.published ?? result.modified
 
@@ -161,18 +146,21 @@ export const paintOverlay = (data: OverlayData): void => {
    *
    * This is the one piece of UI in the extension that has to survive being
    * dropped onto a page it knows nothing about — any background colour, any
-   * image, any density. Translucency and a blur made it a tint of whatever was
-   * behind it, which is exactly the failure mode: on a busy page it read as
-   * part of the page and stopped being findable. So there is no alpha here at
+   * image, any density. Translucency and a blur make it a tint of whatever is
+   * behind it, which is exactly the failure mode: on a busy page it reads as
+   * part of the page and stops being findable. So there is no alpha here at
    * all. Solid fill, solid border, solid ledge beneath it.
    *
    * Being opaque is what lets it be quiet. A readout that is unambiguously a
-   * separate object can afford small type and a neutral palette; the earlier
-   * one had to compensate for its own transparency with a saturated state.
+   * separate object can afford small type and a neutral palette; a translucent
+   * one has to compensate with a saturated state.
    *
-   * The leading bar carries the tone. It is the only part legible before the
-   * readout is read, and it is the same left-rule the popup uses for a
-   * conflict, so the two surfaces escalate in the same visual language.
+   * Tone is carried by the fill and by the flag disc — not by a coloured strip
+   * down the left edge. A pill this small is read as one object, so a stripe on
+   * one side of it is not a second channel of information; it is decoration on
+   * a shape already tinted and already flagged. The popup dropped the same
+   * device from its conflict box, so the two surfaces still escalate in one
+   * visual language.
    */
   style.textContent = `
     :host {
@@ -193,17 +181,16 @@ export const paintOverlay = (data: OverlayData): void => {
        cannot drift apart. */
     .alert { --accent: #b3261e; }
     .notice { --accent: #8a5a00; }
-    .pill.muted { --accent: #8b929e; }
-    /* After .muted, and at the same specificity: a page with no date can still
-       contradict itself, and the tone outranks the absence. */
-    .pill.alert { --accent: #b3261e; --surface: #fdf3f2; --surface-hover: #fae8e6; }
-    .pill.notice { --accent: #8a5a00; --surface: #fdf8ef; --surface-hover: #f8f0e0; }
+    /* A page with no date can still contradict itself, so .muted tints nothing
+       by itself: the tone outranks the absence and keeps the surface. */
+    .pill.alert { --accent: #b3261e; --surface: #fdeae8; --surface-hover: #fbdcd9; }
+    .pill.notice { --accent: #8a5a00; --surface: #fdf3e0; --surface-hover: #f8e9cd; }
 
     .pill {
       display: flex; align-items: center; gap: 7px;
       font: 600 12px/1.35 system-ui, -apple-system, "Segoe UI", sans-serif;
       font-variant-numeric: tabular-nums;
-      padding: 6px 11px 6px 0; border-radius: 8px; cursor: pointer;
+      padding: 6px 11px; border-radius: 8px; cursor: pointer;
       border: 1.5px solid var(--edge);
       background: var(--surface); color: var(--fg);
       /* A hard ledge rather than a soft shadow: same job — lifting the readout
@@ -211,11 +198,6 @@ export const paintOverlay = (data: OverlayData): void => {
       box-shadow: 0 2px 0 var(--lip);
       max-width: 60vw;
       transition: background-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
-    }
-    .pill::before {
-      content: ""; flex: none; align-self: stretch;
-      width: 5px; margin-right: 3px;
-      background: var(--accent); border-radius: 6px 0 0 6px;
     }
     .pill:hover { background: var(--surface-hover); }
     .pill:active { transform: translateY(2px); box-shadow: 0 0 0 var(--lip); }
@@ -251,18 +233,25 @@ export const paintOverlay = (data: OverlayData): void => {
         --surface: #1b1e24;
         --surface-hover: #23272f;
         --fg: #eef0f4;
-        --fg-muted: #a1a8b4;
+        /* Close to --fg on purpose. This sits on an unknown page at 12px, with
+           the page's own contrast working against it; a dim grey that merely
+           passes on a controlled surface does not survive that. */
+        --fg-muted: #d8dde5;
         --edge: #767d89;
         --lip: #05070a;
         --accent: #14b8a6;
         --on-accent: #16181d;
         --focus: #6ea8fe;
       }
-      .alert { --accent: #f2837a; }
-      .notice { --accent: #e0aa3e; }
-      .pill.muted { --accent: #767d89; }
-      .pill.alert { --accent: #f2837a; --surface: #2a1a19; --surface-hover: #35211f; }
-      .pill.notice { --accent: #e0aa3e; --surface: #262019; --surface-hover: #302820; }
+      /* Lifted well clear of the page behind them, in step with the popup's
+         conflict box and for the same reason: a fill at 1.06:1 against a dark
+         page reads as no fill at all, which on a readout that is *already*
+         small makes the difference between "flagged" and "not flagged" almost
+         invisible. */
+      .alert { --accent: #ff9d94; }
+      .notice { --accent: #f0be55; }
+      .pill.alert { --accent: #ff9d94; --surface: #5c2924; --surface-hover: #6b302a; }
+      .pill.notice { --accent: #f0be55; --surface: #523e1d; --surface-hover: #5f4823; }
     }
     /* The page's own contrast preference applies to anything sitting on top of
        it: the border thickens and the ink goes to the ends of the ramp. */
@@ -272,7 +261,7 @@ export const paintOverlay = (data: OverlayData): void => {
       .notice { --accent: #6b4600; }
       .pill, .panel { border-width: 2px; }
       @media (prefers-color-scheme: dark) {
-        :host { --fg: #ffffff; --fg-muted: #d2d7dd; --edge: #ffffff; --lip: #000000; }
+        :host { --fg: #ffffff; --fg-muted: #eef1f5; --edge: #ffffff; --lip: #000000; }
         .alert { --accent: #ff9d94; }
         .notice { --accent: #fbbf24; }
       }
@@ -280,8 +269,7 @@ export const paintOverlay = (data: OverlayData): void => {
     /* On touch there is no hover, so the resting state is the only state, and
        the target has to clear a thumb. */
     @media (pointer: coarse) {
-      .pill { padding: 9px 13px 9px 0; font-size: 13px; min-height: 44px; }
-      .pill::before { width: 6px; }
+      .pill { padding: 9px 13px; font-size: 13px; min-height: 44px; }
       .panel { font-size: 13px; padding: 12px 14px; max-width: min(340px, 82vw); }
     }
     @media (prefers-reduced-motion: reduce) { .pill { transition: none; } }
