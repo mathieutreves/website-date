@@ -48,10 +48,58 @@ const MONTHS: Record<string, string[][]> = {
   nl: [['januari'], ['februari'], ['maart'], ['april'], ['mei'], ['juni'], ['juli'], ['augustus'], ['september'], ['oktober'], ['november'], ['december']],
   pt: [['janeiro'], ['fevereiro'], ['marco'], ['abril'], ['maio'], ['junho'], ['julho'], ['agosto'], ['setembro'], ['outubro'], ['novembro'], ['dezembro']],
   pl: [['stycznia'], ['lutego'], ['marca'], ['kwietnia'], ['maja'], ['czerwca'], ['lipca'], ['sierpnia'], ['wrzesnia'], ['pazdziernika'], ['listopada'], ['grudnia']],
+  // Genitive, which is the form a Russian date actually uses: "12 марта 2024",
+  // never the nominative "март" a dictionary would give.
+  ru: [['января'], ['февраля'], ['марта'], ['апреля'], ['мая'], ['июня'], ['июля'], ['августа'], ['сентября'], ['октября'], ['ноября'], ['декабря']],
+  // Al Jazeera uses the Western-derived month names rather than the Levantine
+  // set (كانون الثاني and friends); both are listed because Arabic-language
+  // sites are split roughly down the middle on which they use.
+  ar: [['يناير', 'كانون الثاني'], ['فبراير', 'شباط'], ['مارس', 'اذار'], ['ابريل', 'نيسان'], ['مايو', 'ايار'], ['يونيو', 'حزيران'], ['يوليو', 'تموز'], ['اغسطس', 'اب'], ['سبتمبر', 'ايلول'], ['اكتوبر', 'تشرين الاول'], ['نوفمبر', 'تشرين الثاني'], ['ديسمبر', 'كانون الاول']],
 }
+
+/**
+ * Digit systems a corpus page may write its date in.
+ *
+ * Arabic pages routinely render the day and year in Arabic-Indic digits, and a
+ * search for `2015` finds nothing on a page that says `٢٠١٥`. Without this the
+ * whole Arabic stratum reads as "the label is not in the page" and gets
+ * excluded from scoring — the corpus would look clean while measuring nothing.
+ */
+const DIGIT_SETS = ['٠١٢٣٤٥٦٧٨٩', '۰۱۲۳۴۵۶۷۸۹']
+
+const inDigits = (ascii: string, digits: string): string =>
+  ascii.replace(/\d/g, (c) => digits[Number(c)]!)
 
 const fold = (text: string): string =>
   text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+
+const DIGIT = /[0-9٠-٩۰-۹]/
+
+/**
+ * Does a rendering appear in the page as a date, rather than inside a longer number?
+ *
+ * A plain `includes` cannot tell the two apart, and one of the renderings is the
+ * bare 8-digit `20121101`, which is a substring of any longer digit run
+ * containing it. Il Post captions its photos `Toms River, New Jersey (AP
+ * Photo/Matt Slocum) 2012110183`, and that asset ID was matching as the
+ * article's date.
+ *
+ * Requiring a non-digit on both sides is the whole fix. It costs nothing on the
+ * textual forms, where the boundary is a space or a tag either way.
+ *
+ * On the corpus as it stands this changes no entry's flag: the pages it stops
+ * matching spuriously are matched anyway by the date in a nearby permalink. It
+ * is here so that the flag is not resting on a coincidence the next harvest may
+ * not repeat.
+ */
+function appearsIn(haystack: string, form: string): boolean {
+  for (let i = haystack.indexOf(form); i >= 0; i = haystack.indexOf(form, i + 1)) {
+    const before = i > 0 ? haystack[i - 1]! : ''
+    const after = haystack[i + form.length] ?? ''
+    if (!DIGIT.test(before) && !DIGIT.test(after)) return true
+  }
+  return false
+}
 
 /** Every plausible rendering of a date, as substrings to look for. */
 function renderings(iso: string): string[] {
@@ -65,6 +113,12 @@ function renderings(iso: string): string[] {
     `${d}-${m}-${y}`, `${d}/${m}/${y}`, `${d}.${m}.${y}`,
     `${m}/${d}/${y}`, `${m}-${d}-${y}`,
     `${dn}/${mn}/${y}`, `${mn}/${dn}/${y}`, `${dn}.${mn}.${y}`,
+    // Year-first without zero padding — `2015.4.23`, the ordinary written form
+    // in Japan and Korea. WIRED.jp and Japanese Engadget print the date this way
+    // and no other, so without these forms the flag was true for those pages
+    // only because the date also appears in a permalink, which is the one signal
+    // the corpus holds out. Same verdict, better reason.
+    `${y}.${mn}.${dn}`, `${y}/${mn}/${dn}`, `${y}-${mn}-${dn}`,
   ])
   for (const names of Object.values(MONTHS)) {
     for (const name of names[mi] ?? []) {
@@ -76,6 +130,20 @@ function renderings(iso: string): string[] {
       out.add(`${dn}. ${name} ${y}`)
       out.add(`${dn}.${name} ${y}`)
       out.add(`${name} ${y}`) // last resort: month + year adjacent
+    }
+  }
+
+  // CJK writes the date structurally rather than with a month name:
+  // `2024年3月12日`, and just as often zero-padded. None of the separators above
+  // appear, so without this every Japanese page reads as label-not-present.
+  out.add(`${y}年${mn}月${dn}日`)
+  out.add(`${y}年${m}月${d}日`)
+  out.add(`${y}년 ${mn}월 ${dn}일`)
+
+  // Same date, non-ASCII digits — see DIGIT_SETS.
+  for (const digits of DIGIT_SETS) {
+    for (const form of [...out]) {
+      if (/\d/.test(form)) out.add(inDigits(form, digits))
     }
   }
   return [...out]
@@ -136,7 +204,7 @@ async function main(): Promise<void> {
     // Strip the URL itself out of the haystack: many pages link to themselves,
     // and finding the date there is finding the URL again.
     const withoutSelf = html.split(fold(new URL(entry.url).pathname)).join(' ')
-    const found = renderings(entry.label.published).some((form) => withoutSelf.includes(form))
+    const found = renderings(entry.label.published).some((form) => appearsIn(withoutSelf, form))
 
     entry.strata.labelInPage = found
     if (found) present++

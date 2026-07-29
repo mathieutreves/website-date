@@ -105,10 +105,10 @@ const SAMPLE_POINTS: Array<{ year: number; month: number }> = YEARS.flatMap((yea
 /**
  * A failed query is not an empty one.
  *
- * CDX answers a whole-domain regex scan of a large site with a 504, and an
- * earlier version of this script treated any non-OK response as "no matches" —
- * which silently produced a corpus missing whole eras while reporting success.
- * Failures are now counted and printed at the end.
+ * CDX answers a whole-domain regex scan of a large site with a 504, which is
+ * indistinguishable from an empty result unless the distinction is kept. Folding
+ * a non-OK response into "no matches" silently produces a corpus missing whole
+ * eras while reporting success, so failures are counted and printed at the end.
  */
 type QueryOutcome = { rows: CdxRow[]; failed: boolean }
 
@@ -174,9 +174,9 @@ async function cdx(prefix: string, path: string, limit: number): Promise<QueryOu
  *
  * `phase` shifts where in the range sampling starts. Without it every call takes
  * index 0, and since CDX sorts by URL key that is the 1st of the month, every
- * time — a run that had fixed the year and month spread still produced 27 of 28
- * labels dated the 1st. Varying the phase per sample point spreads the day of
- * month too, and keeps the choice deterministic so a rebuild is identical.
+ * time — a harvest with the year and month spread already fixed still comes back
+ * 27 labels in 28 dated the 1st. Varying the phase per sample point spreads the
+ * day of month too, and keeps the choice deterministic so a rebuild is identical.
  */
 function stride<T>(items: T[], want: number, phase = 0): T[] {
   if (items.length === 0) return []
