@@ -1,0 +1,341 @@
+{
+  "extName": {
+    "message": "Page Date"
+  },
+  "extDescription": {
+    "message": "ページの公開日と最終更新日、それぞれの日付の出どころ、そしてどこまで信頼できるかを表示します。"
+  },
+  "fieldPublished": {
+    "message": "公開"
+  },
+  "fieldModified": {
+    "message": "最終更新"
+  },
+  "notDeclared": {
+    "message": "記載なし"
+  },
+  "tierDeclared": {
+    "message": "サイトが明記"
+  },
+  "tierDerived": {
+    "message": "ページのマークアップから"
+  },
+  "tierInferred": {
+    "message": "推定"
+  },
+  "ageApprox": {
+    "message": "約{1}"
+  },
+  "ageFuture": {
+    "message": "未来の日付"
+  },
+  "conflictDisagreement": {
+    "message": "このページは自己矛盾しています"
+  },
+  "conflictPredated": {
+    "message": "このページは記載より古い可能性が高いです"
+  },
+  "conflictStale": {
+    "message": "このページは記載の日付より後に変更された可能性があります"
+  },
+  "conflictDisagreementDetail": {
+    "message": "同じ項目について、{1} は {2}、{3} は {4} としています。"
+  },
+  "conflictPredatedDetail": {
+    "message": "{1} と記載していますが、それ以前の日付を持つ要素が {2} 件あり、最も古いものは {3} です。記載された日付は執筆時期ではなく、再公開の日付と考えられます。"
+  },
+  "conflictStaleDetail": {
+    "message": "ページは {1} と記載し更新を示していませんが、アーカイブには {2} の変更が記録されています。"
+  },
+  "spreadTitle": {
+    "message": "根拠の分布"
+  },
+  "spreadSummary": {
+    "message": "{1} 件の日付、{2} にわたる範囲"
+  },
+  "spreadOldest": {
+    "message": "最古"
+  },
+  "spreadDeclared": {
+    "message": "記載"
+  },
+  "candidatesOne": {
+    "message": "他に {1} 件の候補"
+  },
+  "candidatesMany": {
+    "message": "他に {1} 件の候補"
+  },
+  "candidateFieldPublished": {
+    "message": "公開"
+  },
+  "candidateFieldModified": {
+    "message": "更新"
+  },
+  "candidateFieldUnknown": {
+    "message": "ラベルなし"
+  },
+  "loading": {
+    "message": "ページを読み取り中…"
+  },
+  "badgeNoDate": {
+    "message": "日付が見つかりません"
+  },
+  "emptyNoDate": {
+    "message": "日付が見つかりませんでした。それが正解の場合もあります。このページは本当に執筆時期を記していないのかもしれません。"
+  },
+  "emptyUnsupported": {
+    "message": "ウェブページを開くと、いつ書かれたかを調べられます。"
+  },
+  "errorUnreadable": {
+    "message": "このページを読み取れませんでした。ブラウザの設定ページや拡張機能ギャラリーは拡張機能から参照できません。"
+  },
+  "recheck": {
+    "message": "再確認"
+  },
+  "settings": {
+    "message": "設定"
+  },
+  "archiveCheck": {
+    "message": "アーカイブで隠れた編集を調べる"
+  },
+  "archiveChecking": {
+    "message": "アーカイブに問い合わせ中…"
+  },
+  "archiveNothing": {
+    "message": "アーカイブには公開以降の編集が記録されていません。"
+  },
+  "srcAdapter": {
+    "message": "サイト固有のルール"
+  },
+  "srcJsonld": {
+    "message": "JSON-LD メタデータ"
+  },
+  "srcJsonldContainer": {
+    "message": "サイト全体の JSON-LD メタデータ"
+  },
+  "srcAtomFeed": {
+    "message": "サイトの Atom フィード"
+  },
+  "srcRssFeed": {
+    "message": "サイトの RSS フィード"
+  },
+  "srcOpengraph": {
+    "message": "OpenGraph タグ"
+  },
+  "srcItemprop": {
+    "message": "マイクロデータ"
+  },
+  "srcDublinCore": {
+    "message": "Dublin Core タグ"
+  },
+  "srcCitation": {
+    "message": "citation タグ"
+  },
+  "srcParsely": {
+    "message": "Parse.ly タグ"
+  },
+  "srcSailthru": {
+    "message": "Sailthru タグ"
+  },
+  "srcTimeTag": {
+    "message": "<time> 要素"
+  },
+  "srcSitemap": {
+    "message": "サイトマップ"
+  },
+  "srcMetaDate": {
+    "message": "meta タグ"
+  },
+  "srcUrlSlug": {
+    "message": "ページの URL"
+  },
+  "srcImagePath": {
+    "message": "プレビュー画像のアップロード先パス"
+  },
+  "srcVisibleText": {
+    "message": "ページ上のテキスト"
+  },
+  "srcTextDate": {
+    "message": "ページ上のラベルのないテキスト"
+  },
+  "srcHttpLastModified": {
+    "message": "Last-Modified ヘッダー"
+  },
+  "optTitle": {
+    "message": "Page Date の設定"
+  },
+  "optPrivacyNote": {
+    "message": "この拡張機能はインストール時に何も要求しません。より広い権限が必要な設定は、オンにしたときに権限を求め、オフにしたときに返します。"
+  },
+  "optReadingHeading": {
+    "message": "ページの読み取り"
+  },
+  "optAutoRead": {
+    "message": "すべてのページを自動で確認する"
+  },
+  "optAutoReadHelp": {
+    "message": "このパネルを開かなくても、ツールバーのアイコンに古さを表示します。訪問するすべてのサイトを読み取る権限が必要で、オンにするときにブラウザが確認します。"
+  },
+  "optAutoReadDenied": {
+    "message": "権限が拒否されたため、オフのままです。"
+  },
+  "optArchiveHeading": {
+    "message": "Internet Archive"
+  },
+  "optArchive": {
+    "message": "ページが認めていない編集をアーカイブで調べる"
+  },
+  "optArchiveHelp": {
+    "message": "ページが隠している編集を見つけるには web.archive.org に保存内容を問い合わせる必要があり、いま開いているページのアドレスが相手に伝わります。"
+  },
+  "optArchiveOff": {
+    "message": "しない"
+  },
+  "optArchiveAsk": {
+    "message": "毎回確認する"
+  },
+  "optArchiveAlways": {
+    "message": "常に行う"
+  },
+  "overlayNoDate": {
+    "message": "日付なし"
+  },
+  "overlaySays": {
+    "message": "記載 {1}"
+  },
+  "overlayOldest": {
+    "message": "最古 {1}"
+  },
+  "overlayCounterLabel": {
+    "message": "ページの記載は {1} ですが、含まれる最も古い日付は {2} です。"
+  },
+  "overlayOldestDetail": {
+    "message": "ページ上の最も古い日付: {1} — {2}。"
+  },
+  "optOverlayHeading": {
+    "message": "ページ上の表示"
+  },
+  "optOverlay": {
+    "message": "ページの隅に古さを表示する"
+  },
+  "optOverlayHelp": {
+    "message": "ほとんどのページは自分の日付を表示しません。見えないメタデータの中にあるため、たいていここが唯一の表示場所になります。自動確認をオンにする必要があります。"
+  },
+  "optOverlayNever": {
+    "message": "表示しない"
+  },
+  "optOverlayAlways": {
+    "message": "常に表示"
+  },
+  "optOverlayConflict": {
+    "message": "矛盾があるときだけ"
+  },
+  "optOverlayPosition": {
+    "message": "表示位置"
+  },
+  "optOverlayBottomLeft": {
+    "message": "左下"
+  },
+  "optOverlayBottomRight": {
+    "message": "右下"
+  },
+  "optOverlayTopLeft": {
+    "message": "左上"
+  },
+  "optOverlayTopRight": {
+    "message": "右上"
+  },
+  "optOverlayNeedsAutoRead": {
+    "message": "上の自動確認をオンにすると使えます。"
+  },
+  "menuCheckLink": {
+    "message": "このページはいつ書かれた？"
+  },
+  "menuChecking": {
+    "message": "確認中…"
+  },
+  "menuResultFor": {
+    "message": "{1} について"
+  },
+  "menuNoDate": {
+    "message": "このリンクの日付は見つかりませんでした。"
+  },
+  "menuUnreachable": {
+    "message": "そのページを読み取れませんでした。"
+  },
+  "menuNeedsPermission": {
+    "message": "そのサイトを読み取る許可が拒否されました。"
+  },
+  "annotateFromUrl": {
+    "message": "リンクのアドレスから推定"
+  },
+  "optSearchHeading": {
+    "message": "検索結果"
+  },
+  "optSearchAnnotate": {
+    "message": "検索結果の横に経過期間を表示"
+  },
+  "optSearchAnnotateHelp": {
+    "message": "Google、Bing、DuckDuckGo、Hacker News、旧 Reddit の各結果に経過期間を添え、2013 年のページかどうかをクリック前に見分けられるようにします。"
+  },
+  "optSearchOff": {
+    "message": "表示しない"
+  },
+  "optSearchUrl": {
+    "message": "リンクのアドレスのみから — 通信は行いません"
+  },
+  "optSearchFetch": {
+    "message": "ページ自体も読み取る"
+  },
+  "optSearchFetchHelp": {
+    "message": "結果のページ自体を読み取ると判定できる件数が大きく増えますが、開いていないサイトにこの拡張機能がリクエストを送ることになります。1 ページにつき先頭 {1} 件までに制限し、Cookie は送信しません。"
+  },
+  "optSearchDenied": {
+    "message": "許可が拒否されたため、オフのままです。"
+  },
+  "optSearchPartial": {
+    "message": "すべてのサイトを読み取る許可が拒否されたため、リンクのアドレスのみを使用します。"
+  },
+  "optLinksHeading": {
+    "message": "リンク"
+  },
+  "optLinkMenu": {
+    "message": "右クリックメニューに「このページはいつ書かれた？」を追加"
+  },
+  "optLinkMenuHelp": {
+    "message": "リンクを開かずに調べます。使うその時にそのサイト 1 つだけへのアクセスを求め、アドレスだけで分からない場合にのみ確認します。"
+  },
+  "optDisplayHeading": {
+    "message": "表示"
+  },
+  "optDateFormat": {
+    "message": "最初に表示する内容"
+  },
+  "optDateFormatRelative": {
+    "message": "どれくらい前か"
+  },
+  "optDateFormatAbsolute": {
+    "message": "正確な日付"
+  },
+  "optDateFormatIso": {
+    "message": "正確な日付（2024-03-12 の形式）"
+  },
+  "optDataHeading": {
+    "message": "保存された結果"
+  },
+  "optCacheSummary": {
+    "message": "{1} 件のページを記憶、{2} を使用。"
+  },
+  "optCacheEmpty": {
+    "message": "保存されたものはありません。"
+  },
+  "optCacheHelp": {
+    "message": "結果は 1 週間保存され、同じページを開き直したときにすぐ表示されます。この端末内にのみ保存され、どこにも送信されません。"
+  },
+  "optCacheClear": {
+    "message": "保存された結果を消去"
+  },
+  "optCacheCleared": {
+    "message": "消去しました。"
+  }
+}

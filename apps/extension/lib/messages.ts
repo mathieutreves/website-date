@@ -15,12 +15,23 @@
  *   1. Never build a sentence by concatenation. `'about ' + intlPhrase` reads
  *      as "about il y a 2 ans" the moment the browser is not English — which is
  *      exactly the bug `ageApprox` exists to fix. Use a placeholder.
- *   2. Never machine-translate this UI. The product rests on the difference
- *      between "stated by the site" and "inferred"; a loose translation of that
- *      distinction misleads rather than merely reading badly.
+ *   2. Translations are drafted, then read by a human before they ship. The
+ *      product rests on the difference between "stated by the site" and
+ *      "inferred", and a loose rendering of that distinction misleads rather
+ *      than merely reading badly — a wrong tier word is a wrong claim about
+ *      how much a date can be trusted. `lib/locales/` says what was checked.
  */
 
 export const MESSAGES = {
+  // ------------------------------------------------------------------- store
+  /** The product name. Not translated anywhere: it is what the listing is
+   *  called and what people search for. */
+  extName: 'Page Date',
+  /** Shown in both stores and on the browser's extensions page. Chrome
+   *  truncates past 132 characters. */
+  extDescription:
+    'Shows when a page was published and last modified, with where each date came from and how much to trust it.',
+
   // ---------------------------------------------------------------- fields
   fieldPublished: 'Published',
   fieldModified: 'Last modified',
@@ -41,6 +52,26 @@ export const MESSAGES = {
   conflictPredated: 'This page is probably older than it says',
   conflictStale: 'This page may have changed since it says',
 
+  /*
+   * The sentence under each heading.
+   *
+   * The library also builds these, but only in English — see `conflictDetail`
+   * in format.ts. Rebuilt here from the same facts so the warning is not a
+   * translated heading over an English paragraph.
+   *
+   * `{1}` is a source label, never an extractor id, and the counted noun in
+   * `conflictPredatedDetail` is safe to leave in one plural form: the detector
+   * needs at least three distinct days before it will report this at all.
+   */
+  /** {1} = source, {2} = its date, {3} = the other source, {4} = its date. */
+  conflictDisagreementDetail: '{1} says {2}, while {3} says {4} for the same field.',
+  /** {1} = the declared date, {2} = a count of at least 3, {3} = the oldest date. */
+  conflictPredatedDetail:
+    'Declares {1}, but carries {2} dated elements from before then, back to {3}. The declared date is likely a republication, not when this was written.',
+  /** {1} = the declared date, {2} = the date the archive saw it change. */
+  conflictStaleDetail:
+    'The page declares {1} and shows no update, but the archive records a change on {2}.',
+
   // ----------------------------------------------------------------- spread
   spreadTitle: 'Evidence spread',
   /** {1} = number of dates, {2} = span, e.g. "12 years". */
@@ -58,6 +89,8 @@ export const MESSAGES = {
 
   // ------------------------------------------------------------------ states
   loading: 'Reading page…',
+  /** The toolbar tooltip, which has no room for the paragraph below. */
+  badgeNoDate: 'No date found',
   emptyNoDate:
     'No date found. That is sometimes the correct answer — this page may genuinely not state when it was written.',
   emptyUnsupported: 'Open a web page to check when it was written.',
@@ -133,6 +166,37 @@ export const MESSAGES = {
   optOverlayTopRight: 'Top right',
   optOverlayNeedsAutoRead: 'Turn on automatic checking above to use this.',
 
+  // ------------------------------------------------------- links and results
+  /** The right-click entry. A question, because that is what is being asked. */
+  menuCheckLink: 'When was this page written?',
+  menuChecking: 'Checking…',
+  /** {1} is the link's host, so a toast that outlives the click still says what it is about. */
+  menuResultFor: 'For {1}',
+  menuNoDate: 'No date found for this link.',
+  menuUnreachable: 'Could not read that page.',
+  menuNeedsPermission: 'Permission to read that site was declined.',
+
+  /** Provenance line on a chip dated from the address alone. */
+  annotateFromUrl: 'inferred from the link address',
+
+  optSearchHeading: 'Search results',
+  optSearchAnnotate: 'Show ages next to search results',
+  optSearchAnnotateHelp:
+    'Adds the age of each result to Google, Bing, DuckDuckGo, Hacker News and old Reddit, so a page from 2013 is visible before you click it.',
+  optSearchOff: 'Never',
+  /** Names the cost, not the mechanism: "no requests" is the fact that matters. */
+  optSearchUrl: 'From the link address only — makes no requests',
+  optSearchFetch: 'Also read the pages themselves',
+  optSearchFetchHelp:
+    'Reading the results themselves answers for far more of them, and means this extension requesting pages from sites you have not opened. Capped at the first {1} results on a page, and cookies are never sent.',
+  optSearchDenied: 'Permission was declined, so this stayed off.',
+  optSearchPartial: 'Permission to read every site was declined, so only the link address is used.',
+
+  optLinksHeading: 'Links',
+  optLinkMenu: 'Add “When was this page written?” to the right-click menu',
+  optLinkMenuHelp:
+    'Checks a link without opening it. Asks for access to that one site at the moment you use it, and only if the address alone does not answer.',
+
   optDisplayHeading: 'Display',
   optDateFormat: 'Lead with',
   optDateFormatRelative: 'How long ago',
@@ -152,7 +216,26 @@ export const MESSAGES = {
 
 export type MessageKey = keyof typeof MESSAGES
 
-type I18nHost = { i18n?: { getMessage?: (key: string, subs?: string[]) => string } }
+type I18nHost = {
+  i18n?: {
+    getMessage?: (key: string, subs?: string[]) => string
+    getUILanguage?: () => string
+  }
+}
+
+const host = (): I18nHost | undefined =>
+  (globalThis as { browser?: I18nHost; chrome?: I18nHost }).browser ??
+  (globalThis as { chrome?: I18nHost }).chrome
+
+/**
+ * The language the browser is showing this extension in, as a BCP 47 tag.
+ *
+ * Used to stamp `documentElement.lang`, which the static HTML cannot know. It
+ * is not decoration: a screen reader picks its pronunciation rules from that
+ * attribute, so a French panel left declaring `lang="en"` is read out with
+ * English phonemes — which is worse than not being announced at all.
+ */
+export const uiLanguage = (): string => host()?.i18n?.getUILanguage?.() ?? 'en'
 
 /**
  * Look up a translation, falling back to the English table.
@@ -162,9 +245,7 @@ type I18nHost = { i18n?: { getMessage?: (key: string, subs?: string[]) => string
  * so an empty result is treated as a miss rather than rendered as blank UI.
  */
 function translate(key: MessageKey): string | null {
-  const host = (globalThis as { browser?: I18nHost; chrome?: I18nHost }).browser ??
-    (globalThis as { chrome?: I18nHost }).chrome
-  const found = host?.i18n?.getMessage?.(key)
+  const found = host()?.i18n?.getMessage?.(key)
   return found ? found : null
 }
 

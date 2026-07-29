@@ -1,4 +1,10 @@
 {
+  "extName": {
+    "message": "Page Date"
+  },
+  "extDescription": {
+    "message": "Shows when a page was published and last modified, with where each date came from and how much to trust it."
+  },
   "fieldPublished": {
     "message": "Published"
   },
@@ -32,6 +38,15 @@
   "conflictStale": {
     "message": "This page may have changed since it says"
   },
+  "conflictDisagreementDetail": {
+    "message": "{1} says {2}, while {3} says {4} for the same field."
+  },
+  "conflictPredatedDetail": {
+    "message": "Declares {1}, but carries {2} dated elements from before then, back to {3}. The declared date is likely a republication, not when this was written."
+  },
+  "conflictStaleDetail": {
+    "message": "The page declares {1} and shows no update, but the archive records a change on {2}."
+  },
   "spreadTitle": {
     "message": "Evidence spread"
   },
@@ -61,6 +76,9 @@
   },
   "loading": {
     "message": "Reading page…"
+  },
+  "badgeNoDate": {
+    "message": "No date found"
   },
   "emptyNoDate": {
     "message": "No date found. That is sometimes the correct answer — this page may genuinely not state when it was written."
@@ -229,6 +247,63 @@
   },
   "optOverlayNeedsAutoRead": {
     "message": "Turn on automatic checking above to use this."
+  },
+  "menuCheckLink": {
+    "message": "When was this page written?"
+  },
+  "menuChecking": {
+    "message": "Checking…"
+  },
+  "menuResultFor": {
+    "message": "For {1}"
+  },
+  "menuNoDate": {
+    "message": "No date found for this link."
+  },
+  "menuUnreachable": {
+    "message": "Could not read that page."
+  },
+  "menuNeedsPermission": {
+    "message": "Permission to read that site was declined."
+  },
+  "annotateFromUrl": {
+    "message": "inferred from the link address"
+  },
+  "optSearchHeading": {
+    "message": "Search results"
+  },
+  "optSearchAnnotate": {
+    "message": "Show ages next to search results"
+  },
+  "optSearchAnnotateHelp": {
+    "message": "Adds the age of each result to Google, Bing, DuckDuckGo, Hacker News and old Reddit, so a page from 2013 is visible before you click it."
+  },
+  "optSearchOff": {
+    "message": "Never"
+  },
+  "optSearchUrl": {
+    "message": "From the link address only — makes no requests"
+  },
+  "optSearchFetch": {
+    "message": "Also read the pages themselves"
+  },
+  "optSearchFetchHelp": {
+    "message": "Reading the results themselves answers for far more of them, and means this extension requesting pages from sites you have not opened. Capped at the first {1} results on a page, and cookies are never sent."
+  },
+  "optSearchDenied": {
+    "message": "Permission was declined, so this stayed off."
+  },
+  "optSearchPartial": {
+    "message": "Permission to read every site was declined, so only the link address is used."
+  },
+  "optLinksHeading": {
+    "message": "Links"
+  },
+  "optLinkMenu": {
+    "message": "Add “When was this page written?” to the right-click menu"
+  },
+  "optLinkMenuHelp": {
+    "message": "Checks a link without opening it. Asks for access to that one site at the moment you use it, and only if the address alone does not answer."
   },
   "optDisplayHeading": {
     "message": "Display"
