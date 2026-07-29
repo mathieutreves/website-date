@@ -1,21 +1,29 @@
-import { extractFromDocument, resolve, type DateResult, type Env } from 'pagedate'
+import { resolve, type Candidate, type DateResult } from 'pagedate'
 import { fetchArchive } from './archive.js'
+import { PAGE_READ_GLOBAL, type PageRead } from './page-read.js'
 
 /**
  * The read-extract-resolve-cache pipeline, shared by the popup and the
  * background worker.
  *
- * These two ran the same sequence in two places before the badge existed, which
+ * One implementation, deliberately: the same sequence written out in two places
  * is how a popup and a badge end up disagreeing about the same page.
  */
 
 const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000
 
 /**
- * Bump to invalidate every cached result after a heuristics change.
- * 2: extraction changed; cached results from v1 may disagree with a fresh run.
+ * Bump to invalidate every cached result. Entries below this version are
+ * discarded on read.
+ *
+ * Bump for a heuristics change, and equally for a change to the *shape* of what
+ * is stored. The shape is the case that gets forgotten: an entry written before
+ * `Conflict` carried the fields the UI builds its warning sentence from is a
+ * complete, valid-looking `DateResult`, so nothing rejects it, and the warning
+ * renders as "carries undefined dated elements from before then, back to ." —
+ * a week of that, per reader, from one skipped increment.
  */
-const CACHE_VERSION = 2
+const CACHE_VERSION = 3
 
 export type CacheEntry = { result: DateResult; fetchedAt: number; version: number }
 
@@ -29,59 +37,84 @@ export const originOf = (url: string): string | null => {
   }
 }
 
-/**
- * Network access for feed lookup.
+/*
+ * No `Env` is built here, and its absence is deliberate rather than an omission.
  *
- * Same-origin only. `activeTab` grants host permission for the current tab's
- * origin — which is exactly where a site's feed lives — so this works without
- * ever requesting <all_urls>. Cross-origin requests are refused, not attempted.
+ * The extension resolves with `resolve()`, not `findDates()`, so it collects no
+ * network signals: no feed, no sitemap, no `Last-Modified`. `resolve` is pure —
+ * it ranks the candidates it is handed and fetches nothing — so a `fetchText`
+ * or `parseXml` supplied here would never be called, and would read as a
+ * capability the extension has when it does not.
+ *
+ * Adding feed lookup is a deliberate change, not a missing line: it costs a
+ * request per page, and it needs an XML parser somewhere with a DOM, which the
+ * service worker does not have.
  */
-export function pageEnv(pageUrl: string): Env {
-  const origin = originOf(pageUrl)
 
-  return {
-    fetchText: async (url) => {
-      if (originOf(url) !== origin) return null
-      try {
-        const response = await fetch(url, { credentials: 'omit' })
-        return response.ok ? await response.text() : null
-      } catch {
-        return null
-      }
-    },
-    parseXml: (xml) => {
-      const parsed = new DOMParser().parseFromString(xml, 'application/xml')
-      return parsed.querySelector('parsererror') ? null : parsed
-    },
+/**
+ * Built by WXT from `entrypoints/extract.ts`.
+ *
+ * Root-relative, with the leading slash WXT's `ScriptPublicPath` requires. The
+ * browser resolves both spellings against the extension root, so this is a type
+ * constraint rather than a behavioural one — but a bare name stops typechecking.
+ */
+const EXTRACT_SCRIPT = '/extract.js'
+
+/**
+ * Extract from the live DOM, in the tab, and bring back only the candidates.
+ *
+ * Reads the hydrated page, so SPAs work, without moving the document anywhere
+ * to get at it.
+ *
+ * Two injections rather than one, and the second is the cheap half: the first
+ * runs the extractor and stashes its result, the second reads that result back.
+ * The alternative — trusting what `executeScript({ files })` resolves to —
+ * depends on the module format the bundler emitted, which is not a contract
+ * anything here should rest on. See {@link PAGE_READ_GLOBAL}.
+ *
+ * Both land in the same isolated world, so the second call sees what the first
+ * left. Neither is visible to the page.
+ */
+export async function readPageCandidates(
+  tabId: number,
+  expectedUrl?: string,
+): Promise<Candidate[] | null> {
+  try {
+    await browser.scripting.executeScript({ target: { tabId }, files: [EXTRACT_SCRIPT] })
+
+    const [injection] = await browser.scripting.executeScript({
+      target: { tabId },
+      // The key is passed in rather than closed over: this function is
+      // serialised to source and evaluated in the page's world, where nothing
+      // from this module exists.
+      func: (key: string) => (globalThis as unknown as Record<string, unknown>)[key],
+      args: [PAGE_READ_GLOBAL],
+    })
+
+    return acceptPageRead(injection?.result, expectedUrl)
+  } catch {
+    return null
   }
 }
 
 /**
- * Read the live DOM as HTML. Reflects the hydrated page, so SPAs work.
+ * Decide whether an injection result is a page read worth trusting.
  *
- * `location.href` comes back with it so the caller can prove the DOM it just
- * read belongs to the page it asked about. On a single-page app the URL changes
- * before the new view renders, so a read fired on navigation can easily return
- * the *previous* route's markup — which would then be cached under the new URL
- * and served as fact for a week. Mismatches are refused rather than trusted.
+ * Split out from {@link readPageCandidates} so the judgement can be tested
+ * without a browser: what arrives here is whatever `executeScript` resolved to,
+ * which is `undefined` on a frame that refused injection, and stale on the
+ * single-page-app race the `expectedUrl` guard exists for.
+ *
+ * `candidates` is checked for being an array rather than trusted from its type.
+ * The value crossed a structured-clone boundary from a script running in a page
+ * we do not control, and `PageRead` is an assertion about it, not a fact.
  */
-export async function readPageHtml(
-  tabId: number,
-  expectedUrl?: string,
-): Promise<string | null> {
-  try {
-    const [injection] = await browser.scripting.executeScript({
-      target: { tabId },
-      func: () => ({ html: document.documentElement.outerHTML, href: location.href }),
-    })
-
-    const read = injection?.result as { html: string; href: string } | undefined
-    if (!read || typeof read.html !== 'string') return null
-    if (expectedUrl && !sameDocument(read.href, expectedUrl)) return null
-    return read.html
-  } catch {
-    return null
-  }
+export function acceptPageRead(result: unknown, expectedUrl?: string): Candidate[] | null {
+  const read = result as PageRead | undefined
+  if (!read || typeof read !== 'object') return null
+  if (!Array.isArray(read.candidates) || typeof read.href !== 'string') return null
+  if (expectedUrl && !sameDocument(read.href, expectedUrl)) return null
+  return read.candidates
 }
 
 /**
@@ -146,18 +179,16 @@ export async function analyze(
   // different question, so the cache is bypassed rather than answered stale.
   if (cached && !options.withArchive) return { result: cached, fromCache: true }
 
-  const html = await readPageHtml(tabId, options.expectUrl)
-  if (html === null) return { error: 'unreadable' }
+  const candidates = await readPageCandidates(tabId, options.expectUrl)
+  if (candidates === null) return { error: 'unreadable' }
 
   const archive = options.withArchive ? await fetchArchive(url) : null
 
-  const doc = new DOMParser().parseFromString(html, 'text/html')
-  const result = await resolve(
-    extractFromDocument(doc, url),
-    url,
-    pageEnv(url),
-    archive?.lastEdit ? { archiveLastEdit: archive.lastEdit } : {},
-  )
+  // Runs wherever `analyze` was called from, popup or service worker alike.
+  // `resolve` is pure ranking over the candidates above — no DOM, no network —
+  // so there is nothing here a service worker cannot do, and no reason for it
+  // to borrow a DOM from anywhere.
+  const result = await resolve(candidates, url, {}, archive?.lastEdit ? { archiveLastEdit: archive.lastEdit } : {})
 
   await writeCache(url, result)
   return { result, fromCache: false }
