@@ -38,15 +38,55 @@ async function main(): Promise<void> {
   console.log('  mode        ms/page   exact  partial  wrong  missed   accuracy')
   console.log(`  ${'-'.repeat(62)}`)
 
-  for (const mode of ['fast', 'standard', 'extensive'] as Mode[]) {
-    // Warm-up so JIT cost is not charged to the first mode measured.
-    for (const page of pages) extractFromDocument(page.doc, page.url, { mode })
+  const MODES = ['fast', 'standard', 'extensive'] as Mode[]
 
+  /*
+   * Timing three modes that share almost all of their code needs more care than
+   * a stopwatch around each one, and getting it wrong is not subtle: a careless
+   * harness reports `extensive` as *faster* than `standard`, which cannot be
+   * true — extensive is standard plus one more extractor and never does less
+   * work.
+   *
+   * Two things cause that. Warming each mode immediately before its own pass
+   * still lets the first mode measured pay to compile the parser adapters, the
+   * regex caches and the resolver, with every later mode inheriting the work
+   * already done. And measuring each mode once, always in the same order, turns
+   * that head start into a permanent bias rather than noise that averages out.
+   *
+   * So: warm every mode before measuring any, rotate the order each round so no
+   * mode is permanently first, and take the median. On 55 pages the bias this
+   * removes is larger than the difference being measured.
+   */
+  const WARMUP_ROUNDS = 5
+  const TIMED_ROUNDS = 7
+
+  for (let i = 0; i < WARMUP_ROUNDS; i++) {
+    for (const mode of MODES) {
+      for (const page of pages) extractFromDocument(page.doc, page.url, { mode })
+    }
+  }
+
+  const timePass = (mode: Mode): number => {
+    const started = performance.now()
+    for (const page of pages) {
+      resolveCandidates(extractFromDocument(page.doc, page.url, { mode }), { now: NOW })
+    }
+    return (performance.now() - started) / pages.length
+  }
+
+  const timings = new Map<Mode, number[]>(MODES.map((m) => [m, []]))
+  for (let round = 0; round < TIMED_ROUNDS; round++) {
+    const shift = round % MODES.length
+    for (const mode of [...MODES.slice(shift), ...MODES.slice(0, shift)]) {
+      timings.get(mode)!.push(timePass(mode))
+    }
+  }
+
+  for (const mode of MODES) {
     let exact = 0
     let partial = 0
     let wrong = 0
     let missed = 0
-    const started = performance.now()
 
     for (const page of pages) {
       const candidates = extractFromDocument(page.doc, page.url, { mode })
@@ -58,7 +98,8 @@ async function main(): Promise<void> {
       else wrong++
     }
 
-    const ms = (performance.now() - started) / pages.length
+    const sorted = timings.get(mode)!.slice().sort((a, b) => a - b)
+    const ms = sorted[Math.floor(sorted.length / 2)]!
     const accuracy = ((exact / pages.length) * 100).toFixed(1)
 
     console.log(

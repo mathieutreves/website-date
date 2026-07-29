@@ -38,10 +38,21 @@ async function main(): Promise<void> {
 
   console.log(`\n${pages.length} pages\n`)
 
-  for (const mode of ['fast', 'standard'] as Mode[]) {
-    // Warm-up.
-    for (const p of prepared) extractFromDocument(p.doc, p.url, { mode })
+  const MODES = ['fast', 'standard'] as Mode[]
 
+  /*
+   * Warm every mode before timing any of them. Warming only the mode about to be
+   * measured leaves the first one paying to compile code all of them share — see
+   * the note in modes.ts, where that bias is large enough to report `extensive`
+   * as faster than `standard`.
+   */
+  for (let i = 0; i < 5; i++) {
+    for (const mode of MODES) {
+      for (const p of prepared) extractFromDocument(p.doc, p.url, { mode })
+    }
+  }
+
+  for (const mode of MODES) {
     let extractOnly = 0
     for (const p of prepared) {
       const t = performance.now()
