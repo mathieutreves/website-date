@@ -1,0 +1,24 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.mathieutreves/pagedate",
+  "title": "Page Date",
+  "description": "When a page was published, when it last changed, and how much to trust each date.",
+  "repository": {
+    "url": "https://github.com/mathieutreves/website-date",
+    "source": "github",
+    "subfolder": "packages/pagedate-mcp"
+  },
+  "version": "0.1.0",
+  "websiteUrl": "https://github.com/mathieutreves/website-date/tree/main/packages/pagedate-mcp",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "pagedate-mcp",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
