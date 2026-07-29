@@ -94,8 +94,22 @@ def build_tools():
     try:
         from htmldate import find_date
 
-        tools["htmldate (fast)"] = lambda html, url: find_date(html, extensive_search=False)
-        tools["htmldate (extensive)"] = lambda html, url: find_date(html, extensive_search=True)
+        # original_date=True, because every gold label in both corpora is a
+        # *publication* date and that is the flag which asks for one. Left at its
+        # default, htmldate returns the most recent date on the page instead,
+        # which is a different question and one nothing here is scoring.
+        #
+        # Getting this wrong is worth ~11 points to htmldate and is not a
+        # symmetric risk: every other tool in this file exposes only a
+        # publication date — `publish_date`, `extractArticlePublishedDate`,
+        # `.published` — so htmldate is the only one with a switch to set
+        # correctly, and the only one a harness author can under-serve.
+        tools["htmldate (fast)"] = lambda html, url: find_date(
+            html, extensive_search=False, original_date=True
+        )
+        tools["htmldate (extensive)"] = lambda html, url: find_date(
+            html, extensive_search=True, original_date=True
+        )
     except Exception:
         pass
 
