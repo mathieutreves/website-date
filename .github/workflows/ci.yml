@@ -20,11 +20,11 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           # The version in packageManager/engines, so a mismatch fails here
           # rather than in someone's install.
@@ -33,7 +33,10 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # The MCP server and the extension both import the built library, and the
+      # package-contents check below reads both dist trees.
       - run: pnpm --filter pagedate build
+      - run: pnpm --filter pagedate-mcp build
 
       - name: Typecheck
         run: pnpm -r typecheck
@@ -44,6 +47,9 @@ jobs:
       - name: Extension tests
         run: pnpm --filter @website-date/extension test
 
+      - name: MCP server tests
+        run: pnpm --filter pagedate-mcp test
+
       # The extension is the reason the library is browser-first, so a build
       # break there is a break in the thing this project is for. Both targets,
       # because MV3 differs between them and Firefox is the fussier one.
@@ -53,27 +59,150 @@ jobs:
           pnpm build
           pnpm build:firefox
 
+      # Both stores reject an upload with no 128px icon, and the description is
+      # truncated silently past 132 characters. Neither failure is visible in a
+      # local build — WXT discovers icons from public/icon/ and simply omits the
+      # key when there are none — so it would otherwise surface as a rejected
+      # submission rather than a red check.
+      #
+      # The description is now `__MSG_extDescription__`, so measuring the
+      # manifest field would measure the placeholder and pass on anything. The
+      # real strings are in the built catalogues, and every one of them is a
+      # store listing in some language — so all of them are measured, not just
+      # the default locale.
+      - name: Store-required manifest keys
+        working-directory: apps/extension
+        run: |
+          node -e '
+            const { readdirSync, readFileSync } = require("fs")
+            const { resolve } = require("path")
+            const required = ["16", "32", "48", "128"]
+            for (const target of ["chrome-mv3", "firefox-mv3"]) {
+              const path = `.output/${target}/manifest.json`
+              const manifest = require(resolve(path))
+              const icons = manifest.icons ?? {}
+              const missing = required.filter((size) => !icons[size])
+              if (missing.length) {
+                console.error(`${path}: no icon at ${missing.join(", ")}px — add public/icon/<size>.png`)
+                process.exit(1)
+              }
+
+              const locales = readdirSync(`.output/${target}/_locales`)
+              for (const locale of locales) {
+                const file = `.output/${target}/_locales/${locale}/messages.json`
+                const description = JSON.parse(readFileSync(file, "utf8")).extDescription?.message ?? ""
+                if (description.length > 132) {
+                  console.error(`${file}: description is ${description.length} chars, store limit is 132`)
+                  process.exit(1)
+                }
+              }
+              console.log(
+                `ok — ${target} carries icons ${Object.keys(icons).join(", ")} ` +
+                  `and ${locales.length} locales (${locales.join(", ")})`,
+              )
+            }
+          '
+
+      # The extension's central promise is that installing it grants nothing.
+      # Exactly one thing can break that silently: a content script declared in
+      # the manifest contributes its `matches` to Chrome's install prompt, so
+      # adding one — or dropping `registration: 'runtime'` from the results
+      # annotator — turns a clean install into "Read and change your data on
+      # google.com and 4 other sites" with no test going red and no reviewer
+      # necessarily noticing. Host access must reach the manifest only as
+      # `optional_host_permissions`.
+      - name: Nothing is requested at install time
+        working-directory: apps/extension
+        run: |
+          node -e '
+            const { resolve } = require("path")
+            const allowed = ["activeTab", "storage", "scripting", "contextMenus"]
+            for (const target of ["chrome-mv3", "firefox-mv3"]) {
+              const path = `.output/${target}/manifest.json`
+              const manifest = require(resolve(path))
+
+              const scripts = manifest.content_scripts ?? []
+              if (scripts.length > 0) {
+                console.error(
+                  `${path}: declares ${scripts.length} content script(s), whose matches become ` +
+                    `install-time host warnings. Register at runtime instead.`,
+                )
+                process.exit(1)
+              }
+
+              for (const key of ["host_permissions", "permissions"]) {
+                const values = manifest[key] ?? []
+                const unexpected = values.filter((p) => !allowed.includes(p))
+                if (unexpected.length) {
+                  console.error(`${path}: ${key} carries ${unexpected.join(", ")} — not granted at install`)
+                  process.exit(1)
+                }
+              }
+
+              console.log(`ok — ${target} asks for ${(manifest.permissions ?? []).join(", ")} and no host access`)
+            }
+          '
+
       # Catches the failure mode where the package publishes fine and the npm
       # page is blank, or ships source it should not.
+      #
+      # `pnpm pack`, not `npm pack`: pagedate-mcp depends on pagedate as
+      # `workspace:^`, and only pnpm rewrites that to a real range. Checking the
+      # npm-produced tarball would assert the contents of something we never
+      # publish. See the note in publish.yml.
       - name: Package contents
-        working-directory: packages/pagedate
         run: |
-          npm pack --dry-run --json > /tmp/pack.json
+          check() {
+            local dir=$1; shift
+            ( cd "$dir" && pnpm pack --pack-destination /tmp >/dev/null )
+            local tgz; tgz=$(ls -t /tmp/*.tgz | head -1)
+            tar -tzf "$tgz" | sed 's|^package/||' > /tmp/files.txt
+            for f in "$@"; do
+              grep -qx "$f" /tmp/files.txt || { echo "missing from $dir tarball: $f" >&2; exit 1; }
+            done
+            if grep -qE '^(src|test)/' /tmp/files.txt; then
+              echo "source leaked into $dir tarball:" >&2
+              grep -E '^(src|test)/' /tmp/files.txt >&2
+              exit 1
+            fi
+            echo "ok — $dir: $(wc -l < /tmp/files.txt) files, $(du -k "$tgz" | cut -f1) kB"
+            rm -f "$tgz"
+          }
+          check packages/pagedate     README.md LICENSE NOTICE dist/index.js dist/index.d.ts
+          check packages/pagedate-mcp README.md LICENSE dist/server.js dist/index.js dist/index.d.ts
+
+      # The registry rejects a server whose npm package lacks a matching
+      # `mcpName`, and the mistake is invisible until release day.
+      - name: MCP registry metadata
+        run: |
+          cd packages/pagedate-mcp
           node -e '
-            const [pkg] = require("/tmp/pack.json")
-            const files = pkg.files.map((f) => f.path)
-            const required = ["README.md", "LICENSE", "NOTICE", "dist/index.js", "dist/index.d.ts"]
-            const missing = required.filter((f) => !files.includes(f))
-            if (missing.length) {
-              console.error("missing from tarball:", missing.join(", "))
+            const pkg = require("./package.json")
+            const srv = require("./server.json")
+            const fail = (m) => { console.error(m); process.exitCode = 1 }
+            if (!pkg.mcpName) fail("package.json has no mcpName")
+            if (pkg.mcpName !== srv.name) fail(`mcpName ${pkg.mcpName} != server.json name ${srv.name}`)
+            if (pkg.version !== srv.version) fail(`version ${pkg.version} != server.json ${srv.version}`)
+            if (pkg.version !== srv.packages[0].version) fail("server.json packages[0].version out of step")
+            if (srv.packages[0].identifier !== pkg.name) fail("server.json identifier is not the npm name")
+            if (srv.description.length > 100) fail(`server.json description is ${srv.description.length} chars, max 100`)
+            if (!process.exitCode) console.log(`ok — ${srv.name} @ ${srv.version}`)
+          '
+
+      # The MCP server's declared zod range must stay inside what the protocol
+      # SDK accepts, or a fresh install resolves a zod the SDK cannot use.
+      - name: MCP dependency ranges
+        run: |
+          node -e '
+            const semver = require("semver")
+            const ours = require("./packages/pagedate-mcp/package.json").dependencies.zod
+            const sdk = require("./packages/pagedate-mcp/node_modules/@modelcontextprotocol/sdk/package.json")
+            const theirs = (sdk.peerDependencies ?? sdk.dependencies).zod
+            if (!semver.subset(ours, theirs)) {
+              console.error(`zod ${ours} is not a subset of what the SDK accepts (${theirs})`)
               process.exit(1)
             }
-            const leaked = files.filter((f) => f.startsWith("src/") || f.startsWith("test/"))
-            if (leaked.length) {
-              console.error("source leaked into tarball:", leaked.join(", "))
-              process.exit(1)
-            }
-            console.log(`ok — ${files.length} files, ${(pkg.size / 1024).toFixed(0)} kB`)
+            console.log(`ok — zod ${ours} within SDK range ${theirs}`)
           '
 
   # The library claims zero runtime dependencies. That claim is worth a check,
@@ -81,7 +210,7 @@ jobs:
   no-runtime-deps:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: |
           node -e '
             const pkg = require("./packages/pagedate/package.json")
