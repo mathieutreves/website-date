@@ -1,10 +1,10 @@
 {
   "url": "https://www.aljazeera.net/news/liveblog/2026/7/28/%D8%A5%D9%8A%D8%B1%D8%A7%D9%86-%D9%85%D8%A8%D8%A7%D8%B4%D8%B1-%D8%AA%D8%B1%D9%85%D8%A8-%D9%8A%D8%AA%D8%AD%D8%AF%D8%AB-%D8%B9%D9%86-%D9%85%D9%81%D8%A7%D9%88%D8%B6%D8%A7%D8%AA",
   "capturedAt": "2026-07-28",
-  "notes": "Al Jazeera Arabic liveblog. RTL page with JSON-LD plus a nested VideoObject whose uploadDate must not outrank the article date.",
+  "notes": "Al Jazeera Arabic liveblog. RTL page with JSON-LD plus a nested VideoObject whose uploadDate must not outrank the article date. Published was annotated 2026-07-27 originally, read straight off `datePublished: 2026-07-27T21:02Z`. That is the UTC rendering of an instant that is 00:02 on the 28th in Doha, and every other thing the page says — the canonical URL `/2026/7/28/`, the byline `Published On 28/7/2026` — dates it to the 28th. Corrected, and it is now the case that pins the timezone reconciliation in resolve.ts.",
   "fetchedFeedUrl": "https://www.aljazeera.net/aljazeerarss/a7c186be-1baa-4bd4-9d80-a84db769f779/73d0e1b4-532f-45ef-b135-bfdff8b8cab9",
   "expect": {
-    "published": "2026-07-27",
+    "published": "2026-07-28",
     "modified": "2026-07-28",
     "conflict": null
   }

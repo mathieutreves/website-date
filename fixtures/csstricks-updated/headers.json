@@ -12,7 +12,6 @@
   "link": "<https://css-tricks.com/wp-json/>; rel=\"https://api.w.org/\", <https://css-tricks.com/wp-json/wp/v2/pages/21059>; rel=\"alternate\"; title=\"JSON\"; type=\"application/json\", <https://css-tricks.com/?p=21059>; rel=shortlink",
   "referrer-policy": "strict-origin-when-cross-origin",
   "server": "cloudflare",
-  "set-cookie": "__cf_bm=UyTyJdZAhxu_Tb.qH4xQpBlzMhNOYWjH22gKs38ew7o-1785227923.0387645-1.0.1.1-I0rfM0FaAERM2lY08HWv4XEsuhVoHxM_2fXg1OsqtT5jFXYFQYbxo8VqvLnMpsficz1YoNvubmynIbnB6KzB45ToKJa158TazTjvr.xXgU0qDCQWfPWAIIHZtWqTPt0t; HttpOnly; SameSite=None; Secure; Path=/; Domain=css-tricks.com; Expires=Tue, 28 Jul 2026 09:08:44 GMT",
   "strict-transport-security": "max-age=31536000",
   "transfer-encoding": "chunked",
   "vary": "Accept-Encoding, accept,content-type,Accept-Encoding,User-Agent",
