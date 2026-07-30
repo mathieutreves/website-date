@@ -452,7 +452,7 @@ results/                 committed output of the last validation run
 - [docs/CORPUS-BUILD.md](docs/CORPUS-BUILD.md) — how the corpus is built and why labels are the hard part
 - [docs/CORPUS-NOTES.md](docs/CORPUS-NOTES.md) — gold-standard caveats in the external corpus
 - [docs/PRIVACY.md](docs/PRIVACY.md) — what the extension stores and what leaves your browser
-- [docs/PUBLISHING.md](docs/PUBLISHING.md) — releasing to npm and to both extension stores
+- [docs/RELEASING.md](docs/RELEASING.md) — releasing to npm and to both extension stores
 - [CONTRIBUTING.md](CONTRIBUTING.md) · [SECURITY.md](SECURITY.md) · [CHANGELOG.md](CHANGELOG.md)
 
 ## Prior art

@@ -499,7 +499,7 @@ All network lives in the service worker — CORS plus host permissions make this
 
 ### 6.5 Distribution
 
-Chrome Web Store and addons.mozilla.org, MV3 on both from one codebase. Store assets — icons, screenshots, permission justifications, the AMO source-code submission — are generated and documented in [PUBLISHING.md](PUBLISHING.md).
+Chrome Web Store and addons.mozilla.org, MV3 on both from one codebase. Store assets — icons, screenshots, permission justifications, the AMO source-code submission — are generated and documented in [RELEASING.md](RELEASING.md).
 
 ---
 

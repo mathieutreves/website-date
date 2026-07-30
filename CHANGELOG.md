@@ -44,7 +44,7 @@ minor bump may break you.
 - **`server.json` and an `mcpName`**, so `pagedate-mcp` can be listed in the
   official MCP Registry as `io.github.mathieutreves/pagedate`. The release
   workflow publishes both npm packages and then the registry entry, all over
-  OIDC with no stored token. See [docs/PUBLISHING.md](docs/PUBLISHING.md).
+  OIDC with no stored token. See [docs/RELEASING.md](docs/RELEASING.md).
 
 ### Added — extension
 
