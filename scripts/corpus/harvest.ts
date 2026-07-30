@@ -47,6 +47,15 @@ const { values } = parseArgs({
     'per-domain': { type: 'string', default: '60' },
     concurrency: { type: 'string', default: '3' },
     'allow-month': { type: 'boolean', default: false },
+    /**
+     * Which seed frame these seeds came from, recorded on every entry.
+     *
+     * The corpus is the union of two frames with very different standing, and
+     * without this the difference is invisible in the artifact — the one place
+     * it needs to be visible, since "is this sample defensible" is a question
+     * about provenance, not about page count.
+     */
+    frame: { type: 'string', default: 'hand' },
   },
 })
 
@@ -228,6 +237,7 @@ function toEntry(row: CdxRow, allowMonth: boolean): CorpusEntry | null {
       host,
       tld: host.slice(host.lastIndexOf('.') + 1),
       era: Number(label.published.slice(0, 4)) || null,
+      frame: values.frame as 'hand' | 'tranco',
     },
     http: {
       status: Number(statuscode),

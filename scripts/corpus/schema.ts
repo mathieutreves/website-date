@@ -96,6 +96,19 @@ export type CorpusEntry = {
     signals?: string[]
     /** Does the label date appear in the page at all? Set by enrich.ts. */
     labelInPage?: boolean
+    /**
+     * Which seed frame put this host in the corpus.
+     *
+     * `hand` is the original `scripts/corpus/seeds.txt` — a list of sites its
+     * author thought of, which is a bias no amount of careful labelling
+     * downstream can undo, because it decides which pages exist to be labelled.
+     * `tranco` is `corpus/seeds-tranco.txt`, produced by probing a published
+     * domain ranking that nobody here curated.
+     *
+     * Recorded per entry rather than argued about in prose, so "how much of this
+     * result rests on the hand-picked sites" is a query rather than an opinion.
+     */
+    frame?: 'hand' | 'tranco'
   }
 
   http: {
