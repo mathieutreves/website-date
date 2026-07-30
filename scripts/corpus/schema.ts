@@ -128,6 +128,38 @@ export type CorpusEntry = {
   }
 }
 
+/**
+ * Which pool a host belongs to. Three, not two.
+ *
+ * `dev` is tuned against freely. `test` is the held-out set and is scored once,
+ * at the end. `diag` sits between them and exists because a two-way split makes
+ * its own failures unreadable: when a language or a template scores badly on
+ * `test`, the only way to find out why is to open the pages — and opening them
+ * is exactly what makes the split stop being held out. Every such question was
+ * therefore unanswerable, and the corpus could show that Japanese scored 62.5%
+ * without anyone being allowed to learn why.
+ *
+ * `diag` is a pool you MAY read, investigate and fix against, reported
+ * separately and never quoted as a headline. It buys back the ability to
+ * diagnose at the cost of a sixth of the corpus.
+ *
+ * **It is not a second held-out set.** The hosts carved into it come from the
+ * historical `dev` side, so anything already tuned on stayed tuned on; what
+ * makes it useful is that hosts entering the corpus later land in it clean.
+ *
+ * The `test` predicate is deliberately unchanged from the two-way version —
+ * `digest[0] % 3` — so every held-out figure ever published from this corpus
+ * remains a figure about the same set of hosts. Only the dev side is subdivided,
+ * using an independent byte.
+ */
+export type Split = 'dev' | 'diag' | 'test'
+
+export function splitOf(host: string): Split {
+  const digest = createHash('sha1').update(host).digest()
+  if (digest[0] % 3 === 0) return 'test'
+  return digest[1] % 4 === 0 ? 'diag' : 'dev'
+}
+
 export const entryId = (url: string): string =>
   createHash('sha1').update(url).digest('hex').slice(0, 16)
 

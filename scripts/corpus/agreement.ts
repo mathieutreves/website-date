@@ -24,10 +24,9 @@
  */
 
 import { readFile } from 'node:fs/promises'
-import { createHash } from 'node:crypto'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
-import { readManifest } from './schema.ts'
+import { readManifest, splitOf } from './schema.ts'
 
 const ROOT = join(import.meta.dirname, '..', '..')
 const MANIFEST = join(ROOT, 'corpus', 'manifest.jsonl')
@@ -70,8 +69,9 @@ const neutralise = (rawUrl: string): string => {
   }
 }
 
-const splitOf = (host: string): string =>
-  createHash('sha1').update(host).digest()[0] % 3 === 0 ? 'test' : 'dev'
+// splitOf comes from the schema. Four hand-copied versions of "which hosts are
+// held out" is four chances for two tables to describe different page sets while
+// both claiming to be the held-out split.
 
 type Bucket = { n: number; right: number }
 const report = (title: string, buckets: Map<number, Bucket>, unit: string): void => {

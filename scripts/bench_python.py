@@ -72,8 +72,22 @@ def neutralise_html(html: str) -> str:
 
 
 def split_of(host: str) -> str:
-    """Same host-level split as score.ts, so the two report on the same pages."""
-    return "test" if hashlib.sha1(host.encode()).digest()[0] % 3 == 0 else "dev"
+    """Same host-level split as scripts/corpus/schema.ts, so the two report on the
+    same pages.
+
+    Three pools, not two. `test` keeps the predicate it always had — digest[0] %
+    3 — so every held-out figure ever published from this corpus still describes
+    the same set of hosts; only the dev side is subdivided, on an independent
+    byte, to carve out a `diag` pool that may be read and investigated.
+
+    This is a hand-kept copy of a TypeScript function, which is a real risk. The
+    JS harness imports the original; Python cannot, so if you change one, change
+    both. `scripts/corpus/agreement.ts` is not a check on this — nothing is.
+    """
+    digest = hashlib.sha1(host.encode()).digest()
+    if digest[0] % 3 == 0:
+        return "test"
+    return "diag" if digest[1] % 4 == 0 else "dev"
 
 
 def norm(value) -> str | None:
