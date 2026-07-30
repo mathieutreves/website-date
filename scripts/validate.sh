@@ -89,7 +89,10 @@ step "7. JavaScript tools on the permalink corpus"
 # bench/ has its own node_modules so competitor packages never enter the
 # published dependency tree.
 if [ -d "$ROOT/bench/node_modules" ]; then
-  node bench/bench_corpus.mjs | tee "$RESULTS/permalink-js.txt"
+  # --jsonl as well as the table, so this half can be tallied together with the
+  # Python half by a command rather than by copying rows between files.
+  node bench/bench_corpus.mjs --jsonl "$RESULTS/permalink-js.jsonl" \
+    | tee "$RESULTS/permalink-js.txt"
 else
   note "bench/node_modules absent — run (cd bench && npm install)"
   SKIPPED+=("JS competitors")
@@ -127,6 +130,13 @@ else
   note "no corpus-external/htmldate/cache — run node scripts/fetch-htmldate-corpus.ts"
   SKIPPED+=("htmldate corpus")
 fi
+
+step "10. Negative tier"
+# Printed on every run because its absence changes what "precision" means in
+# every table above, and a reader who does not know the tier is empty will read
+# those figures as though a tool could be charged for inventing a date.
+node scripts/corpus/review-negative.ts --limit 0 2>/dev/null | head -5 \
+  || note "no negative entries — see docs/CORPUS-BUILD.md"
 
 step "Summary"
 if [ "${#SKIPPED[@]}" -gt 0 ]; then
