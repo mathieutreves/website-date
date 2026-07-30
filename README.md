@@ -47,7 +47,9 @@ Three commitments follow from that:
 
 **Confidence is a tier, not a score.** `declared` means the site stated it in machine-readable metadata; `derived` means structured but weaker; `inferred` means guessed from prose, a URL, or a transport header. `minConfidence: 'declared'` answers "what does this site actually claim" and will happily return nothing.
 
-**Answering "there is no date here" is a correct answer.** Five of the 17 fixtures have no publication date, and the corpus scores true negatives. Benchmarks in this field almost never do — htmldate's corpus contains only pages with determinable dates, so false positives are *structurally unmeasurable* there, and every precision figure in the literature inherits that blind spot.
+**Answering "there is no date here" is a correct answer.** Five of the 17 fixtures have no publication date at all, and every scoring harness here counts a date invented on an undated page as a false positive, against precision, exactly as a misread date counts.
+
+That cell is missing from every published benchmark in this field, including this project's own permalink tables below. htmldate's corpus contains only pages with clearly determinable dates, so a false positive is *structurally unmeasurable* there and every precision figure in the literature inherits the blind spot. The permalink corpus inherited it too: it is harvested by dated permalink, so by construction every page in it has a date. A negative tier — pages whose correct answer is "none" — is being built to close that ([docs/CORPUS-BUILD.md](docs/CORPUS-BUILD.md)); until its labels have been checked by a person, no figure in this README is charging any tool for inventing a date, and the tables say so.
 
 ---
 

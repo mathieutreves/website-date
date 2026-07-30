@@ -12,10 +12,20 @@
 
 import { readFile } from 'node:fs/promises'
 
-type Row = { tool: string; file: string; gold: string; found: string | null; ms: number }
-type Tally = { exact: number; partial: number; wrong: number; missed: number; ms: number }
+type Row = { tool: string; file: string; gold: string | null; found: string | null; ms: number }
+type Tally = {
+  exact: number
+  partial: number
+  wrong: number
+  missed: number
+  /** Negative page, nothing returned — correct. */
+  tn: number
+  /** Negative page, a date returned — invented. */
+  fp: number
+  ms: number
+}
 
-const empty = (): Tally => ({ exact: 0, partial: 0, wrong: 0, missed: 0, ms: 0 })
+const empty = (): Tally => ({ exact: 0, partial: 0, wrong: 0, missed: 0, tn: 0, fp: 0, ms: 0 })
 
 /**
  * Compare at the label's own precision.
@@ -25,8 +35,14 @@ const empty = (): Tally => ({ exact: 0, partial: 0, wrong: 0, missed: 0, ms: 0 }
  * coarser-but-consistent answer is `partial` — right, but less useful. Only
  * pagedate produces those, because it refuses to invent precision its source did
  * not carry while every other tool here always emits a full date.
+ *
+ * A `gold` of null is a page with no publication date. There, returning nothing
+ * is the right answer and any date is a false positive — the one cell that lets
+ * a table distinguish a tool which knows when to stop from one that always
+ * answers.
  */
-function judge(t: Tally, gold: string, found: string | null): void {
+function judge(t: Tally, gold: string | null, found: string | null): void {
+  if (gold === null) return void (found === null ? t.tn++ : t.fp++)
   if (found === null) return void t.missed++
   const width = Math.min(gold.length, found.length)
   if (gold.slice(0, width) !== found.slice(0, width)) return void t.wrong++
@@ -67,30 +83,39 @@ async function main(): Promise<void> {
   const pct = (v: number, d: number): string =>
     d === 0 ? '     — ' : `${((v / d) * 100).toFixed(1)}%`.padStart(7)
 
+  const anyNegatives = [...tools.values()].some((t) => t.tn + t.fp > 0)
   const header =
-    '  tool                            exact  part  wrong  miss | precision  accuracy   ms/page'
-  console.log(`\n${n} pages\n`)
+    '  tool                            exact  part  wrong  miss    TN   FP | precision  accuracy   ms/page'
+  const negN = anyNegatives ? [...tools.values()][0].tn + [...tools.values()][0].fp : 0
+  console.log(`\n${n} pages${anyNegatives ? ` (${n - negN} dated, ${negN} with no date)` : ''}\n`)
   console.log(header)
   console.log(`  ${'-'.repeat(header.length - 2)}`)
 
-  const rows = [...tools.entries()].sort((a, b) => b[1].exact - a[1].exact)
+  // Ranked on exact + tn, so declining correctly counts as getting a page right.
+  const rows = [...tools.entries()].sort((a, b) => b[1].exact + b[1].tn - (a[1].exact + a[1].tn))
   for (const [name, t] of rows) {
-    const total = t.exact + t.partial + t.wrong + t.missed
-    const answered = t.exact + t.partial + t.wrong
+    const total = t.exact + t.partial + t.wrong + t.missed + t.tn + t.fp
+    const answered = t.exact + t.partial + t.wrong + t.fp
     console.log(
       `  ${(name.startsWith('pagedate') ? '▸ ' : '  ') + name.padEnd(29)} ` +
         `${String(t.exact).padStart(4)}  ${String(t.partial).padStart(4)}  ` +
-        `${String(t.wrong).padStart(5)}  ${String(t.missed).padStart(4)} | ` +
-        `${pct(t.exact, answered)}  ${pct(t.exact, total)}  ` +
+        `${String(t.wrong).padStart(5)}  ${String(t.missed).padStart(4)}  ` +
+        `${String(t.tn).padStart(4)} ${String(t.fp).padStart(4)} | ` +
+        `${pct(t.exact, answered)}  ${pct(t.exact + t.tn, total)}  ` +
         `${(t.ms / Math.max(1, total)).toFixed(2).padStart(8)}`,
     )
   }
 
   console.log(`
-  precision = of the pages a tool answered, how many it got right
-  accuracy  = of all pages, how many it got right
-  A tool that refuses to guess scores well on the first and badly on the second;
-  the two together are the only honest summary of one.
+  precision = of the pages a tool answered, how many it got right — an invented
+              date on an undated page (FP) counts against it exactly as a wrong
+              date does
+  accuracy  = of all pages, how many it got right, counting a correct refusal (TN)
+  ${
+    anyNegatives
+      ? 'TN/FP are the pages with no publication date. They are the only cells that\n  can charge a tool for answering when it should not have.'
+      : 'No page in this run lacks a date, so TN and FP are structurally zero and\n  declining to answer can only lose points. Read precision with that in mind.'
+  }
 `)
 }
 

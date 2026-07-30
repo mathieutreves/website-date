@@ -181,11 +181,12 @@ async function main(): Promise<void> {
   const entries = readManifest(await readFile(MANIFEST, 'utf8'))
   let checked = 0
   let present = 0
+  let negatives = 0
   const absentByYear = new Map<number | null, number>()
   const byLang = new Map<string, number>()
 
   for (const entry of entries as CorpusEntry[]) {
-    if (!entry.fetch || !entry.label.published) continue
+    if (!entry.fetch) continue
     let raw: string
     try {
       raw = await readFile(join(CACHE, `${entry.id}.html`), 'utf8')
@@ -193,13 +194,22 @@ async function main(): Promise<void> {
       continue
     }
     const html = fold(raw)
-    checked++
 
     // Read from the unfolded source: `lang` is an attribute, not prose, and
     // folding is only needed for the month-name search below.
     const lang = detectLang(raw, entry)
     entry.strata.lang = lang
     byLang.set(lang, (byLang.get(lang) ?? 0) + 1)
+
+    // Negatives get a language and stop there. `labelInPage` asks whether the
+    // label date appears in the document, and a negative entry has no label
+    // date to look for — the question is not false for them, it is undefined.
+    // They are counted separately so the totals below still add up.
+    if (!entry.label.published) {
+      negatives++
+      continue
+    }
+    checked++
 
     // Strip the URL itself out of the haystack: many pages link to themselves,
     // and finding the date there is finding the URL again.
@@ -216,6 +226,7 @@ async function main(): Promise<void> {
   console.log(`\n${checked} labelled+fetched entries checked`)
   console.log(`  label appears in the page : ${present}`)
   console.log(`  label ONLY in the URL     : ${checked - present}`)
+  if (negatives) console.log(`  negatives (lang only)     : ${negatives}`)
   console.log(
     `\n  absent by year: ${[...absentByYear.entries()]
       .sort((a, b) => Number(a[0]) - Number(b[0]))

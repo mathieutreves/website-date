@@ -186,15 +186,27 @@ def load_htmldate_pages():
         if entry["file"] not in cached:
             continue
         path = os.path.join(CACHE, entry["file"])
-        yield entry["file"], url, path, entry["date"]
+        # Never blanked: these labels were hand-annotated from the documents, not
+        # read out of the URL, so there is no permalink to hold out.
+        yield entry["file"], url, path, entry["date"], False
 
 
-def load_permalink_pages(split: str, max_lag: int):
+def load_permalink_pages(split: str, max_lag: int, include_unreviewed: bool = False):
     """The harvested corpus, filtered exactly as score.ts filters it.
 
     Entries whose label appears nowhere in the page are dropped: with the URL
     neutralised no tool could recover them, so scoring them would punish every
     tool equally for correctly finding nothing.
+
+    Negative entries — pages asserted to have no publication date — are kept and
+    yielded with a gold of None. They are the tier that makes an invented date
+    visible, and a filter testing `entry["label"]["published"]` for truth drops
+    every one of them.
+
+    The fourth element of each tuple is the gold date or None; the fifth says
+    whether the permalink must be blanked in the HTML, which is per entry and
+    comes from `holdOut`. A feed-labelled entry keeps its real URL, because its
+    label did not come from there.
     """
     manifest = os.path.join(ROOT, "corpus", "manifest.jsonl")
     cache = os.path.join(ROOT, "corpus", "cache")
@@ -203,18 +215,30 @@ def load_permalink_pages(split: str, max_lag: int):
             if not line.strip():
                 continue
             entry = json.loads(line)
-            if not entry.get("fetch") or not entry["label"].get("published"):
+            if not entry.get("fetch"):
+                continue
+            negative = entry["label"].get("source") == "none" or entry["label"].get("published") is None
+            if negative:
+                # Only negatives a person has confirmed are scored. An
+                # unreviewed one that is wrong hands every tool a false positive
+                # on a page that does have a date — see isScorableNegative.
+                if not include_unreviewed and entry["label"].get("review") != "confirmed":
+                    continue
+            elif not entry["label"].get("published"):
                 continue
             if split != "all" and split_of(entry["strata"]["host"]) != split:
                 continue
-            if entry["captureLagDays"] > max_lag:
+            # Neither lag nor labelInPage is defined for a page with no date.
+            if not negative and entry["captureLagDays"] > max_lag:
                 continue
-            if entry["strata"].get("labelInPage") is False:
+            if not negative and entry["strata"].get("labelInPage") is False:
                 continue
             path = os.path.join(cache, f"{entry['id']}.html")
             if not os.path.exists(path):
                 continue
-            yield entry["id"], neutralise(entry["url"]), path, entry["label"]["published"]
+            blank = "url-slug" in entry.get("holdOut", [])
+            url = neutralise(entry["url"]) if blank else entry["url"]
+            yield entry["id"], url, path, entry["label"]["published"], blank
 
 
 def main() -> int:
@@ -222,23 +246,34 @@ def main() -> int:
     parser.add_argument("--corpus", choices=["htmldate", "permalink"], default="htmldate")
     parser.add_argument("--split", default="dev")
     parser.add_argument("--max-lag", type=int, default=30)
+    parser.add_argument(
+        "--include-unreviewed",
+        action="store_true",
+        help="count negative labels no person has confirmed. Preview only.",
+    )
     args = parser.parse_args()
 
     pages = list(
         load_htmldate_pages()
         if args.corpus == "htmldate"
-        else load_permalink_pages(args.split, args.max_lag)
+        else load_permalink_pages(args.split, args.max_lag, args.include_unreviewed)
     )
-    print(f"{len(pages)} pages from the {args.corpus} corpus", file=sys.stderr)
+    negatives = sum(1 for p in pages if p[3] is None)
+    print(
+        f"{len(pages)} pages from the {args.corpus} corpus "
+        f"({len(pages) - negatives} dated, {negatives} with no date)",
+        file=sys.stderr,
+    )
 
     tools = build_tools()
     print(f"tools: {', '.join(tools)}", file=sys.stderr)
 
     for name, run in tools.items():
-        for file_id, url, path, gold in pages:
+        for file_id, url, path, gold, blank in pages:
             with open(path, encoding="utf-8", errors="replace") as handle:
                 html = handle.read()
-            if args.corpus == "permalink":
+            # Per entry, from holdOut — not "every page on the permalink corpus".
+            if blank:
                 html = neutralise_html(html)
 
             started = time.perf_counter()

@@ -76,6 +76,22 @@ export type CorpusEntry = {
     tier: LabelTier
     /** Free text: the URL segment, feed entry, or evidence span behind it. */
     evidence?: string
+    /**
+     * Whether a person has checked this label.
+     *
+     * Only negative (`none`) labels carry it, and they carry it because they are
+     * the one label source that cannot be derived from a mechanical property of
+     * the URL. `url-permalink` is checkable by reading the path; "this page has
+     * no publication date" is a claim about the whole document, and a claim of
+     * that shape is exactly what CONTRIBUTING.md forbids a model to make.
+     *
+     * `pending` entries are harvested, fetched and shown, but excluded from
+     * every score unless `--include-unreviewed` is passed. That default is the
+     * point: an unreviewed negative that says a page has no date, when it has
+     * one, hands a free false positive to every tool measured — including ours,
+     * which would flatter us. Promotion to `confirmed` is a human edit.
+     */
+    review?: 'pending' | 'confirmed' | 'rejected'
   }
 
   /**
@@ -159,6 +175,28 @@ export function splitOf(host: string): Split {
   if (digest[0] % 3 === 0) return 'test'
   return digest[1] % 4 === 0 ? 'diag' : 'dev'
 }
+
+/**
+ * A negative example: the page has no publication date, and that is the answer.
+ *
+ * Kept as a predicate rather than an inline `=== null` because three scorers and
+ * two enrichment passes have to agree about it, and a filter that reads
+ * `entry.label.published` truthily — which is what every one of them did — drops
+ * these entries silently instead of scoring them.
+ */
+export const isNegative = (entry: CorpusEntry): boolean =>
+  entry.label.source === 'none' || entry.label.published === null
+
+/**
+ * A negative a person has signed off on. The only kind any scorer counts.
+ *
+ * The gate is default-closed because the failure is asymmetric: an unreviewed
+ * negative that is wrong gives every tool a false positive on a page that
+ * actually had a date, and it does so in the direction that flatters this
+ * project. A missing negative costs coverage; a wrong one costs correctness.
+ */
+export const isScorableNegative = (entry: CorpusEntry): boolean =>
+  isNegative(entry) && entry.label.review === 'confirmed'
 
 export const entryId = (url: string): string =>
   createHash('sha1').update(url).digest('hex').slice(0, 16)

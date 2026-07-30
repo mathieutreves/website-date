@@ -36,9 +36,15 @@ the caller cannot tell the difference. Same for confidence: `declared` means the
 site said it in machine-readable metadata, not that we are fairly sure.
 
 **"No date" is a correct answer.** Five of the seventeen fixtures have no
-publication date and the corpus scores true negatives. A change that lifts
-accuracy by guessing more often is not an improvement, and the scoring will say
-so.
+publication date, and the scorers count a date invented on an undated page as a
+false positive. A change that lifts accuracy by guessing more often is not an
+improvement.
+
+Know which corpus can say so, though. The permalink corpus is harvested *by*
+dated permalink, so every page in it has a date and abstaining there can only
+lose points — the negative tier that fixes this is
+`scripts/corpus/harvest-negative.ts`, and its labels are `review: 'pending'`
+until a person confirms them. Which brings up the rule below.
 
 **Re-measure anything you claim.** `./scripts/validate.sh` regenerates every
 number in the README and the docs, and writes both the raw per-page JSONL and
