@@ -229,6 +229,23 @@ const rate = (n: number, d: number): string => (d === 0 ? '   —  ' : `${((n / 
  * in, `fp` joins the denominator of precision — an invented date is exactly as
  * wrong as a misread one — and `tn` joins the numerator of accuracy.
  */
+/**
+ * Three rates, because `partial` is neither a hit nor a miss and collapsing it
+ * into either one is a claim rather than a measurement.
+ *
+ * A `partial` is a *correct* answer at a coarser precision than the label: the
+ * page said "2015", the label says 2015-06-12, and "2015" is true. Scoring it as
+ * wrong punishes a tool for declining to invent a day — which is the behaviour
+ * this library is built around and the README boasts about, so counting it as a
+ * failure was the tables contradicting the design.
+ *
+ * `accuracy` stays exact-only, so it remains comparable with every published
+ * figure in this field. `useful` credits partials, and is the number that
+ * answers "did the tool tell me something true". Competitors score 0 in the
+ * `part` column structurally — none of them will emit `2015` rather than
+ * `2015-01-01` — so on their rows the two rates are identical by construction,
+ * which is itself the point.
+ */
 function line(name: string, t: Tally): string {
   const n = t.exact + t.partial + t.wrong + t.missed + t.tn + t.fp
   const answered = t.exact + t.partial + t.wrong + t.fp
@@ -238,12 +255,13 @@ function line(name: string, t: Tally): string {
     `${String(t.exact).padStart(6)} ${String(t.partial).padStart(5)} ` +
     `${String(t.wrong).padStart(6)} ${String(t.missed).padStart(5)} ` +
     `${String(t.tn).padStart(5)} ${String(t.fp).padStart(4)} | ` +
-    `${rate(t.exact, answered).padStart(8)} ${rate(correct, n).padStart(9)}`
+    `${rate(t.exact, answered).padStart(8)} ${rate(correct, n).padStart(9)}` +
+    ` ${rate(correct + t.partial, n).padStart(7)}`
   )
 }
 
 const HEADER =
-  '  stratum                        n  exact  part  wrong  miss    TN   FP | precision  accuracy'
+  '  stratum                        n  exact  part  wrong  miss    TN   FP | precision  accuracy  useful'
 
 function table(title: string, groups: Map<string, Tally>): void {
   console.log(`\n${title}\n`)
