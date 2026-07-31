@@ -5,6 +5,7 @@ import {
   MONTH_NAME_PATTERN,
   monthFromName,
   normaliseDigits,
+  ORDINAL_SUFFIX,
 } from './locale.js'
 
 export type ParsedDate = {
@@ -210,12 +211,20 @@ function parseNumeric(input: string, dayFirst: DayFirstHint): ParsedDate | null 
  */
 
 /**
- * "12 March 2024", "12 marzo 2024", "12 de marzo de 2024", and the German
- * ordinal form "19. Juli 2014" — the dot after the day is an ordinal marker,
- * not a separator.
+ * "12 March 2024", "12 marzo 2024", "12 de marzo de 2024", "12th of March 2024",
+ * and the German ordinal form "19. Juli 2014" — the dot after the day is an
+ * ordinal marker, not a separator.
+ *
+ * The day carries an ordinal suffix and the connector accepts `of` as well as
+ * `de`, and both matter for the same reason. Without them "12th of March 2024"
+ * fails here, falls through to {@link MONTH_YEAR_TEXTUAL}, and is reported as
+ * `2024-03` — a day the page stated in plain English, dropped, and returned at a
+ * precision the page never used. This regex is the parser and
+ * `extract/patterns.ts` is the finder; a form has to be in both, which is
+ * exactly the trap this pair fell into.
  */
 const DAY_FIRST_TEXTUAL = new RegExp(
-  `\\b(\\d{1,2})\\.?\\s+(?:de\\s+)?(${MONTH_NAME_PATTERN})\\.?\\s+(?:de\\s+|del\\s+)?(\\d{4})\\b`,
+  `\\b(\\d{1,2})${ORDINAL_SUFFIX}\\.?\\s+(?:de\\s+|of\\s+)?(${MONTH_NAME_PATTERN})\\.?\\s+(?:de\\s+|del\\s+)?(\\d{4})\\b`,
   'i',
 )
 

@@ -10,8 +10,14 @@ export const DATE_BODY = [
   // CJK first: `2024年3月12日` has no separators the Latin patterns would find.
   CJK_DATE_PATTERN,
   // "12 March 2024", "12 de marzo de 2024", "19. Juli 2014", "12 марта 2024",
-  // "le 1er mars 2013"
-  `\\d{1,2}${ORDINAL_SUFFIX}\\.?\\s+(?:de\\s+)?(?:${MONTH_NAME_PATTERN})\\.?\\s+(?:de\\s+|del\\s+|r\\.?\\s*)?\\d{4}`,
+  // "le 1er mars 2013", "12th of March 2024"
+  //
+  // The connector before the month name is what makes this multilingual: Spanish
+  // and Portuguese write "de", English writes "of". Without `of` the whole
+  // alternative fails and the text falls through to the month-year pattern
+  // below, which matches "March 2024" and silently returns month precision — a
+  // day the page stated, dropped, and reported as though the page never gave it.
+  `\\d{1,2}${ORDINAL_SUFFIX}\\.?\\s+(?:de\\s+|of\\s+)?(?:${MONTH_NAME_PATTERN})\\.?\\s+(?:de\\s+|del\\s+|r\\.?\\s*)?\\d{4}`,
   // "March 12, 2024", "November 1st, 2012"
   `(?:${MONTH_NAME_PATTERN})\\.?\\s+\\d{1,2}${ORDINAL_SUFFIX},?\\s+\\d{4}`,
   // "March 2024"
@@ -81,8 +87,23 @@ export const NOT_A_DATE = new RegExp(
  * `a` is included because permalink-as-date is a widespread byline pattern —
  * off-site links are filtered separately by {@link isBorrowedContent}.
  */
+/**
+ * `cite`, `dt`, `th`, `caption` and `summary` are here on evidence rather than
+ * on principle.
+ *
+ * `<cite>` is the element HTML actually provides for attribution, and it is what
+ * a byline is marked up as when a theme bothers: wufoo.com writes
+ * `<cite><b>By Kevin Hale</b> &middot; June 22nd, 2009</cite>` and lost every
+ * page in the corpus to its absence — 7 of the 12 remaining dev misses were this
+ * one tag. htmldate's fast path misses it too; its extensive path only catches
+ * it by scanning `.//*`.
+ *
+ * The others are the label/value containers `extractLabelledPairs` already reads
+ * as *labels*; without them here, the date sitting in the matching cell is never
+ * scanned as a value.
+ */
 export const TEXT_CANDIDATE_SELECTOR =
-  'p, span, div, li, small, em, strong, b, i, time, abbr, address, figcaption, td, dd, label, a, h1, h2, h3, h4, h5, h6'
+  'p, span, div, li, small, em, strong, b, i, time, abbr, address, figcaption, td, dd, label, a, cite, dt, th, caption, summary, h1, h2, h3, h4, h5, h6'
 
 /** The same list as a set, for {@link textCandidates}. */
 const TEXT_CANDIDATE_TAGS = new Set(
