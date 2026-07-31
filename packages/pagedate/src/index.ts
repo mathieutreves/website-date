@@ -7,6 +7,7 @@ import { extractBareText } from './extract/bareText.js'
 import { extractFeed } from './extract/feed.js'
 import { extractHttpHeaders } from './extract/headers.js'
 import { extractImagePath } from './extract/imagePath.js'
+import { isBodyScraped, isIndexPage } from './extract/indexPage.js'
 import { extractInlineState } from './extract/inlineState.js'
 import { extractJsonLd } from './extract/jsonld.js'
 import { extractPageScan } from './extract/pageScan.js'
@@ -15,7 +16,7 @@ import { extractMeta } from './extract/meta.js'
 import { extractSitemap } from './extract/sitemap.js'
 import { extractTimeTags } from './extract/timeTags.js'
 import { extractUrlSlug } from './extract/urlSlug.js'
-import { extractVisibleText } from './extract/visibleText.js'
+import { extractLabelledPairs, extractVisibleText } from './extract/visibleText.js'
 import { resolveCandidates, type ResolveOptions } from './resolve.js'
 
 export type { DayFirstHint } from './parse/locale.js'
@@ -128,6 +129,12 @@ export function extractFromDocument(
     // exactly the ones with no metadata to read.
     candidates.push(...safely(() => extractInlineState(doc, opts)))
     candidates.push(...safely(() => extractVisibleText(doc, parsedUrl, opts)))
+    // A field name in one element labelling a date in the next. Structurally
+    // anchored rather than adjacency-anchored, so it reaches the metadata panels
+    // that `extractVisibleText` cannot see — including ones the furniture rules
+    // exclude, which is safe only because the label is explicit. See the note on
+    // `extractLabelledPairs`.
+    candidates.push(...safely(() => extractLabelledPairs(doc, parsedUrl, opts)))
 
     // Unlabelled text is the noisiest signal, so by default it runs only when
     // the labelled paths found nothing to say.
@@ -150,9 +157,23 @@ export function extractFromDocument(
     }
   }
 
-  return options.minConfidence
-    ? candidates.filter((c) => atLeast(c.confidence, options.minConfidence!))
+  // A listing's body is other documents' metadata, so the extractors that read
+  // the body are reading someone else's date. Applied here rather than inside
+  // each extractor so the rule is stated once, and after collection so the
+  // `nothingLabelled` gate above still sees what the page really contains.
+  // `safely` for the same reason every extractor above uses it: this walks the
+  // DOM, and a document nested deeper than the parser can recurse throws a
+  // RangeError out of `querySelectorAll`. Failing closed here means "not an
+  // index", which suppresses nothing — the conservative direction, since a
+  // wrong suppression deletes a correct answer invisibly.
+  const looksLikeIndex = safely(() => (isIndexPage(doc) ? [true] : [])).length > 0
+  const filtered = looksLikeIndex
+    ? candidates.filter((c) => !isBodyScraped(c.source))
     : candidates
+
+  return options.minConfidence
+    ? filtered.filter((c) => atLeast(c.confidence, options.minConfidence!))
+    : filtered
 }
 
 /**
