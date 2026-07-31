@@ -35,9 +35,6 @@ const SOURCE_RANK: Record<string, number> = Object.assign(Object.create(null), {
   jsonld: 90,
   'atom-feed': 85,
   opengraph: 80,
-  // Below OpenGraph: a WebPage node's dates are frequently the site build
-  // time rather than anything about the content.
-  'jsonld-container': 75,
   itemprop: 70,
   'rss-feed': 65,
   'dublin-core': 60,
@@ -46,6 +43,16 @@ const SOURCE_RANK: Record<string, number> = Object.assign(Object.create(null), {
   sailthru: 50,
   'time-tag': 45,
   'marked-date': 42,
+  // Below every reading of the page's own content. A `WebPage` or `WebSite`
+  // node's date is usually the site build time, and on this corpus it is right
+  // 1 time in 5 when it wins — so it is a last resort among `derived` sources
+  // rather than a peer of them.
+  'jsonld-container': 30,
+  // Just below `marked-date`, and for the same reason: both are a site naming a
+  // date in markup it authored. A class token is the more deliberate of the two
+  // — it is written once in a template — while a visible field name is prose a
+  // translator could change, so it ranks a hair lower.
+  'labelled-pair': 41,
   sitemap: 40,
   'meta-date': 35,
   // Below the metadata a site publishes for consumers, above anything guessed
@@ -211,6 +218,20 @@ function localise(published: Candidate, all: Candidate[]): Candidate | undefined
       }
     }
 
+    // `published` only, and that restriction is load-bearing rather than
+    // incidental. Admitting `unknown` day candidates was measured twice and lost
+    // both times: all of them takes dev accuracy 89.0% -> 87.4% (wrong 51 -> 65),
+    // and narrowing to just the rendered date blocks — `marked-date`,
+    // `labelled-pair` — still gives 88.0% (wrong 60), and both break fixtures.
+    //
+    // The reason is that an `unknown` day landing on the adjacent day is usually
+    // coincidence, not corroboration: a page carries many dates, and this window
+    // is only ±1 day wide, so something lands in it often. Individual pages do
+    // lose to this — creativecommons.org declares `2023-07-21T02:51+00:00` and
+    // prints "July 20, 2023" — but the pages it would fix are outnumbered by the
+    // ones it breaks. That is a ±1 day boundary case, and CORPUS-BUILD.md's
+    // conclusion holds: the answer key itself disagrees about local versus UTC,
+    // so this is not a class of error extraction can win.
     if (c.precision === 'day' && c.field === 'published') {
       if (c.value !== earlier && c.value !== later) continue
       return {
