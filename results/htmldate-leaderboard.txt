@@ -3,18 +3,18 @@ SAME 55 PAGES, SAME METRIC, CURRENT VERSIONS — publication date only
 
   tool                            exact  part  wrong  miss | precision  recall  accuracy  F-score   ms/page
   ---------------------------------------------------------------------------------------------------------
-    htmldate (extensive)            53     0      2     0 |   96.4%   100.0%    96.4%    98.1%     73.98
-    htmldate (fast)                 45     0      1     9 |   97.8%    83.3%    81.8%    90.0%     11.18
-  ▸ pagedate (standard)             37     1      9     8 |   78.7%    82.2%    67.3%    80.4%      3.74
-  ▸ pagedate (fast)                 14     3      4    34 |   66.7%    29.2%    25.5%    40.6%      1.58
-    date_guesser                    14     0      8    33 |   63.6%    29.8%    25.5%    40.6%    113.25
-    metascraper (with parse)        13     0     13    29 |   50.0%    31.0%    23.6%    38.2%     21.89
-    metascraper (rules only)        13     0     13    29 |   50.0%    31.0%    23.6%    38.2%      6.71
-    newspaper4k                     11     0      5    39 |   68.8%    22.0%    20.0%    33.3%    143.66
-    articleDateExtractor            11     0      9    35 |   55.0%    23.9%    20.0%    33.3%     40.99
-    @extractus/article-extractor     8     0     10    37 |   44.4%    17.8%    14.5%    25.4%     87.64
-    unfluff                          8     0      1    46 |   88.9%    14.8%    14.5%    25.4%    118.73
-    goose3                           4     0      2    49 |   66.7%     7.5%     7.3%    13.6%    133.80
+    htmldate (extensive)            53     0      2     0 |   96.4%   100.0%    96.4%    98.1%     80.55
+    htmldate (fast)                 45     0      1     9 |   97.8%    83.3%    81.8%    90.0%     11.16
+  ▸ pagedate (standard)             36     1      9     9 |   78.3%    80.0%    65.5%    79.1%      5.02
+  ▸ pagedate (fast)                 14     3      4    34 |   66.7%    29.2%    25.5%    40.6%      2.75
+    date_guesser                    14     0      8    33 |   63.6%    29.8%    25.5%    40.6%    108.43
+    metascraper (with parse)        13     0     13    29 |   50.0%    31.0%    23.6%    38.2%     21.88
+    metascraper (rules only)        13     0     13    29 |   50.0%    31.0%    23.6%    38.2%      7.19
+    newspaper4k                     11     0      5    39 |   68.8%    22.0%    20.0%    33.3%    195.35
+    articleDateExtractor            11     0      9    35 |   55.0%    23.9%    20.0%    33.3%     41.69
+    @extractus/article-extractor     8     0     10    37 |   44.4%    17.8%    14.5%    25.4%     87.21
+    unfluff                          8     0      1    46 |   88.9%    14.8%    14.5%    25.4%    119.97
+    goose3                           4     0      2    49 |   66.7%     7.5%     7.3%    13.6%    130.63
 
 
   SAME RUNS, 6 GOLD ENTRIES CORRECTED (see corpus-external/corrections.json)
@@ -23,7 +23,7 @@ SAME 55 PAGES, SAME METRIC, CURRENT VERSIONS — publication date only
   ---------------------------------------------------------------------------------------------------------
     htmldate (fast)                 47     0      3     5 |   94.0%    90.4%    85.5%    92.2%     +3.6pt
     htmldate (extensive)            47     0      8     0 |   85.5%   100.0%    85.5%    92.2%    -10.9pt
-  ▸ pagedate (standard)             42     1      8     4 |   82.4%    91.3%    76.4%    86.6%     +9.1pt
+  ▸ pagedate (standard)             41     1      8     5 |   82.0%    89.1%    74.5%    85.4%     +9.1pt
   ▸ pagedate (fast)                 19     3      4    29 |   73.1%    39.6%    34.5%    51.4%     +9.1pt
     date_guesser                    18     0      8    29 |   69.2%    38.3%    32.7%    49.3%     +7.3pt
     metascraper (with parse)        18     0     13    24 |   58.1%    42.9%    32.7%    49.3%     +9.1pt

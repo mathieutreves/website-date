@@ -3,9 +3,9 @@
 
   mode        ms/page   exact  partial  wrong  missed   accuracy
   --------------------------------------------------------------
-  fast          0.92      14        3      4      34      25.5%
-  standard      3.17      37        1      9       8      67.3%
-  extensive     4.18      38        1     10       6      69.1%
+  fast          1.73      14        3      4      34      25.5%
+  standard      4.61      36        1      9       9      65.5%
+  extensive     5.71      37        1     10       7      67.3%
 
   Timings exclude HTML parsing, which an extension does not pay — the browser
   has already produced the DOM.

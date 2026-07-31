@@ -1,40 +1,31 @@
-HELD-OUT TEST SPLIT — 253 pages, URL neutralised for every tool
 
-  tool                           exact  wrong  miss | precision  accuracy   ms/page
-  ---------------------------------------------------------------------------------
-    htmldate (extensive)             236     17     0 |     93.3%     93.3%     29.70
->   pagedate (standard)              226     14    13 |     94.2%     89.3%      7.24
->   pagedate (extensive)             226     15    12 |     93.8%     89.3%      8.15
-    htmldate (fast)                  217     11    25 |     95.2%     85.8%      6.85
-    metascraper                      178     41    34 |     81.3%     70.4%     13.93
-    articleDateExtractor             176     13    64 |     93.1%     69.6%     46.16
->   pagedate (fast)                  170      9    74 |     95.0%     67.2%      5.33
-    newspaper4k                      166      5    82 |     97.1%     65.6%    157.98
-    goose3                           155      2    96 |     98.7%     61.3%    114.61
-    @extractus/article-extractor     139     35    79 |     79.9%     54.9%    135.28
-    unfluff                          125      2   126 |     98.4%     49.4%     98.42
-    date_guesser                     114     22   117 |     83.8%     45.1%    158.07
+566 pages
 
-  Hosts are split by hash, so no site in this table appears in the dev split
-  that pagedate was tuned against. The languages that landed here are German,
-  English, French, Italian, Japanese and Dutch.
+  tool                            exact  part  wrong  miss    TN   FP | precision  accuracy  useful   ms/page
+  -----------------------------------------------------------------------------------------------------------
+    htmldate (extensive)           521     0     45     0     0    0 |   92.0%    92.0%    92.0%     23.29
+  ▸ pagedate (extensive)           505     0     38    23     0    0 |   93.0%    89.2%    89.2%     37.25
+  ▸ pagedate (standard)            496     0     37    33     0    0 |   93.1%    87.6%    87.6%     38.04
+    htmldate (fast)                484     0     36    46     0    0 |   93.1%    85.5%    85.5%      7.24
+    articleDateExtractor           403     0     41   122     0    0 |   90.8%    71.2%    71.2%     45.29
+    metascraper                    395     0     87    84     0    0 |   82.0%    69.8%    69.8%     17.48
+  ▸ pagedate (fast)                375     0     19   172     0    0 |   95.2%    66.3%    66.3%     35.13
+    newspaper4k                    364     0     14   188     0    0 |   96.3%    64.3%    64.3%    157.50
+    @extractus/article-extractor   352     0     47   167     0    0 |   88.2%    62.2%    62.2%    122.13
+    goose3                         312     0     11   243     0    0 |   96.6%    55.1%    55.1%    123.12
+    unfluff                        283     0     12   271     0    0 |   95.9%    50.0%    50.0%    114.28
+    date_guesser                   274     0     52   240     0    0 |   84.0%    48.4%    48.4%    144.94
 
-  Sources: bench/bench_corpus.mjs --split test (JS tools, including pagedate)
-           scripts/bench_python.py --corpus permalink --split test (Python tools)
+  precision = of the pages a tool answered, how many it got right — an invented
+              date on an undated page (FP) counts against it exactly as a wrong
+              date does
+  accuracy  = of all pages, how many it got right, counting a correct refusal (TN)
+  useful    = accuracy, plus answers correct at a coarser precision than the
+              label (part) — "2015" against a 2015-06-12 label is true, and is
+              not the same event as finding nothing. No competitor here can
+              score a "part": none of them will emit "2015" rather than an
+              invented "2015-01-01", so their two rates are equal by
+              construction, which is the difference being shown
+  No page in this run lacks a date, so TN and FP are structurally zero and
+  declining to answer can only lose points. Read precision with that in mind.
 
-  htmldate leads on accuracy by 4.0 points and answers every page. pagedate is
-  second, marginally ahead on precision, at a quarter of the per-page cost, and
-  is the only tool here that will decline to answer — the 13 declines are 5.1
-  points it cannot win back on a corpus where every page has a date.
-
-  htmldate is invoked with `original_date=True`, which is the flag that asks for
-  a publication date; every gold label here is one. It is the only tool measured
-  with such a switch — every other exposes a publication date and nothing else.
-
-  Note the pagedate row differs from permalink-pagedate-TEST.txt (230 exact,
-  90.9%). That file is scripts/corpus/score.ts, which blanks the dated permalink
-  only where the page declares it — <link rel="canonical"> and og:url. This
-  harness blanks every date-shaped path in the raw HTML, for every tool alike,
-  because a competitor with no holdOut mechanism would otherwise read the label
-  out of an <a href>. It is the stricter measurement and the one to quote when
-  comparing tools; score.ts is the one to quote for pagedate on its own.

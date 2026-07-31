@@ -1,65 +1,85 @@
 
-1248 manifest entries, 1242 fetched, 399 in split "test", 264 within lag 30d, 253 scored
-  excluded 11 entries whose label appears nowhere in the page (run enrich.ts; --include-unanswerable to keep them)
+4302 manifest entries, 4065 fetched, 1354 in split "test", 636 within lag 30d, 566 scored (566 dated, 0 negative)
+  excluded 70 entries whose label appears nowhere in the page (run enrich.ts; --include-unanswerable to keep them)
+  NO NEGATIVE ENTRIES in this split — precision here cannot see an invented
+  date, and abstaining can only lose points. See docs/CORPUS-BUILD.md.
+  150 proposed negatives are awaiting human review and are NOT scored
+  (node scripts/corpus/review-negative.ts; --include-unreviewed to preview).
 
   *** SCORING THE HELD-OUT SPLIT. Do this once, at the end. ***
 
 === OVERALL (mode=standard, split=test) ===
 
-  stratum                        n  exact  part  wrong  miss | precision  accuracy
-  --------------------------------------------------------------------------------
-  all                          253    230     0     16     7 |    93.5%     90.9%
+  stratum                        n  exact  part  wrong  miss    TN   FP | precision  accuracy  useful
+  ---------------------------------------------------------------------------------------------------
+  all                          566    500     2     38    26     0    0 |    92.6%     88.3%   88.7%
 
 === BY PUBLICATION ERA ===
 
-  stratum                        n  exact  part  wrong  miss | precision  accuracy
-  --------------------------------------------------------------------------------
-  2006                          12      8     0      1     3 |    88.9%     66.7%
-  2009                          29     24     0      4     1 |    85.7%     82.8%
-  2012                          29     25     0      1     3 |    96.2%     86.2%
-  2015                          46     43     0      3     0 |    93.5%     93.5%
-  2018                          39     36     0      3     0 |    92.3%     92.3%
-  2021                          35     35     0      0     0 |   100.0%    100.0%
-  2023                          29     28     0      1     0 |    96.6%     96.6%
-  2025                          28     25     0      3     0 |    89.3%     89.3%
-  2026                           6      6     0      0     0 |   100.0%    100.0%
+  stratum                        n  exact  part  wrong  miss    TN   FP | precision  accuracy  useful
+  ---------------------------------------------------------------------------------------------------
+  2006                          14      7     0      0     7     0    0 |   100.0%     50.0%   50.0%
+  2009                          32     24     0      4     4     0    0 |    85.7%     75.0%   75.0%
+  2012                          46     28     2      8     8     0    0 |    73.7%     60.9%   65.2%
+  2015                         113    101     0      6     6     0    0 |    94.4%     89.4%   89.4%
+  2018                          84     77     0      7     0     0    0 |    91.7%     91.7%   91.7%
+  2021                         102     99     0      3     0     0    0 |    97.1%     97.1%   97.1%
+  2023                          89     84     0      5     0     0    0 |    94.4%     94.4%   94.4%
+  2025                          80     74     0      5     1     0    0 |    93.7%     92.5%   92.5%
+  2026                           6      6     0      0     0     0    0 |   100.0%    100.0%  100.0%
 
 === BY LANGUAGE (from <html lang>) ===
 
-  stratum                        n  exact  part  wrong  miss | precision  accuracy
-  --------------------------------------------------------------------------------
-  de                            47     47     0      0     0 |   100.0%    100.0%
-  en                            36     36     0      0     0 |   100.0%    100.0%
-  fr                            62     61     0      0     1 |   100.0%     98.4%
-  it                            33     30     0      3     0 |    90.9%     90.9%
-  ja                            16     10     0      6     0 |    62.5%     62.5%
-  nl                            30     28     0      2     0 |    93.3%     93.3%
-  unknown                       29     18     0      5     6 |    78.3%     62.1%
+  stratum                        n  exact  part  wrong  miss    TN   FP | precision  accuracy  useful
+  ---------------------------------------------------------------------------------------------------
+  ar                             5      5     0      0     0     0    0 |   100.0%    100.0%  100.0%
+  de                            47     47     0      0     0     0    0 |   100.0%    100.0%  100.0%
+  en                           322    271     2     30    19     0    0 |    89.4%     84.2%   84.8%
+  es                             7      7     0      0     0     0    0 |   100.0%    100.0%  100.0%
+  fr                            66     63     0      0     3     0    0 |   100.0%     95.5%   95.5%
+  it                            52     47     0      3     2     0    0 |    94.0%     90.4%   90.4%
+  ja                            13     10     0      3     0     0    0 |    76.9%     76.9%   76.9%
+  nl                            30     28     0      2     0     0    0 |    93.3%     93.3%   93.3%
+  pt                             1      1     0      0     0     0    0 |   100.0%    100.0%  100.0%
+  ru                             4      4     0      0     0     0    0 |   100.0%    100.0%  100.0%
+  unknown                        2      0     0      0     2     0    0 |      —        0.0%    0.0%
+  zh                            17     17     0      0     0     0    0 |   100.0%    100.0%  100.0%
 
 === BY CAPTURE LAG ===
 
-  stratum                        n  exact  part  wrong  miss | precision  accuracy
-  --------------------------------------------------------------------------------
-  lag 0-1d                     164    153     0     10     1 |    93.9%     93.3%
-  lag 2-7d                      70     60     0      5     5 |    92.3%     85.7%
-  lag 8-30d                     19     17     0      1     1 |    94.4%     89.5%
+  stratum                        n  exact  part  wrong  miss    TN   FP | precision  accuracy  useful
+  ---------------------------------------------------------------------------------------------------
+  lag 0-1d                     340    317     1     19     3     0    0 |    94.1%     93.2%   93.5%
+  lag 2-7d                     158    128     1     18    11     0    0 |    87.1%     81.0%   81.6%
+  lag 8-30d                     68     55     0      1    12     0    0 |    98.2%     80.9%   80.9%
 
 === WHERE THE CORRECT ANSWERS CAME FROM ===
 
-  jsonld                        98
-  opengraph                     48
-  marked-date                   44
-  time-tag                      15
-  text-date                      9
-  visible-text                   6
+  jsonld                       208
+  opengraph                     95
+  marked-date                   88
+  time-tag                      44
+  text-date                     24
+  visible-text                  16
+  meta-date                     16
   image-path                     5
-  meta-date                      5
+  sailthru                       3
+  itemprop                       1
 
-=== WORST HOSTS (wrong + missed) ===
+=== WORST HOSTS (wrong + missed + invented) ===
 
-  japanese.engadget.com             9 of   31
-  engadget.com                      4 of   27
-  linuxfr.org                       4 of   12
+  utexas.edu                        6 of    9
+  xe.com                            6 of    9
+  engadget.com                      4 of   20
+  cnbc.com                          4 of   22
+  ox.ac.uk                          4 of   17
+  bazaarvoice.com                   4 of    4
+  linuxfr.org                       3 of   11
   repubblica.it                     3 of   33
+  japanese.engadget.com             3 of   18
+  cookielaw.org                     3 of    5
+  archlinux.org                     3 of    3
+  tmz.com                           3 of   18
+  neilpatel.com                     3 of    3
   nrc.nl                            2 of   30
-  lemonde.fr                        1 of   43
+  automattic.com                    2 of    5

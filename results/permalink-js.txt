@@ -1,11 +1,14 @@
 
-475 pages, split=dev, URL neutralised for all tools
+847 pages (847 dated, 0 with no date), split=dev, URL neutralised where the label came from it
 
-  tool                            exact  part  wrong  miss | precision  accuracy   ms/page
-  ----------------------------------------------------------------------------------------
-  pagedate (extensive)             457     0     14     4 |    97.0%    96.2%      7.02
-  pagedate (standard)              456     0     11     8 |    97.6%    96.0%      6.59
-  metascraper                      320     0     86    69 |    78.8%    67.4%     17.84
-  pagedate (fast)                  304     0     12   159 |    96.2%    64.0%      4.84
-  @extractus/article-extractor     232     0     58   185 |    80.0%    48.8%     82.44
-  unfluff                          205     0     28   242 |    88.0%    43.2%     84.59
+  No negative entries in this split: a tool cannot be charged for inventing
+  a date here, and declining can only lose points.
+
+  tool                            exact  part  wrong  miss    TN   FP | precision  accuracy   ms/page
+  ---------------------------------------------------------------------------------------------------
+  pagedate (extensive)             798     0     44     5     0    0 |    94.8%    94.2%      8.24
+  pagedate (standard)              789     0     40    18     0    0 |    95.2%    93.2%      7.53
+  metascraper                      534     0    138   175     0    0 |    79.5%    63.0%     16.80
+  pagedate (fast)                  450     0     27   370     0    0 |    94.3%    53.1%      5.30
+  @extractus/article-extractor     348     0     86   413     0    0 |    80.2%    41.1%     88.33
+  unfluff                          301     0     33   513     0    0 |    90.1%    35.5%     88.38
