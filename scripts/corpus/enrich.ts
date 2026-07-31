@@ -167,12 +167,119 @@ const TLD_LANG: Record<string, string> = {
   jp: 'ja', cn: 'zh', kr: 'ko',
 }
 
+/**
+ * Writing systems that identify a language on sight.
+ *
+ * Order matters. Japanese is tested before Chinese because Japanese text is
+ * mostly CJK ideographs with kana mixed in — testing for ideographs first would
+ * call every Japanese page Chinese. Ukrainian before Russian for the same
+ * reason: it is Cyrillic plus four letters Russian does not have.
+ */
+const SCRIPTS: Array<[string, RegExp]> = [
+  ['ja', /[぀-ゟ゠-ヿ]/g], // kana
+  ['ko', /[가-힯ᄀ-ᇿ]/g], // hangul
+  ['zh', /[一-鿿]/g], // ideographs, after kana and hangul
+  ['uk', /[іїєґІЇЄҐ]/g],
+  ['ru', /[Ѐ-ӿ]/g],
+  ['el', /[Ͱ-Ͽ]/g],
+  ['he', /[֐-׿]/g],
+  ['fa', /[پچژگ]/g],
+  ['ar', /[؀-ۿ]/g],
+  ['hi', /[ऀ-ॿ]/g],
+  ['th', /[฀-๿]/g],
+]
+
+/**
+ * Function words for the Latin-script languages in the corpus.
+ *
+ * Function words rather than content words: they are the highest-frequency
+ * tokens in any text and the least likely to be a borrowed brand name. Scored by
+ * count, so a page needs several hits rather than one — "de" alone appears in
+ * English text as often as in Portuguese.
+ */
+const STOPWORDS: Record<string, string[]> = {
+  en: ['the', 'and', 'of', 'to', 'is', 'that', 'for', 'with', 'this', 'from'],
+  de: ['der', 'die', 'und', 'das', 'ist', 'nicht', 'ein', 'auch', 'mit', 'sich'],
+  fr: ['les', 'des', 'est', 'une', 'pour', 'que', 'dans', 'sur', 'pas', 'avec'],
+  es: ['que', 'los', 'las', 'del', 'una', 'por', 'para', 'con', 'como', 'este'],
+  it: ['che', 'per', 'della', 'sono', 'con', 'una', 'nel', 'alla', 'anche', 'come'],
+  pt: ['que', 'uma', 'para', 'com', 'nao', 'dos', 'como', 'mais', 'pelo', 'seu'],
+  nl: ['het', 'een', 'van', 'niet', 'dat', 'zijn', 'voor', 'met', 'ook', 'aan'],
+  pl: ['nie', 'sie', 'jest', 'что', 'przez', 'oraz', 'tego', 'jako', 'ktory', 'jeden'],
+  sv: ['och', 'att', 'som', 'for', 'med', 'den', 'har', 'inte', 'pa', 'ar'],
+  da: ['og', 'det', 'som', 'til', 'med', 'ikke', 'har', 'den', 'af', 'for'],
+  no: ['og', 'det', 'som', 'til', 'med', 'ikke', 'har', 'den', 'av', 'for'],
+  fi: ['ja', 'on', 'ei', 'etta', 'joka', 'sen', 'ovat', 'myos', 'kuin', 'han'],
+  cs: ['je', 'na', 'se', 'ale', 'pro', 'jako', 'jsou', 'nebo', 'tak', 'ktery'],
+  tr: ['bir', 've', 'bu', 'ile', 'icin', 'daha', 'olarak', 'gibi', 'kadar', 'sonra'],
+  id: ['yang', 'dan', 'dengan', 'untuk', 'dari', 'pada', 'tidak', 'ini', 'akan', 'adalah'],
+  ro: ['este', 'care', 'pentru', 'din', 'sunt', 'mai', 'sau', 'dar', 'cu', 'ca'],
+  hu: ['hogy', 'nem', 'egy', 'volt', 'meg', 'csak', 'majd', 'mint', 'ezt', 'ami'],
+  vi: ['va', 'cua', 'khong', 'duoc', 'nhung', 'cho', 'trong', 'nguoi', 'mot', 'nay'],
+}
+
+/**
+ * Language from the page's own text, when the markup does not say.
+ *
+ * `<html lang>` is right when it is present and it is the first thing tried.
+ * When it is absent the old fallback was the TLD, which puts every `.com` in
+ * one bucket regardless of what it publishes — and that bucket was the corpus's
+ * second-worst stratum while containing `japanese.engadget.com` and `cctv.com`.
+ * A stratum that mixes six languages together cannot answer the question the
+ * language table exists to answer.
+ *
+ * This is deliberately a *stratum* label and not an answer key. It decides how
+ * results are grouped for reporting, never what the right date is, so a
+ * mechanical classifier is appropriate here in a way it would not be for
+ * `label.published` — see CONTRIBUTING.md.
+ */
+function detectFromText(html: string): string | null {
+  const text = html
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .slice(0, 300_000)
+
+  // A script hit is decisive: no amount of English boilerplate makes a page with
+  // 400 kana characters an English page. The floor rejects the stray emoji or
+  // the one Chinese word in a font stack.
+  for (const [lang, pattern] of SCRIPTS) {
+    const hits = text.match(pattern)?.length ?? 0
+    if (hits >= 40) return lang
+  }
+
+  const words = text.toLowerCase().match(/[a-zà-ÿ]{2,}/g)
+  if (!words || words.length < 60) return null
+  const counts = new Map<string, number>()
+  for (const word of words) counts.set(word, (counts.get(word) ?? 0) + 1)
+
+  let best: string | null = null
+  let bestScore = 0
+  for (const [lang, list] of Object.entries(STOPWORDS)) {
+    let score = 0
+    for (const w of list) score += counts.get(w) ?? 0
+    if (score > bestScore) {
+      bestScore = score
+      best = lang
+    }
+  }
+  // A handful of hits is chance. Requiring a real count is what keeps a page of
+  // product names from being assigned a language at all.
+  return bestScore >= 12 ? best : null
+}
+
 function detectLang(html: string, entry: CorpusEntry): string {
   const attr = /<html[^>]*\slang\s*=\s*["']?([a-zA-Z]{2,3})(?:[-_][a-zA-Z]+)?/i.exec(html)
   if (attr?.[1]) return attr[1].toLowerCase()
 
   const og = /property\s*=\s*["']og:locale["'][^>]*content\s*=\s*["']([a-zA-Z]{2,3})/i.exec(html)
   if (og?.[1]) return og[1].toLowerCase()
+
+  // Before the TLD, not after: the TLD is a guess about the registrar and the
+  // text is evidence about the document. `.com` has no language at all, which is
+  // why 606 pages had none.
+  const fromText = detectFromText(html)
+  if (fromText) return fromText
 
   return TLD_LANG[entry.strata.tld] ?? 'unknown'
 }
