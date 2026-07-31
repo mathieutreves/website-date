@@ -62,9 +62,42 @@ export type {
  */
 const DEFAULT_MAX_HTML = 10 * 1024 * 1024
 
+/**
+ * Raw-text elements whose tag name is lowercased before parsing.
+ *
+ * Works around a bug in node-html-parser 9.0.0: when a raw-text element's
+ * opening and closing tag differ in case — `<SCRIPT …>` closed by `</script>`,
+ * which is how a lot of pre-2013 markup is written — the parser never finds the
+ * close and consumes the rest of the document as script content. Minimal repro:
+ *
+ * ```html
+ * <SCRIPT>var a=1;</script><p>after</p>   // <p> is lost
+ * <script>var a=1;</SCRIPT><p>after</p>   // <p> is lost
+ * ```
+ *
+ * Matching case parses correctly in either case, so it is the mismatch and not
+ * the uppercase that breaks it. HTML tag names are case-insensitive, so this is
+ * a spec violation; linkedom handles all four spellings.
+ *
+ * It is not a rounding error. `techtarget.com` gives 65 kB of HTML that becomes
+ * **three elements**, and the extractors then correctly report no date on a page
+ * that has one. Across the corpus, 14 of 4131 documents over 5 kB (0.34%) parse
+ * into fewer than 20 elements, and 8 of 4215 resolve to a different date than
+ * linkedom — every one of them a page added in the Tranco harvest, which is why
+ * a parity check that had passed for a year started failing.
+ *
+ * Only the tag name is rewritten, never attributes or content, so the bytes the
+ * extractors read are unchanged apart from the spelling of four tag names.
+ */
+const RAW_TEXT_TAG = /<(\/?)(script|style|textarea|title)\b/gi
+
 /** Parse an HTML string into a Document the extractors can read. */
 export function parseHtml(html: string, maxLength: number = DEFAULT_MAX_HTML): Document {
-  return parseNodeHtml(html.length > maxLength ? html.slice(0, maxLength) : html) as unknown as Document
+  const capped = html.length > maxLength ? html.slice(0, maxLength) : html
+  const normalised = capped.replace(RAW_TEXT_TAG, (_m, slash: string, tag: string) =>
+    `<${slash}${tag.toLowerCase()}`,
+  )
+  return parseNodeHtml(normalised) as unknown as Document
 }
 
 /**

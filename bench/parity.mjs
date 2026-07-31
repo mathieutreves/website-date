@@ -28,8 +28,8 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
 import { parseHTML } from 'linkedom'
-import { parse } from 'node-html-parser'
 import { extractFromDocument, resolveCandidates } from '../packages/pagedate/dist/index.js'
+import { parseHtml } from '../packages/pagedate/dist/node/index.js'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(HERE, '..')
@@ -50,7 +50,18 @@ const run = (doc, url) => {
 }
 
 /** The same options the shipped Node entry point passes. */
-const asNodeHtml = (html) => parse(html, { blockTextElements: { script: true, style: true } })
+/**
+ * The library's own `parseHtml`, not `parse` from the package.
+ *
+ * Calling node-html-parser directly here measured a parser the Node path does
+ * not ship: `parseHtml` caps document length and lowercases raw-text tag names
+ * to work around a node-html-parser bug where `<SCRIPT>` closed by `</script>`
+ * swallows the rest of the document. With the raw parser this check reported 8
+ * disagreements that the shipped path does not have — it was flagging a bug in
+ * code no caller runs, which is the same mistake in the opposite direction from
+ * the one the file was written to prevent.
+ */
+const asNodeHtml = (html) => parseHtml(html)
 
 async function loadHtmldate() {
   const dir = join(ROOT, 'corpus-external', 'htmldate')

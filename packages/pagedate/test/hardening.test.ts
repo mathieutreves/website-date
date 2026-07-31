@@ -293,6 +293,29 @@ describe('nodeEnv transport policy', () => {
   })
 })
 
+describe('raw-text tags whose opening and closing case disagree', () => {
+  // node-html-parser 9.0.0 never finds the close when the case differs and eats
+  // the rest of the document. `techtarget.com` turned 65 kB into three elements,
+  // and the extractors then honestly reported no date on a page that has one.
+  // `parseHtml` lowercases the four raw-text tag names to work around it; these
+  // fail if that workaround is removed, or if a parser bump makes it unnecessary
+  // and someone drops it without checking.
+  for (const [name, markup] of [
+    ['upper open, lower close', '<SCRIPT>var a=1;</script>'],
+    ['lower open, upper close', '<script>var a=1;</SCRIPT>'],
+    ['mixed case style', '<Style>a{color:red}</STYLE>'],
+    ['upper title', '<TITLE>t</title>'],
+  ] as const) {
+    it(`does not swallow the document: ${name}`, () => {
+      const doc = documentFrom(
+        `<html><head>${markup}</head><body><article><time datetime="2024-03-12">then</time></article></body></html>`,
+      )
+      const candidates = extractFromDocument(doc, 'https://example.com/post', {})
+      expect(candidates.some((c) => c.value.startsWith('2024-03-12'))).toBe(true)
+    })
+  }
+})
+
 function cand(over: Partial<Candidate> & { value: string; source: string }): Candidate {
   return {
     field: 'published',
