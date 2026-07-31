@@ -122,7 +122,18 @@ export function extractJsonLd(doc: Document, opts: ParseOptions = {}): Candidate
           // on the WebPage. Distinguishing them by source rather than by a
           // note means ranking can actually act on it.
           source: isArticle ? 'jsonld' : 'jsonld-container',
-          confidence: 'declared',
+          // A container node's date is `derived`, not `declared`. The site did
+          // state it in machine-readable metadata, but it stated it about the
+          // *page* rather than the article on it, and measured across dev+diag
+          // that distinction is the difference between 98.7% (jsonld on an
+          // Article) and 20.0% (jsonld-container) when the source wins.
+          //
+          // Confidence is the outer sort key, so leaving this at `declared` let
+          // a signal that is wrong four times in five outrank `time-tag` and
+          // `visible-text`, both of which are right every time they win here.
+          // The old `SOURCE_RANK` demotion could not fix that: it only breaks
+          // ties inside a tier.
+          confidence: isArticle ? 'declared' : 'derived',
           note: `schema.org ${key} on ${types[0] ?? 'node'}${isArticle ? '' : ' (container type)'}`,
         })
       }
