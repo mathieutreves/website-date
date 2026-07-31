@@ -17,9 +17,12 @@
  * pagedate for every candidate and see whether the label is among them — marks
  * exactly the pages pagedate fails on as "unanswerable", then excludes them, and
  * reports a higher number. That is circular, and it is how a benchmark quietly
- * starts flattering its author. So this is a plain string search over the raw
- * HTML for the label date in every rendering a page plausibly uses, in the
- * languages the corpus actually contains.
+ * starts flattering its author. So this is a plain string search for the label
+ * date in every rendering a page plausibly uses, in the languages the corpus
+ * actually contains.
+ *
+ * It searches the part of the document a date extractor could legitimately read
+ * a date *from* — see {@link recoverableHaystack} — rather than the raw bytes.
  *
  * Sets `strata.labelInPage`. Nothing is deleted: the scorer decides what to do.
  *
@@ -99,6 +102,43 @@ function appearsIn(haystack: string, form: string): boolean {
     if (!DIGIT.test(before) && !DIGIT.test(after)) return true
   }
   return false
+}
+
+/**
+ * The part of a document a date extractor could legitimately read a date from.
+ *
+ * `labelInPage` decides whether an entry is scoreable at all, so what counts as
+ * "in the page" is not a detail — it is the line between a tool failing and a
+ * tool being punished for refusing to invent. Searching the raw HTML draws that
+ * line in the wrong place: `dhs.gov` carries `class="section-blog-2009-02-11"`,
+ * `ilpost.it` and `forbes.com` link to neighbouring posts by dated permalink,
+ * and every one of those makes the flag true on a page whose publication date is
+ * nowhere a reader or a parser can see it.
+ *
+ * Measured, that was not an edge case: of the dev misses where pagedate produced
+ * no candidate at all, **none** had the label in visible text. 19 of 27 had it
+ * only in an attribute or class name — the URL the corpus took the label from,
+ * leaking back in as furniture — and the corpus was scoring all of them as
+ * extraction failures.
+ *
+ * So the haystack is visible text plus the attributes that actually carry dates:
+ * `content`, `datetime`, and the `<script type="application/ld+json">` bodies
+ * JSON-LD lives in. `class`, `id`, `href` and `src` are excluded by
+ * construction, because a date in any of them is a routing artifact rather than
+ * a statement about when the document was published.
+ */
+function recoverableHaystack(html: string): string {
+  const jsonLd = [...html.matchAll(/<script[^>]+ld\+json[^>]*>([\s\S]*?)<\/script>/gi)]
+    .map((m) => m[1])
+    .join(' ')
+  const dateAttrs = [...html.matchAll(/\b(?:content|datetime)\s*=\s*["']([^"']*)["']/gi)]
+    .map((m) => m[1])
+    .join(' ')
+  const visible = html
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+  return `${visible} ${dateAttrs} ${jsonLd}`
 }
 
 /** Every plausible rendering of a date, as substrings to look for. */
@@ -321,7 +361,9 @@ async function main(): Promise<void> {
     // Strip the URL itself out of the haystack: many pages link to themselves,
     // and finding the date there is finding the URL again.
     const withoutSelf = html.split(fold(new URL(entry.url).pathname)).join(' ')
-    const found = renderings(entry.label.published).some((form) => appearsIn(withoutSelf, form))
+    const found = renderings(entry.label.published).some((form) =>
+      appearsIn(recoverableHaystack(withoutSelf), form),
+    )
 
     entry.strata.labelInPage = found
     if (found) present++
