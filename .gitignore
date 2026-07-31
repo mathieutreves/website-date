@@ -25,8 +25,10 @@ apps/extension/screenshots/
 .vscode/*
 !.vscode/extensions.json
 
-# Local Python venv for the htmldate comparison
+# Local Python venv for the htmldate comparison, and the bytecode its scripts
+# leave behind
 .venv-eval/
+__pycache__/
 
 # Competitor packages for benchmarking, installed on demand
 bench/node_modules/
