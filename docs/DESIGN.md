@@ -310,6 +310,41 @@ Adapter output would be `declared` confidence and short-circuit nothing — gene
 
 Conflict detection is linear in the number of candidates, not quadratic. A page repeating one declared date 3000 times is an ordinary input from the open web, and `test/hardening.test.ts` holds the bound.
 
+### 4.8a Listings are not documents
+
+A homepage, a section front and a tag archive carry dozens of dates and own none
+of them. Every extractor that reads the body is built to find a date *near the
+content*, and on a listing there is no content to be near — so the `<time>` in
+the first card reads exactly like a byline, and the newest item's date is
+returned as the page's own.
+
+`isIndexPage` (`src/extract/indexPage.ts`) suppresses the body-scraped sources on
+those pages. It is built from positive evidence in both directions: an explicit
+`og:type=article` or a JSON-LD `Article` type, or an article-body container, ends
+the test immediately; what remains has to clear a weight threshold assembled from
+`og:type=website`, twelve or more headings, ten or more `<time>` elements, and
+three or more sibling `<article>` elements. Measured across the corpus, JSON-LD
+`Article` separates articles from listings 43% to 1%, and `og:type=article` 77%
+to 12%.
+
+It is deliberately asymmetric. A false "this is an index" deletes the correct
+answer from a real article, and does it invisibly — strictly worse than the
+invented date it exists to prevent, which is at least visible and arguable. So
+the threshold is set to fire on **30% of listings and 1.7% of real articles**
+rather than tuned for recall, and the DOM walk is wrapped in the same `safely`
+the extractors use, so a document too deeply nested to traverse fails to "not an
+index" and suppresses nothing.
+
+`opengraph` is **not** suppressed even though `article:published_time` on a
+homepage is wrong. It is the site stating it, and discarding a `declared` value
+on a heuristic verdict about page shape inverts the confidence tiers the whole
+library rests on. That case belongs in conflict detection, not in a filter.
+
+This is the one behaviour in this document that a corpus of dated pages cannot
+score: on such a corpus a false positive is structurally impossible, so the bug
+was invisible until a negative tier existed to point at it. See
+[CORPUS-BUILD.md](CORPUS-BUILD.md).
+
 ### 4.9 Image upload paths
 
 WordPress files uploads under `/wp-content/uploads/2016/05/`, Drupal under `/files/2016/05/04/`, and the image a post declares as its `og:image` or `twitter:image` is usually the one uploaded with it. On CMS-shaped sites emitting no other date, it can be the only machine-readable signal on the page.
@@ -575,3 +610,7 @@ So it is presented as **"roughly when this changed,"** never as a diff, and neve
 | MCP defaults to `blockPrivateNetwork: 'strict'` | Every URL it fetches was chosen by a model, not by its operator — a different threat model from a CLI the user typed a URL into |
 | Search annotator registered at runtime | A manifest-declared content script puts its `matches` in the install prompt for everyone, including the majority who never enable it (§6.1) |
 | Port htmldate, don't reinvent | Apache-2.0 since v1.8.0, multilingual, production-proven on millions of documents |
+| Listings suppress body-scraped sources | On an index page the body is other documents' metadata, so the newest item's date is returned as the page's own. Tuned for precision over recall: a wrong suppression deletes a correct answer invisibly (§4.8a) |
+| `og:type` survives the listing filter | Suppressing a `declared` value on a heuristic guess about page shape inverts the confidence tiers. A homepage that declares `article:published_time` is a conflict, not a filter case (§4.8a) |
+| Lowercase raw-text tags before parsing | node-html-parser drops the rest of the document when `<SCRIPT>` is closed by `</script>`. 65 kB of techtarget.com became three elements; the fix costs 0.12 ms of a 3.30 ms parse |
+| No copyright-year fallback | It is how htmldate reaches zero misses, and it was measured here: on the pages where it would fire, 3 right and 1 wrong, all at year precision — no gain in exact accuracy, and a year is a fact about the site rather than the document |
