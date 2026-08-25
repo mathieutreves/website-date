@@ -1,19 +1,17 @@
 # website-date
 
-Find out when a web page was *actually* written — and whether it has been quietly rewritten since.
+Determines when a web page was published, and whether it has been modified since.
 
-Most pages don't show a date. Many that do show the original publication date while the content has been edited for years. This project reports both dates, **where each one came from**, **how much to trust it**, and flags the case where a site contradicts itself.
+Most pages carry no visible date. Many that do show the original publication date while the content has been edited for years. This project reports both dates, the source each was taken from, a confidence tier for each, and any contradiction between them.
 
 Two pieces:
 
-- **`pagedate`** — a zero-runtime-dependency, browser-first library. Takes a `Document`, returns date candidates with provenance and confidence.
-- **A browser extension** (Chrome + Firefox, MV3 via WXT) that renders the result on demand.
-
----
+- **`pagedate`** — a browser-first library with no runtime dependencies. Takes a `Document`, returns date candidates with provenance and confidence.
+- **A browser extension** for Chrome and Firefox, MV3 via WXT, that renders the result on demand.
 
 ## Status
 
-Library, CLI, MCP server and extension all work and are tested. Nothing is published to npm or the extension stores yet.
+The library, CLI, MCP server and extension are implemented and tested. Nothing is published to npm or to either extension store.
 
 | | |
 | --- | --- |
@@ -22,40 +20,31 @@ Library, CLI, MCP server and extension all work and are tested. Nothing is publi
 | MCP server tests | 16 passing |
 | Annotated fixtures | 17 pages, 8 languages |
 | Benchmark corpus | 1248 pages, 33 hosts, 10 languages, 2005–2026 |
-| Published-date accuracy, held-out split | **90.9%** |
+| Published-date accuracy, held-out split | 90.9% |
 | Runtime dependencies | none |
 
-Parts of this codebase were written with AI assistance. The measurements are not: every corpus label records the source it was derived from, under the rules in
-[docs/CORPUS-BUILD.md](docs/CORPUS-BUILD.md), and every number above is regenerated from committed inputs by `./scripts/validate.sh`.
+Parts of this codebase were written with AI assistance. Every corpus label records the source it was derived from, under the rules in [docs/CORPUS-BUILD.md](docs/CORPUS-BUILD.md), and every number above is regenerated from committed inputs by `./scripts/validate.sh`.
 
----
-
-## What makes it different
-
-Every other tool in this space returns *a date*. That is the design mistake, because the interesting cases cannot be expressed as one:
+## Output shape
 
 ```js
 result.published  // { value: '2019-03-04', confidence: 'declared', source: 'jsonld' }
 result.modified   // { value: '2024-11-02', confidence: 'derived',  source: 'sitemap' }
 result.conflict   // { kind: 'stale-declaration', gapDays: 2070, detail: '…' }
-result.candidates // everything found, unresolved, with a note explaining each
+result.candidates // everything found, unresolved, each with a note
 ```
 
-Three commitments follow from that:
+Three properties follow from returning candidates rather than a single date:
 
-**Precision is never inflated.** A page that says "2024" yields `{ value: '2024', precision: 'year' }`, not a fabricated January 1st. Every other tool measured here always emits a full date, whether or not the page gave one.
-
-**Confidence is a tier, not a score.** `declared` means the site stated it in machine-readable metadata; `derived` means structured but weaker; `inferred` means guessed from prose, a URL, or a transport header. `minConfidence: 'declared'` answers "what does this site actually claim" and will happily return nothing.
-
-**Answering "there is no date here" is a correct answer.** Five of the 17 fixtures have no publication date, and the corpus scores true negatives. Benchmarks in this field almost never do — htmldate's corpus contains only pages with determinable dates, so false positives are *structurally unmeasurable* there, and every precision figure in the literature inherits that blind spot.
-
----
+- **Precision is not widened.** A page that states "2024" yields `{ value: '2024', precision: 'year' }`. No January 1st is supplied.
+- **Confidence is a tier, not a score.** `declared` means the site stated it in machine-readable metadata; `derived` means structured but weaker; `inferred` means taken from prose, a URL, or a transport header. `minConfidence: 'declared'` restricts the answer to what the site itself claims, and may return nothing.
+- **An empty answer is a valid answer.** Five of the 17 fixtures have no publication date, and the fixture suite scores true negatives. Neither benchmark corpus can: every page in each has a determinable date, so a false positive is unmeasurable there.
 
 ## Install and use
 
-### Browser / extension content script
+### Browser and extension content scripts
 
-Zero dependencies, no HTML parser bundled — the DOM already exists.
+No HTML parser is bundled; in a browser the DOM already exists.
 
 ```js
 import { extractFromDocument, resolve } from 'pagedate'
@@ -66,7 +55,7 @@ const result = await resolve(candidates, location.href)
 
 ### Node
 
-`node-html-parser` and `linkedom` are optional peer dependencies, needed only for this path.
+`node-html-parser` and `linkedom` are optional peer dependencies, required only on this path.
 
 ```bash
 pnpm add pagedate node-html-parser linkedom
@@ -79,7 +68,7 @@ await findDatesFromUrl('https://example.com/post')  // fetches, incl. feed and s
 await findDatesFromHtml(html, url)                   // offline
 ```
 
-Two parsers for two jobs: HTML goes through `node-html-parser` (~2.5× faster than linkedom), XML through linkedom, which is loaded only if you actually touch a feed or sitemap. `<link>` is a void element in HTML but not in RSS, so an HTML parser reading a feed silently empties every `<link>` it meets.
+HTML is parsed by `node-html-parser`, roughly 2.5× faster than linkedom. XML is parsed by linkedom, loaded only when a feed or sitemap is read.
 
 ### Cloudflare Workers, Deno, Bun
 
@@ -91,14 +80,14 @@ const env = webEnv()
 const result = await findDates(parse(await env.fetchText(url)), url, env)
 ```
 
-Nothing reachable from `pagedate/edge` imports `node:` anything, and `test/edge.test.ts` walks the import graph from the entry point to prove it rather than trusting it — a single `node:module` import behind a rarely-taken branch is exactly the thing that passes review and fails at deploy.
+Nothing reachable from `pagedate/edge` imports `node:` anything; `test/edge.test.ts` walks the import graph from the entry point and fails on any such import.
 
-`webEnv` is the same code `nodeEnv` runs. The redirect walk, the timeout and the capped body read moved into a shared module rather than being reimplemented, so the two cannot drift; what is genuinely Node-only sits behind two injection points. Two consequences:
+`webEnv` runs the same transport code as `nodeEnv`. Two limits apply on these runtimes:
 
-- **`blockPrivateNetwork: 'strict'` degrades to `'literal'`** without a `resolveHostname`, because there is no portable DNS resolver. The address filter still runs on every redirect hop; what is lost is "a public hostname that resolves to 127.0.0.1".
-- **Workers has no `DOMParser`**, so feed and sitemap XML is skipped there unless you pass `parseXml`. That costs exactly the signals that make an undated static-site post solvable, so supply one if you are reading blogs rather than news.
+- `blockPrivateNetwork: 'strict'` degrades to `'literal'` without a `resolveHostname`. The address filter still runs on every redirect hop; the resolution preflight is lost, so a public hostname resolving to a private address is not caught.
+- Cloudflare Workers has no `DOMParser`, so feed and sitemap XML is skipped unless `parseXml` is supplied. Those are the signals that make an undated static-site post solvable.
 
-### "Is this too old to use?"
+### Staleness
 
 ```js
 import { isStale, staleness } from 'pagedate'
@@ -106,13 +95,11 @@ import { isStale, staleness } from 'pagedate'
 const current = docs.filter((d) => !isStale(d.dates, { maxAgeDays: 365 }))
 ```
 
-The question most programmatic callers are really asking — a retrieval pipeline filtering scraped pages, a crawler deciding what to re-fetch. Two things a hand-rolled version reliably gets wrong, so it is here once:
+`staleness` compares intervals rather than points. A page stating "2024" refers to some instant in a 366-day window; against a 180-day threshold part of that window is stale and part is not, and the result is `{ stale: null, reason: 'imprecise' }`, with `ageDays` and `maxAgeDays` bracketing the range.
 
-**Coarse precision is an interval, not a point.** A page that said "2024" refers to some instant in a 366-day window, and against a 180-day threshold that window has no answer — part of it is stale and part is not. `toInstant` resolves a partial value to the *start* of its period, which is right for gap arithmetic and would silently report the oldest reading as if it were the only one. So `staleness` works in intervals and returns `{ stale: null, reason: 'imprecise' }` when the interval straddles the threshold, for the same reason the extractors report `precision: 'year'` instead of inventing a January 1st.
+`basis` selects the question. It defaults to `'either'` — the modification date when present, otherwise publication. `'published'` asks when the page was written; `'modified'` asks whether it has been kept current.
 
-**Which date counts is the caller's decision.** `basis` defaults to `'either'` — modification date when there is one, else publication. `'published'` asks when it was written; `'modified'` asks whether it has been kept current. Defaulting to one silently would make the other caller wrong.
-
-`isStale` reduces that to a boolean and counts an undecidable page as stale, because letting an undated document through is how a three-year-old page ends up quoted as current. `whenUnknown: false` flips it.
+`isStale` reduces this to a boolean and counts an undecidable page as stale. `whenUnknown: false` inverts that.
 
 ### CLI
 
@@ -124,7 +111,7 @@ cat page.html | npx pagedate --url https://example.com/post --json
 
 Exit codes: `0` a date was found, `1` none found, `2` the page could not be read.
 
-**Batch**, for a crawl rather than a page:
+Batch mode takes one URL per line and emits one JSON object per line:
 
 ```bash
 pagedate --batch --concurrency 8 < urls.txt > dated.ndjson
@@ -135,11 +122,11 @@ pagedate --batch --concurrency 8 < urls.txt > dated.ndjson
 {"docId":7,"index":3,"url":"https://example.com/b","error":"unreachable"}
 ```
 
-One URL per line in, one JSON object per line out. A line may instead be a JSON object with a `url` key, whose other keys are carried through — so a document id survives the trip, and pagedate's own keys win a collision. Three decisions, all visible in the output:
+An input line may instead be a JSON object with a `url` key; its other keys are carried through to the output, and pagedate's own keys win a collision. Blank lines and `#` comments are skipped.
 
-- **Results stream as they finish, not in input order.** Preserving order means holding every completed result behind the slowest outstanding one, which on a batch containing a single timing-out host means buffering the whole run. Every record carries its input line `index` for callers who need it back.
-- **Never more than one request per host**, whatever `--concurrency` says. Eight workers on eight pages from one domain is a small denial-of-service; the ceiling is a limit, not a quota to fill.
-- **A page that fails does not stop the run.** It gets an `error` key and the pool moves on. A batch of 5000 URLs where number 12 is a dead host is a normal batch.
+- Results stream as they complete, not in input order. Every record carries its input line `index`.
+- At most one request per host is in flight, whatever `--concurrency` is set to.
+- A page that fails receives an `error` key; the run continues.
 
 ### MCP server
 
@@ -147,11 +134,11 @@ One URL per line in, one JSON object per line out. A line may instead be a JSON 
 { "mcpServers": { "pagedate": { "command": "npx", "args": ["-y", "pagedate-mcp"] } } }
 ```
 
-[`pagedate-mcp`](packages/pagedate-mcp) gives an agent `page_freshness` and `page_date` — the check worth running before citing a source as current. A separate package, because `pagedate` has zero runtime dependencies and an MCP server cannot.
+[`pagedate-mcp`](packages/pagedate-mcp) exposes `page_freshness` and `page_date`. It is a separate package because `pagedate` has no runtime dependencies and an MCP server requires some.
 
-Its tools return prose as well as structured data, and that is the point rather than a convenience: a model handed `{"published": "2019-03-04"}` uses that date and says nothing about it. The text rendering puts the provenance and the confidence tier into context whether the model asked or not, and `UNDETERMINED` says in words what it does not license — *absence of a date is not evidence that a page is recent*.
+Its tools return a text rendering alongside the structured result. The text carries the provenance and confidence tier, and `UNDETERMINED` states that absence of a date is not evidence that a page is recent.
 
-Every URL it fetches was chosen by a model rather than by its operator, so `blockPrivateNetwork` defaults to `'strict'` there rather than the library's `'literal'`.
+`blockPrivateNetwork` defaults to `'strict'` there rather than the library's `'literal'`.
 
 ### Options
 
@@ -163,23 +150,23 @@ extractFromDocument(document, url, {
 })
 ```
 
-Text scanning is most of the extraction cost, so `mode` is the main performance lever. Accuracy on the held-out split, extraction-only time (what an extension pays, since the DOM already exists):
+Text scanning is most of the extraction cost, so `mode` is the main performance control. Accuracy is on the held-out split; time is extraction only, which is the whole cost in a browser.
 
-| mode | accuracy | ms/page | what it reads |
+| mode | accuracy | ms/page | reads |
 | --- | --- | --- | --- |
 | `fast` | 68.8% | 0.9 | declared metadata only — JSON-LD, OpenGraph, `<time>`, URL |
-| `standard` | **90.9%** | 3.2 | the above plus rendered text and inline state |
+| `standard` | 90.9% | 3.2 | the above plus rendered text and inline state |
 | `extensive` | 90.9% | 4.2 | the above plus unlabelled text, always |
 
-**`extensive` buys recall, not accuracy.** On the held-out split it finds exactly the same 230 correct answers as `standard` and merely converts one abstention into a wrong answer — 17 wrong and 6 missed against 16 and 7. On the 55-page htmldate corpus, where more pages have no machine-readable date at all, it is worth two of them: 69.1% against 67.3%, which is one page above the noise floor of a corpus that size. Its real job is populating `candidates` for conflict detection and for showing a reader everything a page contains. If you want the extra recall, know that you are also opting into dating a page that has no date.
+`extensive` finds the same 230 correct answers as `standard` on the held-out split and converts one abstention into a wrong answer: 17 wrong and 6 missed against 16 and 7. On the 55-page htmldate corpus it scores 69.1% against `standard`'s 67.3%, a difference of one page. Its function is populating `candidates` for conflict detection and for display.
 
-**`fast` is rarely the right trade.** It buys about 2.3 ms per page and costs 22.1 points of accuracy. In an extension the DOM already exists, so 2 ms is the entire saving and nothing can perceive it. In Node the caller also pays 8–11 ms to parse the HTML, so `fast` cuts a page from roughly 14 ms to 10 ms — a third of the wall clock for a quarter of the answers. It is worth reaching for in one case: a bulk pipeline where you want only what a site *declared* about itself and would rather have nothing than a guess. That intent is usually better expressed as `minConfidence: 'declared'`, which says it directly.
+`fast` costs 22.1 points of accuracy and saves about 2.3 ms per page. In an extension the DOM already exists, so that is the entire saving. In Node the caller also pays 8–11 ms to parse the HTML, so `fast` moves a page from roughly 14 ms to 10 ms.
 
-Timings are medians over repeated passes, taken after every mode has been warmed and with the order rotated between rounds — three modes sharing most of their code cannot be separated by a stopwatch around each one, because whichever runs first pays to compile what the others then inherit. See `packages/pagedate/scripts/modes.ts`.
+Timings are medians over repeated passes, taken after every mode has been warmed, with the order rotated between rounds. See `packages/pagedate/scripts/modes.ts`.
 
 ### Network signals
 
-`findDates` and the Node helpers can also ask the *site* about the page, rather than only the page about itself. Each costs at least one request, so each is a decision:
+`findDates` and the Node helpers can query the site about the page. Each costs at least one request.
 
 ```js
 await findDatesFromUrl(url, {
@@ -188,30 +175,28 @@ await findDatesFromUrl(url, {
 })
 ```
 
-- **Feeds** (`<published>`, `<updated>`, `<pubDate>`) are `declared` and always looked for. This is what makes an undated static-site post solvable at all.
-- **Sitemap `<lastmod>`** is `derived` and reports `modified`, because that is what `<lastmod>` means. Ignored entirely when every entry carries the same timestamp — that is a build stamp, not a fact about any page.
-- **HTTP `Last-Modified`** is off by default, and that is a measured decision rather than a cautious one: behind a CDN it is the serve time, and on the fixtures it invented two edits while finding nothing new.
-
----
+- **Feeds** (`<published>`, `<updated>`, `<pubDate>`) are `declared` and always looked for.
+- **Sitemap `<lastmod>`** is `derived` and reports `modified`. It is ignored when every entry carries an identical timestamp and there are at least ten of them.
+- **HTTP `Last-Modified`** is off by default. Behind a CDN it is the serve time; on the fixtures it produced two false edits and found nothing new.
 
 ## Results
 
-Two corpora, because one of them is the other project's test set.
+Two corpora. One of them is another project's test set.
 
-### 1. The permalink corpus — 1248 pages, nobody's test set
+### The permalink corpus — 1248 pages
 
-Built for this project: pages harvested from Wayback by dated permalink, pinned to a capture, across 2005–2026, ten languages and 33 hosts. Labels come from the URL path, which no HTML extractor reads. The manifest holds 1248 entries; 1242 of them have a capture on disk and are the ones any figure here is computed over.
+Built for this project: pages harvested from the Wayback Machine by dated permalink, pinned to a capture, spanning 2005–2026, ten languages and 33 hosts. Labels come from the URL path, which no HTML extractor reads. The manifest holds 1248 entries; 1242 have a capture on disk and are the ones every figure is computed over.
 
-Languages, by page: English 418, French 116, Portuguese 102, Russian 101, Japanese 94, Italian 90, German 81, Dutch 64, Arabic 64, Spanish 30, and 82 pages whose markup declares no language at all.
+Languages by page: English 418, French 116, Portuguese 102, Russian 101, Japanese 94, Italian 90, German 81, Dutch 64, Arabic 64, Spanish 30, and 82 pages whose markup declares no language.
 
-**The URL is therefore neutralised for every tool** — blanked in the argument *and* in the HTML, because every page restates its own permalink in `<link rel="canonical">`, `og:url` and a dozen `<a href>`s. Blanking only the argument is not a fair test: it costs pagedate 194→184 and htmldate 192→163 on the same pages, so leaving it in ranks tools by how hard they hunt for a URL rather than how well they read a document.
+The URL is neutralised for every tool, blanked in the argument and in the HTML. Blanking only the argument leaves the permalink restated in `<link rel="canonical">`, `og:url` and numerous `<a href>` elements; measured on the same pages, that difference is worth 194 → 184 to pagedate and 192 → 163 to htmldate.
 
-**Held-out test split — the number that counts.** Hosts are assigned to dev/test by hash, so nothing here shares a site, and therefore a template, with anything pagedate was tuned on.
+**Held-out test split, 253 pages.** Hosts are assigned to dev and test by hash of the hostname, so no site — and therefore no template — appears in both.
 
 | tool | exact | wrong | missed | precision | accuracy |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| htmldate (extensive) | 236 | 17 | 0 | 93.3% | **93.3%** |
-| **pagedate (standard)** | 226 | 14 | 13 | **94.2%** | 89.3% |
+| htmldate (extensive) | 236 | 17 | 0 | 93.3% | 93.3% |
+| pagedate (standard) | 226 | 14 | 13 | 94.2% | 89.3% |
 | pagedate (extensive) | 226 | 15 | 12 | 93.8% | 89.3% |
 | htmldate (fast) | 217 | 11 | 25 | 95.2% | 85.8% |
 | metascraper | 178 | 41 | 34 | 81.3% | 70.4% |
@@ -223,31 +208,31 @@ Languages, by page: English 418, French 116, Portuguese 102, Russian 101, Japane
 | unfluff | 125 | 2 | 126 | 98.4% | 49.4% |
 | date_guesser | 114 | 22 | 117 | 83.8% | 45.1% |
 
-**htmldate leads, and pagedate is second by 4.0 points** — marginally ahead on precision, at roughly a quarter of the per-page cost, and the only tool here that will decline to answer.
+htmldate leads by 4.0 points. pagedate is second, marginally ahead on precision, at roughly a quarter of the per-page cost, and is the only tool here that declines to answer.
 
-htmldate is invoked with `original_date=True`. That flag is what asks it for a *publication* date; left at its default it returns the most recent date on the page, which is a different question from the one every gold label here poses. It is also the only tool measured that has such a switch — every other exposes a publication date and nothing else — so it is the only row a harness author can get wrong in this particular way, and getting it wrong is worth about eleven points to it. See [docs/BENCHMARK.md](docs/BENCHMARK.md).
+htmldate is invoked with `original_date=True`, the flag that asks it for a publication date rather than the most recent date on the page. It is the only tool measured that has such a switch, and the flag is worth about eleven points to it. See [docs/BENCHMARK.md](docs/BENCHMARK.md).
 
-**The dev/test gap is 6.7 points**, measured through the harness above for both splits so the two columns are comparable.
+**Dev/test gap**, measured through the same harness for both splits.
 
 | | dev (tuned on) | test (held out) | gap |
 | --- | ---: | ---: | ---: |
 | pagedate (standard) | 96.0% | 89.3% | −6.7 |
 | htmldate (extensive) | 86.3% | 93.3% | +7.0 |
 
-A gap is what tuning on a corpus and reporting on it looks like, so the size of this one is the point. htmldate is the control, and its **+7.0** is the part worth reading carefully: a tool tuned on none of this does *better* on the held-out hosts than on the dev ones. The two splits are not equally hard, and the held-out set happens to suit it. So −6.7 should be read against +7.0 rather than against zero. Part of the gap is tuning residue, part is that the test split is simply a different set of sites, and two splits with one control cannot separate them.
+htmldate is the control. It was tuned on none of this corpus and scores 7.0 points higher on the held-out hosts than on the dev ones, so the two splits are not equally hard. −6.7 is therefore a gap against a baseline above zero. Part of it is tuning residue and part is that the test split is a different set of sites; two splits and one control cannot separate them.
 
-**Read the error columns, not just the accuracy.** htmldate (extensive) never declines to answer — 0 misses, 17 wrong. pagedate declines on 13 pages and is wrong on 14. On a corpus where every page *has* a date, refusing to answer can only cost you, and those 13 declines are 5.1 points pagedate cannot win back here — more than the 4.0 it trails by. Whether that trade is right for you depends on whether a confidently wrong date costs more than no date, which is the whole reason the library reports a confidence tier instead of a number. It is not a claim that the trade wins on this benchmark; on a corpus built this way it cannot.
+**Error columns.** htmldate (extensive) never declines: 0 misses, 17 wrong. pagedate declines on 13 pages and is wrong on 14. Every page in this corpus has a date, so declining can only cost accuracy; those 13 declines are 5.1 points, against a 4.0-point deficit. This does not establish that the abstention policy wins on a corpus containing undated pages, because no such benchmark exists.
 
-**±1 day of the remaining error is timezone noise, not error.** A post published at 23:30 local carries a local-date URL and a UTC `article:published_time`, and both are correct. Scored with one day of slack, pagedate's 11 wrong answers on the dev split become 4 and its 16 on the held-out split become 5:
+**±1 day of the remaining error is timezone noise.** A post published at 23:30 local carries a local-date URL and a UTC `article:published_time`, and both are correct. Scored with one day of slack, pagedate's 11 wrong answers on dev become 4, and its 16 on the held-out split become 5.
 
 | | strict | ±1 day |
 | --- | ---: | ---: |
 | pagedate (standard), dev | 96.0% / 97.6% precision | 97.5% / 99.1% precision |
 | pagedate (standard), test | 90.9% / 93.5% precision | 95.3% / 98.0% precision |
 
-Part of this noise is resolvable rather than only reportable: when a page stamps a UTC timestamp and *also* renders the same instant in its own zone, the day it shows its readers is the day reported. See `localise` in `packages/pagedate/src/resolve.ts`. What remains is the genuinely undecidable part — sites whose permalink and byline disagree about which day it was.
+Where a page stamps a UTC timestamp and also renders the same instant in its own zone, the day shown to readers is the day reported; see `localise` in `packages/pagedate/src/resolve.ts`. The remainder is undecidable from the document.
 
-**Does this work outside English?** A qualified yes.
+**By language.** Each row is one or two hosts, so these are host figures carrying a language label. German is `deutsche-startups.de` and `sprachlog.de`; Arabic is Al Jazeera alone. A language appears in whichever split its hosts hashed into, which is why French and Dutch have no dev row and Russian and Arabic have no test row.
 
 | language | split | n | exact | wrong | missed | accuracy |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
@@ -265,23 +250,20 @@ Part of this noise is resolvable rather than only reportable: when a page stamps
 | Italian | dev | 31 | 23 | 2 | 6 | 74.2% |
 | Japanese | test | 16 | 10 | 6 | 0 | 62.5% |
 
-Three things this table is not allowed to hide.
+Two rows need reading with their causes:
 
-**Each language is one or two hosts, so these are host figures wearing a language label.** German is `deutsche-startups.de` and `sprachlog.de`; Arabic is Al Jazeera alone. A language appears in whichever split its hosts hashed into, which is why French and Dutch have no dev row and Russian and Arabic have no test row. Read a row as "this template, in this language", not as a claim about the language.
+- **Japanese, 94.9% dev against 62.5% test.** The year-first format (`2015.4.23`) used by the dev hosts is handled; the 16 test pages come from a different publisher whose markup is not. This is where the residual dev/test gap is concentrated.
+- **Italian, 74.2% dev.** All six misses are `ilpost.it` WordPress attachment pages — `/2012/11/01/article-slug/image-slug/` — photo permalinks carrying no date in the document. The label comes from a URL structure the page never restates.
 
-**Japanese is 94.9% on dev and 62.5% on test, and the honest reading is the lower one.** The year-first format (`2015.4.23`) the dev hosts use is handled because those hosts were visible during development; the 16 test pages are a different publisher whose markup is not. This is where the residual dev/test gap is concentrated, and the held-out split is what makes it visible.
+### The htmldate corpus — 55 pages
 
-**Italian's dev misses are a corpus artifact, not a language gap.** All 6 are `ilpost.it` WordPress *attachment* pages — `/2012/11/01/article-slug/image-slug/` — which are photo permalinks carrying no date anywhere in the document. Answering "no date here" on them is arguably correct; the label comes from a URL structure the page itself never restates.
-
-### 2. The htmldate corpus — 55 pages, their test set
-
-Kept for continuity with [htmldate's published table](https://github.com/adbar/htmldate). German-heavy news, and their own unit-test set.
+Retained for continuity with [htmldate's published table](https://github.com/adbar/htmldate). German-heavy news, and that project's own unit-test set.
 
 | tool | precision | accuracy | ms/page |
 | --- | ---: | ---: | ---: |
 | htmldate (extensive) | 96.4% | 96.4% | 74.0 |
 | htmldate (fast) | 97.8% | 81.8% | 11.2 |
-| **pagedate (standard)** | 78.7% | 67.3% | 3.8 |
+| pagedate (standard) | 78.7% | 67.3% | 3.8 |
 | pagedate (fast) | 66.7% | 25.5% | 1.6 |
 | date_guesser | 63.6% | 25.5% | 113.3 |
 | metascraper | 50.0% | 23.6% | 20.3 |
@@ -289,11 +271,9 @@ Kept for continuity with [htmldate's published table](https://github.com/adbar/h
 | @extractus / unfluff | 44.4% / 88.9% | 14.5% | 84.0 / 119.1 |
 | goose3 | 66.7% | 7.3% | 133.8 |
 
-**htmldate wins here and it is not close.** That is partly home advantage and partly that it is a genuinely better general-purpose extractor on news.
+htmldate leads by 29 points here. The two corpora fail differently, which is why both are kept: this one's failures are bare `DD.MM.YYYY` in unmarked markup, dates present only inside an `href` or an `<input value>`, and six pages whose gold label is wrong.
 
-The two corpora fail differently, which is why both are kept. What pagedate reads well on the permalink corpus — a year-first date format, site clocks and mastheads rejected as furniture, a ranking rule for two declarations that disagree — barely registers on German news, whose failures are bare `DD.MM.YYYY` in unmarked markup, dates that exist only inside an `href` or an `<input value>`, and six pages whose gold is wrong.
-
-Six gold entries in this corpus are wrong — dates belonging to other documents, crawl-time artifacts, a "last revised" date scored as publication. They are corrected in [`corpus-external/corrections.json`](corpus-external/corrections.json), with quoted evidence for each, and scored as a **second table alongside the original, never replacing it**. Under the corrected key htmldate's extensive mode *drops 10.9 points* — it confidently reports artifact dates where the right answer is "none" — and converges with its own fast mode, meaning extensive's extra recall is spent entirely on dates that should not be found.
+Those six are corrected in [`corpus-external/corrections.json`](corpus-external/corrections.json) with quoted evidence for each, and scored as a second table alongside the original rather than replacing it. Under the corrected key, htmldate's extensive mode drops 10.9 points and converges with its own fast mode.
 
 ### Speed
 
@@ -304,21 +284,19 @@ Six gold entries in this corpus are wrong — dates belonging to other documents
 | htmldate (fast) | — | 11.2 ms |
 | htmldate (extensive) | — | 75.5 ms |
 
-Which number is honest depends on where it runs. **In an extension the DOM already exists and nothing pays for parsing**, so the real cost is the left column and htmldate cannot run there at any speed. In Node the caller pays for parsing, and that term dominates — the comparison there is really the parser, not the extractor.
+In an extension the DOM already exists and nothing pays for parsing, so the applicable figure is the left column; htmldate cannot run in that environment. In Node the parsing term dominates.
 
-All timings are medians of repeated passes taken after every mode has been warmed, for the reason given under [Options](#options). Profiled, `fast` spends about a third of its time inside `node-html-parser`'s `querySelectorAll`, so there is real headroom in collecting `<meta>`, `<link>`, `<time>` and JSON-LD in one tree walk instead of six queries. It has not been done, because a browser implements `querySelectorAll` natively and the extension — the one place these microseconds could matter — never pays that cost. It would optimise the benchmark.
+All timings are medians of repeated passes taken after every mode has been warmed. Profiling shows `fast` spending about a third of its time inside `node-html-parser`'s `querySelectorAll`; collecting `<meta>`, `<link>`, `<time>` and JSON-LD in one tree walk instead of six queries would recover part of that and has not been done.
 
----
-
-## Reproducing all of it
+## Reproducing
 
 ```bash
 ./scripts/validate.sh
 ```
 
-That runs the whole pipeline and writes the dev-split tables to `results/`: toolchain versions, build, typecheck, unit tests, corpus integrity, both parity checks, then the benchmark tables. `--quick` skips the corpus rebuild and the Python tools.
+Runs the whole pipeline and writes the dev-split tables to `results/`: toolchain versions, build, typecheck, unit tests, corpus integrity, both parity checks, then the benchmark tables. `--quick` skips the corpus rebuild and the Python tools.
 
-**The held-out tables are not in it, deliberately.** Scoring the test split is a thing to do once, at the end, not on every run — so those three commands are separate and explicit:
+The held-out tables are not included. Scoring the test split is a separate, explicit step:
 
 ```bash
 node scripts/corpus/score.ts --split test                    # → permalink-pagedate-TEST.txt
@@ -334,37 +312,35 @@ pnpm install && pnpm --filter pagedate build
 pnpm test                          # library, extension, MCP server
 
 node scripts/corpus/fetch.ts       # rebuild corpus/cache from the pinned captures
-node scripts/corpus/verify.ts      # confirm it is byte-identical to ours
+node scripts/corpus/verify.ts      # confirm it is byte-identical
 node scripts/corpus/score.ts       # pagedate, per stratum
 node bench/bench_corpus.mjs        # JS tools, permalink corpus
 python3 scripts/bench_python.py --corpus permalink | node scripts/tally.ts /dev/stdin
 ```
 
-Competitors are installed separately, so nothing enters the published dependency tree:
+Competitors install separately, so they never enter the published dependency tree:
 
 ```bash
 cd bench && npm install && cd ..
 pip install -r scripts/requirements-bench.txt
 ```
 
-**`corpus/cache/` is gitignored** — it is other people's HTML under no licence we control. `corpus/manifest.jsonl` **is** committed, and `fetch.sha256` on each entry means a rebuilt corpus is verifiably the same one. `verify.ts` checks it. That is the difference between a benchmark you can reproduce and a table you have to trust.
+`corpus/cache/` is gitignored — third-party HTML under no licence this project controls. `corpus/manifest.jsonl` is committed, and the `fetch.sha256` on each entry lets `verify.ts` confirm a rebuilt corpus is byte-identical to the one these figures were measured on.
 
 ### Parser parity
 
-The Node path ships `node-html-parser`; the extension gets a real browser DOM. Two checks, because a published figure measured through a parser nobody runs describes nothing, and both exit non-zero on any disagreement:
+The Node path ships `node-html-parser`; the extension gets a browser DOM. Two checks, both exiting non-zero on any disagreement:
 
 - `bench/parity.mjs` — linkedom against node-html-parser, over all 1242 permalink pages and all 55 htmldate pages.
-- `bench/parity-browser.mjs` — real Chromium against node-html-parser, over all 1242 permalink pages, through the same extractor bundle the content script carries.
+- `bench/parity-browser.mjs` — real Chromium against node-html-parser, over all 1242 permalink pages, through the extractor bundle the content script carries.
 
 All three agree on every page.
 
-The check guards a class of bug that never shows up as a wrong answer. `node-html-parser` entity-decodes `<script>` bodies, which is wrong — `<script>` is a raw-text element — so a JSON-LD block containing `&quot;` parses as invalid JSON, is skipped as malformed, and the page falls through to a weaker signal. Not a wrong date; a silently *worse* one, on exactly the pages that had the strongest available answer. The library reads `innerHTML` where it differs from `textContent` for that reason, and the unit tests run against the shipped parser rather than a second one nobody deploys.
-
----
+The check covers a class of bug that does not surface as a wrong answer. `node-html-parser` entity-decodes `<script>` bodies, which is incorrect — `<script>` is a raw-text element — so a JSON-LD block containing `&quot;` parses as invalid JSON, is skipped as malformed, and the page falls through to a weaker signal. The library reads `innerHTML` where it differs from `textContent` for that reason, and the unit tests run against the parser that ships.
 
 ## How it works
 
-Signals are collected independently, then ranked. Nothing short-circuits, so conflicts stay visible.
+Signals are collected independently and then ranked. Nothing short-circuits, so conflicts remain visible.
 
 | tier | signal |
 | --- | --- |
@@ -372,54 +348,46 @@ Signals are collected independently, then ranked. Nothing short-circuits, so con
 | `derived` | `<time datetime>` scored by context, Dublin Core, `citation_*`, `itemprop`, sitemap `<lastmod>`, inlined CMS state |
 | `inferred` | URL slug, preview-image path, visible text (`Updated on…`, `Veröffentlicht`, `公開日`), HTTP `Last-Modified` |
 
-Resolution ranks by confidence → source → precision, promotes an unlabelled date to `published` when nothing claims the field, and then looks for three kinds of contradiction:
+Resolution ranks by confidence, then source, then precision; promotes an unlabelled date to `published` when nothing claims that field; then checks for three contradictions:
 
 - **`declared-disagreement`** — two things the site declared for the same field differ by more than 30 days.
-- **`predated-content`** — the page carries several machine-readable timestamps *older* than the date it claims. A reader cannot comment on an article before it exists, so this is a republication stamp rather than a writing date.
-- **`stale-declaration`** — a publication date long predates archive evidence of edits the page does not show.
+- **`predated-content`** — the page carries several machine-readable timestamps older than the date it claims, indicating a republication stamp rather than a writing date.
+- **`stale-declaration`** — a publication date long predates archive evidence of edits the page does not display.
 
-`published` and `modified` merely *differing* is normal and deliberately **not** a conflict. That distinction is what stops the flag being permanently lit and therefore ignored.
+`published` and `modified` differing is normal and is not a conflict.
 
-Language support covers ~25 languages of month names, non-ASCII digit systems (Arabic, Persian, Devanagari, Thai, full-width), CJK structural dates (`2024年3月12日`), and ordinal suffixes in English, French, Spanish and Dutch. Unicode folding recomposes to NFC after stripping diacritics — without that, Hangul shatters into jamo and Arabic `آ` splits.
-
----
+Language support covers around 25 languages of month names, non-ASCII digit systems (Arabic, Persian, Devanagari, Thai, full-width), CJK structural dates (`2024年3月12日`), and ordinal suffixes in English, French, Spanish and Dutch. Unicode folding recomposes to NFC after stripping diacritics.
 
 ## The extension
 
-Chrome and Firefox from one MV3 codebase. The toolbar panel reports both dates with provenance, an optional on-page overlay puts the age in a corner, and the Internet Archive check finds edits a page does not admit to.
+Chrome and Firefox from one MV3 codebase. The toolbar panel reports both dates with provenance, an optional on-page overlay shows the age in a corner, and an optional Internet Archive check finds edits the page does not declare.
 
-Two surfaces read pages you are **not** on, and they are built around the same rule: the cheap tier first, and the expensive tier never without being asked.
-
-**Right-click a link → "When was this page written?"** Reads the address first — `/2019/03/04/some-post/` is an answer that costs no request and no prompt, and on blogs and news it is most links. Only when the address says nothing does it ask for access to that one origin, at that moment, and read the page. Declining leaves you exactly where you were.
-
-**Ages next to search results** on Google, Bing, DuckDuckGo, Hacker News and old Reddit. This is the feature that changes what the extension is for: checking one page answers a question you already had, while a results list answers one you did not know to ask — that the third hit is from 2013 — before you spend a click finding out.
-
-It has two tiers and the difference between them is the whole privacy question:
+Two surfaces read pages the reader is not on. Both use the same two tiers:
 
 | tier | what it does | what it costs |
 | --- | --- | --- |
-| `url` | reads each result's address | nothing. No request reaches any site. |
-| `fetch` | also requests the result pages | this extension contacting sites you have not opened |
+| `url` | reads each result's address | nothing; no request reaches any site |
+| `fetch` | also requests the result pages | the extension contacting sites the reader has not opened |
 
-Off by default. The `url` tier asks for access to the five engines; `fetch` asks separately for the rest of the web, because it is a much larger ask and bundling them would hide that. The fetch tier is capped at 10 results per page load — an infinite-scroll results page must not become an unbounded series of requests to third parties — runs three at a time, and never sends cookies. Declining the second prompt lands on `url` rather than `off`: the first grant was given and the cheap tier works with it.
+**Right-click a link → "When was this page written?"** The address is read first; `/2019/03/04/some-post/` is an answer requiring no request and no prompt. Only when the address carries nothing does the extension request access to that one origin, at that moment, and read the page.
 
-**Installing still grants nothing.** That promise has exactly one way to break silently — a content script declared in the manifest contributes its `matches` to Chrome's install prompt — so the results annotator is registered at runtime once the setting is on and the grant exists, and CI asserts the built manifest of both targets carries no content script and no host permission.
+**Ages next to search results** on Google, Bing, DuckDuckGo, Hacker News and old Reddit. Off by default. The `url` tier requests access to the five engines; `fetch` requests the rest of the web separately. Declining the second prompt leaves the `url` tier active. The fetch tier is capped at 10 results per page load, runs three at a time, and never sends cookies.
 
----
+Installing grants nothing beyond `activeTab`, `storage`, `scripting` and `contextMenus`. The results annotator is registered at runtime rather than declared in the manifest, and CI asserts that the built manifest of both targets carries no content script and no host permission.
 
 ## Repository layout
 
 ```
-packages/pagedate/       the library — zero runtime dependencies
+packages/pagedate/       the library — no runtime dependencies
   src/extract/           one module per signal
   src/parse/             normalisation, locale, plausibility
   src/resolve.ts         ranking and conflict detection
-  src/staleness.ts       "is this too old to use", in intervals not points
+  src/staleness.ts       interval-based age comparison
   src/fetchEnv.ts        the network Env, runtime-agnostic
   src/edge/              Cloudflare Workers, Deno, Bun — no node: imports
   src/node/              Node entry point: parser, DNS, batch mode
   scripts/               evaluation and triage tools
-packages/pagedate-mcp/   MCP server, so an agent can date a source before citing it
+packages/pagedate-mcp/   MCP server
 apps/extension/          WXT, MV3, Chrome + Firefox from one codebase
 fixtures/                17 hand-annotated pages, 8 languages
 corpus/                  the permalink corpus (manifest committed, HTML not)
@@ -431,33 +399,56 @@ docs/                    design, benchmark, corpus notes
 results/                 committed output of the last validation run
 ```
 
----
-
 ## Limitations
 
-- **English is 34% of the corpus, and no other language reaches 10%.** The thin strata are thin: Spanish is 30 pages, and any per-language figure below ~50 pages should be read as a hint, not a measurement. German is 81 pages and was the hardest to get — German news sites almost universally use opaque article IDs rather than date permalinks (`heise.de`, `spiegel.de`, `zeit.de`, `taz.de` and `golem.de` were each probed and each yield zero), so the German stratum is blogs and skews away from the news markup the external corpus is made of.
-- **Permalink labels carry ±1 day of timezone noise.** A post published at 23:30 local gets a local-date URL and a UTC `article:published_time`; both are correct. This is not a footnote: `--tolerance 1` reports 95.3% against 90.9% strict on the held-out split, so eleven of the sixteen remaining wrong answers there are a day apart and no more. The library resolves this where the page renders the instant in its own zone as well as in UTC; where the page only ever states one of the two, nothing in the document decides it. Both numbers are given above; neither alone is honest.
+- **English is 34% of the corpus and no other language reaches 10%.** Spanish is 30 pages. Any per-language figure below roughly 50 pages is a hint rather than a measurement. German is 81 pages and was the hardest stratum to build: `heise.de`, `spiegel.de`, `zeit.de`, `taz.de` and `golem.de` were each probed and each yield zero, because German news sites use opaque article IDs rather than date permalinks, so the German stratum is blogs.
+- **Permalink labels carry ±1 day of timezone noise.** `--tolerance 1` reports 95.3% against 90.9% strict on the held-out split, so eleven of the sixteen remaining wrong answers there are one day apart. Both numbers are given above.
 - **Labels are silver, not gold.** They come from URL structure, not human adjudication.
-- **The dev split is where the extraction rules were developed**, so every dev-split figure is optimistic by construction. Quote the held-out split, which is where German, French, Italian, Dutch, Japanese and part of the English stratum landed.
-- **253 held-out pages is small.** One page is 0.4 points. Treat gaps under ~4 points as noise.
-- **Six manifest entries have no capture, and four entries are not articles.** The six were never fetched, so they carry no language and enter no score; the scorer prints `manifest entries / fetched / scored` on every run rather than rounding them away. Separately, four `lenta.ru` URLs ending `.js` are Tag Manager scripts that happen to sit under a dated permalink path — three are among the unfetched, and one 700-byte script is in the scored set. It is 0.08% of the corpus and is left in rather than removed after the fact, which would mean re-reporting every number in this file against a corpus quietly redefined to flatter it.
-- **The extension's parser is measured, and agrees.** Tests and benchmarks run node-html-parser while the extension runs a browser, so without a check every published figure would describe a parser nobody ships. [`bench/parity-browser.mjs`](bench/parity-browser.mjs) runs all 1242 corpus pages through real Chromium, using the same extractor bundle the content script carries, and compares the resolved answer against the Node path. **They agree on every page.** What remains unmeasured is narrower: Firefox's parser, and any page whose DOM is built by JavaScript that the archived capture did not run.
+- **The dev split is where the extraction rules were developed,** so every dev-split figure is optimistic. Quote the held-out split, which contains German, French, Italian, Dutch, Japanese and part of the English stratum.
+- **253 held-out pages is small.** One page is 0.4 points. Treat gaps under about 4 points as noise.
+- **Six manifest entries have no capture, and four entries are not articles.** The six were never fetched, carry no language and enter no score; the scorer prints `manifest entries / fetched / scored` on every run. The four are `lenta.ru` URLs ending `.js` — Tag Manager scripts under a dated permalink path. Three are among the unfetched; one 700-byte script is in the scored set, at 0.08% of the corpus.
+- **Firefox's parser is unmeasured,** as is any page whose DOM is built by JavaScript the archived capture did not run. Chromium and node-html-parser agree on all 1242 pages.
 
----
+## Decision log
+
+| Decision | Rationale |
+| --- | --- |
+| Return candidates with provenance, not a single date | A single-date API cannot express "declared 2019, but the archive shows edits through 2024", which is the case the project exists to report |
+| Confidence as a tier rather than a numeric score | A tier states what kind of evidence was found; a score implies a calibration that does not exist |
+| Never widen precision | A fabricated January 1st is indistinguishable to the caller from a date the page actually stated |
+| Feeds treated as a top-tier signal | Site-declared, and present on exactly the static-site blogs where inline metadata is absent |
+| Sitemap `<lastmod>` reports `modified`, never `published` | That is what `<lastmod>` is defined to mean |
+| Sitemap ignored when every entry shares a timestamp | That pattern is a build stamp rather than a fact about any page; the ten-entry floor prevents discarding a small site published in one sitting |
+| HTTP `Last-Modified` off by default | Behind a CDN it is the serve time. On the fixtures it invented two edits and found nothing new |
+| Extraction and resolution split into two functions | Extraction is synchronous and DOM-only; resolution is asynchronous and network-backed. The split matches the MV3 content-script/service-worker boundary |
+| Transport shared across runtimes in `fetchEnv.ts` | A second implementation for the edge path would be a second set of guard bugs |
+| `strict` degrades to `literal` rather than throwing | No portable DNS resolver exists; failing closed would push callers off the guarded path entirely |
+| Staleness answers `null` on imprecise input | A page stating "2024" straddles a 180-day threshold; picking a side is the same invention as a fabricated January 1st |
+| `isStale` counts undecidable pages as stale | Its use case is filtering a corpus, where letting an undated document through is how an old page gets quoted as current |
+| Batch results stream out of order | Preserving input order holds every completed result behind the slowest outstanding one |
+| Batch caps at one request per host | Eight workers against one domain is a denial-of-service |
+| MCP server is a separate package | `pagedate` has no runtime dependencies; an MCP server requires some |
+| MCP defaults to `blockPrivateNetwork: 'strict'` | Every URL it fetches was chosen by a model rather than by its operator |
+| MCP tools return prose alongside structured data | A model handed a bare date uses it without qualification |
+| URL blanked in the HTML as well as the argument | Otherwise the benchmark ranks tools by how hard they hunt for a URL rather than how well they read a document |
+| Corrected gold labels scored as a second table | Editing an answer key in place and reporting one number measures nothing |
+| Four non-article entries left in the corpus | Removing them after seeing the results would mean re-reporting every figure against a corpus redefined to flatter it |
+| Search annotator registered at runtime | A manifest-declared content script contributes its `matches` to the install prompt for every installer, including those who never enable it |
+| `querySelectorAll` batching not implemented | It would improve the Node benchmark and change nothing in the extension, where the browser implements the method natively |
 
 ## Documentation
 
 - [docs/DESIGN.md](docs/DESIGN.md) — architecture, signal ladder, resolution algorithm, decision log
 - [docs/BENCHMARK.md](docs/BENCHMARK.md) — full tables, fairness notes, what was tried and rejected
-- [docs/CORPUS-BUILD.md](docs/CORPUS-BUILD.md) — how the corpus is built and why labels are the hard part
+- [docs/CORPUS-BUILD.md](docs/CORPUS-BUILD.md) — how the corpus is built and how labels are sourced
 - [docs/CORPUS-NOTES.md](docs/CORPUS-NOTES.md) — gold-standard caveats in the external corpus
-- [docs/PRIVACY.md](docs/PRIVACY.md) — what the extension stores and what leaves your browser
+- [docs/PRIVACY.md](docs/PRIVACY.md) — what the extension stores and what leaves the browser
 - [docs/PUBLISHING.md](docs/PUBLISHING.md) — releasing to npm and to both extension stores
 - [CONTRIBUTING.md](CONTRIBUTING.md) · [SECURITY.md](SECURITY.md) · [CHANGELOG.md](CHANGELOG.md)
 
 ## Prior art
 
-`htmldate` (Python) is the reference implementation and the one to beat. `metascraper`, `@extractus/article-extractor` and `unfluff` extract dates as a side effect of article extraction. None of them are browser-first with zero dependencies, expose published and modified as distinct outputs, *and* carry a provenance and confidence field — which is what makes the output actionable rather than one more number on a screen. Surveyed in [§1 of the design doc](docs/DESIGN.md#1-context).
+`htmldate` (Python) is the reference implementation in this field. `metascraper`, `@extractus/article-extractor` and `unfluff` extract dates as a side effect of article extraction. None is browser-first with zero dependencies, exposes published and modified as distinct outputs, and carries provenance and confidence fields. Surveyed in [§1 of the design doc](docs/DESIGN.md#1-context).
 
 ## Licence
 
