@@ -48,7 +48,10 @@ export function isSafeFetchTarget(url: string | URL): boolean {
   // named. There is no legitimate `<link rel="sitemap" href="http://u:p@…">`.
   if (parsed.username !== '' || parsed.password !== '') return false
 
-  const host = parsed.hostname.toLowerCase()
+  // A trailing dot is the fully-qualified spelling of the same name, and `URL`
+  // strips it only from IP literals: `localhost.` and `metadata.google.internal.`
+  // arrive here intact, equal to nothing below and ending in no blocked suffix.
+  const host = parsed.hostname.toLowerCase().replace(/\.+$/, '')
   if (host === '') return false
 
   if (host === 'localhost' || LOCAL_SUFFIXES.some((suffix) => host.endsWith(suffix))) return false
@@ -112,41 +115,77 @@ function isPrivateV4(address: number): boolean {
 }
 
 /**
- * IPv6, including the two forms that carry an IPv4 address inside them.
+ * IPv6, including the forms that carry an IPv4 address inside them.
  *
  * `::ffff:127.0.0.1` and `64:ff9b::7f00:1` both reach 127.0.0.1 on a
  * dual-stack host, so blocking v4 loopback while allowing its v6 spelling would
- * be a filter with a documented hole in it.
+ * be a filter with a documented hole in it. The same goes for the 6to4 and
+ * IPv4-translated spellings, which need NAT64 or 6to4 routing to go anywhere
+ * but go to the embedded address when they do.
+ *
+ * Judged on the eight expanded groups rather than on the string, because one
+ * address has many spellings and a prefix test on text only recognises the one
+ * it was written against. An address that will not expand is refused.
  */
 function isPrivateV6(host: string): boolean {
-  const address = host.split('%')[0]!.toLowerCase() // strip any zone index
-  if (address === '::' || address === '::1') return true
+  const g = expandV6(host.split('%')[0]!.toLowerCase()) // strip any zone index
+  if (!g) return true
 
-  // Unique-local (fc00::/7), link-local (fe80::/10), multicast (ff00::/8).
-  if (/^f[cd]/.test(address)) return true
-  if (/^fe[89ab]/.test(address)) return true
-  if (address.startsWith('ff')) return true
+  const v4 = (high: number, low: number): number => (high * 0x10000 + low) >>> 0
+  const zero = (from: number, to: number): boolean => g.slice(from, to).every((x) => x === 0)
 
-  const embedded = embeddedV4(address)
-  return embedded !== null && isPrivateV4(embedded)
+  // ::/96 — unspecified, loopback, and the deprecated IPv4-compatible range.
+  if (zero(0, 6)) return true
+  // IPv4-mapped (::ffff:a.b.c.d) and IPv4-translated (::ffff:0:a.b.c.d).
+  if (zero(0, 5) && g[5] === 0xffff) return isPrivateV4(v4(g[6]!, g[7]!))
+  if (zero(0, 4) && g[4] === 0xffff && g[5] === 0) return isPrivateV4(v4(g[6]!, g[7]!))
+  // NAT64: the well-known prefix carries a v4 address, the local-use one
+  // (64:ff9b:1::/48) is private by definition.
+  if (g[0] === 0x64 && g[1] === 0xff9b) {
+    if (g[2] === 1) return true
+    if (zero(2, 6)) return isPrivateV4(v4(g[6]!, g[7]!))
+  }
+  // 6to4 (2002::/16) embeds the v4 address in the next two groups.
+  if (g[0] === 0x2002) return isPrivateV4(v4(g[1]!, g[2]!))
+
+  // Unique-local (fc00::/7), link-local (fe80::/10), the deprecated site-local
+  // range (fec0::/10), multicast (ff00::/8).
+  const first = g[0]!
+  if ((first & 0xfe00) === 0xfc00) return true
+  if ((first & 0xff80) === 0xfe80 || (first & 0xffc0) === 0xfec0) return true
+  return (first & 0xff00) === 0xff00
 }
 
-/** The IPv4 address inside an IPv4-mapped or NAT64 IPv6 address, if there is one. */
-function embeddedV4(address: string): number | null {
-  const mapped = /^::ffff:(.+)$/.exec(address) ?? /^64:ff9b::(.+)$/.exec(address)
-  if (!mapped) return null
+/** An IPv6 address as eight 16-bit groups, or `null` if it is not one. */
+function expandV6(address: string): number[] | null {
+  let text = address
 
-  const tail = mapped[1]!
-  // Either written as dotted quad (`::ffff:127.0.0.1`) or as two hex groups
-  // (`::ffff:7f00:1`), and both spell the same address.
-  const dotted = parseV4(tail)
-  if (dotted !== null) return dotted
+  // A dotted-quad tail is two groups written in the other notation.
+  const dot = /^(.*:)(\d{1,3}(?:\.\d{1,3}){3})$/.exec(text)
+  if (dot) {
+    const quad = parseV4(dot[2]!)
+    if (quad === null) return null
+    text = `${dot[1]}${(quad >>> 16).toString(16)}:${(quad & 0xffff).toString(16)}`
+  }
 
-  const groups = tail.split(':')
-  if (groups.length !== 2) return null
-  const high = Number.parseInt(groups[0]!, 16)
-  const low = Number.parseInt(groups[1]!, 16)
-  if (!Number.isInteger(high) || !Number.isInteger(low)) return null
-  if (high > 0xffff || low > 0xffff || high < 0 || low < 0) return null
-  return (high * 0x10000 + low) >>> 0
+  const halves = text.split('::')
+  if (halves.length > 2) return null
+  const parse = (part: string): number[] | null => {
+    if (part === '') return []
+    const out: number[] = []
+    for (const group of part.split(':')) {
+      if (!/^[0-9a-f]{1,4}$/.test(group)) return null
+      out.push(Number.parseInt(group, 16))
+    }
+    return out
+  }
+
+  const head = parse(halves[0]!)
+  const tail = halves.length === 2 ? parse(halves[1]!) : []
+  if (!head || !tail) return null
+
+  if (halves.length === 1) return head.length === 8 ? head : null
+  const gap = 8 - head.length - tail.length
+  if (gap < 1) return null
+  return [...head, ...new Array<number>(gap).fill(0), ...tail]
 }

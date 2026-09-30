@@ -20,12 +20,13 @@
  *    reads across the fixtures, which is exactly how a feed stops matching the
  *    page it describes.
  *
- * Both are optional peer dependencies, and linkedom is loaded only when an XML
- * document is actually parsed: a caller who never touches feeds or sitemaps
- * never needs it installed.
+ * Both are optional peer dependencies, and each is loaded on first use rather
+ * than at import: a caller who never touches feeds or sitemaps never needs
+ * linkedom installed, and importing this module without `node-html-parser`
+ * fails at the first parse with a message naming the package, not at load with
+ * a resolver stack trace.
  */
 
-import { parse as parseNodeHtml } from 'node-html-parser'
 import { createRequire } from 'node:module'
 import type { DateResult, Env } from '../types.js'
 import {
@@ -91,13 +92,50 @@ const DEFAULT_MAX_HTML = 10 * 1024 * 1024
  */
 const RAW_TEXT_TAG = /<(\/?)(script|style|textarea|title)\b/gi
 
-/** Parse an HTML string into a Document the extractors can read. */
+/** Thrown by {@link parseHtml} when `node-html-parser` is not installed. */
+export class MissingParserError extends Error {
+  constructor() {
+    super(
+      'pagedate/node needs an HTML parser and node-html-parser is not installed. ' +
+        'Run: npm install node-html-parser linkedom',
+    )
+    this.name = 'MissingParserError'
+  }
+}
+
+let htmlParser: ((html: string) => unknown) | undefined
+
+/**
+ * `node-html-parser`'s `parse`, resolved on first use.
+ *
+ * It is an optional peer, so a static import would make this module — and the
+ * CLI, including `--help` — unloadable on a machine that has `pagedate` and not
+ * the parser, which is exactly the machine `npx pagedate` runs on.
+ */
+function nodeHtmlParser(): (html: string) => unknown {
+  if (htmlParser) return htmlParser
+  try {
+    htmlParser = (
+      createRequire(import.meta.url)('node-html-parser') as { parse: (html: string) => unknown }
+    ).parse
+  } catch {
+    throw new MissingParserError()
+  }
+  return htmlParser
+}
+
+/**
+ * Parse an HTML string into a Document the extractors can read.
+ *
+ * Throws {@link MissingParserError} if `node-html-parser` is not installed.
+ */
 export function parseHtml(html: string, maxLength: number = DEFAULT_MAX_HTML): Document {
+  const parse = nodeHtmlParser()
   const capped = html.length > maxLength ? html.slice(0, maxLength) : html
   const normalised = capped.replace(RAW_TEXT_TAG, (_m, slash: string, tag: string) =>
     `<${slash}${tag.toLowerCase()}`,
   )
-  return parseNodeHtml(normalised) as unknown as Document
+  return parse(normalised) as unknown as Document
 }
 
 /**
@@ -121,6 +159,21 @@ function xmlParser(): (new () => DOMParser) | null {
   }
   XmlParser = resolved
   return resolved
+}
+
+let xmlParserInstalled: boolean | undefined
+
+/** Whether linkedom can be found, without paying to load it. */
+function hasXmlParser(): boolean {
+  if (xmlParserInstalled === undefined) {
+    try {
+      createRequire(import.meta.url).resolve('linkedom')
+      xmlParserInstalled = true
+    } catch {
+      xmlParserInstalled = false
+    }
+  }
+  return xmlParserInstalled
 }
 
 export type NodeEnvOptions = {
@@ -185,7 +238,9 @@ export function nodeEnv(options: NodeEnvOptions = {}): Env {
       return null
     }
   }
-  forwarded.parseXml = parseXml
+  // Left unset when linkedom is absent, which is what tells the feed and
+  // sitemap lookups not to fetch documents nothing here could read.
+  if (hasXmlParser()) forwarded.parseXml = parseXml
 
   return fetchEnv(forwarded)
 }

@@ -99,7 +99,7 @@ export function fetchEnv(options: FetchEnvOptions = {}): Env {
    * first hop. Node's fetch and the Workers runtime, unlike a browser's, expose
    * the 3xx response and its headers, so re-checking each hop is cheap.
    */
-  const request = async (url: string, method: 'GET' | 'HEAD'): Promise<Response | null> => {
+  const request = async (url: string, method: 'GET' | 'HEAD'): Promise<Exchange | null> => {
     let target = url
 
     for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
@@ -107,6 +107,7 @@ export function fetchEnv(options: FetchEnvOptions = {}): Env {
 
       const controller = new AbortController()
       const timer = setTimeout(() => controller.abort(), timeoutMs)
+      const release = (): void => clearTimeout(timer)
       let response: Response
       try {
         response = await doFetch(target, {
@@ -116,14 +117,22 @@ export function fetchEnv(options: FetchEnvOptions = {}): Env {
           signal: controller.signal,
         })
       } catch {
+        release()
         return null
-      } finally {
-        clearTimeout(timer)
       }
 
-      if (response.status < 300 || response.status > 399) return response.ok ? response : null
+      // The deadline is handed on with the response rather than cleared here.
+      // `fetch` resolves when the headers arrive, so a timer cleared at this
+      // point bounds the wait for headers and nothing else: a server that sends
+      // them promptly and then one byte a second holds the read open forever.
+      if (response.status < 300 || response.status > 399) {
+        if (response.ok) return { response, release }
+        discard(response, release)
+        return null
+      }
 
       const location = response.headers.get('location')
+      discard(response, release)
       if (!location) return null
       try {
         target = new URL(location, target).toString()
@@ -139,14 +148,20 @@ export function fetchEnv(options: FetchEnvOptions = {}): Env {
 
   const env: Env = {
     fetchText: async (url) => {
-      const response = await request(url, 'GET')
-      return response ? await readCapped(response, maxBytes) : null
+      const exchange = await request(url, 'GET')
+      if (!exchange) return null
+      try {
+        return await readCapped(exchange.response, maxBytes)
+      } finally {
+        exchange.release()
+      }
     },
     fetchHeaders: async (url) => {
-      const response = await request(url, 'HEAD')
-      if (!response) return null
+      const exchange = await request(url, 'HEAD')
+      if (!exchange) return null
+      discard(exchange.response, exchange.release)
       const headers: Record<string, string> = {}
-      response.headers.forEach((value, key) => {
+      exchange.response.headers.forEach((value, key) => {
         headers[key.toLowerCase()] = value
       })
       return headers
@@ -158,6 +173,17 @@ export function fetchEnv(options: FetchEnvOptions = {}): Env {
   if (options.now) env.now = options.now
 
   return env
+}
+
+/** A response whose abort timer is still running; `release` stops it. */
+type Exchange = { response: Response; release: () => void }
+
+/** Finish with a response whose body nobody will read. */
+function discard(response: Response, release: () => void): void {
+  release()
+  // Without this the body of a redirect or an error page keeps its socket
+  // until the runtime collects it.
+  void response.body?.cancel().catch(() => {})
 }
 
 /**
@@ -183,8 +209,9 @@ function globalDomParser(): ((xml: string) => Document | null) | null {
  * Read a response body, stopping at `maxBytes`.
  *
  * `response.text()` reads whatever arrives, and the abort timer does not help:
- * a server drip-feeding inside the deadline fills the heap without ever being
- * slow enough to cancel. Truncation beats rejection here — the signals this
+ * a fast server fills the heap well inside the deadline. The timer still runs
+ * while this reads, so a slow body ends when it fires, with whatever had
+ * arrived by then. Truncation beats rejection here — the signals this
  * library reads out of a feed or sitemap sit near the top of the document, so a
  * capped read usually still answers, and a partial answer beats an exception.
  */

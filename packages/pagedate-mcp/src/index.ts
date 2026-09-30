@@ -33,6 +33,7 @@
  * the option in `pagedate/node` for what it still does not close.
  */
 
+import { createRequire } from 'node:module'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { findDatesFromUrl, type FromUrlOptions } from 'pagedate/node'
 import { z } from 'zod'
@@ -67,7 +68,11 @@ export type ServerOptions = {
 }
 
 export function createServer(options: ServerOptions = {}): McpServer {
-  const server = new McpServer({ name: 'pagedate', version: '0.1.0' })
+  // Read from the manifest so the version a client is told cannot fall behind
+  // the one that was published. `../package.json` holds from `src/` and from
+  // the bundled `dist/` alike.
+  const { version } = createRequire(import.meta.url)('../package.json') as { version: string }
+  const server = new McpServer({ name: 'pagedate', version })
 
   const analyse: Analyse = (url, perCall) =>
     findDatesFromUrl(url, {

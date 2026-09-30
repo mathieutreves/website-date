@@ -1,6 +1,6 @@
 import type { Candidate, Env } from '../types.js'
 import { parseDateString, type ParseOptions } from '../parse/normalize.js'
-import { canonicalUrl, childText, defaultParseXml, matchesPage, normalisePath } from './xml.js'
+import { canonicalUrl, childText, canParseXml, defaultParseXml, matchesPage, normalisePath } from './xml.js'
 import { isSafeFetchTarget } from './urlGuard.js'
 
 /**
@@ -38,7 +38,7 @@ export async function extractSitemap(
 ): Promise<Candidate[]> {
   const fetchText = env.fetchText
   const parseXml = env.parseXml ?? defaultParseXml
-  if (!fetchText) return []
+  if (!fetchText || !canParseXml(env)) return []
 
   const targets = [pageUrl.toString(), canonicalUrl(doc, pageUrl)].filter(
     (v): v is string => Boolean(v),
