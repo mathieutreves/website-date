@@ -177,10 +177,10 @@ export function extractMeta(doc: Document, opts: ParseOptions = {}): Candidate[]
     const parsed = parseDateString(raw, opts)
     if (!parsed) continue
 
-    // Microdata scopes a property to the nearest `itemscope`, so a
-    // `datePublished` inside a Comment or Review item is that comment's date.
-    // It is still something the site stated, which is why it is kept, but not
-    // at the tier reserved for what the page says about itself.
+    // Microdata scopes a property to the item it sits in, so a `datePublished`
+    // inside a Comment, or inside an entry of a related-articles ItemList, is
+    // that item's date. It is still something the site stated, which is why it
+    // is kept, but not at the tier reserved for what the page says about itself.
     const nested = rule.source === 'itemprop' && inNestedItem(el)
 
     out.push({
@@ -188,21 +188,37 @@ export function extractMeta(doc: Document, opts: ParseOptions = {}): Candidate[]
       field: rule.field,
       source: rule.source,
       confidence: nested ? 'derived' : rule.confidence,
-      note: nested ? `<meta> ${key} (inside a comment or review item)` : `<meta> ${key}`,
+      note: nested ? `<meta> ${key} (on a related item, not this page)` : `<meta> ${key}`,
     })
   }
 
   return out
 }
 
-const NESTED_ITEM_TYPE = /(?:comment|review|rating|answer)s?$/i
+const NESTED_ITEM_TYPE = /(?:comment|review|rating|answer|itemlist)s?$/i
 
-/** Is the nearest enclosing microdata item a comment, review or answer? */
-function inNestedItem(el: Element): boolean {
+/** The microdata counterpart of `OTHER_WORK_KEYS` in the JSON-LD extractor. */
+const NESTED_ITEM_PROP =
+  /(?:^|\s)(?:itemlistelement|comment|review|mentions|citation|haspart|ispartof|isbasedon|about)(?:\s|$)/i
+
+/**
+ * Does this element describe an item *related to* the page rather than the page?
+ *
+ * True when an ancestor is the value of a property that points at another work
+ * — `itemprop="itemListElement"`, `itemprop="comment"` — or when the nearest
+ * enclosing item is a comment, review, answer or list. Fox Business prints a
+ * rail of five related stories, each an `itemListElement` carrying its own
+ * `datePublished`, and the earliest of those was being taken as the article's
+ * original publication date.
+ */
+export function inNestedItem(el: Element): boolean {
   let node = parentOf(el)
+  let scoped = false
   for (let depth = 0; node && depth < 24; depth++) {
-    if (node.hasAttribute?.('itemscope')) {
-      return NESTED_ITEM_TYPE.test(node.getAttribute('itemtype')?.trim() ?? '')
+    if (NESTED_ITEM_PROP.test(node.getAttribute?.('itemprop') ?? '')) return true
+    if (!scoped && node.hasAttribute?.('itemscope')) {
+      if (NESTED_ITEM_TYPE.test(node.getAttribute('itemtype')?.trim() ?? '')) return true
+      scoped = true
     }
     node = parentOf(node)
   }

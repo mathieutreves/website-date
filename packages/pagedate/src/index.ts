@@ -166,7 +166,7 @@ export function extractFromDocument(
   // RangeError out of `querySelectorAll`. Failing closed here means "not an
   // index", which suppresses nothing — the conservative direction, since a
   // wrong suppression deletes a correct answer invisibly.
-  const looksLikeIndex = safely(() => (isIndexPage(doc) ? [true] : [])).length > 0
+  const looksLikeIndex = safely(() => (isIndexPage(doc, parsedUrl) ? [true] : [])).length > 0
   const filtered = looksLikeIndex
     ? candidates.filter((c) => !isBodyScraped(c.source))
     : candidates

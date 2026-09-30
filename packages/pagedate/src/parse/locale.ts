@@ -168,6 +168,22 @@ registerYear('ledna', 'unora', 'brezna', 'dubna', 'kvetna', 'cervna',
 registerYear('leden', 'unor', 'brezen', 'duben', 'kveten', 'cerven',
   'cervenec', 'srpen', 'zari', 'rijen', 'listopad', 'prosinec')
 
+// Bulgarian
+registerYear('януари', 'февруари', 'март', 'април', 'май', 'юни',
+  'юли', 'август', 'септември', 'октомври', 'ноември', 'декември')
+
+// Serbian, in both of its scripts
+registerYear('јануар', 'фебруар', 'март', 'април', 'мај', 'јун',
+  'јул', 'август', 'септембар', 'октобар', 'новембар', 'децембар')
+registerYear('januar', 'februar', 'mart', 'april', 'maj', 'jun',
+  'jul', 'avgust', 'septembar', 'oktobar', 'novembar', 'decembar')
+
+// Slovak — genitive, as used in dates. Croatian is deliberately absent: its
+// `listopada` is October and Polish `listopada` is November, and a table keyed
+// on the name alone cannot hold both.
+registerYear('januara', 'februara', 'marca', 'aprila', 'maja', 'juna',
+  'jula', 'augusta', 'septembra', 'oktobra', 'novembra', 'decembra')
+
 // ---------------------------------------------------------------- others
 
 // Turkish. `ı` is a distinct letter with no decomposition, so the dotless
@@ -198,6 +214,20 @@ registerYear('يناير', 'فبراير', 'مارس', 'أبريل', 'مايو',
 // Arabic — Levantine naming, which is unrelated to the above
 registerYear('كانون الثاني', 'شباط', 'آذار', 'نيسان', 'أيار', 'حزيران',
   'تموز', 'آب', 'أيلول', 'تشرين الأول', 'تشرين الثاني', 'كانون الأول')
+
+// Arabic — Maghrebi naming, which borrows from French in Tunisia and Algeria
+// ("جانفي" is janvier) and from Spanish in Morocco ("غشت" is agosto). WordPress
+// localises to these, so a blog in Tunis writes "ماي 25, 2025" and none of the
+// twelve names above matches it.
+registerYear('جانفي', 'فيفري', 'مارس', 'أفريل', 'ماي', 'جوان',
+  'جويلية', 'أوت', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر')
+registerYear('يناير', 'فبراير', 'مارس', 'أبريل', 'ماي', 'يونيو',
+  'يوليوز', 'غشت', 'شتنبر', 'أكتوبر', 'نونبر', 'دجنبر')
+
+// Persian names for the Gregorian months. Jalali dates are a different
+// calendar and are not read at all.
+registerYear('ژانویه', 'فوریه', 'مارس', 'آوریل', 'مه', 'ژوئن',
+  'ژوئیه', 'اوت', 'سپتامبر', 'اکتبر', 'نوامبر', 'دسامبر')
 
 // Hebrew
 registerYear('ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני',

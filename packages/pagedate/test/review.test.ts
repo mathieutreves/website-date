@@ -394,3 +394,82 @@ describe('dates that belong to a related work', () => {
     expect(await published(doc)).toBe('2024-03-20T10:00Z')
   })
 })
+
+describe('a site root is a listing', () => {
+  const home = `<html><head><meta property="og:type" content="article"></head><body>
+    <div class="post"><h2><a href="/2024/03/12/newest">Newest</a></h2><time datetime="2024-03-12T09:00:00Z">March 12, 2024</time></div>
+    <div class="post"><h2><a href="/2024/03/02/older">Older</a></h2><time datetime="2024-03-02T09:00:00Z">March 2, 2024</time></div>
+  </body></html>`
+
+  it('does not take the newest listed item’s date as its own', async () => {
+    expect(await published(documentFrom(home), 'https://example.com/')).toBeUndefined()
+  })
+
+  it('reads the same markup as a document anywhere else', async () => {
+    expect(await published(documentFrom(home), 'https://example.com/2024/newest')).toBeDefined()
+  })
+
+  it('keeps what a root page declares about itself', async () => {
+    const declared = home.replace(
+      '</head>',
+      '<script type="application/ld+json">{"@type":"Article","datePublished":"2023-11-05"}</script></head>',
+    )
+    expect(await published(documentFrom(declared), 'https://example.com/')).toBe('2023-11-05')
+  })
+})
+
+describe('a long post is not a listing', () => {
+  it('when it is the page’s one <article>, whatever the theme declares', async () => {
+    const headings = Array.from({ length: 14 }, (_, i) => `<h2>Part ${i}</h2><p>Text.</p>`).join('')
+    const doc = documentFrom(`<html><head><meta property="og:type" content="website"></head><body>
+      <article class="hentry"><header><h1>A long post</h1>
+        <p class="meta"><time datetime="2025-06-10T00:00:00" pubdate>June 10, 2025</time></p></header>
+        ${headings}</article></body></html>`)
+    expect(await published(doc, 'https://example.com/blog/a-long-post/')).toBe('2025-06-10T00:00')
+  })
+})
+
+describe('date class names written as one word', () => {
+  it('mark a date block as their hyphenated spellings do', async () => {
+    const doc = documentFrom(`<html><body><div class="story"><h3>Headline</h3>
+      <p class="infostamp"><span class="datetag">Wednesday January 21, 2009 09:51 AM EST; Category:
+      <a href="/macbook">MacBook</a><br>Written by Eric Slivka</span></p><div>Body.</div></div></body></html>`)
+    expect(await published(doc, 'https://example.com/story/one')).toBe('2009-01-21')
+  })
+})
+
+describe('microdata on a <time> element', () => {
+  const rail = [9, 6, 19]
+    .map(
+      (day) => `<li itemprop="itemListElement"><a href="/other-${day}">Other</a>
+        <meta itemprop="datePublished" content="2015-01-${String(day).padStart(2, '0')}T20:00:00Z"></li>`,
+    )
+    .join('')
+  const doc = documentFrom(`<html><body><div itemscope itemtype="http://schema.org/Article">
+    <h1 itemprop="name">Four ways</h1>
+    <time itemprop="datePublished" datetime="2015-01-16T12:33-05:00">Published January 16, 2015</time>
+    <ul itemscope itemtype="http://schema.org/ItemList">${rail}</ul></div></body></html>`)
+
+  it('is the page’s declared date, and the related-story rail is not', async () => {
+    const result = await findDates(doc, 'https://example.com/four-ways', {}, { now: NOW })
+    expect(result.published).toMatchObject({
+      value: '2015-01-16T12:33-05:00',
+      source: 'itemprop',
+      confidence: 'declared',
+    })
+  })
+})
+
+describe('month names', () => {
+  const cases: Array<[string, string]> = [
+    ['ماي 25, 2025', '2025-05-25'],
+    ['12 جانفي 2024', '2024-01-12'],
+    ['3 غشت 2021', '2021-08-03'],
+    ['7 ژوئن 2022', '2022-06-07'],
+    ['5 септември 2023', '2023-09-05'],
+    ['12. januára 2024', '2024-01-12'],
+  ]
+  for (const [input, value] of cases) {
+    it(input, () => expect(parseDateString(input)?.value).toBe(value))
+  }
+})

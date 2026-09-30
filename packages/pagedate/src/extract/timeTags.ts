@@ -1,5 +1,6 @@
 import type { Candidate } from '../types.js'
 import { parseDateString, type ParseOptions } from '../parse/normalize.js'
+import { inNestedItem } from './meta.js'
 import { marksPublication, scoreContext, surroundingText } from './context.js'
 import { fieldFromLabel } from './labels.js'
 
@@ -64,6 +65,21 @@ export function extractTimeTags(doc: Document, opts: ParseOptions = {}): Candida
         })
         continue
       }
+    }
+
+    // `<time itemprop="datePublished" datetime="…">` is microdata written on a
+    // visible element rather than a `<meta>`, and says exactly what the `<meta>`
+    // form says. Reading it as an ordinary `<time>` left the page's one explicit
+    // declaration a tier below the related-story dates around it.
+    if (attr && (itemprop === 'datepublished' || itemprop === 'datemodified') && !inNestedItem(el)) {
+      out.push({
+        ...parsed,
+        field,
+        source: 'itemprop',
+        confidence: 'declared',
+        note: `<time> itemprop ${itemprop}`,
+      })
+      continue
     }
 
     out.push({
