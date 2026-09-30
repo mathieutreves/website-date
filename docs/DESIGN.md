@@ -295,6 +295,41 @@ Adapter output would be `declared` confidence and would short-circuit nothing; g
 
 Conflict detection is linear in the number of candidates. A page repeating one declared date 3000 times is an ordinary input from the open web, and `test/hardening.test.ts` holds the bound.
 
+### 4.8a Listings are not documents
+
+A homepage, a section front and a tag archive carry dozens of dates and own none
+of them. Every extractor that reads the body is built to find a date *near the
+content*, and on a listing there is no content to be near — so the `<time>` in
+the first card reads exactly like a byline, and the newest item's date is
+returned as the page's own.
+
+`isIndexPage` (`src/extract/indexPage.ts`) suppresses the body-scraped sources on
+those pages. It is built from positive evidence in both directions: an explicit
+`og:type=article` or a JSON-LD `Article` type, or an article-body container, ends
+the test immediately; what remains has to clear a weight threshold assembled from
+`og:type=website`, twelve or more headings, ten or more `<time>` elements, and
+three or more sibling `<article>` elements. Measured across the corpus, JSON-LD
+`Article` separates articles from listings 43% to 1%, and `og:type=article` 77%
+to 12%.
+
+It is deliberately asymmetric. A false "this is an index" deletes the correct
+answer from a real article, and does it invisibly — strictly worse than the
+invented date it exists to prevent, which is at least visible and arguable. So
+the threshold is set to fire on **30% of listings and 1.7% of real articles**
+rather than tuned for recall, and the DOM walk is wrapped in the same `safely`
+the extractors use, so a document too deeply nested to traverse fails to "not an
+index" and suppresses nothing.
+
+`opengraph` is **not** suppressed even though `article:published_time` on a
+homepage is wrong. It is the site stating it, and discarding a `declared` value
+on a heuristic verdict about page shape inverts the confidence tiers the whole
+library rests on. That case belongs in conflict detection, not in a filter.
+
+This is the one behaviour in this document that a corpus of dated pages cannot
+score: on such a corpus a false positive is structurally impossible, so the bug
+was invisible until a negative tier existed to point at it. See
+[CORPUS-BUILD.md](CORPUS-BUILD.md).
+
 ### 4.9 Image upload paths
 
 WordPress files uploads under `/wp-content/uploads/2016/05/` and Drupal under `/files/2016/05/04/`. The image a post declares as `og:image` or `twitter:image` is usually the one uploaded with it, and on CMS-shaped sites emitting no other date it can be the only machine-readable signal.
@@ -485,7 +520,7 @@ All network access lives in the service worker, which never needs a DOM.
 
 ### 6.5 Distribution
 
-Chrome Web Store and addons.mozilla.org, MV3 on both from one codebase. Store assets — icons, screenshots, permission justifications, the AMO source-code submission — are generated and documented in [PUBLISHING.md](PUBLISHING.md).
+Chrome Web Store and addons.mozilla.org, MV3 on both from one codebase. Store assets — icons, screenshots, permission justifications, the AMO source-code submission — are generated and documented in [RELEASING.md](RELEASING.md).
 
 ---
 
@@ -567,9 +602,12 @@ The feature is presented as "roughly when this changed", never as a diff.
 | `Last-Modified` kept but opt-in | Real on static hosts, the serve time behind a CDN. Measured: two false positives and no gains (§4.10) |
 | `document.lastModified` never used | It falls back to the current time when the header is absent |
 | Timezone preserved rather than normalised to UTC | Normalising shifts the displayed day for no gain |
-| Ambiguous numeric dates degrade to month precision | Guessing DD/MM against MM/DD produces a confidently wrong day |
+| Ambiguous numeric dates degrade to year precision | Guessing DD/MM against MM/DD produces a confidently wrong day |
 | Adapters as a seam, none shipped | Generic heuristics optimise for news, which is the case needing least help, but no per-domain rule has yet earned its maintenance (§4.6) |
 | Port htmldate rather than reinvent | Apache-2.0 since v1.8.0, multilingual, production-proven on millions of documents |
+| Listings suppress body-scraped sources | On an index page the body is other documents' metadata, so the newest item's date is returned as the page's own. Tuned for precision over recall: a wrong suppression deletes a correct answer invisibly (§4.8a) |
+| `og:type` survives the listing filter | Suppressing a `declared` value on a heuristic guess about page shape inverts the confidence tiers. A homepage that declares `article:published_time` is a conflict, not a filter case (§4.8a) |
+| No copyright-year fallback | It is how htmldate reaches zero misses. Measured here on the pages where it would fire: 3 right and 1 wrong, all at year precision, so no gain in exact accuracy; and a year is a fact about the site rather than the document |
 
 ### Resolution
 
@@ -591,6 +629,7 @@ The feature is presented as "roughly when this changed", never as a diff.
 | Response bodies capped at 5 MB | A timeout does not bound memory: a server drip-feeding inside the deadline stays inside it while it fills the heap |
 | `blockPrivateNetwork: 'off'` provided | Analysing a local dev server is ordinary, and the alternative is hand-rolling an unguarded `Env` |
 | `node-html-parser` on the Node path | Roughly 3× faster than linkedom, with parity asserted over every corpus page rather than assumed |
+| Raw-text tag names lowercased before parsing | node-html-parser drops the rest of the document when `<SCRIPT>` is closed by `</script>`. 65 kB of techtarget.com became three elements; the fix costs 0.12 ms of a 3.30 ms parse |
 | Staleness answers `null` on imprecise input | A page stating "2024" straddles a 180-day threshold; picking a side is the same invention as a fabricated January 1st (§4.13) |
 | `isStale` counts undecidable pages as stale | Its use case is filtering a corpus, where letting an undated document through is how an old page gets quoted as current |
 | `basis` has no silent default | `published` and `modified` answer different questions; picking one quietly makes the other caller wrong |

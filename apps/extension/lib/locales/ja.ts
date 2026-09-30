@@ -127,6 +127,7 @@ export const ja: Translation = {
   menuNoDate: 'このリンクの日付は見つかりませんでした。',
   menuUnreachable: 'そのページを読み取れませんでした。',
   menuNeedsPermission: 'そのサイトを読み取る許可が拒否されました。',
+  toastDismiss: '閉じる',
   annotateFromUrl: 'リンクのアドレスから推定',
 
   optSearchHeading: '検索結果',

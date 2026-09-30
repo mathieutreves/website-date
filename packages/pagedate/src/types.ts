@@ -140,6 +140,17 @@ export type Env = {
    * rather than the library taking a parser dependency.
    */
   parseXml?: (xml: string) => Document | null
+  /**
+   * Let the feed and sitemap lookups follow links to private addresses.
+   *
+   * Those lookups filter the URLs a page declares before asking `fetchText` for
+   * them, so that an `Env` written without a guard of its own is still not
+   * steered at `http://169.254.169.254/` by a `<link>` tag. Set this when the
+   * private network is the point — a dev server on localhost — and the filter
+   * would discard the site's own feed. `nodeEnv` and `webEnv` set it for
+   * `blockPrivateNetwork: 'off'`. Non-HTTP schemes are refused regardless.
+   */
+  allowPrivateNetwork?: boolean
 }
 
 /**

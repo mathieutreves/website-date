@@ -121,6 +121,39 @@ const PUBLISHED_PHRASES = [
   'प्रकाशित', 'प्रकाशन तिथि',
 ]
 
+/**
+ * Words that label a date only when they are the *entire* text of an element.
+ *
+ * `date` cannot go in the lists above. Those are matched as substrings inside
+ * running prose, and `date` is a substring of "update", "candidate", "mandate"
+ * and "validate" — adding it there would make the sentence "the other 2020
+ * laureate is the International Commission against Death Penalty" label a date,
+ * which is the opposite of a signal.
+ *
+ * As the whole text of a short element it is unambiguous. `<h5>Date</h5>` next
+ * to `<p>February 9, 2021</p>` is a site stating a field name, and the pattern
+ * is everywhere: press releases, government pages, documentation, research
+ * bodies, and any CMS that renders a metadata panel as label/value pairs. See
+ * `extractLabelledPairs`, which is the only caller and which matches these
+ * against a trimmed, punctuation-stripped element text rather than a substring.
+ */
+const STANDALONE_PUBLISHED = [
+  'date', 'dates', 'date of publication', 'publication date', 'pub date',
+  'datum', // de, nl, sv
+  'fecha', // es
+  'data', // it, pt, pl
+  'data pubblicazione', 'data de publicacao', 'fecha de publicacion',
+  'дата', // ru
+  'дата публикации',
+  '日付', '日期', '公開', // ja, zh
+  '날짜', // ko
+  'تاريخ', // ar
+  'tarih', // tr
+  'dato', // no, da
+  'paivays', // fi
+  'ημερομηνια', // el
+]
+
 /** Escape a literal phrase for use inside a RegExp. */
 const escape = (s: string): string => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
@@ -153,4 +186,29 @@ export function fieldFromLabel(text: string): Field {
   if (MODIFIED_RE.test(folded)) return 'modified'
   if (PUBLISHED_RE.test(folded)) return 'published'
   return 'unknown'
+}
+
+const exact = (phrases: string[]): Set<string> => new Set(phrases.map(foldCase))
+const STANDALONE_PUBLISHED_SET = exact([...STANDALONE_PUBLISHED, ...PUBLISHED_PHRASES])
+const STANDALONE_MODIFIED_SET = exact(MODIFIED_PHRASES)
+
+/**
+ * Classify an element whose entire text is a field name.
+ *
+ * Exact match, not substring: that is what makes the bare words in
+ * `STANDALONE_PUBLISHED` safe here and unsafe in {@link fieldFromLabel}.
+ * Trailing punctuation is stripped because templates write "Date:" as often as
+ * "Date", and the two mean the same thing.
+ *
+ * Returns null rather than 'unknown' — the caller needs to distinguish "this
+ * element is a field label" from "this element is some other text", and
+ * 'unknown' is already a meaningful `Field` value meaning "a date whose kind we
+ * could not tell".
+ */
+export function fieldFromStandaloneLabel(text: string): Field | null {
+  const key = foldCase(text.trim().replace(/[\s:：.、,，\-–—]+$/u, ''))
+  if (!key || key.length > 32) return null
+  if (STANDALONE_MODIFIED_SET.has(key)) return 'modified'
+  if (STANDALONE_PUBLISHED_SET.has(key)) return 'published'
+  return null
 }

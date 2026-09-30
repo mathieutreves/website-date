@@ -1,4 +1,4 @@
-# Publishing
+# Releasing
 
 Four artifacts, four destinations. Cash cost is $5 once, for Chrome's one-time developer registration fee; npm, AMO and the MCP Registry are free.
 
@@ -16,11 +16,17 @@ Rationale for the constraints below is collected in [Decisions](#decisions).
 The mechanics are documented in the header comment of [`.github/workflows/publish.yml`](../.github/workflows/publish.yml). OIDC cannot perform a package's first publish, so version one of each package goes up by hand and every version after it comes from CI.
 
 ```sh
-pnpm --filter pagedate     publish    # once, by hand, to create the package
-pnpm --filter pagedate-mcp publish    # then this one, in this order
+pnpm --filter pagedate     publish    # this one first
+pnpm --filter pagedate-mcp publish
 ```
 
-Then configure the trusted publisher on npmjs.com for each package. The tarball contents are asserted in CI on every commit.
+Then configure the trusted publisher on npmjs.com for each package. The tarball contents are asserted in CI on every commit, and so is that the packed CLI starts on a machine with neither parser installed.
+
+Before the first publish:
+
+- Set the date on the `0.1.0` heading in [CHANGELOG.md](../CHANGELOG.md).
+- The repository has to be public. The `homepage`, `repository` and `bugs` links in both manifests point at it, provenance attestations are refused for a private repository, and the privacy-policy URL both extension stores are given is a page in it.
+- Both manifests set `publishConfig.provenance: true`, which is what the workflow wants. A provenance attestation is generated from a CI identity, so a publish from a laptop has none to offer; this has not been tried here, and if the manual publish is refused on those grounds, run it with `--provenance=false`. The first version then carries no attestation and every later one does.
 
 **Use `pnpm publish`, never `npm publish`.** `pagedate-mcp` depends on `pagedate` as `workspace:^`, which is a pnpm protocol. `npm publish` ships the string `"workspace:^"` verbatim into the published manifest, and every install of the result fails with `Unsupported URL Type "workspace:"`. pnpm rewrites it to the real range while packing. The publish itself succeeds, and npm allows unpublishing only within 72 hours.
 
@@ -32,17 +38,13 @@ The registry stores metadata only and points at the npm package, so npm comes fi
 
 The namespace is `io.github.mathieutreves/`, which GitHub authentication entitles. [DNS authentication](https://modelcontextprotocol.io/registry/authentication) would allow a domain instead; that is a decision to make before the first publish, because the name is the identity and changing it later means abandoning the old one.
 
-First publish, by hand, from `packages/pagedate-mcp` after the npm publish above:
+The workflow authenticates over `mcp-publisher login github-oidc` — no secret,
+the same posture as npm. The first publish is manual, from
+`packages/pagedate-mcp` and after the npm publish:
 
 ```sh
-brew install mcp-publisher          # or the tarball from the registry releases
 mcp-publisher login github
 mcp-publisher publish               # reads ./server.json
-```
-
-Verify it landed:
-
-```sh
 curl "https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.mathieutreves/pagedate"
 ```
 
@@ -63,15 +65,15 @@ None are required.
 
 An [MCPB bundle](https://github.com/modelcontextprotocol/mcpb) — a `.mcpb` zip giving one-click install in Claude Desktop with no Node required — is not built here. It needs a `manifest.json` and the runtime dependencies vendored into the archive, which is a different build from the npm one.
 
-## The extension, to both stores
+## The extension
 
-### Before the first submission
+### Store assets
 
 - **Icons** at `apps/extension/public/icon/{16,32,48,96,128}.png`. WXT discovers them and writes the manifest key; CI fails if any of the four the stores require is missing. 96 is not among those four and is present because Firefox's `about:addons` renders it.
 - **Screenshots**, 1280×800, Chrome only. Generated — see below.
 - **A privacy policy URL.** Use the rendered [docs/PRIVACY.md](https://github.com/mathieutreves/website-date/blob/main/docs/PRIVACY.md).
 
-### Screenshots
+Screenshots are generated, not drawn:
 
 ```sh
 pnpm --filter @website-date/extension gen:screenshots
@@ -87,7 +89,10 @@ Capture is a DevTools step, documented on the contact sheet: device toolbar at 1
 
 `test/screenshots.test.ts` guards what can be guarded without a browser: the `srcdoc` escaping, the composite's structure, and that every shot still names a fixture that exists.
 
-### Building the artifacts
+The privacy policy URL for both listings is the rendered
+[docs/PRIVACY.md](https://github.com/mathieutreves/website-date/blob/main/docs/PRIVACY.md).
+
+### Building
 
 ```sh
 pnpm --filter pagedate build
@@ -106,21 +111,25 @@ A [one-time $5 registration fee](https://developer.chrome.com/docs/webstore/regi
 | Field | Answer |
 |---|---|
 | Single purpose | Show when the current page was published and last modified, along with where each date came from and how much to trust it. |
-| `activeTab` | Reads the current page's markup to find its dates, only when the user clicks the toolbar icon. Used instead of a broad host permission so the extension has no access to any page the user has not explicitly asked about. |
-| `storage` | Stores the user's display preferences and a seven-day local cache of results, so revisiting a page does not require re-analysing it. Local to the device; never synced or transmitted. |
-| `scripting` | Reads the rendered DOM of the active tab (the extension must see the hydrated page, not the initial HTML) and draws the optional on-page date overlay. |
+| `activeTab` | Two uses, both on an explicit user action in the active tab. Clicking the toolbar icon reads the current page's markup to find its dates. Choosing the extension's entry in the link right-click menu uses it to inject the fetched link's markup for parsing (the service worker has no `DOMParser`) and to show the answer as a small on-page toast. Used instead of a broad host permission so the extension has no access to any page the user has not explicitly asked about. |
+| `storage` | Stores the user's display preferences and a local cache of results, so revisiting a page does not require re-analysing it. Entries are deleted after seven days, capped at 300 pages and 4 MB, and not written for incognito tabs. Local to the device; never synced or transmitted. |
+| `scripting` | `executeScript` reads the rendered DOM of the active tab (the extension must see the hydrated page, not the initial HTML), draws and removes the optional on-page date overlay, parses a right-clicked link's markup and shows its answer as an on-page toast. `registerContentScripts` registers the search-results annotator at runtime, only once the user enables that setting and grants the search-engine origins, so that no content script is declared in the manifest. |
 | `contextMenus` | Adds one entry, "When was this page written?", to the link right-click menu. It grants the ability to add a menu item and nothing else — no page access and no data. The entry does nothing until clicked, and the click authorises the single page it then reads. |
-| `*://*/*` (optional) | Requested only when the user enables "check every page automatically", or the search-annotation tier that reads result pages. Both are off by default. Each feature reads pages the user has not opened, which is impossible without it. Revoked as soon as no feature still needs it. |
-| `*://web.archive.org/*` (optional) | Requested only when the user enables Internet Archive lookups, off by default. Used to detect a page silently rewritten since the date it claims, by comparing against public capture history. Revoked when the setting is turned off. |
+| `*://*/*` (optional) | Requested only when the user enables "check every page automatically", or the search-annotation tier that reads result pages. Both are off by default. The first reads each page the user visits; the second has the service worker fetch up to 10 result pages per results page, without credentials and only from public addresses. Neither is possible without it. Revoked as soon as no feature still needs it. The right-click link check requests a single origin out of this pattern for the one link clicked, and removes it again once the page has been read. |
+| `*://web.archive.org/*` (optional) | Requested only when the user enables Internet Archive lookups, off by default. Used to detect a page silently rewritten since the date it claims, by comparing against public capture history; the page's URL is sent to `web.archive.org` for that, without credentials. In "always" mode it is revoked when the setting is turned off; in "ask each time" mode it is requested per lookup and revoked when the lookup finishes. |
 | Five search-engine origins (optional) | Google, Bing, DuckDuckGo, Hacker News and old Reddit. Requested only when the user enables search-result annotation, off by default, so the addresses of results already on screen can be read and dated. Listed separately from `*://*/*` because the cheap tier contacts no site at all. |
 | Remote code | No. Everything executed ships in the package. |
-| Data collection | Nothing is collected. Nothing is sold or shared. Certify all four disclosures accordingly. |
+| Data collection | Nothing is sent to the developer, and nothing is sold or shared. Certify the disclosures accordingly. The opt-in Internet Archive lookup above sends the current page's URL to `web.archive.org` and to nobody else; whether the form's web-history category applies to that is the same open decision as the Firefox one below. |
 
 Reviewers ask about content scripts. The built manifest declares none: the search-results annotator is registered at runtime with `scripting.registerContentScripts`, once the setting is on and the matching grant exists. CI asserts on both targets that no content script and no host permission has reached the manifest.
 
 ### Firefox (addons.mozilla.org)
 
 Free, with a Mozilla account. The add-on ID and minimum versions are pinned in `wxt.config.ts`; `gecko_android` is declared, so the listing can be opted in to Firefox for Android later.
+
+**Minimum version is Firefox 128**, desktop and Android. Every optional feature is requested through `optional_host_permissions`, which Firefox recognises only from 128; on anything older the extension installs and every permission request fails. 128 is an ESR. On Android there is no context menu and no toolbar badge, so the right-click check is absent and the on-page overlay is the ambient surface.
+
+**Data collection is declared in the manifest.** AMO requires `browser_specific_settings.gecko.data_collection_permissions` on new submissions, and Firefox shows it at install. The manifest declares `required: ["none"]`. The key is emitted only in the Firefox build. Whether the opt-in Internet Archive lookup should additionally be declared as optional `browsingActivity` is an open decision: it sends the current page's URL to a third party, at the user's request.
 
 **Source code submission is mandatory.** Vite minifies the output, and AMO [requires source for anything built by a bundler or minifier](https://extensionworkshop.com/documentation/publish/source-code-submission/): reviewers rebuild it and diff against the uploaded XPI, and there must be no differences. Upload `page-date-<version>-sources.zip` alongside the extension zip.
 
@@ -149,7 +158,7 @@ Reviewer notes:
 > https://github.com/mathieutreves/website-date. There are no runtime
 > dependencies and no remote code.
 
-### Version bumps
+## Versions
 
 For the extension: one number, in `apps/extension/package.json`. WXT reads the manifest version from it, and `wxt.config.ts` does not set `version`.
 

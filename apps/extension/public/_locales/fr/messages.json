@@ -266,6 +266,9 @@
   "menuNeedsPermission": {
     "message": "L’autorisation de lire ce site a été refusée."
   },
+  "toastDismiss": {
+    "message": "Fermer"
+  },
   "annotateFromUrl": {
     "message": "déduite de l’adresse du lien"
   },

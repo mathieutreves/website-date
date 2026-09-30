@@ -6,6 +6,7 @@ import {
   dateFromFetch,
   dateFromUrl,
   dateLink,
+  fetchPageText,
   originPattern,
 } from '../lib/link-date.js'
 
@@ -152,5 +153,83 @@ describe('originPattern', () => {
     expect(originPattern('file:///etc/passwd')).toBeNull()
     expect(originPattern('javascript:alert(1)')).toBeNull()
     expect(originPattern('nonsense')).toBeNull()
+  })
+})
+
+/*
+ * The request half of the fetch tier, which runs in the background worker. A
+ * tab's own `fetch` answers to the page's CORS policy whatever the extension
+ * has been granted, so it is the worker that asks and the tab that parses.
+ */
+describe('fetchPageText', () => {
+  const html = '<html><head><title>x</title></head></html>'
+
+  const respond =
+    (body: BodyInit, init: ResponseInit & { url?: string } = {}) =>
+    async (): Promise<Response> => {
+      const response = new Response(body, { headers: { 'content-type': 'text/html' }, ...init })
+      if (init.url) Object.defineProperty(response, 'url', { value: init.url })
+      return response
+    }
+
+  it('returns the markup as text', async () => {
+    expect(await fetchPageText('https://example.com/post', { fetchImpl: respond(html) })).toBe(html)
+  })
+
+  it('sends no cookies', async () => {
+    let seen: RequestInit | undefined
+    await fetchPageText('https://example.com/post', {
+      fetchImpl: async (_url, init) => {
+        seen = init
+        return new Response(html, { headers: { 'content-type': 'text/html' } })
+      },
+    })
+    expect(seen?.credentials).toBe('omit')
+  })
+
+  it('makes no request for a scheme that is not the web', async () => {
+    let called = 0
+    const fetchImpl = async () => (called++, new Response(html))
+    expect(await fetchPageText('file:///etc/passwd', { fetchImpl })).toBeNull()
+    expect(called).toBe(0)
+  })
+
+  it('makes no request to the private network when told the URL is a page\u2019s choice', async () => {
+    let called = 0
+    const fetchImpl = async () => (called++, new Response(html))
+    expect(await fetchPageText('http://192.168.0.1/', { fetchImpl, publicOnly: true })).toBeNull()
+    expect(called).toBe(0)
+  })
+
+  it('withholds a body that a redirect fetched from the private network', async () => {
+    const fetchImpl = respond(html, { url: 'http://127.0.0.1/admin' })
+    expect(await fetchPageText('https://example.com/r', { fetchImpl, publicOnly: true })).toBeNull()
+  })
+
+  it('refuses what is not a page', async () => {
+    const pdf = respond('%PDF', { headers: { 'content-type': 'application/pdf' } })
+    expect(await fetchPageText('https://example.com/a.pdf', { fetchImpl: pdf })).toBeNull()
+
+    const missing = respond('nope', { status: 404 })
+    expect(await fetchPageText('https://example.com/gone', { fetchImpl: missing })).toBeNull()
+  })
+
+  it('stops reading at the cap', async () => {
+    const big = respond('a'.repeat(5000))
+    const text = await fetchPageText('https://example.com/big', { fetchImpl: big, maxBytes: 1000 })
+    expect(text).toHaveLength(1000)
+  })
+
+  it('returns null rather than throwing when the network fails or times out', async () => {
+    const failing = async (): Promise<Response> => {
+      throw new TypeError('Failed to fetch')
+    }
+    expect(await fetchPageText('https://example.com/', { fetchImpl: failing })).toBeNull()
+
+    const hanging = (_url: RequestInfo | URL, init?: RequestInit): Promise<Response> =>
+      new Promise((_resolve, reject) => {
+        init?.signal?.addEventListener('abort', () => reject(new DOMException('aborted', 'AbortError')))
+      })
+    expect(await fetchPageText('https://example.com/', { fetchImpl: hanging, timeoutMs: 10 })).toBeNull()
   })
 })

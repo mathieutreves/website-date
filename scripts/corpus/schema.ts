@@ -76,6 +76,22 @@ export type CorpusEntry = {
     tier: LabelTier
     /** Free text: the URL segment, feed entry, or evidence span behind it. */
     evidence?: string
+    /**
+     * Whether a person has checked this label.
+     *
+     * Only negative (`none`) labels carry it, and they carry it because they are
+     * the one label source that cannot be derived from a mechanical property of
+     * the URL. `url-permalink` is checkable by reading the path; "this page has
+     * no publication date" is a claim about the whole document, and a claim of
+     * that shape is exactly what CONTRIBUTING.md forbids a model to make.
+     *
+     * `pending` entries are harvested, fetched and shown, but excluded from
+     * every score unless `--include-unreviewed` is passed. That default is the
+     * point: an unreviewed negative that says a page has no date, when it has
+     * one, hands a free false positive to every tool measured — including ours,
+     * which would flatter us. Promotion to `confirmed` is a human edit.
+     */
+    review?: 'pending' | 'confirmed' | 'rejected'
   }
 
   /**
@@ -96,6 +112,19 @@ export type CorpusEntry = {
     signals?: string[]
     /** Does the label date appear in the page at all? Set by enrich.ts. */
     labelInPage?: boolean
+    /**
+     * Which seed frame put this host in the corpus.
+     *
+     * `hand` is the original `scripts/corpus/seeds.txt` — a list of sites its
+     * author thought of, which is a bias no amount of careful labelling
+     * downstream can undo, because it decides which pages exist to be labelled.
+     * `tranco` is `corpus/seeds-tranco.txt`, produced by probing a published
+     * domain ranking that nobody here curated.
+     *
+     * Recorded per entry rather than argued about in prose, so "how much of this
+     * result rests on the hand-picked sites" is a query rather than an opinion.
+     */
+    frame?: 'hand' | 'tranco'
   }
 
   http: {
@@ -114,6 +143,60 @@ export type CorpusEntry = {
     sha256: string
   }
 }
+
+/**
+ * Which pool a host belongs to. Three, not two.
+ *
+ * `dev` is tuned against freely. `test` is the held-out set and is scored once,
+ * at the end. `diag` sits between them and exists because a two-way split makes
+ * its own failures unreadable: when a language or a template scores badly on
+ * `test`, the only way to find out why is to open the pages — and opening them
+ * is exactly what makes the split stop being held out. Every such question was
+ * therefore unanswerable, and the corpus could show that Japanese scored 62.5%
+ * without anyone being allowed to learn why.
+ *
+ * `diag` is a pool you MAY read, investigate and fix against, reported
+ * separately and never quoted as a headline. It buys back the ability to
+ * diagnose at the cost of a sixth of the corpus.
+ *
+ * **It is not a second held-out set.** The hosts carved into it come from the
+ * historical `dev` side, so anything already tuned on stayed tuned on; what
+ * makes it useful is that hosts entering the corpus later land in it clean.
+ *
+ * The `test` predicate is deliberately unchanged from the two-way version —
+ * `digest[0] % 3` — so every held-out figure ever published from this corpus
+ * remains a figure about the same set of hosts. Only the dev side is subdivided,
+ * using an independent byte.
+ */
+export type Split = 'dev' | 'diag' | 'test'
+
+export function splitOf(host: string): Split {
+  const digest = createHash('sha1').update(host).digest()
+  if (digest[0] % 3 === 0) return 'test'
+  return digest[1] % 4 === 0 ? 'diag' : 'dev'
+}
+
+/**
+ * A negative example: the page has no publication date, and that is the answer.
+ *
+ * Kept as a predicate rather than an inline `=== null` because three scorers and
+ * two enrichment passes have to agree about it, and a filter that reads
+ * `entry.label.published` truthily — which is what every one of them did — drops
+ * these entries silently instead of scoring them.
+ */
+export const isNegative = (entry: CorpusEntry): boolean =>
+  entry.label.source === 'none' || entry.label.published === null
+
+/**
+ * A negative a person has signed off on. The only kind any scorer counts.
+ *
+ * The gate is default-closed because the failure is asymmetric: an unreviewed
+ * negative that is wrong gives every tool a false positive on a page that
+ * actually had a date, and it does so in the direction that flatters this
+ * project. A missing negative costs coverage; a wrong one costs correctness.
+ */
+export const isScorableNegative = (entry: CorpusEntry): boolean =>
+  isNegative(entry) && entry.label.review === 'confirmed'
 
 export const entryId = (url: string): string =>
   createHash('sha1').update(url).digest('hex').slice(0, 16)

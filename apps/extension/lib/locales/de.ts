@@ -123,6 +123,7 @@ export const de: Translation = {
   menuNoDate: 'Kein Datum für diesen Link gefunden.',
   menuUnreachable: 'Diese Seite konnte nicht gelesen werden.',
   menuNeedsPermission: 'Die Berechtigung zum Lesen dieser Website wurde abgelehnt.',
+  toastDismiss: 'Schließen',
   annotateFromUrl: 'aus der Linkadresse erschlossen',
 
   optSearchHeading: 'Suchergebnisse',

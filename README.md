@@ -15,12 +15,12 @@ The library, CLI, MCP server and extension are implemented and tested. Nothing i
 
 | | |
 | --- | --- |
-| Library tests | 303 passing |
-| Extension tests | 273 passing |
+| Library tests | 380 passing |
+| Extension tests | 351 passing |
 | MCP server tests | 16 passing |
 | Annotated fixtures | 17 pages, 8 languages |
-| Benchmark corpus | 1248 pages, 33 hosts, 10 languages, 2005–2026 |
-| Published-date accuracy, held-out split | 90.9% |
+| Benchmark corpus | 4302 pages, 364 hosts, 19 languages, 2005–2026 |
+| Published-date accuracy, held-out split | 88.2% (htmldate: 92.0%) |
 | Runtime dependencies | none |
 
 Parts of this codebase were written with AI assistance. Every corpus label records the source it was derived from, under the rules in [docs/CORPUS-BUILD.md](docs/CORPUS-BUILD.md), and every number above is regenerated from committed inputs by `./scripts/validate.sh`.
@@ -38,7 +38,7 @@ Three properties follow from returning candidates rather than a single date:
 
 - **Precision is not widened.** A page that states "2024" yields `{ value: '2024', precision: 'year' }`. No January 1st is supplied.
 - **Confidence is a tier, not a score.** `declared` means the site stated it in machine-readable metadata; `derived` means structured but weaker; `inferred` means taken from prose, a URL, or a transport header. `minConfidence: 'declared'` restricts the answer to what the site itself claims, and may return nothing.
-- **An empty answer is a valid answer.** Five of the 17 fixtures have no publication date, and the fixture suite scores true negatives. Neither benchmark corpus can: every page in each has a determinable date, so a false positive is unmeasurable there.
+- **An empty answer is a valid answer.** Five of the 17 fixtures have no publication date, and every scoring harness counts a date invented on an undated page as a false positive. Neither benchmark corpus exercises that: every page in each has a determinable date, so a false positive is unmeasurable there. A negative tier of pages whose correct answer is "none" is harvested and awaiting human review ([docs/CORPUS-BUILD.md](docs/CORPUS-BUILD.md)). A preview against its unreviewed labels has pagedate inventing a date on 20% of them (14 of 70 on dev). It was 46% until a site root was treated as a listing; before any listing detection it was 59%.
 
 ## Install and use
 
@@ -103,13 +103,20 @@ const current = docs.filter((d) => !isStale(d.dates, { maxAgeDays: 365 }))
 
 ### CLI
 
+The CLI parses HTML, so it needs the two parsers beside it:
+
 ```bash
-npx pagedate https://example.com/post
-npx pagedate --file page.html --url https://example.com/post --all
-cat page.html | npx pagedate --url https://example.com/post --json
+npm install -g pagedate node-html-parser linkedom
+pagedate https://example.com/post
+pagedate --file page.html --url https://example.com/post --all
+cat page.html | pagedate --url https://example.com/post --json
 ```
 
-Exit codes: `0` a date was found, `1` none found, `2` the page could not be read.
+Without installing anything: `npx -p pagedate -p node-html-parser -p linkedom pagedate <url>`. Run without `node-html-parser`, the CLI exits `2` with a message naming the package.
+
+A bare URL is always fetched. Stdin is read only when the page is named with `--url` and no `--file` is given, so `pagedate "$url"` is safe inside a `while read` loop. Unknown options are refused rather than ignored.
+
+Exit codes: `0` a date was found, `1` none found, `2` the page could not be read or the arguments were wrong.
 
 Batch mode takes one URL per line and emits one JSON object per line:
 
@@ -154,13 +161,13 @@ Text scanning is most of the extraction cost, so `mode` is the main performance 
 
 | mode | accuracy | ms/page | reads |
 | --- | --- | --- | --- |
-| `fast` | 68.8% | 0.9 | declared metadata only — JSON-LD, OpenGraph, `<time>`, URL |
-| `standard` | 90.9% | 3.2 | the above plus rendered text and inline state |
-| `extensive` | 90.9% | 4.2 | the above plus unlabelled text, always |
+| `fast` | 66.3% | 1.1 | declared metadata only — JSON-LD, OpenGraph, `<time>`, URL |
+| `standard` | 88.2% | 2.9 | the above plus rendered text and inline state |
+| `extensive` | 89.2% | 3.7 | the above plus unlabelled text, always |
 
-`extensive` finds the same 230 correct answers as `standard` on the held-out split and converts one abstention into a wrong answer: 17 wrong and 6 missed against 16 and 7. On the 55-page htmldate corpus it scores 69.1% against `standard`'s 67.3%, a difference of one page. Its function is populating `candidates` for conflict detection and for display.
+`extensive` converts 7 abstentions on the held-out split into 6 correct answers and 1 wrong one: 505 exact against `standard`'s 499, with misses falling from 30 to 23, a 1.0-point gain. It also populates `candidates` for conflict detection and for display. It is more willing to date a page that has no date, and on the negative tier it is measurably worse at declining.
 
-`fast` costs 22.1 points of accuracy and saves about 2.3 ms per page. In an extension the DOM already exists, so that is the entire saving. In Node the caller also pays 8–11 ms to parse the HTML, so `fast` moves a page from roughly 14 ms to 10 ms.
+`fast` costs 21.9 points of accuracy and saves about 1.8 ms per page. In an extension the DOM already exists, so that is the entire saving. In Node the caller also pays about 6 ms to parse the HTML, so `fast` moves a page from roughly 12 ms to 8 ms.
 
 Timings are medians over repeated passes, taken after every mode has been warmed, with the order rotated between rounds. See `packages/pagedate/scripts/modes.ts`.
 
@@ -183,77 +190,91 @@ await findDatesFromUrl(url, {
 
 Two corpora. One of them is another project's test set.
 
-### The permalink corpus — 1248 pages
+### The permalink corpus — 4302 pages
 
-Built for this project: pages harvested from the Wayback Machine by dated permalink, pinned to a capture, spanning 2005–2026, ten languages and 33 hosts. Labels come from the URL path, which no HTML extractor reads. The manifest holds 1248 entries; 1242 have a capture on disk and are the ones every figure is computed over.
+Built for this project: pages harvested from the Wayback Machine by dated permalink, pinned to a capture, spanning 2005–2026, 19 languages and 364 hosts. Labels come from the URL path, which no HTML extractor reads. The manifest holds 4302 entries across 364 hosts; 4215 of them, across 356 hosts, have a capture on disk and are the ones every figure is computed over.
 
-Languages by page: English 418, French 116, Portuguese 102, Russian 101, Japanese 94, Italian 90, German 81, Dutch 64, Arabic 64, Spanish 30, and 82 pages whose markup declares no language.
+**Two seed frames, and every entry records which one it came from.** 1248 pages come from a hand-written list of sites the author thought of — a real bias, since it decides which pages exist to be labelled. 2900 come from probing the Tranco top-5000, a published ranking nobody here curated, keeping the hosts that mechanically turn out to use date permalinks. 154 are the negative tier. `strata.frame` makes "how much of this rests on hand-picked sites" a query rather than an opinion. See [docs/CORPUS-BUILD.md](docs/CORPUS-BUILD.md).
+
+Languages, by page: English 2802, Russian 201, Italian 167, French 160, Japanese 118, Portuguese 111, German 104, Arabic 85, Spanish 66, Dutch, Chinese, Polish, Norwegian, Korean, Hebrew, Czech, Finnish and Indonesian in smaller numbers, and 95 pages whose language could not be determined from markup or text.
+
+**Not every page is scored.** A headline figure uses pages within 30 days of capture whose label is recoverable from the document at all — 847 on dev, 566 held out. The rest are excluded rather than counted as failures, and `score.ts` prints `manifest / fetched / in split / within lag / scored` on every run so the funnel is visible. What counts as "recoverable" is a judgement call with real consequences, discussed in [docs/CORPUS-BUILD.md](docs/CORPUS-BUILD.md).
 
 The URL is neutralised for every tool, blanked in the argument and in the HTML. Blanking only the argument leaves the permalink restated in `<link rel="canonical">`, `og:url` and numerous `<a href>` elements; measured on the same pages, that difference is worth 194 → 184 to pagedate and 192 → 163 to htmldate.
 
-**Held-out test split, 253 pages.** Hosts are assigned to dev and test by hash of the hostname, so no site — and therefore no template — appears in both.
+**Held-out test split, 566 pages.** Hosts are assigned to dev and test by hash of the hostname, so no site — and therefore no template — appears in both.
 
 | tool | exact | wrong | missed | precision | accuracy |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| htmldate (extensive) | 236 | 17 | 0 | 93.3% | 93.3% |
-| pagedate (standard) | 226 | 14 | 13 | 94.2% | 89.3% |
-| pagedate (extensive) | 226 | 15 | 12 | 93.8% | 89.3% |
-| htmldate (fast) | 217 | 11 | 25 | 95.2% | 85.8% |
-| metascraper | 178 | 41 | 34 | 81.3% | 70.4% |
-| articleDateExtractor | 176 | 13 | 64 | 93.1% | 69.6% |
-| pagedate (fast) | 170 | 9 | 74 | 95.0% | 67.2% |
-| newspaper4k | 166 | 5 | 82 | 97.1% | 65.6% |
-| goose3 | 155 | 2 | 96 | 98.7% | 61.3% |
-| @extractus/article-extractor | 139 | 35 | 79 | 79.9% | 54.9% |
-| unfluff | 125 | 2 | 126 | 98.4% | 49.4% |
-| date_guesser | 114 | 22 | 117 | 83.8% | 45.1% |
+| htmldate (extensive) | 521 | 45 | 0 | 92.0% | **92.0%** |
+| pagedate (extensive) | 505 | 38 | 23 | 93.0% | 89.2% |
+| **pagedate (standard)** | 499 | 37 | 30 | **93.1%** | 88.2% |
+| htmldate (fast) | 484 | 36 | 46 | 93.1% | 85.5% |
+| articleDateExtractor | 403 | 41 | 122 | 90.8% | 71.2% |
+| metascraper | 395 | 87 | 84 | 82.0% | 69.8% |
+| pagedate (fast) | 375 | 19 | 172 | 95.2% | 66.3% |
+| newspaper4k | 364 | 14 | 188 | 96.3% | 64.3% |
+| @extractus/article-extractor | 352 | 47 | 167 | 88.2% | 62.2% |
+| goose3 | 312 | 11 | 243 | 96.6% | 55.1% |
+| unfluff | 283 | 12 | 271 | 95.9% | 50.0% |
+| date_guesser | 274 | 52 | 240 | 84.0% | 48.4% |
 
-htmldate leads by 4.0 points. pagedate is second, marginally ahead on precision, at roughly a quarter of the per-page cost, and is the only tool here that declines to answer.
+**htmldate leads, and pagedate is second by 3.8 points** (2.8 comparing extensive to extensive) — marginally ahead on precision, and the only tool here that will decline to answer.
+
+**This is not the number the dev split reports, and the difference is the point.** On the split the extraction rules were developed against, pagedate scores 93.3% and htmldate 85.4% — an apparent 7.9-point lead. Held out, that inverts. Anyone quoting the dev figure would be quoting the tuning, so this README quotes the held-out one.
 
 htmldate is invoked with `original_date=True`, the flag that asks it for a publication date rather than the most recent date on the page. It is the only tool measured that has such a switch, and the flag is worth about eleven points to it. See [docs/BENCHMARK.md](docs/BENCHMARK.md).
 
-**Dev/test gap**, measured through the same harness for both splits.
+**Dev/test gap: 5.1 points**, measured through the same harness for both splits.
 
 | | dev (tuned on) | test (held out) | gap |
 | --- | ---: | ---: | ---: |
-| pagedate (standard) | 96.0% | 89.3% | −6.7 |
-| htmldate (extensive) | 86.3% | 93.3% | +7.0 |
+| pagedate (standard) | 93.3% | 88.2% | **−5.1** |
+| htmldate (extensive) | 85.4% | 92.0% | **+6.6** |
 
-htmldate is the control. It was tuned on none of this corpus and scores 7.0 points higher on the held-out hosts than on the dev ones, so the two splits are not equally hard. −6.7 is therefore a gap against a baseline above zero. Part of it is tuning residue and part is that the test split is a different set of sites; two splits and one control cannot separate them.
+htmldate is the control. It was tuned on none of this corpus and scores 6.6 points higher on the held-out hosts than on the dev ones, so the two splits are not equally hard. −5.1 is therefore a gap against a baseline above zero. Part of it is tuning residue and part is that the test split is a different set of sites; two splits and one control cannot separate them.
 
-**Error columns.** htmldate (extensive) never declines: 0 misses, 17 wrong. pagedate declines on 13 pages and is wrong on 14. Every page in this corpus has a date, so declining can only cost accuracy; those 13 declines are 5.1 points, against a 4.0-point deficit. This does not establish that the abstention policy wins on a corpus containing undated pages, because no such benchmark exists.
+**Disclosure, required by [CONTRIBUTING.md](CONTRIBUTING.md).** The held-out split was scored partway through the session that produced these numbers, and extraction work continued against `dev` afterwards. Knowing the held-out figure while tuning is exactly what the split exists to prevent, so this figure is a weaker estimate than a first-and-only scoring would be. A third pool, `diag`, exists so that failures can be investigated without spending the held-out set again; it scores 95.4%.
 
-**±1 day of the remaining error is timezone noise.** A post published at 23:30 local carries a local-date URL and a UTC `article:published_time`, and both are correct. Scored with one day of slack, pagedate's 11 wrong answers on dev become 4, and its 16 on the held-out split become 5.
+It has since been scored a second time. A pre-release review changed the extractors — word boundaries around month names, listing detection, microdata scoping, one-word date class names — working from `dev`, `diag` and the unreviewed no-date pages, never from held-out pages. The held-out figure moved from 87.6% to 88.2%, which is three pages. The figures here are from that second scoring.
 
-| | strict | ±1 day |
-| --- | ---: | ---: |
-| pagedate (standard), dev | 96.0% / 97.6% precision | 97.5% / 99.1% precision |
-| pagedate (standard), test | 90.9% / 93.5% precision | 95.3% / 98.0% precision |
+**Error columns.** htmldate (extensive) never declines: 0 misses, 45 wrong. pagedate declines on 30 pages and is wrong on 37. Every page in this corpus has a date, so declining can only cost accuracy; those 30 declines are 5.3 points, against a 3.8-point deficit. This does not establish that the abstention policy wins on a corpus containing undated pages: the negative tier that could show it is unreviewed.
+
+**±1 day of the remaining error is timezone noise, not error.** A post published at 23:30 local carries a local-date URL and a UTC `article:published_time`, and both are correct. Applied to **every tool**, not only to ours — the flag lives in the shared table renderer for that reason:
+
+| tool, held out | strict | ±1 day | gain |
+| --- | ---: | ---: | ---: |
+| htmldate (extensive) | 92.0% | 94.3% | +2.3 |
+| pagedate (extensive) | 89.2% | 92.4% | +3.2 |
+| pagedate (standard) | 88.2% | 91.3% | +3.1 |
+| htmldate (fast) | 85.5% | 87.8% | +2.3 |
+
+The ranking does not change. pagedate gains slightly more, which fits — more of its error sits on the midnight boundary, because it reports the site's own UTC declaration where htmldate more often reads a rendered local date — but the deficit only narrows from 3.8 to 3.0 points. Tolerance does not rescue the comparison.
 
 Where a page stamps a UTC timestamp and also renders the same instant in its own zone, the day shown to readers is the day reported; see `localise` in `packages/pagedate/src/resolve.ts`. The remainder is undecidable from the document.
 
-**By language.** Each row is one or two hosts, so these are host figures carrying a language label. German is `deutsche-startups.de` and `sprachlog.de`; Arabic is Al Jazeera alone. A language appears in whichever split its hosts hashed into, which is why French and Dutch have no dev row and Russian and Arabic have no test row.
+**By language.** All rows are the held-out split, so none of these hosts were tuned against:
 
-| language | split | n | exact | wrong | missed | accuracy |
-| --- | --- | ---: | ---: | ---: | ---: | ---: |
-| German | test | 47 | 47 | 0 | 0 | 100.0% |
-| English | test | 36 | 36 | 0 | 0 | 100.0% |
-| Portuguese | dev | 57 | 57 | 0 | 0 | 100.0% |
-| Spanish | dev | 6 | 6 | 0 | 0 | 100.0% |
-| French | test | 62 | 61 | 0 | 1 | 98.4% |
-| Russian | dev | 77 | 75 | 2 | 0 | 97.4% |
-| English | dev | 210 | 204 | 4 | 2 | 97.1% |
-| Arabic | dev | 23 | 22 | 1 | 0 | 95.7% |
-| Japanese | dev | 39 | 37 | 2 | 0 | 94.9% |
-| Dutch | test | 30 | 28 | 2 | 0 | 93.3% |
-| Italian | test | 33 | 30 | 3 | 0 | 90.9% |
-| Italian | dev | 31 | 23 | 2 | 6 | 74.2% |
-| Japanese | test | 16 | 10 | 6 | 0 | 62.5% |
+| language | n | exact | wrong | missed | accuracy |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| German | 47 | 47 | 0 | 0 | 100.0% |
+| Chinese | 17 | 17 | 0 | 0 | 100.0% |
+| Spanish | 7 | 7 | 0 | 0 | 100.0% |
+| Arabic | 5 | 5 | 0 | 0 | 100.0% |
+| Russian | 4 | 4 | 0 | 0 | 100.0% |
+| French | 66 | 63 | 0 | 3 | 95.5% |
+| Dutch | 30 | 28 | 2 | 0 | 93.3% |
+| Italian | 52 | 47 | 3 | 2 | 90.4% |
+| English | 322 | 272 | 30 | 18 | 84.5% |
+| Japanese | 13 | 10 | 3 | 0 | 76.9% |
 
-Two rows need reading with their causes:
+Three things this table is not allowed to hide.
 
-- **Japanese, 94.9% dev against 62.5% test.** The year-first format (`2015.4.23`) used by the dev hosts is handled; the 16 test pages come from a different publisher whose markup is not. This is where the residual dev/test gap is concentrated.
-- **Italian, 74.2% dev.** All six misses are `ilpost.it` WordPress attachment pages — `/2012/11/01/article-slug/image-slug/` — photo permalinks carrying no date in the document. The label comes from a URL structure the page never restates.
+**Most languages are one or two hosts, so these are host figures wearing a language label.** Read a row as "this template, in this language", not as a claim about the language. Anything under ~30 pages is an anecdote: Russian at 4 pages and Arabic at 5 say nothing, and they are only this thin held out — the corpus carries 201 Russian and 85 Arabic pages, which hashed mostly into the other splits.
+
+**English is the worst large stratum at 84.5%, not the best.** It is also the only stratum big enough to be a measurement rather than a hint, and it is where nearly all the remaining error lives: 30 of the 38 wrong answers and 18 of the 23 misses. The multilingual work is not what needs attention.
+
+**The language strata themselves were wrong until recently.** They were filled from `<html lang>` with a TLD fallback, which put every `.com` without the attribute into one `unknown` bucket — 606 pages, mixing `japanese.engadget.com` and `cctv.com` in with English blogs. Reading the page's own text cut that to 95. It also deleted a finding: German scored 58.3% before, which read as a real weakness, and was `ipcc.ch` — a Swiss domain publishing in English — being filed as German by its TLD.
 
 ### The htmldate corpus — 55 pages
 
@@ -263,7 +284,7 @@ Retained for continuity with [htmldate's published table](https://github.com/adb
 | --- | ---: | ---: | ---: |
 | htmldate (extensive) | 96.4% | 96.4% | 74.0 |
 | htmldate (fast) | 97.8% | 81.8% | 11.2 |
-| pagedate (standard) | 78.7% | 67.3% | 3.8 |
+| pagedate (standard) | 79.5% | 63.6% | 3.8 |
 | pagedate (fast) | 66.7% | 25.5% | 1.6 |
 | date_guesser | 63.6% | 25.5% | 113.3 |
 | metascraper | 50.0% | 23.6% | 20.3 |
@@ -271,7 +292,7 @@ Retained for continuity with [htmldate's published table](https://github.com/adb
 | @extractus / unfluff | 44.4% / 88.9% | 14.5% | 84.0 / 119.1 |
 | goose3 | 66.7% | 7.3% | 133.8 |
 
-htmldate leads by 29 points here. The two corpora fail differently, which is why both are kept: this one's failures are bare `DD.MM.YYYY` in unmarked markup, dates present only inside an `href` or an `<input value>`, and six pages whose gold label is wrong.
+htmldate leads by 33 points here. The two corpora fail differently, which is why both are kept: this one's failures are bare `DD.MM.YYYY` in unmarked markup, dates present only inside an `href` or an `<input value>`, and six pages whose gold label is wrong.
 
 Those six are corrected in [`corpus-external/corrections.json`](corpus-external/corrections.json) with quoted evidence for each, and scored as a second table alongside the original rather than replacing it. Under the corrected key, htmldate's extensive mode drops 10.9 points and converges with its own fast mode.
 
@@ -279,8 +300,8 @@ Those six are corrected in [`corpus-external/corrections.json`](corpus-external/
 
 | | extraction only | including HTML parsing |
 | --- | ---: | ---: |
-| pagedate (fast) | 1.5 ms | 10.6 ms |
-| pagedate (standard) | 6.1 ms | 15.9 ms |
+| pagedate (fast) | 1.9 ms | 8.3 ms |
+| pagedate (standard) | 5.4 ms | 11.6 ms |
 | htmldate (fast) | — | 11.2 ms |
 | htmldate (extensive) | — | 75.5 ms |
 
@@ -331,10 +352,12 @@ pip install -r scripts/requirements-bench.txt
 
 The Node path ships `node-html-parser`; the extension gets a browser DOM. Two checks, both exiting non-zero on any disagreement:
 
-- `bench/parity.mjs` — linkedom against node-html-parser, over all 1242 permalink pages and all 55 htmldate pages.
-- `bench/parity-browser.mjs` — real Chromium against node-html-parser, over all 1242 permalink pages, through the extractor bundle the content script carries.
+- `bench/parity.mjs` — linkedom against the shipped parser, over all 4215 permalink pages and all 55 htmldate pages.
+- `bench/parity-browser.mjs` — real Chromium against the shipped parser, over the permalink pages, through the same extractor bundle the content script carries.
 
-All three agree on every page.
+**They agree on 4211 of 4215 pages.** They did agree on every page when the corpus was 1242; tripling it produced 4 disagreements, all on hosts added in the Tranco harvest, and they are unresolved. A published figure measured through linkedom describes the shipped path on 99.9% of this corpus and not on those four. Chromium and the shipped parser agree on 4197 of the 4215, and those 18 are unresolved too.
+
+The check earns its keep. It caught a real bug in the parser the library ships: **node-html-parser loses the rest of the document when a raw-text element's opening and closing tags differ in case** — `<SCRIPT>` closed by `</script>`, which is how a lot of pre-2013 markup is written. `techtarget.com` sends 65 kB of HTML that became *three elements*, after which the extractors correctly reported no date on a page that has one. `parseHtml` now lowercases those tag names before parsing, at 0.12 ms of a 3.30 ms parse, and `test/hardening.test.ts` covers both directions so the workaround cannot be dropped silently. This was invisible for as long as the corpus was small enough not to contain such a page.
 
 The check covers a class of bug that does not surface as a wrong answer. `node-html-parser` entity-decodes `<script>` bodies, which is incorrect — `<script>` is a raw-text element — so a JSON-LD block containing `&quot;` parses as invalid JSON, is skipped as malformed, and the page falls through to a weaker signal. The library reads `innerHTML` where it differs from `textContent` for that reason, and the unit tests run against the parser that ships.
 
@@ -401,13 +424,14 @@ results/                 committed output of the last validation run
 
 ## Limitations
 
-- **English is 34% of the corpus and no other language reaches 10%.** Spanish is 30 pages. Any per-language figure below roughly 50 pages is a hint rather than a measurement. German is 81 pages and was the hardest stratum to build: `heise.de`, `spiegel.de`, `zeit.de`, `taz.de` and `golem.de` were each probed and each yield zero, because German news sites use opaque article IDs rather than date permalinks, so the German stratum is blogs.
-- **Permalink labels carry ±1 day of timezone noise.** `--tolerance 1` reports 95.3% against 90.9% strict on the held-out split, so eleven of the sixteen remaining wrong answers there are one day apart. Both numbers are given above.
-- **Labels are silver, not gold.** They come from URL structure, not human adjudication.
-- **The dev split is where the extraction rules were developed,** so every dev-split figure is optimistic. Quote the held-out split, which contains German, French, Italian, Dutch, Japanese and part of the English stratum.
-- **253 held-out pages is small.** One page is 0.4 points. Treat gaps under about 4 points as noise.
-- **Six manifest entries have no capture, and four entries are not articles.** The six were never fetched, carry no language and enter no score; the scorer prints `manifest entries / fetched / scored` on every run. The four are `lenta.ru` URLs ending `.js` — Tag Manager scripts under a dated permalink path. Three are among the unfetched; one 700-byte script is in the scored set, at 0.08% of the corpus.
-- **Firefox's parser is unmeasured,** as is any page whose DOM is built by JavaScript the archived capture did not run. Chromium and node-html-parser agree on all 1242 pages.
+- **The corpus cannot score a false positive.** Every page in it was harvested by dated permalink, so every page has a date, and a tool that invents one on an undated page is charged nothing. This is the largest single gap in every number here, and it is the one that matters most to this library's central claim. The 154-page negative tier that would close it is harvested and unreviewed; the preview against it says pagedate invents a date on 20% of those pages.
+- **English is 66% of the corpus and is also its worst large stratum**, at 84.5% held out against 90–100% for German, French, Italian and Dutch. Anything under ~30 pages is an anecdote rather than a measurement — held out, Russian is 4 pages and Arabic 5.
+- **Permalink labels carry ±1 day of timezone noise.** A post published at 23:30 local gets a local-date URL and a UTC `article:published_time`; both are correct. Applied to every tool alike, one day of slack moves pagedate from 88.2% to 91.3% and htmldate from 92.0% to 94.3% — it narrows the gap without closing it. The library resolves this where the page renders the instant in its own zone as well as in UTC; where the page only ever states one of the two, nothing in the document decides it.
+- **Labels are silver, not gold.** They come from URL structure, not human adjudication. Checked against the sites' own declarations they hold up well — of the dev pages where a site states a date in JSON-LD or OpenGraph, the URL label matches 96.6% of the time and is within a day 99.0% — but "well" is not "adjudicated".
+- **Whether a page is scoreable at all is a judgement call.** With `url-slug` held out, a page whose date appears nowhere in its own markup cannot be answered, so it is excluded rather than counted as a failure. That check searches visible text and date-bearing attributes, and deliberately not `class`/`href`, where the URL leaks back in as furniture. It is still a crude matcher deciding what a careful tool is graded on, and it looks for *a* date rather than a *publication* date. `--include-unanswerable` reports the other end of the bracket: 89.3% against 92.9% on dev.
+- **The dev split is where the extraction rules were developed**, so every dev-split figure is optimistic by construction — 93.3% against 88.2% held out. Quote the held-out split.
+- **566 held-out pages is small.** One page is 0.18 points. Treat gaps under ~2 points as noise.
+- **The two parsers no longer agree on every page** — 4211 of 4215, all four disagreements on hosts added in the most recent harvest, and unresolved.
 
 ## Decision log
 
@@ -443,7 +467,7 @@ results/                 committed output of the last validation run
 - [docs/CORPUS-BUILD.md](docs/CORPUS-BUILD.md) — how the corpus is built and how labels are sourced
 - [docs/CORPUS-NOTES.md](docs/CORPUS-NOTES.md) — gold-standard caveats in the external corpus
 - [docs/PRIVACY.md](docs/PRIVACY.md) — what the extension stores and what leaves the browser
-- [docs/PUBLISHING.md](docs/PUBLISHING.md) — releasing to npm and to both extension stores
+- [docs/RELEASING.md](docs/RELEASING.md) — releasing to npm and to both extension stores
 - [CONTRIBUTING.md](CONTRIBUTING.md) · [SECURITY.md](SECURITY.md) · [CHANGELOG.md](CHANGELOG.md)
 
 ## Prior art

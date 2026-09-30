@@ -266,6 +266,9 @@
   "menuNeedsPermission": {
     "message": "读取该网站的权限被拒绝。"
   },
+  "toastDismiss": {
+    "message": "关闭"
+  },
   "annotateFromUrl": {
     "message": "根据链接地址推断"
   },

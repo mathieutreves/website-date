@@ -17,9 +17,12 @@
  * pagedate for every candidate and see whether the label is among them — marks
  * exactly the pages pagedate fails on as "unanswerable", then excludes them, and
  * reports a higher number. That is circular, and it is how a benchmark quietly
- * starts flattering its author. So this is a plain string search over the raw
- * HTML for the label date in every rendering a page plausibly uses, in the
- * languages the corpus actually contains.
+ * starts flattering its author. So this is a plain string search for the label
+ * date in every rendering a page plausibly uses, in the languages the corpus
+ * actually contains.
+ *
+ * It searches the part of the document a date extractor could legitimately read
+ * a date *from* — see {@link recoverableHaystack} — rather than the raw bytes.
  *
  * Sets `strata.labelInPage`. Nothing is deleted: the scorer decides what to do.
  *
@@ -101,6 +104,43 @@ function appearsIn(haystack: string, form: string): boolean {
   return false
 }
 
+/**
+ * The part of a document a date extractor could legitimately read a date from.
+ *
+ * `labelInPage` decides whether an entry is scoreable at all, so what counts as
+ * "in the page" is not a detail — it is the line between a tool failing and a
+ * tool being punished for refusing to invent. Searching the raw HTML draws that
+ * line in the wrong place: `dhs.gov` carries `class="section-blog-2009-02-11"`,
+ * `ilpost.it` and `forbes.com` link to neighbouring posts by dated permalink,
+ * and every one of those makes the flag true on a page whose publication date is
+ * nowhere a reader or a parser can see it.
+ *
+ * Measured, that was not an edge case: of the dev misses where pagedate produced
+ * no candidate at all, **none** had the label in visible text. 19 of 27 had it
+ * only in an attribute or class name — the URL the corpus took the label from,
+ * leaking back in as furniture — and the corpus was scoring all of them as
+ * extraction failures.
+ *
+ * So the haystack is visible text plus the attributes that actually carry dates:
+ * `content`, `datetime`, and the `<script type="application/ld+json">` bodies
+ * JSON-LD lives in. `class`, `id`, `href` and `src` are excluded by
+ * construction, because a date in any of them is a routing artifact rather than
+ * a statement about when the document was published.
+ */
+function recoverableHaystack(html: string): string {
+  const jsonLd = [...html.matchAll(/<script[^>]+ld\+json[^>]*>([\s\S]*?)<\/script>/gi)]
+    .map((m) => m[1])
+    .join(' ')
+  const dateAttrs = [...html.matchAll(/\b(?:content|datetime)\s*=\s*["']([^"']*)["']/gi)]
+    .map((m) => m[1])
+    .join(' ')
+  const visible = html
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+  return `${visible} ${dateAttrs} ${jsonLd}`
+}
+
 /** Every plausible rendering of a date, as substrings to look for. */
 function renderings(iso: string): string[] {
   const [y, m, d] = iso.split('-')
@@ -167,12 +207,119 @@ const TLD_LANG: Record<string, string> = {
   jp: 'ja', cn: 'zh', kr: 'ko',
 }
 
+/**
+ * Writing systems that identify a language on sight.
+ *
+ * Order matters. Japanese is tested before Chinese because Japanese text is
+ * mostly CJK ideographs with kana mixed in — testing for ideographs first would
+ * call every Japanese page Chinese. Ukrainian before Russian for the same
+ * reason: it is Cyrillic plus four letters Russian does not have.
+ */
+const SCRIPTS: Array<[string, RegExp]> = [
+  ['ja', /[぀-ゟ゠-ヿ]/g], // kana
+  ['ko', /[가-힯ᄀ-ᇿ]/g], // hangul
+  ['zh', /[一-鿿]/g], // ideographs, after kana and hangul
+  ['uk', /[іїєґІЇЄҐ]/g],
+  ['ru', /[Ѐ-ӿ]/g],
+  ['el', /[Ͱ-Ͽ]/g],
+  ['he', /[֐-׿]/g],
+  ['fa', /[پچژگ]/g],
+  ['ar', /[؀-ۿ]/g],
+  ['hi', /[ऀ-ॿ]/g],
+  ['th', /[฀-๿]/g],
+]
+
+/**
+ * Function words for the Latin-script languages in the corpus.
+ *
+ * Function words rather than content words: they are the highest-frequency
+ * tokens in any text and the least likely to be a borrowed brand name. Scored by
+ * count, so a page needs several hits rather than one — "de" alone appears in
+ * English text as often as in Portuguese.
+ */
+const STOPWORDS: Record<string, string[]> = {
+  en: ['the', 'and', 'of', 'to', 'is', 'that', 'for', 'with', 'this', 'from'],
+  de: ['der', 'die', 'und', 'das', 'ist', 'nicht', 'ein', 'auch', 'mit', 'sich'],
+  fr: ['les', 'des', 'est', 'une', 'pour', 'que', 'dans', 'sur', 'pas', 'avec'],
+  es: ['que', 'los', 'las', 'del', 'una', 'por', 'para', 'con', 'como', 'este'],
+  it: ['che', 'per', 'della', 'sono', 'con', 'una', 'nel', 'alla', 'anche', 'come'],
+  pt: ['que', 'uma', 'para', 'com', 'nao', 'dos', 'como', 'mais', 'pelo', 'seu'],
+  nl: ['het', 'een', 'van', 'niet', 'dat', 'zijn', 'voor', 'met', 'ook', 'aan'],
+  pl: ['nie', 'sie', 'jest', 'что', 'przez', 'oraz', 'tego', 'jako', 'ktory', 'jeden'],
+  sv: ['och', 'att', 'som', 'for', 'med', 'den', 'har', 'inte', 'pa', 'ar'],
+  da: ['og', 'det', 'som', 'til', 'med', 'ikke', 'har', 'den', 'af', 'for'],
+  no: ['og', 'det', 'som', 'til', 'med', 'ikke', 'har', 'den', 'av', 'for'],
+  fi: ['ja', 'on', 'ei', 'etta', 'joka', 'sen', 'ovat', 'myos', 'kuin', 'han'],
+  cs: ['je', 'na', 'se', 'ale', 'pro', 'jako', 'jsou', 'nebo', 'tak', 'ktery'],
+  tr: ['bir', 've', 'bu', 'ile', 'icin', 'daha', 'olarak', 'gibi', 'kadar', 'sonra'],
+  id: ['yang', 'dan', 'dengan', 'untuk', 'dari', 'pada', 'tidak', 'ini', 'akan', 'adalah'],
+  ro: ['este', 'care', 'pentru', 'din', 'sunt', 'mai', 'sau', 'dar', 'cu', 'ca'],
+  hu: ['hogy', 'nem', 'egy', 'volt', 'meg', 'csak', 'majd', 'mint', 'ezt', 'ami'],
+  vi: ['va', 'cua', 'khong', 'duoc', 'nhung', 'cho', 'trong', 'nguoi', 'mot', 'nay'],
+}
+
+/**
+ * Language from the page's own text, when the markup does not say.
+ *
+ * `<html lang>` is right when it is present and it is the first thing tried.
+ * When it is absent the old fallback was the TLD, which puts every `.com` in
+ * one bucket regardless of what it publishes — and that bucket was the corpus's
+ * second-worst stratum while containing `japanese.engadget.com` and `cctv.com`.
+ * A stratum that mixes six languages together cannot answer the question the
+ * language table exists to answer.
+ *
+ * This is deliberately a *stratum* label and not an answer key. It decides how
+ * results are grouped for reporting, never what the right date is, so a
+ * mechanical classifier is appropriate here in a way it would not be for
+ * `label.published` — see CONTRIBUTING.md.
+ */
+function detectFromText(html: string): string | null {
+  const text = html
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .slice(0, 300_000)
+
+  // A script hit is decisive: no amount of English boilerplate makes a page with
+  // 400 kana characters an English page. The floor rejects the stray emoji or
+  // the one Chinese word in a font stack.
+  for (const [lang, pattern] of SCRIPTS) {
+    const hits = text.match(pattern)?.length ?? 0
+    if (hits >= 40) return lang
+  }
+
+  const words = text.toLowerCase().match(/[a-zà-ÿ]{2,}/g)
+  if (!words || words.length < 60) return null
+  const counts = new Map<string, number>()
+  for (const word of words) counts.set(word, (counts.get(word) ?? 0) + 1)
+
+  let best: string | null = null
+  let bestScore = 0
+  for (const [lang, list] of Object.entries(STOPWORDS)) {
+    let score = 0
+    for (const w of list) score += counts.get(w) ?? 0
+    if (score > bestScore) {
+      bestScore = score
+      best = lang
+    }
+  }
+  // A handful of hits is chance. Requiring a real count is what keeps a page of
+  // product names from being assigned a language at all.
+  return bestScore >= 12 ? best : null
+}
+
 function detectLang(html: string, entry: CorpusEntry): string {
   const attr = /<html[^>]*\slang\s*=\s*["']?([a-zA-Z]{2,3})(?:[-_][a-zA-Z]+)?/i.exec(html)
   if (attr?.[1]) return attr[1].toLowerCase()
 
   const og = /property\s*=\s*["']og:locale["'][^>]*content\s*=\s*["']([a-zA-Z]{2,3})/i.exec(html)
   if (og?.[1]) return og[1].toLowerCase()
+
+  // Before the TLD, not after: the TLD is a guess about the registrar and the
+  // text is evidence about the document. `.com` has no language at all, which is
+  // why 606 pages had none.
+  const fromText = detectFromText(html)
+  if (fromText) return fromText
 
   return TLD_LANG[entry.strata.tld] ?? 'unknown'
 }
@@ -181,11 +328,12 @@ async function main(): Promise<void> {
   const entries = readManifest(await readFile(MANIFEST, 'utf8'))
   let checked = 0
   let present = 0
+  let negatives = 0
   const absentByYear = new Map<number | null, number>()
   const byLang = new Map<string, number>()
 
   for (const entry of entries as CorpusEntry[]) {
-    if (!entry.fetch || !entry.label.published) continue
+    if (!entry.fetch) continue
     let raw: string
     try {
       raw = await readFile(join(CACHE, `${entry.id}.html`), 'utf8')
@@ -193,7 +341,6 @@ async function main(): Promise<void> {
       continue
     }
     const html = fold(raw)
-    checked++
 
     // Read from the unfolded source: `lang` is an attribute, not prose, and
     // folding is only needed for the month-name search below.
@@ -201,10 +348,22 @@ async function main(): Promise<void> {
     entry.strata.lang = lang
     byLang.set(lang, (byLang.get(lang) ?? 0) + 1)
 
+    // Negatives get a language and stop there. `labelInPage` asks whether the
+    // label date appears in the document, and a negative entry has no label
+    // date to look for — the question is not false for them, it is undefined.
+    // They are counted separately so the totals below still add up.
+    if (!entry.label.published) {
+      negatives++
+      continue
+    }
+    checked++
+
     // Strip the URL itself out of the haystack: many pages link to themselves,
     // and finding the date there is finding the URL again.
     const withoutSelf = html.split(fold(new URL(entry.url).pathname)).join(' ')
-    const found = renderings(entry.label.published).some((form) => appearsIn(withoutSelf, form))
+    const found = renderings(entry.label.published).some((form) =>
+      appearsIn(recoverableHaystack(withoutSelf), form),
+    )
 
     entry.strata.labelInPage = found
     if (found) present++
@@ -216,6 +375,7 @@ async function main(): Promise<void> {
   console.log(`\n${checked} labelled+fetched entries checked`)
   console.log(`  label appears in the page : ${present}`)
   console.log(`  label ONLY in the URL     : ${checked - present}`)
+  if (negatives) console.log(`  negatives (lang only)     : ${negatives}`)
   console.log(
     `\n  absent by year: ${[...absentByYear.entries()]
       .sort((a, b) => Number(a[0]) - Number(b[0]))

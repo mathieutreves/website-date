@@ -46,7 +46,7 @@ const EXCLUDED_PATTERN =
  * time around it, which the ratio guard would otherwise reject.
  */
 const MARKER_VOCABULARY =
-  'byline|dateline|post-meta|entry-meta|article-meta|published|publish-date|posted-on|posted|pubdate|last-updated|lastmod|updated|submitted|created|publication|post-date|entry-date|date|datum|erstellt|veroffentlicht|author|autor|fecha|parution|subline|info|meta|footer|time|publish|created-post|post-detail|field-content'
+  'byline|dateline|post-meta|entry-meta|article-meta|published|publish-date|posted-on|posted|pubdate|last-updated|lastmod|updated|submitted|created|publication|post-date|entry-date|date|datum|erstellt|veroffentlicht|author|autor|fecha|parution|subline|info|meta|footer|time|publish|created-post|post-detail|field-content|postdate|entrydate|publishdate|dateposted|datepublished|datetag|datestamp|timestamp|articledate|storydate|newsdate|datetime|postmeta'
 
 const ARTICLE_PATTERN = new RegExp(`(^|[-_\\s])(${MARKER_VOCABULARY})([-_\\s]|$)`, 'i')
 
@@ -120,6 +120,14 @@ const PUBLICATION_MARKERS = new Set([
   'pubdate',
   'entry-date',
   'post-date',
+  // The same names written as one word. The vocabulary is matched on separators
+  // — `post-date`, `post_date`, `PostDate` — and a theme that writes `postdate`
+  // has none, so without these it says nothing at all.
+  'postdate',
+  'entrydate',
+  'publishdate',
+  'dateposted',
+  'datepublished',
 ])
 
 export const marksPublication = (marker: string | undefined): boolean =>
@@ -157,6 +165,16 @@ const DATE_BLOCK_MARKERS = new Set([
   'parution',
   'dateline',
   'post-meta',
+  // Compounds, for the same reason as the ones in PUBLICATION_MARKERS.
+  // MacRumors dated every story in `<span class="datetag">`.
+  'datetag',
+  'datestamp',
+  'timestamp',
+  'articledate',
+  'storydate',
+  'newsdate',
+  'datetime',
+  'postmeta',
 ])
 
 /*
@@ -298,10 +316,18 @@ const NEARBY_LIMIT = 400
  * throw all but the first 400 characters away is pure cost, and cost the page
  * gets to choose. Same answer on any real document; bounded on a hostile one.
  */
-export function surroundingText(el: Element): string {
+export function surroundingText(el: Element, parentTexts?: Map<Element, string>): string {
   const own = boundedText(el, NEARBY_LIMIT)
   const parentEl = parentOf(el)
-  const parent = parentEl ? boundedText(parentEl, NEARBY_LIMIT) : ''
+  // Siblings share a parent, and its text is the same for each of them. A
+  // caller walking many elements passes a map so it is read once per parent:
+  // under linkedom every read of `childNodes` rebuilds the list, and ten
+  // thousand sibling `<time>` tags cost ten seconds that way.
+  let parent = ''
+  if (parentEl) {
+    parent = parentTexts?.get(parentEl) ?? boundedText(parentEl, NEARBY_LIMIT)
+    parentTexts?.set(parentEl, parent)
+  }
   const label = (el.getAttribute('aria-label') ?? el.getAttribute('title') ?? '').slice(
     0,
     NEARBY_LIMIT,

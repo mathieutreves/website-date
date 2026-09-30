@@ -125,6 +125,7 @@ export const it: Translation = {
   menuNoDate: 'Nessuna data trovata per questo link.',
   menuUnreachable: 'Impossibile leggere quella pagina.',
   menuNeedsPermission: 'L’autorizzazione a leggere quel sito è stata negata.',
+  toastDismiss: 'Chiudi',
   annotateFromUrl: 'dedotta dall’indirizzo del link',
 
   optSearchHeading: 'Risultati di ricerca',

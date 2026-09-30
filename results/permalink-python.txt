@@ -1,17 +1,25 @@
 
-475 pages
+847 pages
 
-  tool                            exact  part  wrong  miss | precision  accuracy   ms/page
-  ----------------------------------------------------------------------------------------
-    htmldate (extensive)           410     0     65     0 |   86.3%    86.3%     84.05
-    htmldate (fast)                372     0     30    73 |   92.5%    78.3%     10.77
-    articleDateExtractor           313     0     44   118 |   87.7%    65.9%     32.93
-    newspaper4k                    276     0     15   184 |   94.8%    58.1%    117.77
-    goose3                         234     0     12   229 |   95.1%    49.3%    111.75
-    date_guesser                   206     0     75   194 |   73.3%    43.4%    106.42
+  tool                            exact  part  wrong  miss    TN   FP | precision  accuracy  useful   ms/page
+  -----------------------------------------------------------------------------------------------------------
+    htmldate (extensive)           723     0    124     0     0    0 |   85.4%    85.4%    85.4%     30.10
+    htmldate (fast)                656     0     66   125     0    0 |   90.9%    77.4%    77.4%      6.70
+    articleDateExtractor           511     0     82   254     0    0 |   86.2%    60.3%    60.3%     22.89
+    newspaper4k                    428     0     36   383     0    0 |   92.2%    50.5%    50.5%     79.49
+    goose3                         371     0     13   463     0    0 |   96.6%    43.8%    43.8%     76.25
+    date_guesser                   303     0    118   426     0    0 |   72.0%    35.8%    35.8%     73.63
 
-  precision = of the pages a tool answered, how many it got right
-  accuracy  = of all pages, how many it got right
-  A tool that refuses to guess scores well on the first and badly on the second;
-  the two together are the only honest summary of one.
+  precision = of the pages a tool answered, how many it got right — an invented
+              date on an undated page (FP) counts against it exactly as a wrong
+              date does
+  accuracy  = of all pages, how many it got right, counting a correct refusal (TN)
+  useful    = accuracy, plus answers correct at a coarser precision than the
+              label (part) — "2015" against a 2015-06-12 label is true, and is
+              not the same event as finding nothing. No competitor here can
+              score a "part": none of them will emit "2015" rather than an
+              invented "2015-01-01", so their two rates are equal by
+              construction, which is the difference being shown
+  No page in this run lacks a date, so TN and FP are structurally zero and
+  declining to answer can only lose points. Read precision with that in mind.
 

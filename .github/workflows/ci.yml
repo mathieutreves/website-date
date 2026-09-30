@@ -171,6 +171,28 @@ jobs:
           check packages/pagedate     README.md LICENSE NOTICE dist/index.js dist/index.d.ts
           check packages/pagedate-mcp README.md LICENSE dist/server.js dist/index.js dist/index.d.ts
 
+      # `npx pagedate` on a machine that has never installed the HTML parser is
+      # the ordinary first run, and the parser is an optional peer. A static
+      # import of it made the binary unloadable there — `--help` included — and
+      # nothing in the workspace could show it, because the workspace always has
+      # the parser. So: pack, install the tarball alone, and run it.
+      - name: The packed CLI starts without the optional parsers
+        run: |
+          ( cd packages/pagedate && pnpm pack --pack-destination /tmp/cli-pack >/dev/null )
+          mkdir /tmp/cli-install && cd /tmp/cli-install
+          npm init -y >/dev/null
+          npm install --no-audit --no-fund /tmp/cli-pack/pagedate-*.tgz >/dev/null
+          test ! -d node_modules/node-html-parser
+          npx pagedate --version
+          npx pagedate --help >/dev/null
+          set +e
+          echo '<html></html>' | npx pagedate --url https://example.com/ 2> err.txt
+          code=$?
+          set -e
+          grep -q 'node-html-parser' err.txt || { echo "no message naming the missing parser:"; cat err.txt; exit 1; }
+          [ "$code" = "2" ] || { echo "expected exit 2 without the parser, got $code"; exit 1; }
+          echo "ok — starts, and names the parser it needs"
+
       # The registry rejects a server whose npm package lacks a matching
       # `mcpName`, and the mistake is invisible until release day.
       - name: MCP registry metadata

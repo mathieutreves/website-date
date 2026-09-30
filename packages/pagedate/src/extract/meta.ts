@@ -1,5 +1,6 @@
 import type { Candidate, Confidence, Field } from '../types.js'
 import { parseDateString, type ParseOptions } from '../parse/normalize.js'
+import { parentOf } from './patterns.js'
 
 type MetaRule = {
   /** Matched case-insensitively against `property`, `name` or `itemprop`. */
@@ -25,6 +26,19 @@ const RULES: MetaRule[] = [
   { key: 'og:article:published_time', field: 'published', confidence: 'declared', source: 'opengraph' },
   { key: 'og:modified_time', field: 'modified', confidence: 'declared', source: 'opengraph' },
   { key: 'og:article:modified_time', field: 'modified', confidence: 'declared', source: 'opengraph' },
+  { key: 'og:article:published', field: 'published', confidence: 'declared', source: 'opengraph' },
+  { key: 'og:datepublished', field: 'published', confidence: 'declared', source: 'opengraph' },
+  { key: 'og:pubdate', field: 'published', confidence: 'declared', source: 'opengraph' },
+  { key: 'og:publish_date', field: 'published', confidence: 'declared', source: 'opengraph' },
+  { key: 'og:question:published_time', field: 'published', confidence: 'declared', source: 'opengraph' },
+  { key: 'og:regdate', field: 'published', confidence: 'declared', source: 'opengraph' },
+  { key: 'article:published', field: 'published', confidence: 'declared', source: 'opengraph' },
+  { key: 'article:published_date', field: 'published', confidence: 'declared', source: 'opengraph' },
+  { key: 'article:publicationdate', field: 'published', confidence: 'declared', source: 'opengraph' },
+  { key: 'article:post_date', field: 'published', confidence: 'declared', source: 'opengraph' },
+  { key: 'article:modified_date', field: 'modified', confidence: 'declared', source: 'opengraph' },
+  { key: 'article:post_modified', field: 'modified', confidence: 'declared', source: 'opengraph' },
+  { key: 'vr:published_time', field: 'published', confidence: 'declared', source: 'opengraph' },
 
   // Microdata mirrors of the schema.org vocabulary.
   { key: 'datepublished', field: 'published', confidence: 'declared', source: 'itemprop' },
@@ -84,6 +98,15 @@ const RULES: MetaRule[] = [
   { key: 'field-name-post-date', field: 'published', confidence: 'derived', source: 'meta-date' },
   { key: 'gentime', field: 'published', confidence: 'derived', source: 'meta-date' },
   { key: 'release_date', field: 'published', confidence: 'derived', source: 'meta-date' },
+  { key: 'video:release_date', field: 'published', confidence: 'derived', source: 'meta-date' },
+  { key: 'analyticsattributes.articledate', field: 'published', confidence: 'derived', source: 'meta-date' },
+  { key: 'dcsext.articlefirstpublished', field: 'published', confidence: 'derived', source: 'meta-date' },
+  { key: 'mediator_published_time', field: 'published', confidence: 'derived', source: 'meta-date' },
+  { key: 'rnews:datepublished', field: 'published', confidence: 'derived', source: 'meta-date' },
+  { key: 'twt-published-at', field: 'published', confidence: 'derived', source: 'meta-date' },
+  { key: 'bt:pubdate', field: 'published', confidence: 'derived', source: 'meta-date' },
+  { key: 'bt:moddate', field: 'modified', confidence: 'derived', source: 'meta-date' },
+  { key: 'dateupdate', field: 'modified', confidence: 'derived', source: 'meta-date' },
   { key: 'rbpubdate', field: 'published', confidence: 'derived', source: 'meta-date' },
   { key: 'pdate', field: 'published', confidence: 'derived', source: 'meta-date' },
   { key: 'ptime', field: 'published', confidence: 'derived', source: 'meta-date' },
@@ -154,14 +177,50 @@ export function extractMeta(doc: Document, opts: ParseOptions = {}): Candidate[]
     const parsed = parseDateString(raw, opts)
     if (!parsed) continue
 
+    // Microdata scopes a property to the item it sits in, so a `datePublished`
+    // inside a Comment, or inside an entry of a related-articles ItemList, is
+    // that item's date. It is still something the site stated, which is why it
+    // is kept, but not at the tier reserved for what the page says about itself.
+    const nested = rule.source === 'itemprop' && inNestedItem(el)
+
     out.push({
       ...parsed,
       field: rule.field,
       source: rule.source,
-      confidence: rule.confidence,
-      note: `<meta> ${key}`,
+      confidence: nested ? 'derived' : rule.confidence,
+      note: nested ? `<meta> ${key} (on a related item, not this page)` : `<meta> ${key}`,
     })
   }
 
   return out
+}
+
+const NESTED_ITEM_TYPE = /(?:comment|review|rating|answer|itemlist)s?$/i
+
+/** The microdata counterpart of `OTHER_WORK_KEYS` in the JSON-LD extractor. */
+const NESTED_ITEM_PROP =
+  /(?:^|\s)(?:itemlistelement|comment|review|mentions|citation|haspart|ispartof|isbasedon|about)(?:\s|$)/i
+
+/**
+ * Does this element describe an item *related to* the page rather than the page?
+ *
+ * True when an ancestor is the value of a property that points at another work
+ * — `itemprop="itemListElement"`, `itemprop="comment"` — or when the nearest
+ * enclosing item is a comment, review, answer or list. Fox Business prints a
+ * rail of five related stories, each an `itemListElement` carrying its own
+ * `datePublished`, and the earliest of those was being taken as the article's
+ * original publication date.
+ */
+export function inNestedItem(el: Element): boolean {
+  let node = parentOf(el)
+  let scoped = false
+  for (let depth = 0; node && depth < 24; depth++) {
+    if (NESTED_ITEM_PROP.test(node.getAttribute?.('itemprop') ?? '')) return true
+    if (!scoped && node.hasAttribute?.('itemscope')) {
+      if (NESTED_ITEM_TYPE.test(node.getAttribute('itemtype')?.trim() ?? '')) return true
+      scoped = true
+    }
+    node = parentOf(node)
+  }
+  return false
 }

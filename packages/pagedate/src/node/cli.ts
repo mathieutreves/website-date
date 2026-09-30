@@ -11,16 +11,18 @@
  */
 
 import { readFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import type { Candidate, Confidence, DateResult, Mode } from '../types.js'
 import { parseBatchLine, readLines, runBatch } from './batch.js'
-import { findDatesFromHtml, findDatesFromUrl, nodeEnv } from './index.js'
+import { findDatesFromHtml, findDatesFromUrl, MissingParserError, nodeEnv } from './index.js'
 
 const HELP = `pagedate — find when a web page was published and last modified
 
 USAGE
   pagedate <url>                 fetch and analyse a live page
   pagedate --file <path> --url <url>   analyse a saved page
-  cat page.html | pagedate --url <url> analyse stdin
+  cat page.html | pagedate --url <url> analyse stdin; --url names the page,
+                                       and nothing is fetched
   pagedate --batch < urls.txt    analyse many URLs, NDJSON out
 
 OPTIONS
@@ -34,6 +36,7 @@ OPTIONS
   --headers     also read Last-Modified from the response headers; off by
                 default because behind a CDN it reports the serve time
   -h, --help    show this
+  -V, --version print the version
 
 BATCH
   --batch       read URLs from stdin, one per line, and write one JSON object
@@ -48,7 +51,8 @@ BATCH
   gets a record with an "error" key and does not stop the run.
 
 EXIT CODES
-  0  a date was found      1  no date found      2  the page could not be read
+  0  a date was found      1  no date found      2  the page could not be read,
+                                                    or the arguments were wrong
 
   In batch mode: 0 if any page yielded a date, 1 if none did, 2 if stdin
   could not be read at all.
@@ -56,6 +60,8 @@ EXIT CODES
 
 type Options = {
   url?: string
+  /** The URL was given bare, which means "fetch this" and never "read stdin". */
+  positional: boolean
   file?: string
   json: boolean
   all: boolean
@@ -70,6 +76,7 @@ type Options = {
 
 function parseArgs(argv: string[]): Options {
   const options: Options = {
+    positional: false,
     json: false,
     all: false,
     offline: false,
@@ -116,10 +123,55 @@ function parseArgs(argv: string[]): Options {
     else if (arg === '-h' || arg === '--help') {
       process.stdout.write(HELP)
       process.exit(0)
-    } else if (!arg.startsWith('-') && !options.url) options.url = arg
+    }
+    else if (arg === '-V' || arg === '--version') {
+      const { version } = createRequire(import.meta.url)('../../package.json') as { version: string }
+      process.stdout.write(`${version}\n`)
+      process.exit(0)
+    }
+    // Refused rather than skipped: a mistyped `--no-sitmap` that is silently
+    // dropped leaves the lookup on, and the run looks like it did what was asked.
+    else if (arg.startsWith('-')) usage(`unknown option ${arg}`)
+    else if (options.url) usage(`unexpected argument ${arg}: one URL at a time, or use --batch`)
+    else {
+      options.url = arg
+      options.positional = true
+    }
+  }
+
+  if (options.url !== undefined && !isWebUrl(options.url)) {
+    usage(`not an http(s) URL: ${options.url}`)
   }
 
   return options
+}
+
+function usage(message: string): never {
+  process.stderr.write(`${message}\nTry pagedate --help\n`)
+  process.exit(2)
+}
+
+function isWebUrl(value: string): boolean {
+  try {
+    const { protocol } = new URL(value)
+    return protocol === 'http:' || protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Write the last of the output, then exit.
+ *
+ * `process.exit()` straight after `process.stdout.write()` drops whatever the
+ * pipe had not yet accepted: stdout is asynchronous when it is a pipe, and a
+ * `--json --all` result larger than the pipe buffer arrived downstream cut off
+ * at 64 kB. Exiting from the write callback waits for the flush.
+ */
+function finish(text: string, code: number): Promise<never> {
+  return new Promise<never>(() => {
+    process.stdout.write(text, () => process.exit(code))
+  })
 }
 
 async function readStdin(): Promise<string | null> {
@@ -221,7 +273,7 @@ async function runBatchMode(options: Options): Promise<never> {
 
   // An empty stdin is not an error — a pipeline stage upstream is entitled to
   // produce nothing — but it did not find a date either.
-  process.exit(total > 0 && found > 0 ? 0 : 1)
+  return finish('', total > 0 && found > 0 ? 0 : 1)
 }
 
 async function main(): Promise<void> {
@@ -231,7 +283,11 @@ async function main(): Promise<void> {
 
   let result: DateResult | null = null
 
-  const stdin = options.file ? null : await readStdin()
+  // Stdin is read only when nothing else says where the page is. A bare URL
+  // always means "fetch": inside `while read url; do pagedate "$url"; done`, or
+  // under any parent that leaves a pipe open, stdin is not a TTY and is not a
+  // page either, and reading it swallows the rest of the loop's input.
+  const stdin = options.file || options.positional ? null : await readStdin()
   const html = options.file ? await readFile(options.file, 'utf8').catch(() => null) : stdin
 
   if (html !== null) {
@@ -266,13 +322,25 @@ async function main(): Promise<void> {
     process.exit(0)
   }
 
-  if (options.json) {
-    process.stdout.write(`${JSON.stringify(result, null, 2)}\n`)
-  } else {
-    process.stdout.write(`${render(result, options)}\n`)
-  }
-
-  process.exit(result.published || result.modified ? 0 : 1)
+  const output = options.json ? JSON.stringify(result, null, 2) : render(result, options)
+  await finish(`${output}\n`, result.published || result.modified ? 0 : 1)
 }
 
-await main()
+// `pagedate --batch | head -1` closes the pipe while records are still being
+// written. That is the consumer saying it has enough, not a failure.
+process.stdout.on('error', (error: NodeJS.ErrnoException) => {
+  if (error.code === 'EPIPE') process.exit(0)
+  throw error
+})
+
+try {
+  await main()
+} catch (error) {
+  // The HTML parser is an optional peer dependency, so `npx pagedate` on a
+  // machine that has never installed it is the ordinary first run.
+  if (!(error instanceof MissingParserError)) throw error
+  process.stderr.write(
+    `${error.message}\nOr, without installing: npx -p pagedate -p node-html-parser -p linkedom pagedate <url>\n`,
+  )
+  process.exit(2)
+}

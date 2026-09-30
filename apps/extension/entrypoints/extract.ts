@@ -21,6 +21,13 @@ import { PAGE_READ_GLOBAL, type PageRead } from '../lib/page-read.js'
  * can resolve without borrowing one — see lib/analyze.ts.
  */
 export default defineUnlistedScript(() => {
+  // The address this document was loaded at, as opposed to the one it shows
+  // now. The navigation entry is created once per document and is not touched
+  // by `pushState`, which is exactly the property wanted. Older Firefox
+  // reported the literal string "document" here, hence the scheme check.
+  const entry = globalThis.performance?.getEntriesByType?.('navigation')[0]
+  const loaded = entry && /^https?:/i.test(entry.name) ? entry.name : undefined
+
   const read: PageRead = {
     // No `mode` — the default is `standard`, which is what the accuracy figures
     // in the README describe. Stated here only because a future reader will
@@ -28,6 +35,7 @@ export default defineUnlistedScript(() => {
     // built by the time this runs, so there is nothing to save.
     candidates: extractFromDocument(document, location.href),
     href: location.href,
+    ...(loaded ? { loaded } : {}),
   }
 
   // Deliberately not `window`: in a content script this is the isolated world,

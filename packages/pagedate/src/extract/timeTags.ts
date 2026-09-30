@@ -1,5 +1,6 @@
 import type { Candidate } from '../types.js'
 import { parseDateString, type ParseOptions } from '../parse/normalize.js'
+import { inNestedItem } from './meta.js'
 import { marksPublication, scoreContext, surroundingText } from './context.js'
 import { fieldFromLabel } from './labels.js'
 
@@ -13,6 +14,8 @@ import { fieldFromLabel } from './labels.js'
 export function extractTimeTags(doc: Document, opts: ParseOptions = {}): Candidate[] {
   const out: Candidate[] = []
 
+  const parentTexts = new Map<Element, string>()
+
   for (const el of doc.querySelectorAll('time[datetime], time[pubdate]')) {
     const attr = el.getAttribute('datetime')?.trim()
     const own = el.textContent?.trim()
@@ -25,7 +28,7 @@ export function extractTimeTags(doc: Document, opts: ParseOptions = {}): Candida
     const parsed = parseDateString(raw, opts)
     if (!parsed) continue
 
-    const nearby = surroundingText(el)
+    const nearby = surroundingText(el, parentTexts)
     let field = fieldFromLabel(nearby)
 
     // The legacy `pubdate` attribute is an explicit publication marker.
@@ -62,6 +65,21 @@ export function extractTimeTags(doc: Document, opts: ParseOptions = {}): Candida
         })
         continue
       }
+    }
+
+    // `<time itemprop="datePublished" datetime="…">` is microdata written on a
+    // visible element rather than a `<meta>`, and says exactly what the `<meta>`
+    // form says. Reading it as an ordinary `<time>` left the page's one explicit
+    // declaration a tier below the related-story dates around it.
+    if (attr && (itemprop === 'datepublished' || itemprop === 'datemodified') && !inNestedItem(el)) {
+      out.push({
+        ...parsed,
+        field,
+        source: 'itemprop',
+        confidence: 'declared',
+        note: `<time> itemprop ${itemprop}`,
+      })
+      continue
     }
 
     out.push({

@@ -266,6 +266,9 @@
   "menuNeedsPermission": {
     "message": "Permission to read that site was declined."
   },
+  "toastDismiss": {
+    "message": "Dismiss"
+  },
   "annotateFromUrl": {
     "message": "inferred from the link address"
   },

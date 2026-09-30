@@ -20,12 +20,13 @@
  *    reads across the fixtures, which is exactly how a feed stops matching the
  *    page it describes.
  *
- * Both are optional peer dependencies, and linkedom is loaded only when an XML
- * document is actually parsed: a caller who never touches feeds or sitemaps
- * never needs it installed.
+ * Both are optional peer dependencies, and each is loaded on first use rather
+ * than at import: a caller who never touches feeds or sitemaps never needs
+ * linkedom installed, and importing this module without `node-html-parser`
+ * fails at the first parse with a message naming the package, not at load with
+ * a resolver stack trace.
  */
 
-import { parse as parseNodeHtml } from 'node-html-parser'
 import { createRequire } from 'node:module'
 import type { DateResult, Env } from '../types.js'
 import {
@@ -62,9 +63,79 @@ export type {
  */
 const DEFAULT_MAX_HTML = 10 * 1024 * 1024
 
-/** Parse an HTML string into a Document the extractors can read. */
+/**
+ * Raw-text elements whose tag name is lowercased before parsing.
+ *
+ * Works around a bug in node-html-parser 9.0.0: when a raw-text element's
+ * opening and closing tag differ in case — `<SCRIPT …>` closed by `</script>`,
+ * which is how a lot of pre-2013 markup is written — the parser never finds the
+ * close and consumes the rest of the document as script content. Minimal repro:
+ *
+ * ```html
+ * <SCRIPT>var a=1;</script><p>after</p>   // <p> is lost
+ * <script>var a=1;</SCRIPT><p>after</p>   // <p> is lost
+ * ```
+ *
+ * Matching case parses correctly in either case, so it is the mismatch and not
+ * the uppercase that breaks it. HTML tag names are case-insensitive, so this is
+ * a spec violation; linkedom handles all four spellings.
+ *
+ * It is not a rounding error. `techtarget.com` gives 65 kB of HTML that becomes
+ * **three elements**, and the extractors then correctly report no date on a page
+ * that has one. Across the corpus, 14 of 4131 documents over 5 kB (0.34%) parse
+ * into fewer than 20 elements, and 8 of 4215 resolve to a different date than
+ * linkedom — every one of them a page added in the Tranco harvest, which is why
+ * a parity check that had passed for a year started failing.
+ *
+ * Only the tag name is rewritten, never attributes or content, so the bytes the
+ * extractors read are unchanged apart from the spelling of four tag names.
+ */
+const RAW_TEXT_TAG = /<(\/?)(script|style|textarea|title)\b/gi
+
+/** Thrown by {@link parseHtml} when `node-html-parser` is not installed. */
+export class MissingParserError extends Error {
+  constructor() {
+    super(
+      'pagedate/node needs an HTML parser and node-html-parser is not installed. ' +
+        'Run: npm install node-html-parser linkedom',
+    )
+    this.name = 'MissingParserError'
+  }
+}
+
+let htmlParser: ((html: string) => unknown) | undefined
+
+/**
+ * `node-html-parser`'s `parse`, resolved on first use.
+ *
+ * It is an optional peer, so a static import would make this module — and the
+ * CLI, including `--help` — unloadable on a machine that has `pagedate` and not
+ * the parser, which is exactly the machine `npx pagedate` runs on.
+ */
+function nodeHtmlParser(): (html: string) => unknown {
+  if (htmlParser) return htmlParser
+  try {
+    htmlParser = (
+      createRequire(import.meta.url)('node-html-parser') as { parse: (html: string) => unknown }
+    ).parse
+  } catch {
+    throw new MissingParserError()
+  }
+  return htmlParser
+}
+
+/**
+ * Parse an HTML string into a Document the extractors can read.
+ *
+ * Throws {@link MissingParserError} if `node-html-parser` is not installed.
+ */
 export function parseHtml(html: string, maxLength: number = DEFAULT_MAX_HTML): Document {
-  return parseNodeHtml(html.length > maxLength ? html.slice(0, maxLength) : html) as unknown as Document
+  const parse = nodeHtmlParser()
+  const capped = html.length > maxLength ? html.slice(0, maxLength) : html
+  const normalised = capped.replace(RAW_TEXT_TAG, (_m, slash: string, tag: string) =>
+    `<${slash}${tag.toLowerCase()}`,
+  )
+  return parse(normalised) as unknown as Document
 }
 
 /**
@@ -88,6 +159,21 @@ function xmlParser(): (new () => DOMParser) | null {
   }
   XmlParser = resolved
   return resolved
+}
+
+let xmlParserInstalled: boolean | undefined
+
+/** Whether linkedom can be found, without paying to load it. */
+function hasXmlParser(): boolean {
+  if (xmlParserInstalled === undefined) {
+    try {
+      createRequire(import.meta.url).resolve('linkedom')
+      xmlParserInstalled = true
+    } catch {
+      xmlParserInstalled = false
+    }
+  }
+  return xmlParserInstalled
 }
 
 export type NodeEnvOptions = {
@@ -152,7 +238,9 @@ export function nodeEnv(options: NodeEnvOptions = {}): Env {
       return null
     }
   }
-  forwarded.parseXml = parseXml
+  // Left unset when linkedom is absent, which is what tells the feed and
+  // sitemap lookups not to fetch documents nothing here could read.
+  if (hasXmlParser()) forwarded.parseXml = parseXml
 
   return fetchEnv(forwarded)
 }

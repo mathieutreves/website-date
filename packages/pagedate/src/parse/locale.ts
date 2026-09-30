@@ -17,6 +17,14 @@ const MONTH_FIRST_LANGS = new Set(['en-us', 'en-ph'])
 const MONTH_FIRST_TLDS = new Set(['us', 'ph'])
 
 /**
+ * Country-code TLDs used as generic ones. An American startup on `.io` or `.ai`
+ * is the ordinary case, so the TLD is no evidence of day-first dates.
+ */
+const GENERIC_CC_TLDS = new Set([
+  'ai', 'bz', 'cc', 'co', 'fm', 'gg', 'im', 'io', 'is', 'la', 'ly', 'me', 'nu', 'sh', 'to', 'tv', 'ws',
+])
+
+/**
  * Languages that write year-first (`2024-03-12`), which is unambiguous anyway
  * but worth not mistaking for day-first.
  */
@@ -160,6 +168,22 @@ registerYear('ledna', 'unora', 'brezna', 'dubna', 'kvetna', 'cervna',
 registerYear('leden', 'unor', 'brezen', 'duben', 'kveten', 'cerven',
   'cervenec', 'srpen', 'zari', 'rijen', 'listopad', 'prosinec')
 
+// Bulgarian
+registerYear('януари', 'февруари', 'март', 'април', 'май', 'юни',
+  'юли', 'август', 'септември', 'октомври', 'ноември', 'декември')
+
+// Serbian, in both of its scripts
+registerYear('јануар', 'фебруар', 'март', 'април', 'мај', 'јун',
+  'јул', 'август', 'септембар', 'октобар', 'новембар', 'децембар')
+registerYear('januar', 'februar', 'mart', 'april', 'maj', 'jun',
+  'jul', 'avgust', 'septembar', 'oktobar', 'novembar', 'decembar')
+
+// Slovak — genitive, as used in dates. Croatian is deliberately absent: its
+// `listopada` is October and Polish `listopada` is November, and a table keyed
+// on the name alone cannot hold both.
+registerYear('januara', 'februara', 'marca', 'aprila', 'maja', 'juna',
+  'jula', 'augusta', 'septembra', 'oktobra', 'novembra', 'decembra')
+
 // ---------------------------------------------------------------- others
 
 // Turkish. `ı` is a distinct letter with no decomposition, so the dotless
@@ -190,6 +214,20 @@ registerYear('يناير', 'فبراير', 'مارس', 'أبريل', 'مايو',
 // Arabic — Levantine naming, which is unrelated to the above
 registerYear('كانون الثاني', 'شباط', 'آذار', 'نيسان', 'أيار', 'حزيران',
   'تموز', 'آب', 'أيلول', 'تشرين الأول', 'تشرين الثاني', 'كانون الأول')
+
+// Arabic — Maghrebi naming, which borrows from French in Tunisia and Algeria
+// ("جانفي" is janvier) and from Spanish in Morocco ("غشت" is agosto). WordPress
+// localises to these, so a blog in Tunis writes "ماي 25, 2025" and none of the
+// twelve names above matches it.
+registerYear('جانفي', 'فيفري', 'مارس', 'أفريل', 'ماي', 'جوان',
+  'جويلية', 'أوت', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر')
+registerYear('يناير', 'فبراير', 'مارس', 'أبريل', 'ماي', 'يونيو',
+  'يوليوز', 'غشت', 'شتنبر', 'أكتوبر', 'نونبر', 'دجنبر')
+
+// Persian names for the Gregorian months. Jalali dates are a different
+// calendar and are not read at all.
+registerYear('ژانویه', 'فوریه', 'مارس', 'آوریل', 'مه', 'ژوئن',
+  'ژوئیه', 'اوت', 'سپتامبر', 'اکتبر', 'نوامبر', 'دسامبر')
 
 // Hebrew
 registerYear('ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני',
@@ -278,6 +316,44 @@ export const MONTH_NAME_PATTERN = Object.keys(MONTHS)
   .join('|')
 
 /**
+ * Characters that make whatever follows them the inside of a word, as a
+ * character-class body: ASCII letters and digits, then Latin with diacritics,
+ * Greek, Cyrillic, Hebrew, Arabic and Devanagari.
+ *
+ * Scripts written without spaces are left out on purpose. `投稿日2024年3月12日`
+ * runs a label straight into a date, and in Thai a month name follows its
+ * neighbour with nothing between them; a boundary test there would reject real
+ * dates rather than accidents.
+ */
+const WORD_CHARS = 'A-Za-z0-9\\u00C0-\\u024F\\u0370-\\u03FF\\u0400-\\u052F\\u0590-\\u06FF\\u0900-\\u097F'
+
+/** Lookbehind: not in the middle of a word. */
+export const NOT_MID_WORD = `(?<![${WORD_CHARS}])`
+
+/**
+ * Month names as they are *searched for* in running text, as opposed to parsed
+ * out of a string already known to be a date.
+ *
+ * A short name is also the tail of ordinary words. `mart` is Turkish for March
+ * and the end of "Smart", `set` is Portuguese for September and the end of
+ * "Sunset", `ott` is Italian for October and the end of "Marriott" — so
+ * "Walmart 2024 Report" read as March 2024 and "Copenhagen 2019" as January.
+ * Names of four letters or fewer therefore have to start a word.
+ *
+ * Longer names are left unanchored. Nothing ends in "september", and markup
+ * that renders a label and a date from adjacent elements really does produce
+ * "PostedSeptember 12, 2024" once the text is joined.
+ */
+export const MONTH_NAME_IN_TEXT = (() => {
+  const names = Object.keys(MONTHS)
+    .sort((a, b) => b.length - a.length)
+    .map((name) => ({ name, source: name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') }))
+  const long = names.filter(({ name }) => name.length > 4).map(({ source }) => source)
+  const short = names.filter(({ name }) => name.length <= 4).map(({ source }) => source)
+  return `${long.join('|')}|${NOT_MID_WORD}(?:${short.join('|')})`
+})()
+
+/**
  * Ordinal suffix that may follow the day number: "November 1st, 2012",
  * "le 1er mars 2013", "1º marzo 2013", "3e januari".
  *
@@ -306,9 +382,13 @@ export const CJK_DATE_PATTERN =
  * far more common than an `.it` serving American English.
  */
 export function detectDayFirst(lang?: string | null, hostname?: string): DayFirstHint {
-  const normalised = lang?.trim().toLowerCase()
+  // `en_US` is not a valid language tag and is what a good many templates
+  // write. Read as written it is "not `en`", which used to mean day-first.
+  const normalised = lang?.trim().toLowerCase().replace(/_/g, '-')
 
-  if (normalised) {
+  // Only a well-formed tag is evidence. `lang="default"` or a template
+  // placeholder says nothing about how the page writes its dates.
+  if (normalised && /^[a-z]{2,3}(?:-[a-z0-9]+)*$/.test(normalised)) {
     if (MONTH_FIRST_LANGS.has(normalised)) return 'month-first'
     const base = normalised.split('-')[0] ?? ''
     if (YEAR_FIRST_LANGS.has(base)) return 'day-first'
@@ -319,8 +399,10 @@ export function detectDayFirst(lang?: string | null, hostname?: string): DayFirs
   const tld = hostname?.split('.').pop()?.toLowerCase()
   if (tld) {
     if (MONTH_FIRST_TLDS.has(tld)) return 'month-first'
-    // Two-letter ccTLDs other than the month-first ones are day-first territory.
-    if (tld.length === 2) return 'day-first'
+    // Two-letter ccTLDs are day-first territory — except the ones sold as
+    // generic domains, which say where the registry is and nothing about who
+    // wrote the page.
+    if (tld.length === 2 && !GENERIC_CC_TLDS.has(tld)) return 'day-first'
   }
 
   return 'unknown'

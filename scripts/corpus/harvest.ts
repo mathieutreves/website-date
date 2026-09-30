@@ -47,22 +47,21 @@ const { values } = parseArgs({
     'per-domain': { type: 'string', default: '60' },
     concurrency: { type: 'string', default: '3' },
     'allow-month': { type: 'boolean', default: false },
+    /**
+     * Which seed frame these seeds came from, recorded on every entry.
+     *
+     * The corpus is the union of two frames with very different standing, and
+     * without this the difference is invisible in the artifact — the one place
+     * it needs to be visible, since "is this sample defensible" is a question
+     * about provenance, not about page count.
+     */
+    frame: { type: 'string', default: 'hand' },
   },
 })
 
 const PER_DOMAIN = Number(values['per-domain'])
 const CONCURRENCY = Number(values.concurrency)
 const ALLOW_MONTH = values['allow-month']
-
-/**
- * Rows to pull per era before sampling down.
- *
- * CDX sorts by URL key, so a single capped query returns an alphabetically
- * clustered slice — for a date-permalink site that means the earliest years and
- * nothing else. Over-fetching within an era and striding spreads the sample
- * across the sections of a site.
- */
-const OVERSAMPLE = 12
 
 /**
  * Rows to pull for a single (site, year, month) before striding down to quota.
@@ -72,6 +71,16 @@ const OVERSAMPLE = 12
  * first few days.
  */
 const MONTH_WINDOW = 1500
+
+/**
+ * Rows to pull for a single (site, year).
+ *
+ * Large, because this is the query that has to span a whole year for the sites
+ * that are not busy enough to need month-by-month treatment — which, measured
+ * across a Tranco slice, is most of them. When it comes back saturated the year
+ * is re-queried a month at a time instead; see `harvestYear`.
+ */
+const YEAR_WINDOW = 4000
 
 /**
  * Publication years to sample, spread across the lifetime of the web.
@@ -85,22 +94,17 @@ const MONTH_WINDOW = 1500
 const YEARS = [2006, 2009, 2012, 2015, 2018, 2021, 2023, 2025]
 
 /**
- * (year, month) pairs to sample, two per year, rotating through the calendar.
+ * Months to fall back to when a year query saturates, rotating through the
+ * calendar so the same season is not sampled every year.
  *
- * Sampling by year alone is not enough. `/2015/01/…` sorts before `/2015/12/…`,
- * so on a site that publishes daily even a wide per-year window never reaches
- * February — a measured run over eight years returned pages from three distinct
- * months. Querying a month at a time makes each request a small index range,
- * which is both faster and immune to that.
- *
- * The rotation (`i * 5`) walks the months across years rather than sampling the
- * same season repeatedly, so seasonal markup changes cannot masquerade as an
- * era effect.
+ * `/2015/01/…` sorts before `/2015/12/…`, so on a site busy enough to fill
+ * `YEAR_WINDOW` the year query never reaches February and every page comes back
+ * from January. Querying a month at a time makes each request a small index
+ * range that is immune to that. It is the fallback rather than the default
+ * because it costs 12× the queries and, for most sites, buys nothing.
  */
-const SAMPLE_POINTS: Array<{ year: number; month: number }> = YEARS.flatMap((year, i) => [
-  { year, month: ((i * 5) % 12) + 1 },
-  { year, month: ((i * 5 + 6) % 12) + 1 },
-])
+const FALLBACK_MONTHS = (year: number, i: number): number[] =>
+  [((i * 5) % 12) + 1, ((i * 5 + 4) % 12) + 1, ((i * 5 + 8) % 12) + 1]
 
 /**
  * A failed query is not an empty one.
@@ -125,6 +129,14 @@ type CdxRow = string[]
  * The cost is that only dates in the *first* path segment are found. A site that
  * publishes to `/blog/2015/08/05/` needs its seed written as `example.com/blog`,
  * which seeds.txt supports.
+ *
+ * **The path is a year, not a year and a month.** `<seed>/2015` matches both
+ * `/2015/06/01/slug` and `/2015-06-01-slug`, and the second shape is common:
+ * `bloomberg.com/news` publishes entirely in it. Querying `<seed>/2015/06`
+ * hard-codes the first shape, so every dash-dated site answered zero rows while
+ * `parsePermalinkDate` — and therefore the seed probe — accepted it happily.
+ * Measured on a Tranco slice, that mismatch was 39% of seeds yielding nothing
+ * and a mean of 1.9 pages per seed.
  */
 async function cdx(prefix: string, path: string, limit: number): Promise<QueryOutcome> {
   const url = new URL('https://web.archive.org/cdx/search/cdx')
@@ -178,6 +190,46 @@ async function cdx(prefix: string, path: string, limit: number): Promise<QueryOu
  * 27 labels in 28 dated the 1st. Varying the phase per sample point spreads the
  * day of month too, and keeps the choice deterministic so a rebuild is identical.
  */
+/**
+ * Take `want` entries spread across the months actually present.
+ *
+ * A year query returns rows in URL-key order, which is month order, so taking
+ * the first N is taking January. Bucketing by the month in the label and then
+ * round-robining across the buckets spreads the sample over whatever months the
+ * site really published in — which is the adaptive part, and the reason a fixed
+ * list of sample months is no longer needed. Sites that published for four
+ * months of one year contribute those four rather than nothing.
+ */
+function spreadAcrossMonths(entries: CorpusEntry[], want: number, phase: number): CorpusEntry[] {
+  if (entries.length <= want) return entries
+  const byMonth = new Map<string, CorpusEntry[]>()
+  for (const entry of entries) {
+    const month = entry.label.published!.slice(0, 7)
+    const bucket = byMonth.get(month) ?? []
+    bucket.push(entry)
+    byMonth.set(month, bucket)
+  }
+  const months = [...byMonth.keys()].sort()
+  const out: CorpusEntry[] = []
+  // Round-robin, so every month contributes one before any contributes two.
+  for (let round = 0; out.length < want; round++) {
+    let took = 0
+    for (const month of months) {
+      if (out.length >= want) break
+      const bucket = byMonth.get(month)!
+      // Stride within the month for the same reason as across it: index 0 is
+      // the 1st, every time.
+      const picked = stride(bucket, Math.min(bucket.length, round + 1), phase)[round]
+      if (picked && !out.includes(picked)) {
+        out.push(picked)
+        took++
+      }
+    }
+    if (took === 0) break
+  }
+  return out
+}
+
 function stride<T>(items: T[], want: number, phase = 0): T[] {
   if (items.length === 0) return []
   if (items.length <= want) return items
@@ -228,6 +280,7 @@ function toEntry(row: CdxRow, allowMonth: boolean): CorpusEntry | null {
       host,
       tld: host.slice(host.lastIndexOf('.') + 1),
       era: Number(label.published.slice(0, 4)) || null,
+      frame: values.frame as 'hand' | 'tranco',
     },
     http: {
       status: Number(statuscode),
@@ -287,45 +340,66 @@ async function main(): Promise<void> {
     while (index < todo.length) {
       const prefix = todo[index++]
 
-      // The per-domain quota is split evenly across sample points, so a site
-      // that published heavily in one period cannot crowd out the others.
-      const quota = Math.max(1, Math.round(PER_DOMAIN / SAMPLE_POINTS.length))
+      // The per-domain quota is split evenly across years, so a site that
+      // published heavily in one period cannot crowd out the others.
+      const quota = Math.max(1, Math.round(PER_DOMAIN / YEARS.length))
       const kept: CorpusEntry[] = []
       const perYear = new Map<number, number>()
       let failures = 0
 
-      for (const [pointIndex, point] of SAMPLE_POINTS.entries()) {
-        const window = Math.max(MONTH_WINDOW, quota * OVERSAMPLE)
-        const padded = String(point.month).padStart(2, '0')
-
-        let { rows, failed } = await cdx(prefix, `${point.year}/${padded}`, window)
-        // Most CMSs zero-pad the month, but not all — `/2015/7/` is a real and
-        // reasonably common permalink shape, and querying only the padded form
-        // would silently return nothing for those sites.
-        if (!failed && rows.length === 0 && point.month < 10) {
-          ;({ rows, failed } = await cdx(prefix, `${point.year}/${point.month}`, window))
+      /** Rows → deduplicated entries. Dedup is global, so a URL is sampled once. */
+      const collect = (rows: CdxRow[]): CorpusEntry[] => {
+        const out: CorpusEntry[] = []
+        for (const row of rows) {
+          const entry = toEntry(row, ALLOW_MONTH)
+          if (!entry) continue
+          if (seenUrls.has(entry.url)) continue
+          seenUrls.add(entry.url)
+          out.push(entry)
         }
+        return out
+      }
 
+      for (const [yearIndex, year] of YEARS.entries()) {
+        // An irrational-ish phase keeps consecutive years from landing on the
+        // same relative offset within their months.
+        const phase = (yearIndex * 0.618) % 1
+        const { rows, failed } = await cdx(prefix, String(year), YEAR_WINDOW)
         if (failed) {
           failures++
           queryFailures++
           continue
         }
 
-        const entries: CorpusEntry[] = []
-        for (const row of rows) {
-          const entry = toEntry(row, ALLOW_MONTH)
-          if (!entry) continue
-          if (seenUrls.has(entry.url)) continue
-          seenUrls.add(entry.url)
-          entries.push(entry)
+        let sampled: CorpusEntry[]
+        if (rows.length >= YEAR_WINDOW) {
+          // Saturated: the window closed before the year did, so these rows are
+          // the alphabetically-first months and nothing later exists in them.
+          // Only here is the month-at-a-time cost worth paying.
+          sampled = []
+          for (const month of FALLBACK_MONTHS(year, yearIndex)) {
+            const padded = String(month).padStart(2, '0')
+            let result = await cdx(prefix, `${year}/${padded}`, MONTH_WINDOW)
+            // Most CMSs zero-pad the month, but not all — `/2015/7/` is a real
+            // permalink shape, and querying only the padded form returns
+            // nothing for those sites.
+            if (!result.failed && result.rows.length === 0 && month < 10) {
+              result = await cdx(prefix, `${year}/${month}`, MONTH_WINDOW)
+            }
+            if (result.failed) {
+              failures++
+              queryFailures++
+              continue
+            }
+            const share = Math.max(1, Math.round(quota / 3))
+            sampled.push(...stride(collect(result.rows), share, phase))
+          }
+        } else {
+          sampled = spreadAcrossMonths(collect(rows), quota, phase)
         }
 
-        // An irrational-ish step keeps consecutive sample points from landing on
-        // the same relative offset within their month.
-        const sampled = stride(entries, quota, (pointIndex * 0.618) % 1)
         kept.push(...sampled)
-        perYear.set(point.year, (perYear.get(point.year) ?? 0) + sampled.length)
+        perYear.set(year, (perYear.get(year) ?? 0) + sampled.length)
       }
 
       collected.push(...kept)

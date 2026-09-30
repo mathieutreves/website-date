@@ -35,9 +35,6 @@ const SOURCE_RANK: Record<string, number> = Object.assign(Object.create(null), {
   jsonld: 90,
   'atom-feed': 85,
   opengraph: 80,
-  // Below OpenGraph: a WebPage node's dates are frequently the site build
-  // time rather than anything about the content.
-  'jsonld-container': 75,
   itemprop: 70,
   'rss-feed': 65,
   'dublin-core': 60,
@@ -46,6 +43,16 @@ const SOURCE_RANK: Record<string, number> = Object.assign(Object.create(null), {
   sailthru: 50,
   'time-tag': 45,
   'marked-date': 42,
+  // Below every reading of the page's own content. A `WebPage` or `WebSite`
+  // node's date is usually the site build time, and on this corpus it is right
+  // 1 time in 5 when it wins — so it is a last resort among `derived` sources
+  // rather than a peer of them.
+  'jsonld-container': 30,
+  // Just below `marked-date`, and for the same reason: both are a site naming a
+  // date in markup it authored. A class token is the more deliberate of the two
+  // — it is written once in a template — while a visible field name is prose a
+  // translator could change, so it ranks a hair lower.
+  'labelled-pair': 41,
   sitemap: 40,
   'meta-date': 35,
   // Below the metadata a site publishes for consumers, above anything guessed
@@ -211,6 +218,20 @@ function localise(published: Candidate, all: Candidate[]): Candidate | undefined
       }
     }
 
+    // `published` only, and that restriction is load-bearing rather than
+    // incidental. Admitting `unknown` day candidates was measured twice and lost
+    // both times: all of them takes dev accuracy 89.0% -> 87.4% (wrong 51 -> 65),
+    // and narrowing to just the rendered date blocks — `marked-date`,
+    // `labelled-pair` — still gives 88.0% (wrong 60), and both break fixtures.
+    //
+    // The reason is that an `unknown` day landing on the adjacent day is usually
+    // coincidence, not corroboration: a page carries many dates, and this window
+    // is only ±1 day wide, so something lands in it often. Individual pages do
+    // lose to this — creativecommons.org declares `2023-07-21T02:51+00:00` and
+    // prints "July 20, 2023" — but the pages it would fix are outnumbered by the
+    // ones it breaks. That is a ±1 day boundary case, and CORPUS-BUILD.md's
+    // conclusion holds: the answer key itself disagrees about local versus UTC,
+    // so this is not a class of error extraction can win.
     if (c.precision === 'day' && c.field === 'published') {
       if (c.value !== earlier && c.value !== later) continue
       return {
@@ -240,6 +261,11 @@ const appendNote = (c: Candidate, extra: string): string => (c.note ? `${c.note}
  *
  * Reporting the widest pair rather than the first-found one is also the better
  * answer: it names the two sources actually furthest apart.
+ *
+ * Each value is compared as the period it names, not as the instant that period
+ * starts at. A site declaring `2024` in one tag and `2024-11-20` in another has
+ * said the same thing twice at two precisions; collapsing the year to January
+ * 1st reported that as a 324-day contradiction.
  */
 function widestDisagreement(
   candidates: Candidate[],
@@ -251,16 +277,20 @@ function widestDisagreement(
 
   // One parse per candidate. The pairwise form re-parses both values on every
   // comparison, which parses the same string O(n) times.
+  //
+  // The widest gap between two periods runs from the earliest *end* to the
+  // latest *start*; if those overlap, so does every other pair.
   for (const candidate of candidates) {
     const at = toInstant(candidate.value)
     if (!at) continue
-    const ms = at.getTime()
-    if (ms < min) {
-      min = ms
+    const start = at.getTime()
+    const end = periodEnd(at, candidate.precision)
+    if (end < min) {
+      min = end
       earliest = candidate
     }
-    if (ms > max) {
-      max = ms
+    if (start > max) {
+      max = start
       latest = candidate
     }
   }
@@ -268,6 +298,40 @@ function widestDisagreement(
   if (!earliest || !latest) return null
   const gap = (max - min) / DAY_MS
   return gap > DECLARED_DISAGREEMENT_DAYS ? { earliest, latest, gap } : null
+}
+
+/** The last instant of the period a value names, given where it starts. */
+function periodEnd(start: Date, precision: Precision): number {
+  const end = new Date(start.getTime())
+  if (precision === 'year') end.setUTCFullYear(end.getUTCFullYear() + 1)
+  else if (precision === 'month') end.setUTCMonth(end.getUTCMonth() + 1)
+  else if (precision === 'day') end.setUTCDate(end.getUTCDate() + 1)
+  else return start.getTime()
+  return end.getTime() - 1
+}
+
+/**
+ * The strongest modification date that does not precede publication.
+ *
+ * A page cannot have been modified before it was published, so a `modified`
+ * earlier than `published` is not a fact about the page — it is a template's
+ * leftover `article:modified_time`, or a sitemap `<lastmod>` from before a
+ * republication. Returned as-is it was worse than useless: staleness prefers the
+ * modification date, and so reported a page as older than its own publication.
+ *
+ * A day of slack covers the two being stamped in different zones. The
+ * candidates stay in `candidates` either way; this only decides what is
+ * reported as the answer.
+ */
+function modifiedAfter(published: Candidate | undefined, modified: Candidate[]): Candidate | undefined {
+  const floor = published ? toInstant(published.value) : null
+  if (!floor) return best(modified)
+  return best(
+    modified.filter((c) => {
+      const at = toInstant(c.value)
+      return at !== null && periodEnd(at, c.precision) >= floor.getTime() - DAY_MS
+    }),
+  )
 }
 
 export type ResolveOptions = {
@@ -298,7 +362,7 @@ export function resolveCandidates(
   const unknown = usable.filter((c) => c.field === 'unknown')
 
   let resolvedPublished = best(published)
-  const resolvedModified = best(modified)
+  let resolvedModified = best(modified)
 
   // Among publication dates the site declared *at the same strength*, the
   // earliest is the publication. A later one is a republication stamp — the same
@@ -391,6 +455,8 @@ export function resolveCandidates(
   if (resolvedPublished) {
     resolvedPublished = localise(resolvedPublished, usable) ?? resolvedPublished
   }
+
+  resolvedModified = modifiedAfter(resolvedPublished, modified)
 
   const result: DateResult = { candidates: usable }
   if (resolvedPublished) result.published = resolvedPublished

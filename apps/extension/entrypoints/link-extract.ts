@@ -1,9 +1,15 @@
 import { extractFromDocument } from 'pagedate'
-import { makeTabFetcher } from '../lib/link-date.js'
-import { LINK_REQUEST_GLOBAL, LINK_RESULT_GLOBAL, type LinkRead } from '../lib/link-read.js'
+import { parseHtml } from '../lib/link-date.js'
+import {
+  LINK_REQUEST_GLOBAL,
+  LINK_RESULT_GLOBAL,
+  type LinkRead,
+  type LinkRequest,
+} from '../lib/link-read.js'
 
 /**
- * Fetch a linked page and extract its dates — in the tab, where a DOM exists.
+ * Extract a linked page's dates from markup the worker fetched — in the tab,
+ * where a parser exists.
  *
  * The sibling of `extract.ts`. That one reads the document the browser has
  * already built; this one has to build its own, because the page in question
@@ -12,19 +18,24 @@ import { LINK_REQUEST_GLOBAL, LINK_RESULT_GLOBAL, type LinkRead } from '../lib/l
  * mean bundling a parser into an extension whose entire premise is that the
  * browser already has a better one.
  *
- * Only the candidate list travels back. A `Document` cannot cross a
- * structured-clone boundary at all, and the markup could — but sending a whole
- * page across two message hops to re-parse it at the other end is precisely the
- * waste `extract.ts` exists to avoid.
+ * It does not fetch. A request made from here is made under the page's CORS
+ * policy, so the worker makes it and hands the text over — see `fetchPageText`
+ * in lib/link-date.ts.
+ *
+ * Only the candidate list travels back.
  */
-export default defineUnlistedScript(async () => {
+export default defineUnlistedScript(() => {
   const world = globalThis as unknown as Record<string, unknown>
-  const url = world[LINK_REQUEST_GLOBAL]
+  const request = world[LINK_REQUEST_GLOBAL] as Partial<LinkRequest> | undefined
+  // The markup is up to a couple of megabytes of somebody else's page, and
+  // this world lives as long as the tab does.
+  delete world[LINK_REQUEST_GLOBAL]
 
-  const read: LinkRead = { url: typeof url === 'string' ? url : '', candidates: null }
+  const url = typeof request?.url === 'string' ? request.url : ''
+  const read: LinkRead = { url, candidates: null }
 
-  if (typeof url === 'string' && /^https?:/i.test(url)) {
-    const doc = await makeTabFetcher()(url)
+  if (/^https?:/i.test(url) && typeof request?.html === 'string') {
+    const doc = parseHtml(request.html)
     // `null` candidates means "could not read the page", which is a different
     // answer from an empty list — "read it, it says nothing". The toast
     // distinguishes them, so the extractor must not flatten them here.

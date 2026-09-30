@@ -5,6 +5,8 @@
  * assume a namespace prefix.
  */
 
+import type { Env } from '../types.js'
+
 /**
  * Parse XML with the platform parser.
  *
@@ -23,6 +25,17 @@ export function defaultParseXml(xml: string): Document | null {
   } catch {
     return null
   }
+}
+
+/**
+ * Is there anything to parse a feed or sitemap with?
+ *
+ * Asked before fetching one. Without a parser the response can only be thrown
+ * away, and a request whose answer is discarded is still a request to somebody
+ * else's server.
+ */
+export function canParseXml(env: Env): boolean {
+  return env.parseXml !== undefined || (globalThis as { DOMParser?: unknown }).DOMParser !== undefined
 }
 
 /** Direct child by local name, ignoring namespace prefixes. */
@@ -58,8 +71,15 @@ export function canonicalUrl(doc: Document, pageUrl: URL): string | null {
 /**
  * Does one of `hrefs` point at this page?
  *
- * Exact, then canonical, then path-only — query strings and tracking parameters
- * differ constantly between a side document and the page it points at.
+ * Exact, then canonical, then a looser comparison, because a side document
+ * and the page it points at routinely differ in scheme, `www.`, a trailing slash
+ * and tracking parameters.
+ *
+ * The looser comparison still requires the same site and the same query once
+ * tracking parameters are set aside. Comparing the path alone made every
+ * `story.php?id=…` and `/?p=…` page match the first entry of its own feed —
+ * same path, different story — and handed it that entry's date at `declared`
+ * confidence.
  */
 export function matchesPage(hrefs: string[], targets: string[], pageUrl: URL): boolean {
   if (hrefs.length === 0) return false
@@ -68,12 +88,26 @@ export function matchesPage(hrefs: string[], targets: string[], pageUrl: URL): b
     if (hrefs.some((h) => h === target)) return true
   }
 
-  const targetPath = normalisePath(pageUrl.pathname)
+  const target = looseKey(pageUrl)
   return hrefs.some((h) => {
     try {
-      return normalisePath(new URL(h, pageUrl).pathname) === targetPath
+      return looseKey(new URL(h, pageUrl)) === target
     } catch {
       return false
     }
   })
+}
+
+/** Parameters that say where a visit came from, not which page it is. */
+const TRACKING_PARAM = /^(?:utm_.+|fbclid|gclid|dclid|msclkid|mc_[ce]id|igshid|ref|ref_src|source|cmpid|ocid|amp)$/i
+
+/** A URL reduced to what identifies the page: site, path, meaningful query. */
+function looseKey(url: URL): string {
+  const host = url.hostname.toLowerCase().replace(/^www\./, '')
+  const query = [...url.searchParams]
+    .filter(([name]) => !TRACKING_PARAM.test(name))
+    .map(([name, value]) => `${name}=${value}`)
+    .sort()
+    .join('&')
+  return `${host}${normalisePath(url.pathname)}?${query}`
 }

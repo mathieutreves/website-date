@@ -125,6 +125,7 @@ export const ptBR: Translation = {
   menuNoDate: 'Nenhuma data encontrada para este link.',
   menuUnreachable: 'Não foi possível ler essa página.',
   menuNeedsPermission: 'A permissão para ler esse site foi recusada.',
+  toastDismiss: 'Fechar',
   annotateFromUrl: 'inferida do endereço do link',
 
   optSearchHeading: 'Resultados de busca',

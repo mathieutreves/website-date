@@ -124,6 +124,7 @@ export const fr: Translation = {
   menuNoDate: 'Aucune date trouvée pour ce lien.',
   menuUnreachable: 'Impossible de lire cette page.',
   menuNeedsPermission: 'L’autorisation de lire ce site a été refusée.',
+  toastDismiss: 'Fermer',
   annotateFromUrl: 'déduite de l’adresse du lien',
 
   optSearchHeading: 'Résultats de recherche',

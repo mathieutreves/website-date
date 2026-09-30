@@ -4,10 +4,24 @@
     DIFFERENT answer           0
     different #candidates      2
 
-  permalink corpus — 1242 pages
-    same answer             1242
-    DIFFERENT answer           0
-    different #candidates      1
+  permalink corpus — 4215 pages
+    same answer             4211
+    DIFFERENT answer           4
+    different #candidates     87
 
-  Parsers agree. The published figures describe the Node path as well as the browser one.
+    fd749f3a5dbe4dc4
+      linkedom=2015-04-29  nhp=2015-06-12
+      https://www.tutu.ru/news/2015-04-29/54c9d5bb/
+    afae8a35b7da1d5f
+      linkedom=2018-05-24  nhp=2018-07-25
+      https://www.tutu.ru/news/2018-05-24/53e5f6c8/
+    1ee2f0afd50c5b71
+      linkedom=2018-07-26  nhp=2018-08-01
+      https://www.tutu.ru/news/2018-07-26/-62ce91d8/
+    2841fbbb2bc8ac4a
+      linkedom=2025-01-24  nhp=2025-02-28
+      https://lovable.dev/blog/2025-01-24-supercharge-your-ai-projects-lovable-x-replicate-integration
+
+  4 disagreements. The published figures were measured through linkedom and
+  do NOT describe the Node path until these are resolved.
 

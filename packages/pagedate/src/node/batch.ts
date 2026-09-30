@@ -96,6 +96,9 @@ const hostOf = (url: string): string => {
   }
 }
 
+/** Lines held back behind a busy host before reading pauses. */
+const MAX_DEFERRED = 1024
+
 export type BatchOptions = {
   /** Ceiling on requests in flight across the whole batch. Defaults to 4. */
   concurrency?: number
@@ -191,8 +194,11 @@ export async function* runBatch(
   }
 
   for await (const line of lines) {
-    while (inFlight.size >= concurrency) {
-      yield await settle()
+    // The second condition is what keeps a single-host input from being read
+    // into memory whole: every line after the first is deferred, the pool never
+    // fills, and without a bound on the queue nothing here ever waits.
+    while (inFlight.size >= concurrency || deferred.length >= MAX_DEFERRED) {
+      if (inFlight.size > 0) yield await settle()
       drainDeferred()
     }
 

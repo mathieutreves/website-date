@@ -266,6 +266,9 @@
   "menuNeedsPermission": {
     "message": "Se denegó el permiso para leer ese sitio."
   },
+  "toastDismiss": {
+    "message": "Cerrar"
+  },
   "annotateFromUrl": {
     "message": "deducida de la dirección del enlace"
   },
