@@ -1,7 +1,7 @@
 import type { Candidate, Env } from '../types.js'
 import { parseDateString, type ParseOptions } from '../parse/normalize.js'
 import { canonicalUrl, childText, canParseXml, defaultParseXml, matchesPage } from './xml.js'
-import { isSafeFetchTarget } from './urlGuard.js'
+import { isDeclaredTargetAllowed } from './urlGuard.js'
 
 /**
  * RSS/Atom feed lookup — the signal that makes undated static-site posts
@@ -34,7 +34,7 @@ export async function extractFeed(
   const parseXml = env.parseXml ?? defaultParseXml
   if (!fetchText || !canParseXml(env)) return []
 
-  const declared = declaredFeedUrls(doc, pageUrl)
+  const declared = declaredFeedUrls(doc, pageUrl, env)
   const probes = declared.length > 0 ? [] : wellKnownUrls(pageUrl).slice(0, MAX_PROBES)
 
   for (const feedUrl of [...declared, ...probes]) {
@@ -57,7 +57,7 @@ export async function extractFeed(
 }
 
 /** Feeds the page itself points at. */
-function declaredFeedUrls(doc: Document, pageUrl: URL): string[] {
+function declaredFeedUrls(doc: Document, pageUrl: URL, env: Env): string[] {
   const out: string[] = []
   const links = doc.querySelectorAll(
     'link[rel~="alternate"][type="application/rss+xml"], link[rel~="alternate"][type="application/atom+xml"]',
@@ -71,7 +71,7 @@ function declaredFeedUrls(doc: Document, pageUrl: URL): string[] {
       // The page picks this URL, so it is filtered rather than trusted. Feeds
       // are often off-origin (FeedBurner, Substack), so the test is "is this a
       // public web address" and not "is this the page's own origin".
-      if (!isSafeFetchTarget(resolved)) continue
+      if (!isDeclaredTargetAllowed(resolved, env)) continue
       const feedUrl = resolved.toString()
       if (!out.includes(feedUrl)) out.push(feedUrl)
       if (out.length >= MAX_DECLARED) break

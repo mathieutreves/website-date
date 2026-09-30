@@ -28,6 +28,16 @@
  * their own `Env`.
  */
 
+/**
+ * The filter the feed and sitemap lookups apply to a URL the page declared:
+ * {@link isSafeFetchTarget}, or the scheme test alone for an `Env` that has
+ * opted into the private network.
+ */
+export function isDeclaredTargetAllowed(url: URL, env: { allowPrivateNetwork?: boolean }): boolean {
+  if (!env.allowPrivateNetwork) return isSafeFetchTarget(url)
+  return (url.protocol === 'http:' || url.protocol === 'https:') && url.username === '' && url.password === ''
+}
+
 /** Suffixes that name something on the local machine or local network. */
 const LOCAL_SUFFIXES = ['.localhost', '.local', '.internal', '.home.arpa']
 

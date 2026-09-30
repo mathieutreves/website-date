@@ -171,6 +171,7 @@ export function fetchEnv(options: FetchEnvOptions = {}): Env {
   const parseXml = options.parseXml ?? globalDomParser()
   if (parseXml) env.parseXml = parseXml
   if (options.now) env.now = options.now
+  if (policy === 'off') env.allowPrivateNetwork = true
 
   return env
 }

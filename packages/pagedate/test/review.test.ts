@@ -473,3 +473,33 @@ describe('month names', () => {
     it(input, () => expect(parseDateString(input)?.value).toBe(value))
   }
 })
+
+describe('blockPrivateNetwork: off', () => {
+  it('reaches a feed the page declares on the private network', async () => {
+    const requested: string[] = []
+    const local: typeof globalThis.fetch = async (input) => {
+      requested.push(String(input))
+      return new Response('<html><head><link rel="alternate" type="application/rss+xml" href="http://127.0.0.1:3000/feed.xml"></head></html>')
+    }
+    const env = fetchEnv({ fetch: local, blockPrivateNetwork: 'off', parseXml: strictEnv().parseXml! })
+    const html = await env.fetchText!('http://localhost:3000/post')
+    await extractFeed(documentFrom(html!), new URL('http://localhost:3000/post'), env)
+    expect(requested).toContain('http://127.0.0.1:3000/feed.xml')
+  })
+
+  it('is still refused by default', async () => {
+    const doc = documentFrom(
+      '<html><head><link rel="alternate" type="application/rss+xml" href="http://127.0.0.1:3000/feed.xml"></head></html>',
+    )
+    const requested: string[] = []
+    const env: Env = {
+      fetchText: async (url) => {
+        requested.push(url)
+        return null
+      },
+      parseXml: () => null,
+    }
+    await extractFeed(doc, new URL('https://example.com/post'), env)
+    expect(requested).not.toContain('http://127.0.0.1:3000/feed.xml')
+  })
+})

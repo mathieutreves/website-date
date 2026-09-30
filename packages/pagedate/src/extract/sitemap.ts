@@ -1,7 +1,7 @@
 import type { Candidate, Env } from '../types.js'
 import { parseDateString, type ParseOptions } from '../parse/normalize.js'
 import { canonicalUrl, childText, canParseXml, defaultParseXml, matchesPage, normalisePath } from './xml.js'
-import { isSafeFetchTarget } from './urlGuard.js'
+import { isDeclaredTargetAllowed } from './urlGuard.js'
 
 /**
  * `<lastmod>` from the site's own sitemap.
@@ -44,7 +44,7 @@ export async function extractSitemap(
     (v): v is string => Boolean(v),
   )
 
-  const declared = declaredSitemapUrls(doc, pageUrl)
+  const declared = declaredSitemapUrls(doc, pageUrl, env)
   const queue = declared.length > 0 ? declared : wellKnownUrls(pageUrl)
   const seen = new Set<string>()
   let fetches = 0
@@ -73,21 +73,21 @@ export async function extractSitemap(
     // to the front of the queue: a sitemap index that pointed us at a
     // likely-looking child is better evidence than the next blind well-known
     // guess.
-    queue.unshift(...indexChildren(sitemapDoc, pageUrl).filter((child) => !seen.has(child)))
+    queue.unshift(...indexChildren(sitemapDoc, pageUrl, env).filter((child) => !seen.has(child)))
   }
 
   return []
 }
 
 /** Sitemaps the page itself points at. */
-function declaredSitemapUrls(doc: Document, pageUrl: URL): string[] {
+function declaredSitemapUrls(doc: Document, pageUrl: URL, env: Env): string[] {
   const out: string[] = []
   for (const link of doc.querySelectorAll('link[rel~="sitemap"]')) {
     const href = link.getAttribute('href')
     if (!href) continue
     try {
       const resolved = new URL(href, pageUrl)
-      if (!isSafeFetchTarget(resolved)) continue
+      if (!isDeclaredTargetAllowed(resolved, env)) continue
       out.push(resolved.toString())
     } catch {
       // relative href we can't resolve — skip
@@ -174,7 +174,7 @@ function isBuildStamped(entries: Element[]): boolean {
  * post at `/blog/2024/thing` is far more often listed in `post-sitemap.xml` or
  * `/blog/sitemap.xml` than in the first child alphabetically.
  */
-function indexChildren(sitemapDoc: Document, pageUrl: URL): string[] {
+function indexChildren(sitemapDoc: Document, pageUrl: URL, env: Env): string[] {
   const children: string[] = []
 
   for (const entry of sitemapDoc.querySelectorAll('sitemap')) {
@@ -188,7 +188,7 @@ function indexChildren(sitemapDoc: Document, pageUrl: URL): string[] {
       // A step further from the page than the `<link>` tags: this URL comes out
       // of XML the page told us to fetch, and children are queued ahead of the
       // well-known guesses, so an unfiltered one would be tried first.
-      if (!isSafeFetchTarget(resolved)) continue
+      if (!isDeclaredTargetAllowed(resolved, env)) continue
       children.push(resolved.toString())
     } catch {
       // ignore
