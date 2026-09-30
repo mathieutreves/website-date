@@ -3,29 +3,29 @@ evaluating 55 pages (of 800 in the index)
   RESULTS (htmldate cached subset, publication date only)
   --------------------------------------------------------------
   pages              55
-  exact / partial    36 / 1
-  wrong / missed     9 / 9
+  exact / partial    35 / 1
+  wrong / missed     8 / 11
 
                      precision  recall  accuracy  F-score
-  strict              78.3%   80.0%   65.5%    79.1%
-  precision-lenient   80.4%   80.4%   67.3%    80.4%
+  strict              79.5%   76.1%   63.6%    77.8%
+  precision-lenient   81.8%   76.6%   65.5%    79.1%
 
   strict            = a month-precision answer counts as wrong
   precision-lenient = it counts as right if consistent with the gold date
 
-  extraction   11.58 ms/page
-  (HTML parse  4.49 ms/page — not our cost in a content script)
+  extraction   7.40 ms/page
+  (HTML parse  3.47 ms/page — not our cost in a content script)
 
   sample partials (right, but coarser)
     2011-12-03 expected, got 2011-12  http://www.pbrunst.de/news/2011/12/kein-cyberterrorismus-d
 
   sample genuine disagreements
-    2017-09-07 expected, got 2017-01  https://www.austria.info/
     2017-07-12 expected, got 2019-06-17  https://www.befifty.de/home/2017/7/12/unter-uns-montauk
     2019-04-03 expected, got 2017-08-21  https://www.channelpartner.de/a/sieben-berufe-die-zukunft-
     2017-10-06 expected, got 2017-10-08  https://www.facebook.com/visitaustria/
     2016-11-18 expected, got 2007-06-29  https://www.gnu.org/licenses/gpl-3.0.en.html
     2018-06-10 expected, got 2018-07  https://www.scs78.de/news/items/warm-war-es-schoen-war-es.
+    2019-06-29 expected, got 2019-07-08  https://paris-luttes.info/quand-on-comprend-que-les-grenad
 
   CAVEATS — read before comparing to htmldate's published table
   --------------------------------------------------------------

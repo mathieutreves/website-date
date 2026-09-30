@@ -17,7 +17,7 @@ Rationale for the harness decisions described below is collected in [Method deci
 
 Pages harvested from the Wayback Machine by dated permalink, pinned to a capture, spanning 2005–2026, across 364 hosts and 19 languages. The label is the date in the URL path. See [CORPUS-BUILD.md](CORPUS-BUILD.md) for how it is built.
 
-**Read the funnel, not just the total.** 4302 entries across 364 hosts, 4215 of them with a capture on disk, and a headline figure is computed over the pages within 30 days of capture whose label is recoverable from the document — 847 on dev, 197 on diag, 566 held out. The rest are excluded rather than scored as failures, and every run prints the funnel. The exclusion rule is a judgement call with a measurable effect; `--include-unanswerable` reports the other end of it, 88.4% against 92.8% on dev.
+**Read the funnel, not just the total.** 4302 entries across 364 hosts, 4215 of them with a capture on disk, and a headline figure is computed over the pages within 30 days of capture whose label is recoverable from the document — 847 on dev, 197 on diag, 566 held out. The rest are excluded rather than scored as failures, and every run prints the funnel. The exclusion rule is a judgement call with a measurable effect; `--include-unanswerable` reports the other end of it, 89.3% against 92.9% on dev.
 
 **Three splits, not two.** Hosts hash to `dev`, `diag` or `test`. `diag` exists so a surprising number can be investigated on unfamiliar hosts without spending the held-out set, which is the resource that cannot be replaced once looked at.
 
@@ -49,18 +49,18 @@ Hosts are assigned by hash of the hostname, so a site tuned against cannot leak 
 ```
   tool                            exact  part  wrong  miss    TN   FP | precision  accuracy  useful   ms/page
   -----------------------------------------------------------------------------------------------------------
-    htmldate (extensive)           521     0     45     0     0    0 |   92.0%    92.0%    92.0%     23.29
-  ▸ pagedate (extensive)           505     0     38    23     0    0 |   93.0%    89.2%    89.2%     37.25
-  ▸ pagedate (standard)            496     0     37    33     0    0 |   93.1%    87.6%    87.6%     38.04
-    htmldate (fast)                484     0     36    46     0    0 |   93.1%    85.5%    85.5%      7.24
-    articleDateExtractor           403     0     41   122     0    0 |   90.8%    71.2%    71.2%     45.29
-    metascraper                    395     0     87    84     0    0 |   82.0%    69.8%    69.8%     17.48
-  ▸ pagedate (fast)                375     0     19   172     0    0 |   95.2%    66.3%    66.3%     35.13
-    newspaper4k                    364     0     14   188     0    0 |   96.3%    64.3%    64.3%    157.50
-    @extractus/article-extractor   352     0     47   167     0    0 |   88.2%    62.2%    62.2%    122.13
-    goose3                         312     0     11   243     0    0 |   96.6%    55.1%    55.1%    123.12
-    unfluff                        283     0     12   271     0    0 |   95.9%    50.0%    50.0%    114.28
-    date_guesser                   274     0     52   240     0    0 |   84.0%    48.4%    48.4%    144.94
+    htmldate (extensive)           521     0     45     0     0    0 |   92.0%    92.0%    92.0%     15.07
+  ▸ pagedate (extensive)           505     0     38    23     0    0 |   93.0%    89.2%    89.2%     29.71
+  ▸ pagedate (standard)            499     0     37    30     0    0 |   93.1%    88.2%    88.2%     30.02
+    htmldate (fast)                484     0     36    46     0    0 |   93.1%    85.5%    85.5%      4.68
+    articleDateExtractor           403     0     41   122     0    0 |   90.8%    71.2%    71.2%     28.89
+    metascraper                    395     0     87    84     0    0 |   82.0%    69.8%    69.8%     13.42
+  ▸ pagedate (fast)                375     0     19   172     0    0 |   95.2%    66.3%    66.3%     27.99
+    newspaper4k                    364     0     14   188     0    0 |   96.3%    64.3%    64.3%    101.37
+    @extractus/article-extractor   352     0     47   167     0    0 |   88.2%    62.2%    62.2%     81.87
+    goose3                         312     0     11   243     0    0 |   96.6%    55.1%    55.1%     80.08
+    unfluff                        283     0     12   271     0    0 |   95.9%    50.0%    50.0%     74.96
+    date_guesser                   274     0     52   240     0    0 |   84.0%    48.4%    48.4%     95.26
 ```
 
 The `TN`/`FP` columns are structurally zero here, and that is the single most
@@ -68,10 +68,7 @@ important caveat on this table: no page in this split lacks a date, so declining
 to answer can only lose points and inventing one cannot be charged. See
 [§ The negative tier](#the-negative-tier-and-what-it-costs-us).
 
-**The ms/page column is not comparable to earlier editions of this file.** These
-runs were made on a loaded machine with several benchmarks in flight; the
-per-tool ordering is meaningful but the absolute values are inflated relative to
-the isolated timings in the Speed section.
+**The ms/page column is not comparable between editions of this file.** These runs shared the machine with other work; the per-tool ordering is meaningful, and the isolated timings are in the Speed section.
 
 ### Disclosure: this split was scored before tuning finished
 
@@ -87,21 +84,23 @@ here rather than quietly reported because a benchmark whose author is an entrant
 has no other defence. The `diag` pool exists so that the next round of failure
 investigation does not have to spend the held-out set again.
 
+It has been scored a second time since. A pre-release review changed the extractors — word boundaries around month names, listing detection at a site root, microdata scoped to its item, date class names written as one word, five more languages of month names — working from `dev`, `diag` and the unreviewed no-date tier, and never from a held-out page. pagedate (standard) moved from 496 exact to 499, 87.6% to 88.2%; `extensive` and `fast` did not move. Every figure in this file is from that second scoring.
+
 ### The dev/test gap
 
 | | dev (tuned on) | test (held out) | Δ |
 | --- | ---: | ---: | ---: |
-| pagedate (standard) | 93.2% | 87.6% | **−5.6** |
+| pagedate (standard) | 93.3% | 88.2% | **−5.1** |
 | htmldate (extensive) | 85.4% | 92.0% | **+6.6** |
 | metascraper | 63.0% | 69.8% | +6.8 |
 
 A gap between the two splits is what tuning on a corpus and reporting on it looks like, so its size is the number to read rather than either figure alone.
 
-**The two figures invert the ranking, which is the whole reason both are here.** On dev, pagedate leads htmldate by 7.8 points. Held out, it trails by 4.4. Anyone quoting the dev table would be quoting the tuning.
+**The two figures invert the ranking, which is the whole reason both are here.** On dev, pagedate leads htmldate by 7.9 points. Held out, it trails by 3.8. Anyone quoting the dev table would be quoting the tuning.
 
-htmldate is the control, and its **+6.6** constrains how −5.6 can be read. A tool tuned on none of this does *better* on the held-out hosts than on the dev ones, and metascraper's +6.8 points the same way: the two splits are not equally hard, and the held-out set suits both of them. So −5.6 is a gap against a baseline somewhere above zero, not against zero. Part of it is tuning residue and part is that the test split is a different set of sites; two splits and one control cannot separate them — which is what the third pool is for.
+htmldate is the control, and its **+6.6** constrains how −5.1 can be read. A tool tuned on none of this does *better* on the held-out hosts than on the dev ones, and metascraper's +6.8 points the same way: the two splits are not equally hard, and the held-out set suits both of them. So −5.1 is a gap against a baseline somewhere above zero, not against zero. Part of it is tuning residue and part is that the test split is a different set of sites; two splits and one control cannot separate them — which is what the third pool is for.
 
-**Where the residue is visible.** English is the largest stratum and the worst one held out, at 84.2% against 90–100% for German, French, Italian and Dutch. It carries 30 of the 37 wrong answers and 19 of the 33 misses. That is where the work is, and it is not a multilingual problem.
+**Where the residue is visible.** English is the largest stratum and the worst one held out, at 84.5% against 90–100% for German, French, Italian and Dutch. In `score.ts`'s own table it carries 30 of the 38 wrong answers and 18 of the 23 misses. That is where the work is, and it is not a multilingual problem.
 
 **And one place the corpus cannot adjudicate at all.** Reporting a UTC declaration in the day the site shows its own readers is right in general — a publication date is a civil date somewhere, and UTC is not automatically that somewhere — but the label in this corpus *is* a local-versus-UTC choice, made independently by each site's CMS. Two European papers here mint the permalink on one convention and print the byline on the other, and nothing in those documents decides which is "the" date. The rule wins pages on one split and loses them on the other, and neither outcome is evidence about the rule.
 
@@ -109,27 +108,31 @@ The residue is small mostly because of how the corpus is shaped. At 566 held-out
 
 ### Read the error columns, not just the accuracy
 
-htmldate (extensive) never declines to answer: 0 misses, 45 wrong. pagedate declines on 33 pages and is wrong on 37. Its precision on answered pages is 93.1% against htmldate's 92.0% — a difference of six pages, which on 566 is at the edge of noise.
+htmldate (extensive) never declines to answer: 0 misses, 45 wrong. pagedate declines on 30 pages and is wrong on 37. Its precision on answered pages is 93.1% against htmldate's 92.0% — a difference of about six pages, which on 566 is at the edge of noise.
 
-Note what declining costs pagedate here. Every page in this split *has* a date, so it can only lose points — there is no true negative to be scored for. Those 33 declines are 5.8 points, and pagedate trails by 4.4. That does not prove it would lead on a corpus containing undated pages; it does mean the headline gap is smaller than the abstention policy that produces it, and a reader should not take the ranking as settling which behaviour is better.
+Note what declining costs pagedate here. Every page in this split *has* a date, so it can only lose points — there is no true negative to be scored for. Those 30 declines are 5.3 points, and pagedate trails by 3.8. That does not prove it would lead on a corpus containing undated pages; it does mean the headline gap is smaller than the abstention policy that produces it, and a reader should not take the ranking as settling which behaviour is better.
 
-**This is no longer purely hypothetical, and the first evidence is against us.** See the next section.
+**This is no longer purely hypothetical.** See the next section.
 
 ### The negative tier, and what it costs us
 
 154 pages with no publication date — homepages and section fronts, which have no publication date of their own — are harvested and awaiting human review. They are not in any table above and score nowhere until a person confirms the labels, because `CONTRIBUTING.md` forbids a model adjudicating the answer key and a negative label is the one kind whose error silently *rewards* abstention.
 
-A preview run against those unreviewed labels is worth recording anyway, because it points the wrong way for this project's central claim:
+A preview run against those unreviewed labels is worth recording anyway, because the first one pointed the wrong way for this project's central claim:
 
 | | dev, dated only | dev, with unreviewed negatives |
 | --- | ---: | ---: |
-| pagedate (standard) | 92.8% | 89.9% |
-| correct refusals (TN) | — | 38 |
-| **invented dates (FP)** | — | **32 of 70** |
+| pagedate (standard) | 92.9% | 91.9% |
+| correct refusals (TN) | — | 56 |
+| **invented dates (FP)** | — | **14 of 70** |
 
-**pagedate invents a date on 46% of the pages whose correct answer is "none".** What it returns is the date of the newest article in the listing: before index-page detection the sources were `marked-date` (20), `time-tag` (14), `text-date` (7) and `visible-text` (5) — the top item of a feed, read as a byline. That detection cut the rate from 59% to 46%; the rest is open.
+**pagedate invents a date on 20% of the pages whose correct answer is "none".** It was 59% before any listing detection and 46% after the first version of it; what it returned was the date of the newest article in the listing — `marked-date` (20), `time-tag` (14), `text-date` (7) and `visible-text` (5), the top item of a feed read as a byline.
 
-Four of the remaining false positives come from `opengraph` at `declared` confidence, and those are deliberately not suppressed: a homepage carrying `article:published_time` is the *site* stating something wrong, and discarding a declared value on a heuristic verdict about page shape would invert the confidence tiers the library rests on.
+The step from 46% to 20% is one rule: a site root is a listing, whatever its markup declares. The markup test treated `og:type=article` as decisive, and Al Jazeera, Lenta and NPR all ship it on their front pages. The permalink corpus cannot price that rule, since no dated page in it sits at a root; the htmldate corpus can, and it costs one page there, a homepage that corpus labels with a date. On the `diag` pool the same rule takes 15 invented dates of 20 to 4.
+
+Of the 14 that remain, half are policy and about pages, whose "no date" label is the most doubtful in the tier — a privacy policy that says when it took effect has a date — and half are homepages that state a date in their own metadata.
+
+Those last come from `opengraph` and `meta-date`, and are deliberately not suppressed: a homepage carrying `article:published_time` is the *site* stating something wrong, and discarding a declared value on a heuristic verdict about page shape would invert the confidence tiers the library rests on.
 
 Two things follow. First, a library whose pitch is that it declines to invent had never been measured on pages where inventing is possible — the corpus made that structurally impossible, exactly as this document criticises htmldate's corpus for doing. Second, the preview is biased *in our favour* if the labels are wrong, since pagedate abstains more than anything else here, which is why it stays a preview until reviewed.
 
@@ -141,16 +144,16 @@ Publication era — the interesting axis, because markup conventions changed und
 
 | era | dev n | dev | test n | test |
 | --- | ---: | ---: | ---: | ---: |
-| 2006 | 19 | 94.7% | 14 | 50.0% |
+| 2006 | 19 | 94.7% | 14 | 71.4% |
 | 2009 | 59 | 88.1% | 32 | 75.0% |
 | 2012 | 108 | 82.4% | 46 | 60.9% |
 | 2015 | 143 | 89.5% | 113 | 89.4% |
 | 2018 | 85 | 97.6% | 84 | 91.7% |
 | 2021 | 155 | 98.1% | 102 | 97.1% |
 | 2023 | 132 | 97.0% | 89 | 94.4% |
-| 2025 | 144 | 94.4% | 80 | 92.5% |
+| 2025 | 144 | 95.1% | 80 | 92.5% |
 
-**The era curve is the clearest signal in this corpus, and it is monotone.** Everything from 2018 onward sits above 91% on both splits; everything before 2015 falls away, to 50% for 2006 held out. That is not a tuning artifact — it is the web before OpenGraph and JSON-LD were universal and after sites had stopped emitting hAtom microformats.
+**The era curve is the clearest signal in this corpus, and it is monotone.** Everything from 2018 onward sits above 91% on both splits; everything before 2015 falls away, to 61% for 2012 held out. That is not a tuning artifact — it is the web before OpenGraph and JSON-LD were universal and after sites had stopped emitting hAtom microformats.
 
 2006–2012 held out is where a third of all remaining error lives, on 92 pages. TechCrunch in 2012 printed `<div class="post-time">posted yesterday</div>` — a date no parser can recover, only a URL can. Three signals carry most of what *is* recoverable there: English ordinal suffixes ("November 1st, 2012"), WordPress's `post_date` read out of inlined script state, and suppression of a newspaper's registration date lifted from a page footer.
 
@@ -184,10 +187,10 @@ Held-out split:
 | fr | 66 | 95.5% |
 | nl | 30 | 93.3% |
 | it | 52 | 90.4% |
-| en | 322 | 84.2% |
+| en | 322 | 84.5% |
 | ja | 13 | 76.9% |
 
-**English is the largest stratum and the worst large one held out.** At 322 pages it is the only row here big enough to be a measurement rather than a hint, and it carries 30 of the 37 wrong answers and 19 of the 33 misses. The multilingual support is not what needs work; the English long tail is.
+**English is the largest stratum and the worst large one held out.** At 322 pages it is the only row here big enough to be a measurement rather than a hint, and in `score.ts`'s own table it carries 30 of the 38 wrong answers and 18 of the 23 misses. The multilingual support is not what needs work; the English long tail is.
 
 **Spanish at 20% on dev is four pages of `elconfidencial.com`**, all wrong by one or two days, on a template that dates its own `/pass_<hash>/` permalinks inconsistently. On five pages that is an anecdote, and it is reported rather than dropped because dropping the rows that look bad is how a benchmark stops meaning anything.
 
@@ -206,23 +209,23 @@ SAME 55 PAGES, SAME METRIC, CURRENT VERSIONS — publication date only
 
   tool                            exact  part  wrong  miss | precision  recall  accuracy  F-score   ms/page
   ---------------------------------------------------------------------------------------------------------
-    htmldate (extensive)            53     0      2     0 |   96.4%   100.0%    96.4%    98.1%     73.98
-    htmldate (fast)                 45     0      1     9 |   97.8%    83.3%    81.8%    90.0%     11.18
-  ▸ pagedate (standard)             37     1      9     8 |   78.7%    82.2%    67.3%    80.4%      3.75
-  ▸ pagedate (fast)                 14     3      4    34 |   66.7%    29.2%    25.5%    40.6%      1.57
-    date_guesser                    14     0      8    33 |   63.6%    29.8%    25.5%    40.6%    113.25
-    metascraper (with parse)        13     0     13    29 |   50.0%    31.0%    23.6%    38.2%     20.29
-    metascraper (rules only)        13     0     13    29 |   50.0%    31.0%    23.6%    38.2%      6.67
-    newspaper4k                     11     0      5    39 |   68.8%    22.0%    20.0%    33.3%    143.66
-    articleDateExtractor            11     0      9    35 |   55.0%    23.9%    20.0%    33.3%     40.99
-    @extractus/article-extractor     8     0     10    37 |   44.4%    17.8%    14.5%    25.4%     84.03
-    unfluff                          8     0      1    46 |   88.9%    14.8%    14.5%    25.4%    119.12
-    goose3                           4     0      2    49 |   66.7%     7.5%     7.3%    13.6%    133.80
+    htmldate (extensive)            53     0      2     0 |   96.4%   100.0%    96.4%    98.1%     50.12
+    htmldate (fast)                 45     0      1     9 |   97.8%    83.3%    81.8%    90.0%      7.19
+  ▸ pagedate (standard)             35     1      8    11 |   79.5%    76.1%    63.6%    77.8%      3.80
+  ▸ pagedate (fast)                 14     3      4    34 |   66.7%    29.2%    25.5%    40.6%      1.70
+    date_guesser                    14     0      8    33 |   63.6%    29.8%    25.5%    40.6%     73.43
+    metascraper (with parse)        13     0     13    29 |   50.0%    31.0%    23.6%    38.2%     13.92
+    metascraper (rules only)        13     0     13    29 |   50.0%    31.0%    23.6%    38.2%      4.11
+    newspaper4k                     11     0      5    39 |   68.8%    22.0%    20.0%    33.3%     98.95
+    articleDateExtractor            11     0      9    35 |   55.0%    23.9%    20.0%    33.3%     27.27
+    @extractus/article-extractor     8     0     10    37 |   44.4%    17.8%    14.5%    25.4%     56.33
+    unfluff                          8     0      1    46 |   88.9%    14.8%    14.5%    25.4%     75.97
+    goose3                           4     0      2    49 |   66.7%     7.5%     7.3%    13.6%     84.91
 ```
 
-htmldate leads by 29 points here, partly through home advantage and partly because it is a better general-purpose extractor on news.
+htmldate leads by 33 points here, partly through home advantage and partly because it is a better general-purpose extractor on news.
 
-The two corpora agree on the ranking and differ in the margin: 29 points on the corpus curated around htmldate's own hard cases, 4.0 on a corpus that is nobody's test set.
+The two corpora agree on the ranking and differ in the margin: 33 points on the corpus curated around htmldate's own hard cases, 3.8 on a corpus that is nobody's test set.
 
 ### htmldate is invoked with `original_date=True`
 
@@ -269,8 +272,8 @@ Caveats: this project is the author of both the library and the corrections; six
 
 | | extraction only | including HTML parsing |
 | --- | ---: | ---: |
-| pagedate (fast) | 1.5 ms | 10.6 ms |
-| pagedate (standard) | 6.1 ms | 15.9 ms |
+| pagedate (fast) | 1.9 ms | 8.3 ms |
+| pagedate (standard) | 5.4 ms | 11.6 ms |
 | htmldate (fast) | — | 11.2 ms |
 | htmldate (extensive) | — | 75.5 ms |
 
@@ -297,13 +300,13 @@ The Node path ships node-html-parser. Getting there meant removing every extract
 Both parsers above are Node libraries; neither is what the extension gets. `bench/parity-browser.mjs` runs real Chromium and its `DOMParser` over the corpus pages, through the same extractor bundle the content script carries, and compares against the Node path.
 
 ```
-  real Chromium vs node-html-parser — 1242 pages
+  real Chromium vs node-html-parser — 4215 pages
 
-    same answer           1242
-    DIFFERENT answer         0
+    same answer           4197
+    DIFFERENT answer        18
 ```
 
-That run predates the corpus expansion and covers the original 1242 pages; the 2973 pages added since have not been through a browser.
+They agreed on every page when the corpus was 1242. The 18 arrived with the expansion and are unresolved; the list is in `results/parser-parity-browser.txt`.
 
 What is still unmeasured is narrower than it was: Firefox's parser, and any page whose DOM is built by JavaScript the archived capture never ran.
 

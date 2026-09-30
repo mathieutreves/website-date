@@ -20,7 +20,7 @@ The guard and the transport around it live in [`fetchEnv.ts`](packages/pagedate/
 
 **URLs an untrusted party chose.** `pagedate-mcp` fetches whatever a model asks it to, so `blockPrivateNetwork` defaults to `'strict'` there. A way to make that server reach an address the filter is meant to refuse is in scope.
 
-**Cost a page can impose.** Extraction is bounded on adversarial input: fetches cap at 5 MB and 8 seconds with at most 3 redirects, parsing caps at 10 MB, and the element walk in `patterns.ts` is linear. `pagedate --batch` bounds concurrency and never issues more than one request per host, whatever `--concurrency` says. A page that makes any of these superlinear, or that gets past a cap, is in scope.
+**Cost a page can impose.** Extraction is bounded on adversarial input: fetches cap at 5 MB and 8 seconds — the deadline covers the body, not only the headers — with at most 3 redirects; a page's declared feeds and its sitemap walk are each held to 3 requests; parsing caps at 10 MB, and the element walk in `patterns.ts` is linear. `pagedate --batch` bounds concurrency and never issues more than one request per host, whatever `--concurrency` says. A page that makes any of these superlinear, or that gets past a cap, is in scope.
 
 **Output that reaches a DOM.** The extension renders page-derived strings — the date, the source label, and notes quoting page text — into the popup, the injected overlay, the link toast and the search-result annotations. Anything that escapes as markup is in scope; the `produces no unescaped angle brackets from real page content` test covers this. The annotator is the sharpest case, writing into a page it does not control using text taken from a third page it fetched.
 

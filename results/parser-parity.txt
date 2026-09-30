@@ -7,7 +7,7 @@
   permalink corpus — 4215 pages
     same answer             4211
     DIFFERENT answer           4
-    different #candidates     90
+    different #candidates     87
 
     fd749f3a5dbe4dc4
       linkedom=2015-04-29  nhp=2015-06-12

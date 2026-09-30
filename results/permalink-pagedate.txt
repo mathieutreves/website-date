@@ -10,7 +10,7 @@
 
   stratum                        n  exact  part  wrong  miss    TN   FP | precision  accuracy  useful
   ---------------------------------------------------------------------------------------------------
-  all                          847    786     0     44    17     0    0 |    94.7%     92.8%   92.8%
+  all                          847    787     0     44    16     0    0 |    94.7%     92.9%   92.9%
 
 === BY PUBLICATION ERA ===
 
@@ -24,13 +24,13 @@
   2018                          85     83     0      2     0     0    0 |    97.6%     97.6%   97.6%
   2021                         155    152     0      3     0     0    0 |    98.1%     98.1%   98.1%
   2023                         132    128     0      4     0     0    0 |    97.0%     97.0%   97.0%
-  2025                         144    136     0      4     4     0    0 |    97.1%     94.4%   94.4%
+  2025                         144    137     0      4     3     0    0 |    97.2%     95.1%   95.1%
 
 === BY LANGUAGE (from <html lang>) ===
 
   stratum                        n  exact  part  wrong  miss    TN   FP | precision  accuracy  useful
   ---------------------------------------------------------------------------------------------------
-  ar                            24     22     0      1     1     0    0 |    95.7%     91.7%   91.7%
+  ar                            24     23     0      1     0     0    0 |    95.8%     95.8%   95.8%
   de                            14     14     0      0     0     0    0 |   100.0%    100.0%  100.0%
   en                           549    512     0     26    11     0    0 |    95.2%     93.3%   93.3%
   es                             5      1     0      4     0     0    0 |    20.0%     20.0%   20.0%
@@ -48,22 +48,22 @@
 
   stratum                        n  exact  part  wrong  miss    TN   FP | precision  accuracy  useful
   ---------------------------------------------------------------------------------------------------
-  lag 0-1d                     507    492     0     13     2     0    0 |    97.4%     97.0%   97.0%
+  lag 0-1d                     507    493     0     13     1     0    0 |    97.4%     97.2%   97.2%
   lag 2-7d                     240    200     0     27    13     0    0 |    88.1%     83.3%   83.3%
   lag 8-30d                    100     94     0      4     2     0    0 |    95.9%     94.0%   94.0%
 
 === WHERE THE CORRECT ANSWERS CAME FROM ===
 
   jsonld                       262
-  marked-date                  150
+  marked-date                  168
   opengraph                    114
-  text-date                    108
+  text-date                    107
   visible-text                  49
-  time-tag                      41
-  image-path                    22
+  time-tag                      28
+  itemprop                      23
   sailthru                      14
-  itemprop                      10
   labelled-pair                 10
+  image-path                     6
   dublin-core                    4
   meta-date                      2
 

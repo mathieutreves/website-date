@@ -1,330 +1,330 @@
-{"tool": "htmldate (fast)", "file": "die-partei.net.sh.html", "gold": "2014-07-19", "found": "2014-07-19", "ms": 3.61}
-{"tool": "htmldate (fast)", "file": "kinra.de.html", "gold": "2012-12-16", "found": "2012-12-16", "ms": 1.76}
-{"tool": "htmldate (fast)", "file": "blog.python.org.html", "gold": "2016-12-23", "found": "2016-12-23", "ms": 2.75}
-{"tool": "htmldate (fast)", "file": "blog.todamax.net.html", "gold": "2018-02-15", "found": "2018-02-15", "ms": 7.83}
-{"tool": "htmldate (fast)", "file": "carta.info.html", "gold": "2012-05-08", "found": null, "ms": 8.42}
-{"tool": "htmldate (fast)", "file": "500px.com.spring.html", "gold": "2013-02-16", "found": "2013-02-16", "ms": 6.13}
-{"tool": "htmldate (fast)", "file": "bayern.de.html", "gold": "2017-10-06", "found": "2017-10-06", "ms": 25.83}
-{"tool": "htmldate (fast)", "file": "creativecommons.org.html", "gold": "2016-05-22", "found": null, "ms": 28.0}
-{"tool": "htmldate (fast)", "file": "blog.wordpress.com.html", "gold": "2017-08-30", "found": "2017-08-30", "ms": 6.11}
-{"tool": "htmldate (fast)", "file": "futurezone.at.cc.html", "gold": "2013-08-09", "found": "2013-08-09", "ms": 2.91}
-{"tool": "htmldate (fast)", "file": "netzpolitik.org.abmahnungen.html", "gold": "2016-06-23", "found": "2016-06-23", "ms": 4.25}
-{"tool": "htmldate (fast)", "file": "pixabay.com.tos.html", "gold": "2017-08-09", "found": null, "ms": 8.9}
-{"tool": "htmldate (fast)", "file": "austria.info.html", "gold": "2017-09-07", "found": null, "ms": 72.59}
-{"tool": "htmldate (fast)", "file": "befifty.montauk.html", "gold": "2017-07-12", "found": "2017-07-12", "ms": 3.84}
-{"tool": "htmldate (fast)", "file": "beltz.de.didakta.html", "gold": "2019-02-20", "found": "2019-02-20", "ms": 21.27}
-{"tool": "htmldate (fast)", "file": "channelpartner.de.berufe.html", "gold": "2019-04-03", "found": "2017-08-21", "ms": 2.34}
-{"tool": "htmldate (fast)", "file": "creativecommons.at.faircoin.html", "gold": "2017-07-24", "found": "2017-07-24", "ms": 5.56}
-{"tool": "htmldate (fast)", "file": "eff.org.2015.html", "gold": "2016-05-04", "found": "2016-05-04", "ms": 15.26}
-{"tool": "htmldate (fast)", "file": "facebook.com.visitaustria.html", "gold": "2017-10-06", "found": "2017-10-06", "ms": 5.51}
-{"tool": "htmldate (fast)", "file": "gnu.org.gpl.html", "gold": "2016-11-18", "found": "2016-11-18", "ms": 19.59}
-{"tool": "htmldate (fast)", "file": "goodform.ch.blog.html", "gold": "2018-06-27", "found": "2018-06-27", "ms": 21.93}
-{"tool": "htmldate (fast)", "file": "horizont.net.html", "gold": "2019-01-29", "found": "2019-01-29", "ms": 10.07}
-{"tool": "htmldate (fast)", "file": "scs78.de.html", "gold": "2018-06-10", "found": "2018-06-10", "ms": 3.44}
-{"tool": "htmldate (fast)", "file": "tagesausblick.de.dow.html", "gold": "2012-12-22", "found": "2012-12-22", "ms": 3.42}
-{"tool": "htmldate (fast)", "file": "transgen.de.aktuell.html", "gold": "2018-01-18", "found": "2018-01-18", "ms": 4.38}
-{"tool": "htmldate (fast)", "file": "weltwoche.ch.html", "gold": "2019-01-23", "found": null, "ms": 34.27}
-{"tool": "htmldate (fast)", "file": "freundeskreis-videoclips.de.html", "gold": "2017-07-12", "found": "2017-07-12", "ms": 3.65}
-{"tool": "htmldate (fast)", "file": "wunderweib.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 3.15}
-{"tool": "htmldate (fast)", "file": "unexpecteduser.2011.html", "gold": "2011-03-30", "found": "2011-03-30", "ms": 1.21}
-{"tool": "htmldate (fast)", "file": "eza.gv.at.html", "gold": "2018-07-03", "found": "2018-07-03", "ms": 26.55}
-{"tool": "htmldate (fast)", "file": "greenpeace.org.forests.html", "gold": "2017-04-28", "found": "2017-04-28", "ms": 9.97}
-{"tool": "htmldate (fast)", "file": "hobby-werkstatt-blog.de.roomba.html", "gold": "2015-12-14", "found": "2015-12-14", "ms": 5.54}
-{"tool": "htmldate (fast)", "file": "jovelstefan.de.parken.html", "gold": "2012-05-11", "found": "2012-05-11", "ms": 1.25}
-{"tool": "htmldate (fast)", "file": "klimawandel-global.de.html", "gold": "2013-05-03", "found": "2013-05-03", "ms": 3.47}
-{"tool": "htmldate (fast)", "file": "medef.fr.dispute.html", "gold": "2017-09-01", "found": "2017-09-01", "ms": 4.31}
-{"tool": "htmldate (fast)", "file": "pbrunst.de.html", "gold": "2011-12-03", "found": null, "ms": 8.85}
-{"tool": "htmldate (fast)", "file": "stuttgart.de.html", "gold": "2017-10-09", "found": "2017-10-09", "ms": 42.12}
-{"tool": "htmldate (fast)", "file": "paris-luttes.info.html", "gold": "2019-06-29", "found": "2019-06-29", "ms": 7.24}
-{"tool": "htmldate (fast)", "file": "brigitte.de.riverdale.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 7.93}
-{"tool": "htmldate (fast)", "file": "ldt.de.fallinlove.html", "gold": "2017-08-08", "found": "2017-08-08", "ms": 8.11}
-{"tool": "htmldate (fast)", "file": "loldf.org.html", "gold": "2019-06-27", "found": "2019-06-27", "ms": 1.14}
-{"tool": "htmldate (fast)", "file": "oberstdorfresort.de.kraeuter.html", "gold": "2018-06-20", "found": "2018-06-20", "ms": 6.54}
-{"tool": "htmldate (fast)", "file": "wienbadminton.at.html", "gold": "2018-05-06", "found": null, "ms": 6.17}
-{"tool": "htmldate (fast)", "file": "blog.wikimedia.interactivemaps.html", "gold": "2018-06-28", "found": "2018-06-28", "ms": 2.03}
-{"tool": "htmldate (fast)", "file": "mediapart.fr.violences.html", "gold": "2019-06-27", "found": "2019-06-27", "ms": 15.24}
-{"tool": "htmldate (fast)", "file": "verfassungsblog.de.decade.html", "gold": "2019-07-13", "found": "2019-07-13", "ms": 5.69}
-{"tool": "htmldate (fast)", "file": "cric-grenoble.info.radio.html", "gold": "2019-06-09", "found": "2019-06-09", "ms": 9.24}
-{"tool": "htmldate (fast)", "file": "kurz.at.wasserstoff.html", "gold": "2019-07-30", "found": "2019-07-30", "ms": 2.0}
-{"tool": "htmldate (fast)", "file": "la-bas.org.porte.html", "gold": "2019-06-28", "found": "2019-06-28", "ms": 18.55}
-{"tool": "htmldate (fast)", "file": "revolutionpermanente.fr.antonin.html", "gold": "2019-06-13", "found": "2019-06-13", "ms": 5.73}
-{"tool": "htmldate (fast)", "file": "wara-enforcement.org.guinee.html", "gold": "2016-09-27", "found": "2016-09-27", "ms": 4.2}
-{"tool": "htmldate (fast)", "file": "ebene11.com.autocad.html", "gold": "2017-01-12", "found": null, "ms": 6.14}
-{"tool": "htmldate (fast)", "file": "acredis.com.augenlidstraffung.html", "gold": "2018-02-28", "found": "2018-02-28", "ms": 2.44}
-{"tool": "htmldate (fast)", "file": "hertie-school.org.leyen.html", "gold": "2019-12-02", "found": null, "ms": 42.38}
-{"tool": "htmldate (fast)", "file": "adac.de.kindersitztest.html", "gold": "2018-10-23", "found": "2018-10-23", "ms": 22.76}
-{"tool": "htmldate (extensive)", "file": "die-partei.net.sh.html", "gold": "2014-07-19", "found": "2014-07-19", "ms": 4.31}
-{"tool": "htmldate (extensive)", "file": "kinra.de.html", "gold": "2012-12-16", "found": "2012-12-16", "ms": 1.56}
-{"tool": "htmldate (extensive)", "file": "blog.python.org.html", "gold": "2016-12-23", "found": "2016-12-23", "ms": 2.37}
-{"tool": "htmldate (extensive)", "file": "blog.todamax.net.html", "gold": "2018-02-15", "found": "2018-02-15", "ms": 11.88}
-{"tool": "htmldate (extensive)", "file": "carta.info.html", "gold": "2012-05-08", "found": "2012-05-08", "ms": 9.98}
-{"tool": "htmldate (extensive)", "file": "500px.com.spring.html", "gold": "2013-02-16", "found": "2013-02-16", "ms": 3369.87}
-{"tool": "htmldate (extensive)", "file": "bayern.de.html", "gold": "2017-10-06", "found": "2017-10-06", "ms": 56.79}
-{"tool": "htmldate (extensive)", "file": "creativecommons.org.html", "gold": "2016-05-22", "found": "2016-05-22", "ms": 44.29}
-{"tool": "htmldate (extensive)", "file": "blog.wordpress.com.html", "gold": "2017-08-30", "found": "2017-08-30", "ms": 9.86}
-{"tool": "htmldate (extensive)", "file": "futurezone.at.cc.html", "gold": "2013-08-09", "found": "2013-08-09", "ms": 4.11}
-{"tool": "htmldate (extensive)", "file": "netzpolitik.org.abmahnungen.html", "gold": "2016-06-23", "found": "2016-06-23", "ms": 6.49}
-{"tool": "htmldate (extensive)", "file": "pixabay.com.tos.html", "gold": "2017-08-09", "found": "2017-08-09", "ms": 12.66}
-{"tool": "htmldate (extensive)", "file": "austria.info.html", "gold": "2017-09-07", "found": "2017-09-07", "ms": 150.94}
-{"tool": "htmldate (extensive)", "file": "befifty.montauk.html", "gold": "2017-07-12", "found": "2017-07-12", "ms": 4.08}
-{"tool": "htmldate (extensive)", "file": "beltz.de.didakta.html", "gold": "2019-02-20", "found": "2019-02-20", "ms": 31.28}
-{"tool": "htmldate (extensive)", "file": "channelpartner.de.berufe.html", "gold": "2019-04-03", "found": "2017-08-21", "ms": 2.94}
-{"tool": "htmldate (extensive)", "file": "creativecommons.at.faircoin.html", "gold": "2017-07-24", "found": "2017-07-24", "ms": 7.27}
-{"tool": "htmldate (extensive)", "file": "eff.org.2015.html", "gold": "2016-05-04", "found": "2016-05-04", "ms": 22.79}
-{"tool": "htmldate (extensive)", "file": "facebook.com.visitaustria.html", "gold": "2017-10-06", "found": "2017-10-06", "ms": 6.09}
-{"tool": "htmldate (extensive)", "file": "gnu.org.gpl.html", "gold": "2016-11-18", "found": "2016-11-18", "ms": 22.03}
-{"tool": "htmldate (extensive)", "file": "goodform.ch.blog.html", "gold": "2018-06-27", "found": "2018-06-27", "ms": 27.86}
-{"tool": "htmldate (extensive)", "file": "horizont.net.html", "gold": "2019-01-29", "found": "2019-01-29", "ms": 15.79}
-{"tool": "htmldate (extensive)", "file": "scs78.de.html", "gold": "2018-06-10", "found": "2018-06-10", "ms": 4.85}
-{"tool": "htmldate (extensive)", "file": "tagesausblick.de.dow.html", "gold": "2012-12-22", "found": "2012-12-22", "ms": 4.58}
-{"tool": "htmldate (extensive)", "file": "transgen.de.aktuell.html", "gold": "2018-01-18", "found": "2018-01-18", "ms": 8.54}
-{"tool": "htmldate (extensive)", "file": "weltwoche.ch.html", "gold": "2019-01-23", "found": "2019-01-23", "ms": 71.25}
-{"tool": "htmldate (extensive)", "file": "freundeskreis-videoclips.de.html", "gold": "2017-07-12", "found": "2017-07-12", "ms": 4.79}
-{"tool": "htmldate (extensive)", "file": "wunderweib.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 3.73}
-{"tool": "htmldate (extensive)", "file": "unexpecteduser.2011.html", "gold": "2011-03-30", "found": "2011-03-30", "ms": 1.46}
-{"tool": "htmldate (extensive)", "file": "eza.gv.at.html", "gold": "2018-07-03", "found": "2018-07-03", "ms": 38.59}
-{"tool": "htmldate (extensive)", "file": "greenpeace.org.forests.html", "gold": "2017-04-28", "found": "2017-04-28", "ms": 14.3}
-{"tool": "htmldate (extensive)", "file": "hobby-werkstatt-blog.de.roomba.html", "gold": "2015-12-14", "found": "2015-12-14", "ms": 8.02}
-{"tool": "htmldate (extensive)", "file": "jovelstefan.de.parken.html", "gold": "2012-05-11", "found": "2012-05-11", "ms": 1.39}
-{"tool": "htmldate (extensive)", "file": "klimawandel-global.de.html", "gold": "2013-05-03", "found": "2013-05-03", "ms": 5.19}
-{"tool": "htmldate (extensive)", "file": "medef.fr.dispute.html", "gold": "2017-09-01", "found": "2017-09-01", "ms": 6.21}
-{"tool": "htmldate (extensive)", "file": "pbrunst.de.html", "gold": "2011-12-03", "found": "2010-06-01", "ms": 49.06}
-{"tool": "htmldate (extensive)", "file": "stuttgart.de.html", "gold": "2017-10-09", "found": "2017-10-09", "ms": 52.86}
-{"tool": "htmldate (extensive)", "file": "paris-luttes.info.html", "gold": "2019-06-29", "found": "2019-06-29", "ms": 9.91}
-{"tool": "htmldate (extensive)", "file": "brigitte.de.riverdale.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 7.39}
-{"tool": "htmldate (extensive)", "file": "ldt.de.fallinlove.html", "gold": "2017-08-08", "found": "2017-08-08", "ms": 12.06}
-{"tool": "htmldate (extensive)", "file": "loldf.org.html", "gold": "2019-06-27", "found": "2019-06-27", "ms": 1.16}
-{"tool": "htmldate (extensive)", "file": "oberstdorfresort.de.kraeuter.html", "gold": "2018-06-20", "found": "2018-06-20", "ms": 8.55}
-{"tool": "htmldate (extensive)", "file": "wienbadminton.at.html", "gold": "2018-05-06", "found": "2018-05-06", "ms": 34.76}
-{"tool": "htmldate (extensive)", "file": "blog.wikimedia.interactivemaps.html", "gold": "2018-06-28", "found": "2018-06-28", "ms": 2.31}
-{"tool": "htmldate (extensive)", "file": "mediapart.fr.violences.html", "gold": "2019-06-27", "found": "2019-06-27", "ms": 66.47}
-{"tool": "htmldate (extensive)", "file": "verfassungsblog.de.decade.html", "gold": "2019-07-13", "found": "2019-07-13", "ms": 9.18}
-{"tool": "htmldate (extensive)", "file": "cric-grenoble.info.radio.html", "gold": "2019-06-09", "found": "2019-06-09", "ms": 13.58}
-{"tool": "htmldate (extensive)", "file": "kurz.at.wasserstoff.html", "gold": "2019-07-30", "found": "2019-07-30", "ms": 3.23}
-{"tool": "htmldate (extensive)", "file": "la-bas.org.porte.html", "gold": "2019-06-28", "found": "2019-06-28", "ms": 27.52}
-{"tool": "htmldate (extensive)", "file": "revolutionpermanente.fr.antonin.html", "gold": "2019-06-13", "found": "2019-06-13", "ms": 8.32}
-{"tool": "htmldate (extensive)", "file": "wara-enforcement.org.guinee.html", "gold": "2016-09-27", "found": "2016-09-27", "ms": 7.08}
-{"tool": "htmldate (extensive)", "file": "ebene11.com.autocad.html", "gold": "2017-01-12", "found": "2017-01-12", "ms": 10.61}
-{"tool": "htmldate (extensive)", "file": "acredis.com.augenlidstraffung.html", "gold": "2018-02-28", "found": "2018-02-28", "ms": 3.0}
-{"tool": "htmldate (extensive)", "file": "hertie-school.org.leyen.html", "gold": "2019-12-02", "found": "2019-12-02", "ms": 53.4}
-{"tool": "htmldate (extensive)", "file": "adac.de.kindersitztest.html", "gold": "2018-10-23", "found": "2018-10-23", "ms": 51.69}
-{"tool": "newspaper4k", "file": "die-partei.net.sh.html", "gold": "2014-07-19", "found": null, "ms": 73.31}
-{"tool": "newspaper4k", "file": "kinra.de.html", "gold": "2012-12-16", "found": null, "ms": 67.41}
-{"tool": "newspaper4k", "file": "blog.python.org.html", "gold": "2016-12-23", "found": null, "ms": 439.57}
-{"tool": "newspaper4k", "file": "blog.todamax.net.html", "gold": "2018-02-15", "found": null, "ms": 83.21}
-{"tool": "newspaper4k", "file": "carta.info.html", "gold": "2012-05-08", "found": null, "ms": 53.59}
-{"tool": "newspaper4k", "file": "500px.com.spring.html", "gold": "2013-02-16", "found": null, "ms": 61.1}
-{"tool": "newspaper4k", "file": "bayern.de.html", "gold": "2017-10-06", "found": null, "ms": 225.83}
-{"tool": "newspaper4k", "file": "creativecommons.org.html", "gold": "2016-05-22", "found": null, "ms": 132.92}
-{"tool": "newspaper4k", "file": "blog.wordpress.com.html", "gold": "2017-08-30", "found": null, "ms": 85.46}
-{"tool": "newspaper4k", "file": "futurezone.at.cc.html", "gold": "2013-08-09", "found": "2013-08-09", "ms": 239.98}
-{"tool": "newspaper4k", "file": "netzpolitik.org.abmahnungen.html", "gold": "2016-06-23", "found": "2016-06-23", "ms": 432.55}
-{"tool": "newspaper4k", "file": "pixabay.com.tos.html", "gold": "2017-08-09", "found": null, "ms": 61.12}
-{"tool": "newspaper4k", "file": "austria.info.html", "gold": "2017-09-07", "found": null, "ms": 186.89}
-{"tool": "newspaper4k", "file": "befifty.montauk.html", "gold": "2017-07-12", "found": "2017-07-12", "ms": 375.36}
-{"tool": "newspaper4k", "file": "beltz.de.didakta.html", "gold": "2019-02-20", "found": null, "ms": 191.75}
-{"tool": "newspaper4k", "file": "channelpartner.de.berufe.html", "gold": "2019-04-03", "found": "2017-08-21", "ms": 143.72}
-{"tool": "newspaper4k", "file": "creativecommons.at.faircoin.html", "gold": "2017-07-24", "found": null, "ms": 68.13}
-{"tool": "newspaper4k", "file": "eff.org.2015.html", "gold": "2016-05-04", "found": null, "ms": 232.57}
-{"tool": "newspaper4k", "file": "facebook.com.visitaustria.html", "gold": "2017-10-06", "found": null, "ms": 145.78}
-{"tool": "newspaper4k", "file": "gnu.org.gpl.html", "gold": "2016-11-18", "found": null, "ms": 140.34}
-{"tool": "newspaper4k", "file": "goodform.ch.blog.html", "gold": "2018-06-27", "found": null, "ms": 336.47}
-{"tool": "newspaper4k", "file": "horizont.net.html", "gold": "2019-01-29", "found": "2018-03-12", "ms": 355.26}
-{"tool": "newspaper4k", "file": "scs78.de.html", "gold": "2018-06-10", "found": null, "ms": 46.51}
-{"tool": "newspaper4k", "file": "tagesausblick.de.dow.html", "gold": "2012-12-22", "found": null, "ms": 66.15}
-{"tool": "newspaper4k", "file": "transgen.de.aktuell.html", "gold": "2018-01-18", "found": null, "ms": 96.44}
-{"tool": "newspaper4k", "file": "weltwoche.ch.html", "gold": "2019-01-23", "found": null, "ms": 363.16}
-{"tool": "newspaper4k", "file": "freundeskreis-videoclips.de.html", "gold": "2017-07-12", "found": null, "ms": 122.49}
-{"tool": "newspaper4k", "file": "wunderweib.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 625.94}
-{"tool": "newspaper4k", "file": "unexpecteduser.2011.html", "gold": "2011-03-30", "found": null, "ms": 564.98}
-{"tool": "newspaper4k", "file": "eza.gv.at.html", "gold": "2018-07-03", "found": null, "ms": 309.09}
-{"tool": "newspaper4k", "file": "greenpeace.org.forests.html", "gold": "2017-04-28", "found": null, "ms": 89.6}
-{"tool": "newspaper4k", "file": "hobby-werkstatt-blog.de.roomba.html", "gold": "2015-12-14", "found": null, "ms": 107.49}
-{"tool": "newspaper4k", "file": "jovelstefan.de.parken.html", "gold": "2012-05-11", "found": "2012-05-11", "ms": 62.25}
-{"tool": "newspaper4k", "file": "klimawandel-global.de.html", "gold": "2013-05-03", "found": null, "ms": 52.44}
-{"tool": "newspaper4k", "file": "medef.fr.dispute.html", "gold": "2017-09-01", "found": null, "ms": 89.57}
-{"tool": "newspaper4k", "file": "pbrunst.de.html", "gold": "2011-12-03", "found": null, "ms": 58.93}
-{"tool": "newspaper4k", "file": "stuttgart.de.html", "gold": "2017-10-09", "found": null, "ms": 208.06}
-{"tool": "newspaper4k", "file": "paris-luttes.info.html", "gold": "2019-06-29", "found": "2019-07-03", "ms": 95.61}
-{"tool": "newspaper4k", "file": "brigitte.de.riverdale.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 286.84}
-{"tool": "newspaper4k", "file": "ldt.de.fallinlove.html", "gold": "2017-08-08", "found": null, "ms": 97.51}
-{"tool": "newspaper4k", "file": "loldf.org.html", "gold": "2019-06-27", "found": null, "ms": 25.64}
-{"tool": "newspaper4k", "file": "oberstdorfresort.de.kraeuter.html", "gold": "2018-06-20", "found": null, "ms": 68.91}
-{"tool": "newspaper4k", "file": "wienbadminton.at.html", "gold": "2018-05-06", "found": null, "ms": 33.6}
-{"tool": "newspaper4k", "file": "blog.wikimedia.interactivemaps.html", "gold": "2018-06-28", "found": "2018-06-28", "ms": 204.49}
-{"tool": "newspaper4k", "file": "mediapart.fr.violences.html", "gold": "2019-06-27", "found": "2019-07-30", "ms": 302.99}
-{"tool": "newspaper4k", "file": "verfassungsblog.de.decade.html", "gold": "2019-07-13", "found": "2019-07-13", "ms": 161.47}
-{"tool": "newspaper4k", "file": "cric-grenoble.info.radio.html", "gold": "2019-06-09", "found": "2019-06-09", "ms": 377.24}
-{"tool": "newspaper4k", "file": "kurz.at.wasserstoff.html", "gold": "2019-07-30", "found": null, "ms": 205.06}
-{"tool": "newspaper4k", "file": "la-bas.org.porte.html", "gold": "2019-06-28", "found": "2019-09-24", "ms": 510.46}
-{"tool": "newspaper4k", "file": "revolutionpermanente.fr.antonin.html", "gold": "2019-06-13", "found": null, "ms": 137.66}
-{"tool": "newspaper4k", "file": "wara-enforcement.org.guinee.html", "gold": "2016-09-27", "found": null, "ms": 100.99}
-{"tool": "newspaper4k", "file": "ebene11.com.autocad.html", "gold": "2017-01-12", "found": null, "ms": 101.33}
-{"tool": "newspaper4k", "file": "acredis.com.augenlidstraffung.html", "gold": "2018-02-28", "found": "2018-02-28", "ms": 298.55}
-{"tool": "newspaper4k", "file": "hertie-school.org.leyen.html", "gold": "2019-12-02", "found": null, "ms": 336.83}
-{"tool": "newspaper4k", "file": "adac.de.kindersitztest.html", "gold": "2018-10-23", "found": "2018-10-23", "ms": 403.64}
-{"tool": "goose3", "file": "die-partei.net.sh.html", "gold": "2014-07-19", "found": null, "ms": 76.32}
-{"tool": "goose3", "file": "kinra.de.html", "gold": "2012-12-16", "found": null, "ms": 94.21}
-{"tool": "goose3", "file": "blog.python.org.html", "gold": "2016-12-23", "found": null, "ms": 588.06}
-{"tool": "goose3", "file": "blog.todamax.net.html", "gold": "2018-02-15", "found": null, "ms": 96.53}
-{"tool": "goose3", "file": "carta.info.html", "gold": "2012-05-08", "found": null, "ms": 40.92}
-{"tool": "goose3", "file": "500px.com.spring.html", "gold": "2013-02-16", "found": null, "ms": 92.83}
-{"tool": "goose3", "file": "bayern.de.html", "gold": "2017-10-06", "found": null, "ms": 384.6}
-{"tool": "goose3", "file": "creativecommons.org.html", "gold": "2016-05-22", "found": null, "ms": 67.75}
-{"tool": "goose3", "file": "blog.wordpress.com.html", "gold": "2017-08-30", "found": null, "ms": 74.76}
-{"tool": "goose3", "file": "futurezone.at.cc.html", "gold": "2013-08-09", "found": "2013-08-09", "ms": 217.2}
-{"tool": "goose3", "file": "netzpolitik.org.abmahnungen.html", "gold": "2016-06-23", "found": "2016-06-23", "ms": 258.31}
-{"tool": "goose3", "file": "pixabay.com.tos.html", "gold": "2017-08-09", "found": null, "ms": 63.68}
-{"tool": "goose3", "file": "austria.info.html", "gold": "2017-09-07", "found": null, "ms": 318.07}
-{"tool": "goose3", "file": "befifty.montauk.html", "gold": "2017-07-12", "found": "2019-06-17", "ms": 201.11}
-{"tool": "goose3", "file": "beltz.de.didakta.html", "gold": "2019-02-20", "found": null, "ms": 107.32}
-{"tool": "goose3", "file": "channelpartner.de.berufe.html", "gold": "2019-04-03", "found": "2017-08-21", "ms": 90.17}
-{"tool": "goose3", "file": "creativecommons.at.faircoin.html", "gold": "2017-07-24", "found": null, "ms": 93.36}
-{"tool": "goose3", "file": "eff.org.2015.html", "gold": "2016-05-04", "found": null, "ms": 354.64}
-{"tool": "goose3", "file": "facebook.com.visitaustria.html", "gold": "2017-10-06", "found": null, "ms": 299.01}
-{"tool": "goose3", "file": "gnu.org.gpl.html", "gold": "2016-11-18", "found": null, "ms": 109.7}
-{"tool": "goose3", "file": "goodform.ch.blog.html", "gold": "2018-06-27", "found": null, "ms": 100.7}
-{"tool": "goose3", "file": "horizont.net.html", "gold": "2019-01-29", "found": null, "ms": 60.04}
-{"tool": "goose3", "file": "scs78.de.html", "gold": "2018-06-10", "found": null, "ms": 38.54}
-{"tool": "goose3", "file": "tagesausblick.de.dow.html", "gold": "2012-12-22", "found": null, "ms": 29.56}
-{"tool": "goose3", "file": "transgen.de.aktuell.html", "gold": "2018-01-18", "found": null, "ms": 62.33}
-{"tool": "goose3", "file": "weltwoche.ch.html", "gold": "2019-01-23", "found": null, "ms": 192.93}
-{"tool": "goose3", "file": "freundeskreis-videoclips.de.html", "gold": "2017-07-12", "found": null, "ms": 52.47}
-{"tool": "goose3", "file": "wunderweib.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 181.05}
-{"tool": "goose3", "file": "unexpecteduser.2011.html", "gold": "2011-03-30", "found": null, "ms": 33.5}
-{"tool": "goose3", "file": "eza.gv.at.html", "gold": "2018-07-03", "found": null, "ms": 291.5}
-{"tool": "goose3", "file": "greenpeace.org.forests.html", "gold": "2017-04-28", "found": null, "ms": 125.47}
-{"tool": "goose3", "file": "hobby-werkstatt-blog.de.roomba.html", "gold": "2015-12-14", "found": null, "ms": 71.75}
-{"tool": "goose3", "file": "jovelstefan.de.parken.html", "gold": "2012-05-11", "found": null, "ms": 48.21}
-{"tool": "goose3", "file": "klimawandel-global.de.html", "gold": "2013-05-03", "found": null, "ms": 56.36}
-{"tool": "goose3", "file": "medef.fr.dispute.html", "gold": "2017-09-01", "found": null, "ms": 59.98}
-{"tool": "goose3", "file": "pbrunst.de.html", "gold": "2011-12-03", "found": null, "ms": 43.83}
-{"tool": "goose3", "file": "stuttgart.de.html", "gold": "2017-10-09", "found": null, "ms": 115.15}
-{"tool": "goose3", "file": "paris-luttes.info.html", "gold": "2019-06-29", "found": null, "ms": 66.97}
-{"tool": "goose3", "file": "brigitte.de.riverdale.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 108.28}
-{"tool": "goose3", "file": "ldt.de.fallinlove.html", "gold": "2017-08-08", "found": null, "ms": 125.64}
-{"tool": "goose3", "file": "loldf.org.html", "gold": "2019-06-27", "found": null, "ms": 27.17}
-{"tool": "goose3", "file": "oberstdorfresort.de.kraeuter.html", "gold": "2018-06-20", "found": null, "ms": 100.97}
-{"tool": "goose3", "file": "wienbadminton.at.html", "gold": "2018-05-06", "found": null, "ms": 34.55}
-{"tool": "goose3", "file": "blog.wikimedia.interactivemaps.html", "gold": "2018-06-28", "found": null, "ms": 71.02}
-{"tool": "goose3", "file": "mediapart.fr.violences.html", "gold": "2019-06-27", "found": null, "ms": 229.46}
-{"tool": "goose3", "file": "verfassungsblog.de.decade.html", "gold": "2019-07-13", "found": null, "ms": 119.39}
-{"tool": "goose3", "file": "cric-grenoble.info.radio.html", "gold": "2019-06-09", "found": null, "ms": 103.47}
-{"tool": "goose3", "file": "kurz.at.wasserstoff.html", "gold": "2019-07-30", "found": null, "ms": 32.6}
-{"tool": "goose3", "file": "la-bas.org.porte.html", "gold": "2019-06-28", "found": null, "ms": 231.07}
-{"tool": "goose3", "file": "revolutionpermanente.fr.antonin.html", "gold": "2019-06-13", "found": null, "ms": 52.19}
-{"tool": "goose3", "file": "wara-enforcement.org.guinee.html", "gold": "2016-09-27", "found": null, "ms": 62.29}
-{"tool": "goose3", "file": "ebene11.com.autocad.html", "gold": "2017-01-12", "found": null, "ms": 23.27}
-{"tool": "goose3", "file": "acredis.com.augenlidstraffung.html", "gold": "2018-02-28", "found": null, "ms": 204.14}
-{"tool": "goose3", "file": "hertie-school.org.leyen.html", "gold": "2019-12-02", "found": null, "ms": 98.05}
-{"tool": "goose3", "file": "adac.de.kindersitztest.html", "gold": "2018-10-23", "found": null, "ms": 302.36}
-{"tool": "date_guesser", "file": "die-partei.net.sh.html", "gold": "2014-07-19", "found": null, "ms": 43.1}
-{"tool": "date_guesser", "file": "kinra.de.html", "gold": "2012-12-16", "found": null, "ms": 0.23}
-{"tool": "date_guesser", "file": "blog.python.org.html", "gold": "2016-12-23", "found": "2016-12-23", "ms": 152.24}
-{"tool": "date_guesser", "file": "blog.todamax.net.html", "gold": "2018-02-15", "found": null, "ms": 119.16}
-{"tool": "date_guesser", "file": "carta.info.html", "gold": "2012-05-08", "found": null, "ms": 27.16}
-{"tool": "date_guesser", "file": "500px.com.spring.html", "gold": "2013-02-16", "found": null, "ms": 58.4}
-{"tool": "date_guesser", "file": "bayern.de.html", "gold": "2017-10-06", "found": null, "ms": 0.19}
-{"tool": "date_guesser", "file": "creativecommons.org.html", "gold": "2016-05-22", "found": "2016-05-15", "ms": 96.22}
-{"tool": "date_guesser", "file": "blog.wordpress.com.html", "gold": "2017-08-30", "found": null, "ms": 0.22}
-{"tool": "date_guesser", "file": "futurezone.at.cc.html", "gold": "2013-08-09", "found": "2013-08-09", "ms": 158.55}
-{"tool": "date_guesser", "file": "netzpolitik.org.abmahnungen.html", "gold": "2016-06-23", "found": "2016-06-23", "ms": 269.53}
-{"tool": "date_guesser", "file": "pixabay.com.tos.html", "gold": "2017-08-09", "found": null, "ms": 50.57}
-{"tool": "date_guesser", "file": "austria.info.html", "gold": "2017-09-07", "found": null, "ms": 0.21}
-{"tool": "date_guesser", "file": "befifty.montauk.html", "gold": "2017-07-12", "found": "2017-07-12", "ms": 169.36}
-{"tool": "date_guesser", "file": "beltz.de.didakta.html", "gold": "2019-02-20", "found": null, "ms": 258.75}
-{"tool": "date_guesser", "file": "channelpartner.de.berufe.html", "gold": "2019-04-03", "found": null, "ms": 125.12}
-{"tool": "date_guesser", "file": "creativecommons.at.faircoin.html", "gold": "2017-07-24", "found": null, "ms": 55.15}
-{"tool": "date_guesser", "file": "eff.org.2015.html", "gold": "2016-05-04", "found": "2016-05-04", "ms": 170.99}
-{"tool": "date_guesser", "file": "facebook.com.visitaustria.html", "gold": "2017-10-06", "found": null, "ms": 118.05}
-{"tool": "date_guesser", "file": "gnu.org.gpl.html", "gold": "2016-11-18", "found": null, "ms": 60.17}
-{"tool": "date_guesser", "file": "goodform.ch.blog.html", "gold": "2018-06-27", "found": null, "ms": 350.98}
-{"tool": "date_guesser", "file": "horizont.net.html", "gold": "2019-01-29", "found": "2018-03-12", "ms": 134.57}
-{"tool": "date_guesser", "file": "scs78.de.html", "gold": "2018-06-10", "found": null, "ms": 40.36}
-{"tool": "date_guesser", "file": "tagesausblick.de.dow.html", "gold": "2012-12-22", "found": null, "ms": 23.75}
-{"tool": "date_guesser", "file": "transgen.de.aktuell.html", "gold": "2018-01-18", "found": null, "ms": 62.83}
-{"tool": "date_guesser", "file": "weltwoche.ch.html", "gold": "2019-01-23", "found": "2019-04-15", "ms": 127.52}
-{"tool": "date_guesser", "file": "freundeskreis-videoclips.de.html", "gold": "2017-07-12", "found": null, "ms": 33.99}
-{"tool": "date_guesser", "file": "wunderweib.html", "gold": "2019-06-20", "found": null, "ms": 180.64}
-{"tool": "date_guesser", "file": "unexpecteduser.2011.html", "gold": "2011-03-30", "found": "2011-03-30", "ms": 56.99}
-{"tool": "date_guesser", "file": "eza.gv.at.html", "gold": "2018-07-03", "found": "2018-07-15", "ms": 396.42}
-{"tool": "date_guesser", "file": "greenpeace.org.forests.html", "gold": "2017-04-28", "found": null, "ms": 132.91}
-{"tool": "date_guesser", "file": "hobby-werkstatt-blog.de.roomba.html", "gold": "2015-12-14", "found": null, "ms": 69.05}
-{"tool": "date_guesser", "file": "jovelstefan.de.parken.html", "gold": "2012-05-11", "found": "2012-05-11", "ms": 61.65}
-{"tool": "date_guesser", "file": "klimawandel-global.de.html", "gold": "2013-05-03", "found": null, "ms": 44.18}
-{"tool": "date_guesser", "file": "medef.fr.dispute.html", "gold": "2017-09-01", "found": null, "ms": 53.78}
-{"tool": "date_guesser", "file": "pbrunst.de.html", "gold": "2011-12-03", "found": "2011-12-15", "ms": 26.6}
-{"tool": "date_guesser", "file": "stuttgart.de.html", "gold": "2017-10-09", "found": null, "ms": 0.22}
-{"tool": "date_guesser", "file": "paris-luttes.info.html", "gold": "2019-06-29", "found": "2019-07-03", "ms": 94.06}
-{"tool": "date_guesser", "file": "brigitte.de.riverdale.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 273.71}
-{"tool": "date_guesser", "file": "ldt.de.fallinlove.html", "gold": "2017-08-08", "found": null, "ms": 99.24}
-{"tool": "date_guesser", "file": "loldf.org.html", "gold": "2019-06-27", "found": "2019-06-27", "ms": 25.32}
-{"tool": "date_guesser", "file": "oberstdorfresort.de.kraeuter.html", "gold": "2018-06-20", "found": null, "ms": 70.66}
-{"tool": "date_guesser", "file": "wienbadminton.at.html", "gold": "2018-05-06", "found": null, "ms": 30.27}
-{"tool": "date_guesser", "file": "blog.wikimedia.interactivemaps.html", "gold": "2018-06-28", "found": "2018-06-28", "ms": 224.02}
-{"tool": "date_guesser", "file": "mediapart.fr.violences.html", "gold": "2019-06-27", "found": "2019-07-30", "ms": 174.66}
-{"tool": "date_guesser", "file": "verfassungsblog.de.decade.html", "gold": "2019-07-13", "found": "2019-07-13", "ms": 75.23}
-{"tool": "date_guesser", "file": "cric-grenoble.info.radio.html", "gold": "2019-06-09", "found": "2019-06-09", "ms": 123.14}
-{"tool": "date_guesser", "file": "kurz.at.wasserstoff.html", "gold": "2019-07-30", "found": null, "ms": 26.28}
-{"tool": "date_guesser", "file": "la-bas.org.porte.html", "gold": "2019-06-28", "found": "2019-06-28", "ms": 214.52}
-{"tool": "date_guesser", "file": "revolutionpermanente.fr.antonin.html", "gold": "2019-06-13", "found": null, "ms": 60.59}
-{"tool": "date_guesser", "file": "wara-enforcement.org.guinee.html", "gold": "2016-09-27", "found": "2017-01-15", "ms": 50.29}
-{"tool": "date_guesser", "file": "ebene11.com.autocad.html", "gold": "2017-01-12", "found": null, "ms": 35.37}
-{"tool": "date_guesser", "file": "acredis.com.augenlidstraffung.html", "gold": "2018-02-28", "found": null, "ms": 120.07}
-{"tool": "date_guesser", "file": "hertie-school.org.leyen.html", "gold": "2019-12-02", "found": null, "ms": 211.79}
-{"tool": "date_guesser", "file": "adac.de.kindersitztest.html", "gold": "2018-10-23", "found": "2018-10-23", "ms": 324.64}
-{"tool": "articleDateExtractor", "file": "die-partei.net.sh.html", "gold": "2014-07-19", "found": null, "ms": 13.25}
-{"tool": "articleDateExtractor", "file": "kinra.de.html", "gold": "2012-12-16", "found": null, "ms": 20.07}
-{"tool": "articleDateExtractor", "file": "blog.python.org.html", "gold": "2016-12-23", "found": "2026-07-31", "ms": 44.18}
-{"tool": "articleDateExtractor", "file": "blog.todamax.net.html", "gold": "2018-02-15", "found": null, "ms": 33.11}
-{"tool": "articleDateExtractor", "file": "carta.info.html", "gold": "2012-05-08", "found": null, "ms": 7.89}
-{"tool": "articleDateExtractor", "file": "500px.com.spring.html", "gold": "2013-02-16", "found": null, "ms": 19.92}
-{"tool": "articleDateExtractor", "file": "bayern.de.html", "gold": "2017-10-06", "found": null, "ms": 88.73}
-{"tool": "articleDateExtractor", "file": "creativecommons.org.html", "gold": "2016-05-22", "found": "2016-05-05", "ms": 26.6}
-{"tool": "articleDateExtractor", "file": "blog.wordpress.com.html", "gold": "2017-08-30", "found": "2017-08-30", "ms": 177.04}
-{"tool": "articleDateExtractor", "file": "futurezone.at.cc.html", "gold": "2013-08-09", "found": "2013-08-09", "ms": 41.63}
-{"tool": "articleDateExtractor", "file": "netzpolitik.org.abmahnungen.html", "gold": "2016-06-23", "found": "2016-06-23", "ms": 67.95}
-{"tool": "articleDateExtractor", "file": "pixabay.com.tos.html", "gold": "2017-08-09", "found": null, "ms": 12.92}
-{"tool": "articleDateExtractor", "file": "austria.info.html", "gold": "2017-09-07", "found": null, "ms": 76.41}
-{"tool": "articleDateExtractor", "file": "befifty.montauk.html", "gold": "2017-07-12", "found": "2019-06-17", "ms": 41.83}
-{"tool": "articleDateExtractor", "file": "beltz.de.didakta.html", "gold": "2019-02-20", "found": null, "ms": 72.53}
-{"tool": "articleDateExtractor", "file": "channelpartner.de.berufe.html", "gold": "2019-04-03", "found": "2017-08-21", "ms": 30.03}
-{"tool": "articleDateExtractor", "file": "creativecommons.at.faircoin.html", "gold": "2017-07-24", "found": null, "ms": 16.12}
-{"tool": "articleDateExtractor", "file": "eff.org.2015.html", "gold": "2016-05-04", "found": "2016-05-04", "ms": 45.89}
-{"tool": "articleDateExtractor", "file": "facebook.com.visitaustria.html", "gold": "2017-10-06", "found": null, "ms": 33.86}
-{"tool": "articleDateExtractor", "file": "gnu.org.gpl.html", "gold": "2016-11-18", "found": null, "ms": 16.71}
-{"tool": "articleDateExtractor", "file": "goodform.ch.blog.html", "gold": "2018-06-27", "found": null, "ms": 62.48}
-{"tool": "articleDateExtractor", "file": "horizont.net.html", "gold": "2019-01-29", "found": "2018-03-12", "ms": 32.47}
-{"tool": "articleDateExtractor", "file": "scs78.de.html", "gold": "2018-06-10", "found": null, "ms": 12.19}
-{"tool": "articleDateExtractor", "file": "tagesausblick.de.dow.html", "gold": "2012-12-22", "found": null, "ms": 7.08}
-{"tool": "articleDateExtractor", "file": "transgen.de.aktuell.html", "gold": "2018-01-18", "found": null, "ms": 18.19}
-{"tool": "articleDateExtractor", "file": "weltwoche.ch.html", "gold": "2019-01-23", "found": null, "ms": 192.3}
-{"tool": "articleDateExtractor", "file": "freundeskreis-videoclips.de.html", "gold": "2017-07-12", "found": null, "ms": 10.97}
-{"tool": "articleDateExtractor", "file": "wunderweib.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 42.74}
-{"tool": "articleDateExtractor", "file": "unexpecteduser.2011.html", "gold": "2011-03-30", "found": "2026-07-31", "ms": 18.67}
-{"tool": "articleDateExtractor", "file": "eza.gv.at.html", "gold": "2018-07-03", "found": null, "ms": 104.96}
-{"tool": "articleDateExtractor", "file": "greenpeace.org.forests.html", "gold": "2017-04-28", "found": null, "ms": 46.06}
-{"tool": "articleDateExtractor", "file": "hobby-werkstatt-blog.de.roomba.html", "gold": "2015-12-14", "found": null, "ms": 29.48}
-{"tool": "articleDateExtractor", "file": "jovelstefan.de.parken.html", "gold": "2012-05-11", "found": null, "ms": 19.84}
-{"tool": "articleDateExtractor", "file": "klimawandel-global.de.html", "gold": "2013-05-03", "found": null, "ms": 15.91}
-{"tool": "articleDateExtractor", "file": "medef.fr.dispute.html", "gold": "2017-09-01", "found": null, "ms": 15.72}
-{"tool": "articleDateExtractor", "file": "pbrunst.de.html", "gold": "2011-12-03", "found": null, "ms": 7.82}
-{"tool": "articleDateExtractor", "file": "stuttgart.de.html", "gold": "2017-10-09", "found": null, "ms": 62.12}
-{"tool": "articleDateExtractor", "file": "paris-luttes.info.html", "gold": "2019-06-29", "found": "2019-07-03", "ms": 25.63}
-{"tool": "articleDateExtractor", "file": "brigitte.de.riverdale.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 65.68}
-{"tool": "articleDateExtractor", "file": "ldt.de.fallinlove.html", "gold": "2017-08-08", "found": "2019-06-14", "ms": 28.83}
-{"tool": "articleDateExtractor", "file": "loldf.org.html", "gold": "2019-06-27", "found": null, "ms": 9.79}
-{"tool": "articleDateExtractor", "file": "oberstdorfresort.de.kraeuter.html", "gold": "2018-06-20", "found": null, "ms": 20.64}
-{"tool": "articleDateExtractor", "file": "wienbadminton.at.html", "gold": "2018-05-06", "found": null, "ms": 9.29}
-{"tool": "articleDateExtractor", "file": "blog.wikimedia.interactivemaps.html", "gold": "2018-06-28", "found": null, "ms": 28.76}
-{"tool": "articleDateExtractor", "file": "mediapart.fr.violences.html", "gold": "2019-06-27", "found": "2019-06-27", "ms": 43.13}
-{"tool": "articleDateExtractor", "file": "verfassungsblog.de.decade.html", "gold": "2019-07-13", "found": "2019-07-13", "ms": 161.05}
-{"tool": "articleDateExtractor", "file": "cric-grenoble.info.radio.html", "gold": "2019-06-09", "found": "2019-06-09", "ms": 32.09}
-{"tool": "articleDateExtractor", "file": "kurz.at.wasserstoff.html", "gold": "2019-07-30", "found": null, "ms": 7.89}
-{"tool": "articleDateExtractor", "file": "la-bas.org.porte.html", "gold": "2019-06-28", "found": "2019-06-28", "ms": 58.12}
-{"tool": "articleDateExtractor", "file": "revolutionpermanente.fr.antonin.html", "gold": "2019-06-13", "found": null, "ms": 18.84}
-{"tool": "articleDateExtractor", "file": "wara-enforcement.org.guinee.html", "gold": "2016-09-27", "found": "2019-09-09", "ms": 15.57}
-{"tool": "articleDateExtractor", "file": "ebene11.com.autocad.html", "gold": "2017-01-12", "found": null, "ms": 10.32}
-{"tool": "articleDateExtractor", "file": "acredis.com.augenlidstraffung.html", "gold": "2018-02-28", "found": null, "ms": 37.74}
-{"tool": "articleDateExtractor", "file": "hertie-school.org.leyen.html", "gold": "2019-12-02", "found": null, "ms": 61.08}
-{"tool": "articleDateExtractor", "file": "adac.de.kindersitztest.html", "gold": "2018-10-23", "found": "2018-10-23", "ms": 73.01}
+{"tool": "htmldate (fast)", "file": "die-partei.net.sh.html", "gold": "2014-07-19", "found": "2014-07-19", "ms": 2.08}
+{"tool": "htmldate (fast)", "file": "kinra.de.html", "gold": "2012-12-16", "found": "2012-12-16", "ms": 1.04}
+{"tool": "htmldate (fast)", "file": "blog.python.org.html", "gold": "2016-12-23", "found": "2016-12-23", "ms": 1.75}
+{"tool": "htmldate (fast)", "file": "blog.todamax.net.html", "gold": "2018-02-15", "found": "2018-02-15", "ms": 4.66}
+{"tool": "htmldate (fast)", "file": "carta.info.html", "gold": "2012-05-08", "found": null, "ms": 5.54}
+{"tool": "htmldate (fast)", "file": "500px.com.spring.html", "gold": "2013-02-16", "found": "2013-02-16", "ms": 3.66}
+{"tool": "htmldate (fast)", "file": "bayern.de.html", "gold": "2017-10-06", "found": "2017-10-06", "ms": 15.71}
+{"tool": "htmldate (fast)", "file": "creativecommons.org.html", "gold": "2016-05-22", "found": null, "ms": 18.33}
+{"tool": "htmldate (fast)", "file": "blog.wordpress.com.html", "gold": "2017-08-30", "found": "2017-08-30", "ms": 3.64}
+{"tool": "htmldate (fast)", "file": "futurezone.at.cc.html", "gold": "2013-08-09", "found": "2013-08-09", "ms": 1.68}
+{"tool": "htmldate (fast)", "file": "netzpolitik.org.abmahnungen.html", "gold": "2016-06-23", "found": "2016-06-23", "ms": 2.9}
+{"tool": "htmldate (fast)", "file": "pixabay.com.tos.html", "gold": "2017-08-09", "found": null, "ms": 5.64}
+{"tool": "htmldate (fast)", "file": "austria.info.html", "gold": "2017-09-07", "found": null, "ms": 50.83}
+{"tool": "htmldate (fast)", "file": "befifty.montauk.html", "gold": "2017-07-12", "found": "2017-07-12", "ms": 2.22}
+{"tool": "htmldate (fast)", "file": "beltz.de.didakta.html", "gold": "2019-02-20", "found": "2019-02-20", "ms": 13.24}
+{"tool": "htmldate (fast)", "file": "channelpartner.de.berufe.html", "gold": "2019-04-03", "found": "2017-08-21", "ms": 1.39}
+{"tool": "htmldate (fast)", "file": "creativecommons.at.faircoin.html", "gold": "2017-07-24", "found": "2017-07-24", "ms": 3.96}
+{"tool": "htmldate (fast)", "file": "eff.org.2015.html", "gold": "2016-05-04", "found": "2016-05-04", "ms": 9.19}
+{"tool": "htmldate (fast)", "file": "facebook.com.visitaustria.html", "gold": "2017-10-06", "found": "2017-10-06", "ms": 3.61}
+{"tool": "htmldate (fast)", "file": "gnu.org.gpl.html", "gold": "2016-11-18", "found": "2016-11-18", "ms": 13.21}
+{"tool": "htmldate (fast)", "file": "goodform.ch.blog.html", "gold": "2018-06-27", "found": "2018-06-27", "ms": 13.33}
+{"tool": "htmldate (fast)", "file": "horizont.net.html", "gold": "2019-01-29", "found": "2019-01-29", "ms": 6.06}
+{"tool": "htmldate (fast)", "file": "scs78.de.html", "gold": "2018-06-10", "found": "2018-06-10", "ms": 1.99}
+{"tool": "htmldate (fast)", "file": "tagesausblick.de.dow.html", "gold": "2012-12-22", "found": "2012-12-22", "ms": 2.4}
+{"tool": "htmldate (fast)", "file": "transgen.de.aktuell.html", "gold": "2018-01-18", "found": "2018-01-18", "ms": 3.69}
+{"tool": "htmldate (fast)", "file": "weltwoche.ch.html", "gold": "2019-01-23", "found": null, "ms": 23.5}
+{"tool": "htmldate (fast)", "file": "freundeskreis-videoclips.de.html", "gold": "2017-07-12", "found": "2017-07-12", "ms": 2.22}
+{"tool": "htmldate (fast)", "file": "wunderweib.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 1.98}
+{"tool": "htmldate (fast)", "file": "unexpecteduser.2011.html", "gold": "2011-03-30", "found": "2011-03-30", "ms": 0.73}
+{"tool": "htmldate (fast)", "file": "eza.gv.at.html", "gold": "2018-07-03", "found": "2018-07-03", "ms": 17.0}
+{"tool": "htmldate (fast)", "file": "greenpeace.org.forests.html", "gold": "2017-04-28", "found": "2017-04-28", "ms": 6.89}
+{"tool": "htmldate (fast)", "file": "hobby-werkstatt-blog.de.roomba.html", "gold": "2015-12-14", "found": "2015-12-14", "ms": 3.47}
+{"tool": "htmldate (fast)", "file": "jovelstefan.de.parken.html", "gold": "2012-05-11", "found": "2012-05-11", "ms": 1.03}
+{"tool": "htmldate (fast)", "file": "klimawandel-global.de.html", "gold": "2013-05-03", "found": "2013-05-03", "ms": 2.19}
+{"tool": "htmldate (fast)", "file": "medef.fr.dispute.html", "gold": "2017-09-01", "found": "2017-09-01", "ms": 2.6}
+{"tool": "htmldate (fast)", "file": "pbrunst.de.html", "gold": "2011-12-03", "found": null, "ms": 6.38}
+{"tool": "htmldate (fast)", "file": "stuttgart.de.html", "gold": "2017-10-09", "found": "2017-10-09", "ms": 27.57}
+{"tool": "htmldate (fast)", "file": "paris-luttes.info.html", "gold": "2019-06-29", "found": "2019-06-29", "ms": 4.37}
+{"tool": "htmldate (fast)", "file": "brigitte.de.riverdale.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 4.71}
+{"tool": "htmldate (fast)", "file": "ldt.de.fallinlove.html", "gold": "2017-08-08", "found": "2017-08-08", "ms": 4.81}
+{"tool": "htmldate (fast)", "file": "loldf.org.html", "gold": "2019-06-27", "found": "2019-06-27", "ms": 1.05}
+{"tool": "htmldate (fast)", "file": "oberstdorfresort.de.kraeuter.html", "gold": "2018-06-20", "found": "2018-06-20", "ms": 4.38}
+{"tool": "htmldate (fast)", "file": "wienbadminton.at.html", "gold": "2018-05-06", "found": null, "ms": 3.8}
+{"tool": "htmldate (fast)", "file": "blog.wikimedia.interactivemaps.html", "gold": "2018-06-28", "found": "2018-06-28", "ms": 1.07}
+{"tool": "htmldate (fast)", "file": "mediapart.fr.violences.html", "gold": "2019-06-27", "found": "2019-06-27", "ms": 9.67}
+{"tool": "htmldate (fast)", "file": "verfassungsblog.de.decade.html", "gold": "2019-07-13", "found": "2019-07-13", "ms": 3.6}
+{"tool": "htmldate (fast)", "file": "cric-grenoble.info.radio.html", "gold": "2019-06-09", "found": "2019-06-09", "ms": 5.64}
+{"tool": "htmldate (fast)", "file": "kurz.at.wasserstoff.html", "gold": "2019-07-30", "found": "2019-07-30", "ms": 1.26}
+{"tool": "htmldate (fast)", "file": "la-bas.org.porte.html", "gold": "2019-06-28", "found": "2019-06-28", "ms": 11.12}
+{"tool": "htmldate (fast)", "file": "revolutionpermanente.fr.antonin.html", "gold": "2019-06-13", "found": "2019-06-13", "ms": 3.16}
+{"tool": "htmldate (fast)", "file": "wara-enforcement.org.guinee.html", "gold": "2016-09-27", "found": "2016-09-27", "ms": 2.44}
+{"tool": "htmldate (fast)", "file": "ebene11.com.autocad.html", "gold": "2017-01-12", "found": null, "ms": 3.92}
+{"tool": "htmldate (fast)", "file": "acredis.com.augenlidstraffung.html", "gold": "2018-02-28", "found": "2018-02-28", "ms": 1.42}
+{"tool": "htmldate (fast)", "file": "hertie-school.org.leyen.html", "gold": "2019-12-02", "found": null, "ms": 28.01}
+{"tool": "htmldate (fast)", "file": "adac.de.kindersitztest.html", "gold": "2018-10-23", "found": "2018-10-23", "ms": 13.88}
+{"tool": "htmldate (extensive)", "file": "die-partei.net.sh.html", "gold": "2014-07-19", "found": "2014-07-19", "ms": 2.68}
+{"tool": "htmldate (extensive)", "file": "kinra.de.html", "gold": "2012-12-16", "found": "2012-12-16", "ms": 0.9}
+{"tool": "htmldate (extensive)", "file": "blog.python.org.html", "gold": "2016-12-23", "found": "2016-12-23", "ms": 1.41}
+{"tool": "htmldate (extensive)", "file": "blog.todamax.net.html", "gold": "2018-02-15", "found": "2018-02-15", "ms": 7.6}
+{"tool": "htmldate (extensive)", "file": "carta.info.html", "gold": "2012-05-08", "found": "2012-05-08", "ms": 7.03}
+{"tool": "htmldate (extensive)", "file": "500px.com.spring.html", "gold": "2013-02-16", "found": "2013-02-16", "ms": 2111.36}
+{"tool": "htmldate (extensive)", "file": "bayern.de.html", "gold": "2017-10-06", "found": "2017-10-06", "ms": 27.45}
+{"tool": "htmldate (extensive)", "file": "creativecommons.org.html", "gold": "2016-05-22", "found": "2016-05-22", "ms": 24.04}
+{"tool": "htmldate (extensive)", "file": "blog.wordpress.com.html", "gold": "2017-08-30", "found": "2017-08-30", "ms": 5.27}
+{"tool": "htmldate (extensive)", "file": "futurezone.at.cc.html", "gold": "2013-08-09", "found": "2013-08-09", "ms": 1.88}
+{"tool": "htmldate (extensive)", "file": "netzpolitik.org.abmahnungen.html", "gold": "2016-06-23", "found": "2016-06-23", "ms": 2.98}
+{"tool": "htmldate (extensive)", "file": "pixabay.com.tos.html", "gold": "2017-08-09", "found": "2017-08-09", "ms": 8.39}
+{"tool": "htmldate (extensive)", "file": "austria.info.html", "gold": "2017-09-07", "found": "2017-09-07", "ms": 93.65}
+{"tool": "htmldate (extensive)", "file": "befifty.montauk.html", "gold": "2017-07-12", "found": "2017-07-12", "ms": 2.37}
+{"tool": "htmldate (extensive)", "file": "beltz.de.didakta.html", "gold": "2019-02-20", "found": "2019-02-20", "ms": 17.71}
+{"tool": "htmldate (extensive)", "file": "channelpartner.de.berufe.html", "gold": "2019-04-03", "found": "2017-08-21", "ms": 1.52}
+{"tool": "htmldate (extensive)", "file": "creativecommons.at.faircoin.html", "gold": "2017-07-24", "found": "2017-07-24", "ms": 4.24}
+{"tool": "htmldate (extensive)", "file": "eff.org.2015.html", "gold": "2016-05-04", "found": "2016-05-04", "ms": 16.03}
+{"tool": "htmldate (extensive)", "file": "facebook.com.visitaustria.html", "gold": "2017-10-06", "found": "2017-10-06", "ms": 3.09}
+{"tool": "htmldate (extensive)", "file": "gnu.org.gpl.html", "gold": "2016-11-18", "found": "2016-11-18", "ms": 14.58}
+{"tool": "htmldate (extensive)", "file": "goodform.ch.blog.html", "gold": "2018-06-27", "found": "2018-06-27", "ms": 16.44}
+{"tool": "htmldate (extensive)", "file": "horizont.net.html", "gold": "2019-01-29", "found": "2019-01-29", "ms": 8.8}
+{"tool": "htmldate (extensive)", "file": "scs78.de.html", "gold": "2018-06-10", "found": "2018-06-10", "ms": 2.77}
+{"tool": "htmldate (extensive)", "file": "tagesausblick.de.dow.html", "gold": "2012-12-22", "found": "2012-12-22", "ms": 2.82}
+{"tool": "htmldate (extensive)", "file": "transgen.de.aktuell.html", "gold": "2018-01-18", "found": "2018-01-18", "ms": 4.01}
+{"tool": "htmldate (extensive)", "file": "weltwoche.ch.html", "gold": "2019-01-23", "found": "2019-01-23", "ms": 46.99}
+{"tool": "htmldate (extensive)", "file": "freundeskreis-videoclips.de.html", "gold": "2017-07-12", "found": "2017-07-12", "ms": 2.97}
+{"tool": "htmldate (extensive)", "file": "wunderweib.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 2.18}
+{"tool": "htmldate (extensive)", "file": "unexpecteduser.2011.html", "gold": "2011-03-30", "found": "2011-03-30", "ms": 0.9}
+{"tool": "htmldate (extensive)", "file": "eza.gv.at.html", "gold": "2018-07-03", "found": "2018-07-03", "ms": 23.2}
+{"tool": "htmldate (extensive)", "file": "greenpeace.org.forests.html", "gold": "2017-04-28", "found": "2017-04-28", "ms": 8.44}
+{"tool": "htmldate (extensive)", "file": "hobby-werkstatt-blog.de.roomba.html", "gold": "2015-12-14", "found": "2015-12-14", "ms": 4.6}
+{"tool": "htmldate (extensive)", "file": "jovelstefan.de.parken.html", "gold": "2012-05-11", "found": "2012-05-11", "ms": 0.81}
+{"tool": "htmldate (extensive)", "file": "klimawandel-global.de.html", "gold": "2013-05-03", "found": "2013-05-03", "ms": 3.41}
+{"tool": "htmldate (extensive)", "file": "medef.fr.dispute.html", "gold": "2017-09-01", "found": "2017-09-01", "ms": 3.67}
+{"tool": "htmldate (extensive)", "file": "pbrunst.de.html", "gold": "2011-12-03", "found": "2010-06-01", "ms": 30.7}
+{"tool": "htmldate (extensive)", "file": "stuttgart.de.html", "gold": "2017-10-09", "found": "2017-10-09", "ms": 31.76}
+{"tool": "htmldate (extensive)", "file": "paris-luttes.info.html", "gold": "2019-06-29", "found": "2019-06-29", "ms": 6.3}
+{"tool": "htmldate (extensive)", "file": "brigitte.de.riverdale.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 4.89}
+{"tool": "htmldate (extensive)", "file": "ldt.de.fallinlove.html", "gold": "2017-08-08", "found": "2017-08-08", "ms": 7.21}
+{"tool": "htmldate (extensive)", "file": "loldf.org.html", "gold": "2019-06-27", "found": "2019-06-27", "ms": 0.55}
+{"tool": "htmldate (extensive)", "file": "oberstdorfresort.de.kraeuter.html", "gold": "2018-06-20", "found": "2018-06-20", "ms": 6.01}
+{"tool": "htmldate (extensive)", "file": "wienbadminton.at.html", "gold": "2018-05-06", "found": "2018-05-06", "ms": 26.69}
+{"tool": "htmldate (extensive)", "file": "blog.wikimedia.interactivemaps.html", "gold": "2018-06-28", "found": "2018-06-28", "ms": 1.83}
+{"tool": "htmldate (extensive)", "file": "mediapart.fr.violences.html", "gold": "2019-06-27", "found": "2019-06-27", "ms": 44.04}
+{"tool": "htmldate (extensive)", "file": "verfassungsblog.de.decade.html", "gold": "2019-07-13", "found": "2019-07-13", "ms": 7.97}
+{"tool": "htmldate (extensive)", "file": "cric-grenoble.info.radio.html", "gold": "2019-06-09", "found": "2019-06-09", "ms": 10.81}
+{"tool": "htmldate (extensive)", "file": "kurz.at.wasserstoff.html", "gold": "2019-07-30", "found": "2019-07-30", "ms": 1.99}
+{"tool": "htmldate (extensive)", "file": "la-bas.org.porte.html", "gold": "2019-06-28", "found": "2019-06-28", "ms": 16.98}
+{"tool": "htmldate (extensive)", "file": "revolutionpermanente.fr.antonin.html", "gold": "2019-06-13", "found": "2019-06-13", "ms": 5.27}
+{"tool": "htmldate (extensive)", "file": "wara-enforcement.org.guinee.html", "gold": "2016-09-27", "found": "2016-09-27", "ms": 3.64}
+{"tool": "htmldate (extensive)", "file": "ebene11.com.autocad.html", "gold": "2017-01-12", "found": "2017-01-12", "ms": 6.55}
+{"tool": "htmldate (extensive)", "file": "acredis.com.augenlidstraffung.html", "gold": "2018-02-28", "found": "2018-02-28", "ms": 1.56}
+{"tool": "htmldate (extensive)", "file": "hertie-school.org.leyen.html", "gold": "2019-12-02", "found": "2019-12-02", "ms": 33.98}
+{"tool": "htmldate (extensive)", "file": "adac.de.kindersitztest.html", "gold": "2018-10-23", "found": "2018-10-23", "ms": 21.71}
+{"tool": "newspaper4k", "file": "die-partei.net.sh.html", "gold": "2014-07-19", "found": null, "ms": 64.77}
+{"tool": "newspaper4k", "file": "kinra.de.html", "gold": "2012-12-16", "found": null, "ms": 107.98}
+{"tool": "newspaper4k", "file": "blog.python.org.html", "gold": "2016-12-23", "found": null, "ms": 241.71}
+{"tool": "newspaper4k", "file": "blog.todamax.net.html", "gold": "2018-02-15", "found": null, "ms": 50.95}
+{"tool": "newspaper4k", "file": "carta.info.html", "gold": "2012-05-08", "found": null, "ms": 33.28}
+{"tool": "newspaper4k", "file": "500px.com.spring.html", "gold": "2013-02-16", "found": null, "ms": 39.68}
+{"tool": "newspaper4k", "file": "bayern.de.html", "gold": "2017-10-06", "found": null, "ms": 144.96}
+{"tool": "newspaper4k", "file": "creativecommons.org.html", "gold": "2016-05-22", "found": null, "ms": 79.97}
+{"tool": "newspaper4k", "file": "blog.wordpress.com.html", "gold": "2017-08-30", "found": null, "ms": 65.92}
+{"tool": "newspaper4k", "file": "futurezone.at.cc.html", "gold": "2013-08-09", "found": "2013-08-09", "ms": 149.0}
+{"tool": "newspaper4k", "file": "netzpolitik.org.abmahnungen.html", "gold": "2016-06-23", "found": "2016-06-23", "ms": 263.56}
+{"tool": "newspaper4k", "file": "pixabay.com.tos.html", "gold": "2017-08-09", "found": null, "ms": 37.39}
+{"tool": "newspaper4k", "file": "austria.info.html", "gold": "2017-09-07", "found": null, "ms": 120.35}
+{"tool": "newspaper4k", "file": "befifty.montauk.html", "gold": "2017-07-12", "found": "2017-07-12", "ms": 210.49}
+{"tool": "newspaper4k", "file": "beltz.de.didakta.html", "gold": "2019-02-20", "found": null, "ms": 102.82}
+{"tool": "newspaper4k", "file": "channelpartner.de.berufe.html", "gold": "2019-04-03", "found": "2017-08-21", "ms": 88.82}
+{"tool": "newspaper4k", "file": "creativecommons.at.faircoin.html", "gold": "2017-07-24", "found": null, "ms": 45.02}
+{"tool": "newspaper4k", "file": "eff.org.2015.html", "gold": "2016-05-04", "found": null, "ms": 144.63}
+{"tool": "newspaper4k", "file": "facebook.com.visitaustria.html", "gold": "2017-10-06", "found": null, "ms": 90.64}
+{"tool": "newspaper4k", "file": "gnu.org.gpl.html", "gold": "2016-11-18", "found": null, "ms": 107.85}
+{"tool": "newspaper4k", "file": "goodform.ch.blog.html", "gold": "2018-06-27", "found": null, "ms": 118.33}
+{"tool": "newspaper4k", "file": "horizont.net.html", "gold": "2019-01-29", "found": "2018-03-12", "ms": 212.01}
+{"tool": "newspaper4k", "file": "scs78.de.html", "gold": "2018-06-10", "found": null, "ms": 28.7}
+{"tool": "newspaper4k", "file": "tagesausblick.de.dow.html", "gold": "2012-12-22", "found": null, "ms": 34.23}
+{"tool": "newspaper4k", "file": "transgen.de.aktuell.html", "gold": "2018-01-18", "found": null, "ms": 48.64}
+{"tool": "newspaper4k", "file": "weltwoche.ch.html", "gold": "2019-01-23", "found": null, "ms": 145.65}
+{"tool": "newspaper4k", "file": "freundeskreis-videoclips.de.html", "gold": "2017-07-12", "found": null, "ms": 31.02}
+{"tool": "newspaper4k", "file": "wunderweib.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 121.99}
+{"tool": "newspaper4k", "file": "unexpecteduser.2011.html", "gold": "2011-03-30", "found": null, "ms": 155.8}
+{"tool": "newspaper4k", "file": "eza.gv.at.html", "gold": "2018-07-03", "found": null, "ms": 139.09}
+{"tool": "newspaper4k", "file": "greenpeace.org.forests.html", "gold": "2017-04-28", "found": null, "ms": 53.35}
+{"tool": "newspaper4k", "file": "hobby-werkstatt-blog.de.roomba.html", "gold": "2015-12-14", "found": null, "ms": 62.89}
+{"tool": "newspaper4k", "file": "jovelstefan.de.parken.html", "gold": "2012-05-11", "found": "2012-05-11", "ms": 43.57}
+{"tool": "newspaper4k", "file": "klimawandel-global.de.html", "gold": "2013-05-03", "found": null, "ms": 32.72}
+{"tool": "newspaper4k", "file": "medef.fr.dispute.html", "gold": "2017-09-01", "found": null, "ms": 68.7}
+{"tool": "newspaper4k", "file": "pbrunst.de.html", "gold": "2011-12-03", "found": null, "ms": 35.04}
+{"tool": "newspaper4k", "file": "stuttgart.de.html", "gold": "2017-10-09", "found": null, "ms": 154.36}
+{"tool": "newspaper4k", "file": "paris-luttes.info.html", "gold": "2019-06-29", "found": "2019-07-03", "ms": 64.81}
+{"tool": "newspaper4k", "file": "brigitte.de.riverdale.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 214.65}
+{"tool": "newspaper4k", "file": "ldt.de.fallinlove.html", "gold": "2017-08-08", "found": null, "ms": 54.75}
+{"tool": "newspaper4k", "file": "loldf.org.html", "gold": "2019-06-27", "found": null, "ms": 14.42}
+{"tool": "newspaper4k", "file": "oberstdorfresort.de.kraeuter.html", "gold": "2018-06-20", "found": null, "ms": 43.28}
+{"tool": "newspaper4k", "file": "wienbadminton.at.html", "gold": "2018-05-06", "found": null, "ms": 24.9}
+{"tool": "newspaper4k", "file": "blog.wikimedia.interactivemaps.html", "gold": "2018-06-28", "found": "2018-06-28", "ms": 133.72}
+{"tool": "newspaper4k", "file": "mediapart.fr.violences.html", "gold": "2019-06-27", "found": "2019-07-30", "ms": 186.75}
+{"tool": "newspaper4k", "file": "verfassungsblog.de.decade.html", "gold": "2019-07-13", "found": "2019-07-13", "ms": 109.21}
+{"tool": "newspaper4k", "file": "cric-grenoble.info.radio.html", "gold": "2019-06-09", "found": "2019-06-09", "ms": 125.97}
+{"tool": "newspaper4k", "file": "kurz.at.wasserstoff.html", "gold": "2019-07-30", "found": null, "ms": 24.3}
+{"tool": "newspaper4k", "file": "la-bas.org.porte.html", "gold": "2019-06-28", "found": "2019-09-24", "ms": 192.05}
+{"tool": "newspaper4k", "file": "revolutionpermanente.fr.antonin.html", "gold": "2019-06-13", "found": null, "ms": 48.03}
+{"tool": "newspaper4k", "file": "wara-enforcement.org.guinee.html", "gold": "2016-09-27", "found": null, "ms": 35.84}
+{"tool": "newspaper4k", "file": "ebene11.com.autocad.html", "gold": "2017-01-12", "found": null, "ms": 27.06}
+{"tool": "newspaper4k", "file": "acredis.com.augenlidstraffung.html", "gold": "2018-02-28", "found": "2018-02-28", "ms": 84.1}
+{"tool": "newspaper4k", "file": "hertie-school.org.leyen.html", "gold": "2019-12-02", "found": null, "ms": 136.47}
+{"tool": "newspaper4k", "file": "adac.de.kindersitztest.html", "gold": "2018-10-23", "found": "2018-10-23", "ms": 246.26}
+{"tool": "goose3", "file": "die-partei.net.sh.html", "gold": "2014-07-19", "found": null, "ms": 45.84}
+{"tool": "goose3", "file": "kinra.de.html", "gold": "2012-12-16", "found": null, "ms": 56.62}
+{"tool": "goose3", "file": "blog.python.org.html", "gold": "2016-12-23", "found": null, "ms": 395.09}
+{"tool": "goose3", "file": "blog.todamax.net.html", "gold": "2018-02-15", "found": null, "ms": 58.18}
+{"tool": "goose3", "file": "carta.info.html", "gold": "2012-05-08", "found": null, "ms": 25.27}
+{"tool": "goose3", "file": "500px.com.spring.html", "gold": "2013-02-16", "found": null, "ms": 60.31}
+{"tool": "goose3", "file": "bayern.de.html", "gold": "2017-10-06", "found": null, "ms": 223.54}
+{"tool": "goose3", "file": "creativecommons.org.html", "gold": "2016-05-22", "found": null, "ms": 47.6}
+{"tool": "goose3", "file": "blog.wordpress.com.html", "gold": "2017-08-30", "found": null, "ms": 46.42}
+{"tool": "goose3", "file": "futurezone.at.cc.html", "gold": "2013-08-09", "found": "2013-08-09", "ms": 135.73}
+{"tool": "goose3", "file": "netzpolitik.org.abmahnungen.html", "gold": "2016-06-23", "found": "2016-06-23", "ms": 167.74}
+{"tool": "goose3", "file": "pixabay.com.tos.html", "gold": "2017-08-09", "found": null, "ms": 58.38}
+{"tool": "goose3", "file": "austria.info.html", "gold": "2017-09-07", "found": null, "ms": 189.19}
+{"tool": "goose3", "file": "befifty.montauk.html", "gold": "2017-07-12", "found": "2019-06-17", "ms": 123.36}
+{"tool": "goose3", "file": "beltz.de.didakta.html", "gold": "2019-02-20", "found": null, "ms": 68.68}
+{"tool": "goose3", "file": "channelpartner.de.berufe.html", "gold": "2019-04-03", "found": "2017-08-21", "ms": 55.02}
+{"tool": "goose3", "file": "creativecommons.at.faircoin.html", "gold": "2017-07-24", "found": null, "ms": 59.96}
+{"tool": "goose3", "file": "eff.org.2015.html", "gold": "2016-05-04", "found": null, "ms": 233.33}
+{"tool": "goose3", "file": "facebook.com.visitaustria.html", "gold": "2017-10-06", "found": null, "ms": 188.27}
+{"tool": "goose3", "file": "gnu.org.gpl.html", "gold": "2016-11-18", "found": null, "ms": 68.43}
+{"tool": "goose3", "file": "goodform.ch.blog.html", "gold": "2018-06-27", "found": null, "ms": 69.66}
+{"tool": "goose3", "file": "horizont.net.html", "gold": "2019-01-29", "found": null, "ms": 36.1}
+{"tool": "goose3", "file": "scs78.de.html", "gold": "2018-06-10", "found": null, "ms": 24.92}
+{"tool": "goose3", "file": "tagesausblick.de.dow.html", "gold": "2012-12-22", "found": null, "ms": 18.0}
+{"tool": "goose3", "file": "transgen.de.aktuell.html", "gold": "2018-01-18", "found": null, "ms": 44.2}
+{"tool": "goose3", "file": "weltwoche.ch.html", "gold": "2019-01-23", "found": null, "ms": 129.92}
+{"tool": "goose3", "file": "freundeskreis-videoclips.de.html", "gold": "2017-07-12", "found": null, "ms": 34.6}
+{"tool": "goose3", "file": "wunderweib.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 111.12}
+{"tool": "goose3", "file": "unexpecteduser.2011.html", "gold": "2011-03-30", "found": null, "ms": 21.7}
+{"tool": "goose3", "file": "eza.gv.at.html", "gold": "2018-07-03", "found": null, "ms": 184.71}
+{"tool": "goose3", "file": "greenpeace.org.forests.html", "gold": "2017-04-28", "found": null, "ms": 76.13}
+{"tool": "goose3", "file": "hobby-werkstatt-blog.de.roomba.html", "gold": "2015-12-14", "found": null, "ms": 44.51}
+{"tool": "goose3", "file": "jovelstefan.de.parken.html", "gold": "2012-05-11", "found": null, "ms": 34.34}
+{"tool": "goose3", "file": "klimawandel-global.de.html", "gold": "2013-05-03", "found": null, "ms": 36.25}
+{"tool": "goose3", "file": "medef.fr.dispute.html", "gold": "2017-09-01", "found": null, "ms": 45.23}
+{"tool": "goose3", "file": "pbrunst.de.html", "gold": "2011-12-03", "found": null, "ms": 28.0}
+{"tool": "goose3", "file": "stuttgart.de.html", "gold": "2017-10-09", "found": null, "ms": 70.86}
+{"tool": "goose3", "file": "paris-luttes.info.html", "gold": "2019-06-29", "found": null, "ms": 45.08}
+{"tool": "goose3", "file": "brigitte.de.riverdale.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 85.28}
+{"tool": "goose3", "file": "ldt.de.fallinlove.html", "gold": "2017-08-08", "found": null, "ms": 118.07}
+{"tool": "goose3", "file": "loldf.org.html", "gold": "2019-06-27", "found": null, "ms": 20.61}
+{"tool": "goose3", "file": "oberstdorfresort.de.kraeuter.html", "gold": "2018-06-20", "found": null, "ms": 63.33}
+{"tool": "goose3", "file": "wienbadminton.at.html", "gold": "2018-05-06", "found": null, "ms": 21.52}
+{"tool": "goose3", "file": "blog.wikimedia.interactivemaps.html", "gold": "2018-06-28", "found": null, "ms": 42.92}
+{"tool": "goose3", "file": "mediapart.fr.violences.html", "gold": "2019-06-27", "found": null, "ms": 144.48}
+{"tool": "goose3", "file": "verfassungsblog.de.decade.html", "gold": "2019-07-13", "found": null, "ms": 80.24}
+{"tool": "goose3", "file": "cric-grenoble.info.radio.html", "gold": "2019-06-09", "found": null, "ms": 66.47}
+{"tool": "goose3", "file": "kurz.at.wasserstoff.html", "gold": "2019-07-30", "found": null, "ms": 22.69}
+{"tool": "goose3", "file": "la-bas.org.porte.html", "gold": "2019-06-28", "found": null, "ms": 164.17}
+{"tool": "goose3", "file": "revolutionpermanente.fr.antonin.html", "gold": "2019-06-13", "found": null, "ms": 34.11}
+{"tool": "goose3", "file": "wara-enforcement.org.guinee.html", "gold": "2016-09-27", "found": null, "ms": 37.37}
+{"tool": "goose3", "file": "ebene11.com.autocad.html", "gold": "2017-01-12", "found": null, "ms": 13.68}
+{"tool": "goose3", "file": "acredis.com.augenlidstraffung.html", "gold": "2018-02-28", "found": null, "ms": 124.33}
+{"tool": "goose3", "file": "hertie-school.org.leyen.html", "gold": "2019-12-02", "found": null, "ms": 60.25}
+{"tool": "goose3", "file": "adac.de.kindersitztest.html", "gold": "2018-10-23", "found": null, "ms": 208.12}
+{"tool": "date_guesser", "file": "die-partei.net.sh.html", "gold": "2014-07-19", "found": null, "ms": 31.98}
+{"tool": "date_guesser", "file": "kinra.de.html", "gold": "2012-12-16", "found": null, "ms": 0.15}
+{"tool": "date_guesser", "file": "blog.python.org.html", "gold": "2016-12-23", "found": "2016-12-23", "ms": 110.93}
+{"tool": "date_guesser", "file": "blog.todamax.net.html", "gold": "2018-02-15", "found": null, "ms": 158.7}
+{"tool": "date_guesser", "file": "carta.info.html", "gold": "2012-05-08", "found": null, "ms": 16.86}
+{"tool": "date_guesser", "file": "500px.com.spring.html", "gold": "2013-02-16", "found": null, "ms": 35.33}
+{"tool": "date_guesser", "file": "bayern.de.html", "gold": "2017-10-06", "found": null, "ms": 0.17}
+{"tool": "date_guesser", "file": "creativecommons.org.html", "gold": "2016-05-22", "found": "2016-05-15", "ms": 58.35}
+{"tool": "date_guesser", "file": "blog.wordpress.com.html", "gold": "2017-08-30", "found": null, "ms": 0.09}
+{"tool": "date_guesser", "file": "futurezone.at.cc.html", "gold": "2013-08-09", "found": "2013-08-09", "ms": 96.32}
+{"tool": "date_guesser", "file": "netzpolitik.org.abmahnungen.html", "gold": "2016-06-23", "found": "2016-06-23", "ms": 166.21}
+{"tool": "date_guesser", "file": "pixabay.com.tos.html", "gold": "2017-08-09", "found": null, "ms": 30.85}
+{"tool": "date_guesser", "file": "austria.info.html", "gold": "2017-09-07", "found": null, "ms": 0.12}
+{"tool": "date_guesser", "file": "befifty.montauk.html", "gold": "2017-07-12", "found": "2017-07-12", "ms": 103.19}
+{"tool": "date_guesser", "file": "beltz.de.didakta.html", "gold": "2019-02-20", "found": null, "ms": 163.01}
+{"tool": "date_guesser", "file": "channelpartner.de.berufe.html", "gold": "2019-04-03", "found": null, "ms": 98.88}
+{"tool": "date_guesser", "file": "creativecommons.at.faircoin.html", "gold": "2017-07-24", "found": null, "ms": 38.61}
+{"tool": "date_guesser", "file": "eff.org.2015.html", "gold": "2016-05-04", "found": "2016-05-04", "ms": 108.69}
+{"tool": "date_guesser", "file": "facebook.com.visitaustria.html", "gold": "2017-10-06", "found": null, "ms": 73.49}
+{"tool": "date_guesser", "file": "gnu.org.gpl.html", "gold": "2016-11-18", "found": null, "ms": 37.45}
+{"tool": "date_guesser", "file": "goodform.ch.blog.html", "gold": "2018-06-27", "found": null, "ms": 249.85}
+{"tool": "date_guesser", "file": "horizont.net.html", "gold": "2019-01-29", "found": "2018-03-12", "ms": 81.01}
+{"tool": "date_guesser", "file": "scs78.de.html", "gold": "2018-06-10", "found": null, "ms": 35.85}
+{"tool": "date_guesser", "file": "tagesausblick.de.dow.html", "gold": "2012-12-22", "found": null, "ms": 25.03}
+{"tool": "date_guesser", "file": "transgen.de.aktuell.html", "gold": "2018-01-18", "found": null, "ms": 67.3}
+{"tool": "date_guesser", "file": "weltwoche.ch.html", "gold": "2019-01-23", "found": "2019-04-15", "ms": 78.87}
+{"tool": "date_guesser", "file": "freundeskreis-videoclips.de.html", "gold": "2017-07-12", "found": null, "ms": 22.58}
+{"tool": "date_guesser", "file": "wunderweib.html", "gold": "2019-06-20", "found": null, "ms": 114.7}
+{"tool": "date_guesser", "file": "unexpecteduser.2011.html", "gold": "2011-03-30", "found": "2011-03-30", "ms": 40.24}
+{"tool": "date_guesser", "file": "eza.gv.at.html", "gold": "2018-07-03", "found": "2018-07-15", "ms": 273.49}
+{"tool": "date_guesser", "file": "greenpeace.org.forests.html", "gold": "2017-04-28", "found": null, "ms": 80.68}
+{"tool": "date_guesser", "file": "hobby-werkstatt-blog.de.roomba.html", "gold": "2015-12-14", "found": null, "ms": 42.54}
+{"tool": "date_guesser", "file": "jovelstefan.de.parken.html", "gold": "2012-05-11", "found": "2012-05-11", "ms": 40.39}
+{"tool": "date_guesser", "file": "klimawandel-global.de.html", "gold": "2013-05-03", "found": null, "ms": 26.4}
+{"tool": "date_guesser", "file": "medef.fr.dispute.html", "gold": "2017-09-01", "found": null, "ms": 32.86}
+{"tool": "date_guesser", "file": "pbrunst.de.html", "gold": "2011-12-03", "found": "2011-12-15", "ms": 15.93}
+{"tool": "date_guesser", "file": "stuttgart.de.html", "gold": "2017-10-09", "found": null, "ms": 0.11}
+{"tool": "date_guesser", "file": "paris-luttes.info.html", "gold": "2019-06-29", "found": "2019-07-03", "ms": 56.83}
+{"tool": "date_guesser", "file": "brigitte.de.riverdale.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 167.33}
+{"tool": "date_guesser", "file": "ldt.de.fallinlove.html", "gold": "2017-08-08", "found": null, "ms": 60.47}
+{"tool": "date_guesser", "file": "loldf.org.html", "gold": "2019-06-27", "found": "2019-06-27", "ms": 15.76}
+{"tool": "date_guesser", "file": "oberstdorfresort.de.kraeuter.html", "gold": "2018-06-20", "found": null, "ms": 45.46}
+{"tool": "date_guesser", "file": "wienbadminton.at.html", "gold": "2018-05-06", "found": null, "ms": 22.13}
+{"tool": "date_guesser", "file": "blog.wikimedia.interactivemaps.html", "gold": "2018-06-28", "found": "2018-06-28", "ms": 163.53}
+{"tool": "date_guesser", "file": "mediapart.fr.violences.html", "gold": "2019-06-27", "found": "2019-07-30", "ms": 124.18}
+{"tool": "date_guesser", "file": "verfassungsblog.de.decade.html", "gold": "2019-07-13", "found": "2019-07-13", "ms": 68.48}
+{"tool": "date_guesser", "file": "cric-grenoble.info.radio.html", "gold": "2019-06-09", "found": "2019-06-09", "ms": 76.39}
+{"tool": "date_guesser", "file": "kurz.at.wasserstoff.html", "gold": "2019-07-30", "found": null, "ms": 15.6}
+{"tool": "date_guesser", "file": "la-bas.org.porte.html", "gold": "2019-06-28", "found": "2019-06-28", "ms": 136.76}
+{"tool": "date_guesser", "file": "revolutionpermanente.fr.antonin.html", "gold": "2019-06-13", "found": null, "ms": 37.08}
+{"tool": "date_guesser", "file": "wara-enforcement.org.guinee.html", "gold": "2016-09-27", "found": "2017-01-15", "ms": 30.35}
+{"tool": "date_guesser", "file": "ebene11.com.autocad.html", "gold": "2017-01-12", "found": null, "ms": 22.08}
+{"tool": "date_guesser", "file": "acredis.com.augenlidstraffung.html", "gold": "2018-02-28", "found": null, "ms": 73.39}
+{"tool": "date_guesser", "file": "hertie-school.org.leyen.html", "gold": "2019-12-02", "found": null, "ms": 127.67}
+{"tool": "date_guesser", "file": "adac.de.kindersitztest.html", "gold": "2018-10-23", "found": "2018-10-23", "ms": 238.21}
+{"tool": "articleDateExtractor", "file": "die-partei.net.sh.html", "gold": "2014-07-19", "found": null, "ms": 7.75}
+{"tool": "articleDateExtractor", "file": "kinra.de.html", "gold": "2012-12-16", "found": null, "ms": 13.38}
+{"tool": "articleDateExtractor", "file": "blog.python.org.html", "gold": "2016-12-23", "found": "2026-09-30", "ms": 26.55}
+{"tool": "articleDateExtractor", "file": "blog.todamax.net.html", "gold": "2018-02-15", "found": null, "ms": 30.4}
+{"tool": "articleDateExtractor", "file": "carta.info.html", "gold": "2012-05-08", "found": null, "ms": 5.78}
+{"tool": "articleDateExtractor", "file": "500px.com.spring.html", "gold": "2013-02-16", "found": null, "ms": 11.75}
+{"tool": "articleDateExtractor", "file": "bayern.de.html", "gold": "2017-10-06", "found": null, "ms": 51.97}
+{"tool": "articleDateExtractor", "file": "creativecommons.org.html", "gold": "2016-05-22", "found": "2016-05-05", "ms": 114.76}
+{"tool": "articleDateExtractor", "file": "blog.wordpress.com.html", "gold": "2017-08-30", "found": "2017-08-30", "ms": 15.35}
+{"tool": "articleDateExtractor", "file": "futurezone.at.cc.html", "gold": "2013-08-09", "found": "2013-08-09", "ms": 24.88}
+{"tool": "articleDateExtractor", "file": "netzpolitik.org.abmahnungen.html", "gold": "2016-06-23", "found": "2016-06-23", "ms": 54.88}
+{"tool": "articleDateExtractor", "file": "pixabay.com.tos.html", "gold": "2017-08-09", "found": null, "ms": 10.13}
+{"tool": "articleDateExtractor", "file": "austria.info.html", "gold": "2017-09-07", "found": null, "ms": 50.54}
+{"tool": "articleDateExtractor", "file": "befifty.montauk.html", "gold": "2017-07-12", "found": "2019-06-17", "ms": 27.61}
+{"tool": "articleDateExtractor", "file": "beltz.de.didakta.html", "gold": "2019-02-20", "found": null, "ms": 44.17}
+{"tool": "articleDateExtractor", "file": "channelpartner.de.berufe.html", "gold": "2019-04-03", "found": "2017-08-21", "ms": 20.28}
+{"tool": "articleDateExtractor", "file": "creativecommons.at.faircoin.html", "gold": "2017-07-24", "found": null, "ms": 10.43}
+{"tool": "articleDateExtractor", "file": "eff.org.2015.html", "gold": "2016-05-04", "found": "2016-05-04", "ms": 26.32}
+{"tool": "articleDateExtractor", "file": "facebook.com.visitaustria.html", "gold": "2017-10-06", "found": null, "ms": 18.81}
+{"tool": "articleDateExtractor", "file": "gnu.org.gpl.html", "gold": "2016-11-18", "found": null, "ms": 9.83}
+{"tool": "articleDateExtractor", "file": "goodform.ch.blog.html", "gold": "2018-06-27", "found": null, "ms": 35.94}
+{"tool": "articleDateExtractor", "file": "horizont.net.html", "gold": "2019-01-29", "found": "2018-03-12", "ms": 21.05}
+{"tool": "articleDateExtractor", "file": "scs78.de.html", "gold": "2018-06-10", "found": null, "ms": 7.05}
+{"tool": "articleDateExtractor", "file": "tagesausblick.de.dow.html", "gold": "2012-12-22", "found": null, "ms": 4.02}
+{"tool": "articleDateExtractor", "file": "transgen.de.aktuell.html", "gold": "2018-01-18", "found": null, "ms": 12.8}
+{"tool": "articleDateExtractor", "file": "weltwoche.ch.html", "gold": "2019-01-23", "found": null, "ms": 123.33}
+{"tool": "articleDateExtractor", "file": "freundeskreis-videoclips.de.html", "gold": "2017-07-12", "found": null, "ms": 8.85}
+{"tool": "articleDateExtractor", "file": "wunderweib.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 25.31}
+{"tool": "articleDateExtractor", "file": "unexpecteduser.2011.html", "gold": "2011-03-30", "found": "2026-09-30", "ms": 10.71}
+{"tool": "articleDateExtractor", "file": "eza.gv.at.html", "gold": "2018-07-03", "found": null, "ms": 57.59}
+{"tool": "articleDateExtractor", "file": "greenpeace.org.forests.html", "gold": "2017-04-28", "found": null, "ms": 23.87}
+{"tool": "articleDateExtractor", "file": "hobby-werkstatt-blog.de.roomba.html", "gold": "2015-12-14", "found": null, "ms": 13.07}
+{"tool": "articleDateExtractor", "file": "jovelstefan.de.parken.html", "gold": "2012-05-11", "found": null, "ms": 12.16}
+{"tool": "articleDateExtractor", "file": "klimawandel-global.de.html", "gold": "2013-05-03", "found": null, "ms": 9.55}
+{"tool": "articleDateExtractor", "file": "medef.fr.dispute.html", "gold": "2017-09-01", "found": null, "ms": 9.32}
+{"tool": "articleDateExtractor", "file": "pbrunst.de.html", "gold": "2011-12-03", "found": null, "ms": 7.14}
+{"tool": "articleDateExtractor", "file": "stuttgart.de.html", "gold": "2017-10-09", "found": null, "ms": 40.67}
+{"tool": "articleDateExtractor", "file": "paris-luttes.info.html", "gold": "2019-06-29", "found": "2019-07-03", "ms": 14.94}
+{"tool": "articleDateExtractor", "file": "brigitte.de.riverdale.html", "gold": "2019-06-20", "found": "2019-06-20", "ms": 42.24}
+{"tool": "articleDateExtractor", "file": "ldt.de.fallinlove.html", "gold": "2017-08-08", "found": "2019-06-14", "ms": 17.74}
+{"tool": "articleDateExtractor", "file": "loldf.org.html", "gold": "2019-06-27", "found": null, "ms": 4.67}
+{"tool": "articleDateExtractor", "file": "oberstdorfresort.de.kraeuter.html", "gold": "2018-06-20", "found": null, "ms": 11.69}
+{"tool": "articleDateExtractor", "file": "wienbadminton.at.html", "gold": "2018-05-06", "found": null, "ms": 5.24}
+{"tool": "articleDateExtractor", "file": "blog.wikimedia.interactivemaps.html", "gold": "2018-06-28", "found": null, "ms": 17.31}
+{"tool": "articleDateExtractor", "file": "mediapart.fr.violences.html", "gold": "2019-06-27", "found": "2019-06-27", "ms": 32.13}
+{"tool": "articleDateExtractor", "file": "verfassungsblog.de.decade.html", "gold": "2019-07-13", "found": "2019-07-13", "ms": 110.94}
+{"tool": "articleDateExtractor", "file": "cric-grenoble.info.radio.html", "gold": "2019-06-09", "found": "2019-06-09", "ms": 22.75}
+{"tool": "articleDateExtractor", "file": "kurz.at.wasserstoff.html", "gold": "2019-07-30", "found": null, "ms": 4.96}
+{"tool": "articleDateExtractor", "file": "la-bas.org.porte.html", "gold": "2019-06-28", "found": "2019-06-28", "ms": 34.99}
+{"tool": "articleDateExtractor", "file": "revolutionpermanente.fr.antonin.html", "gold": "2019-06-13", "found": null, "ms": 10.09}
+{"tool": "articleDateExtractor", "file": "wara-enforcement.org.guinee.html", "gold": "2016-09-27", "found": "2019-09-09", "ms": 10.96}
+{"tool": "articleDateExtractor", "file": "ebene11.com.autocad.html", "gold": "2017-01-12", "found": null, "ms": 8.1}
+{"tool": "articleDateExtractor", "file": "acredis.com.augenlidstraffung.html", "gold": "2018-02-28", "found": null, "ms": 40.57}
+{"tool": "articleDateExtractor", "file": "hertie-school.org.leyen.html", "gold": "2019-12-02", "found": null, "ms": 60.2}
+{"tool": "articleDateExtractor", "file": "adac.de.kindersitztest.html", "gold": "2018-10-23", "found": "2018-10-23", "ms": 52.42}

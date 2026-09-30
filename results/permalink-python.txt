@@ -3,12 +3,12 @@
 
   tool                            exact  part  wrong  miss    TN   FP | precision  accuracy  useful   ms/page
   -----------------------------------------------------------------------------------------------------------
-    htmldate (extensive)           723     0    124     0     0    0 |   85.4%    85.4%    85.4%     45.61
-    htmldate (fast)                656     0     66   125     0    0 |   90.9%    77.4%    77.4%      9.15
-    articleDateExtractor           511     0     82   254     0    0 |   86.2%    60.3%    60.3%     34.73
-    newspaper4k                    428     0     36   383     0    0 |   92.2%    50.5%    50.5%    127.52
-    goose3                         371     0     13   463     0    0 |   96.6%    43.8%    43.8%    119.49
-    date_guesser                   303     0    118   426     0    0 |   72.0%    35.8%    35.8%    117.05
+    htmldate (extensive)           723     0    124     0     0    0 |   85.4%    85.4%    85.4%     30.10
+    htmldate (fast)                656     0     66   125     0    0 |   90.9%    77.4%    77.4%      6.70
+    articleDateExtractor           511     0     82   254     0    0 |   86.2%    60.3%    60.3%     22.89
+    newspaper4k                    428     0     36   383     0    0 |   92.2%    50.5%    50.5%     79.49
+    goose3                         371     0     13   463     0    0 |   96.6%    43.8%    43.8%     76.25
+    date_guesser                   303     0    118   426     0    0 |   72.0%    35.8%    35.8%     73.63
 
   precision = of the pages a tool answered, how many it got right — an invented
               date on an undated page (FP) counts against it exactly as a wrong

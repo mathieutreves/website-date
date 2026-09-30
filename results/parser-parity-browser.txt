@@ -43,16 +43,12 @@
 
   real Chromium vs node-html-parser — 4204 pages
 
-    same answer           4196
-    DIFFERENT answer        19
+    same answer           4197
+    DIFFERENT answer        18
 
     https://www.repubblica.it/
       node    null / 2021-01-01T05:12
       browser null / null
-
-    http://www.usatoday.com:80/news/2006-06-14-parents-slain_x.htm
-      node    2006-06-14 / 2006-06-14
-      browser 2006-06-14 / null
 
     http://www.chinamobile.com:80/2006/06/16/ive-been-joe-jobbed
       node    —

@@ -6,9 +6,9 @@
 
   tool                            exact  part  wrong  miss    TN   FP | precision  accuracy   ms/page
   ---------------------------------------------------------------------------------------------------
-  pagedate (extensive)             505     0     38    23     0    0 |    93.0%    89.2%     37.27
-  pagedate (standard)              496     0     37    33     0    0 |    93.1%    87.6%     38.06
-  metascraper                      395     0     87    84     0    0 |    82.0%    69.8%     17.50
-  pagedate (fast)                  375     0     19   172     0    0 |    95.2%    66.3%     35.15
-  @extractus/article-extractor     352     0     47   167     0    0 |    88.2%    62.2%    122.16
-  unfluff                          283     0     12   271     0    0 |    95.9%    50.0%    114.30
+  pagedate (extensive)             505     0     38    23     0    0 |    93.0%    89.2%     29.72
+  pagedate (standard)              499     0     37    30     0    0 |    93.1%    88.2%     30.03
+  metascraper                      395     0     87    84     0    0 |    82.0%    69.8%     13.44
+  pagedate (fast)                  375     0     19   172     0    0 |    95.2%    66.3%     28.00
+  @extractus/article-extractor     352     0     47   167     0    0 |    88.2%    62.2%     81.89
+  unfluff                          283     0     12   271     0    0 |    95.9%    50.0%     74.98

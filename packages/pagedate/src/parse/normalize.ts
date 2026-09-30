@@ -188,7 +188,7 @@ function parseRfc2822(input: string): ParsedDate | null {
  * All-numeric dates with the year last: `12/03/2024`, `12.03.2024`, `12-03-2024`.
  *
  * When the two leading components can't be told apart and no locale hint is
- * available, this deliberately degrades to month precision rather than guessing
+ * available, this deliberately degrades to year precision rather than guessing
  * — a wrong guess here produces a confidently wrong date, which is worse than a
  * vague one.
  */
@@ -209,7 +209,7 @@ function parseNumeric(input: string, dayFirst: DayFirstHint): ParsedDate | null 
   if (dayFirst === 'month-first') return ymd(y, a, b)
 
   // Genuinely ambiguous. Both readings share the year; if they also share the
-  // month (a === b) the day is knowable, otherwise drop to month precision.
+  // month (a === b) the day is knowable, otherwise only the year is.
   if (a === b) return ymd(y, a, b)
   return { value: `${pad(y, 4)}`, precision: 'year' }
 }

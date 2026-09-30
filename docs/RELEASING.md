@@ -20,7 +20,13 @@ pnpm --filter pagedate     publish    # this one first
 pnpm --filter pagedate-mcp publish
 ```
 
-Then configure the trusted publisher on npmjs.com for each package. The tarball contents are asserted in CI on every commit.
+Then configure the trusted publisher on npmjs.com for each package. The tarball contents are asserted in CI on every commit, and so is that the packed CLI starts on a machine with neither parser installed.
+
+Before the first publish:
+
+- Set the date on the `0.1.0` heading in [CHANGELOG.md](../CHANGELOG.md).
+- The repository has to be public. The `homepage`, `repository` and `bugs` links in both manifests point at it, provenance attestations are refused for a private repository, and the privacy-policy URL both extension stores are given is a page in it.
+- Both manifests set `publishConfig.provenance: true`, which is what the workflow wants. A provenance attestation is generated from a CI identity, so a publish from a laptop has none to offer; this has not been tried here, and if the manual publish is refused on those grounds, run it with `--provenance=false`. The first version then carries no attestation and every later one does.
 
 **Use `pnpm publish`, never `npm publish`.** `pagedate-mcp` depends on `pagedate` as `workspace:^`, which is a pnpm protocol. `npm publish` ships the string `"workspace:^"` verbatim into the published manifest, and every install of the result fails with `Unsupported URL Type "workspace:"`. pnpm rewrites it to the real range while packing. The publish itself succeeds, and npm allows unpublishing only within 72 hours.
 

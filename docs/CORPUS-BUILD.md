@@ -127,7 +127,7 @@ A post published at 23:30 local time gets a URL built from the local date and an
 
 Part of this is recoverable. When a page stamps a UTC timestamp and also renders the same instant in its own zone, the day shown to readers is the day reported; `localise` in `resolve.ts` does this. The remainder is undecidable from the document.
 
-Roughly 3% of entries sit on this boundary, which is larger than most differences a benchmark is used to argue about. `--tolerance 1` reports 90.8% against 87.6% strict on the held-out split. Applied to every tool alike it moves htmldate from 92.0% to 94.3%, so it narrows the gap without closing it. Both are printed.
+Roughly 3% of entries sit on this boundary, which is larger than most differences a benchmark is used to argue about. `--tolerance 1` reports 91.3% against 88.2% strict on the held-out split. Applied to every tool alike it moves htmldate from 92.0% to 94.3%, so it narrows the gap without closing it. Both are printed.
 
 The deeper limit is that the label is itself a local-versus-UTC choice made independently by each site's CMS. Two European papers in this corpus mint the permalink on one convention and print the byline on the other, so a rule that reads the site's own civil day is right in general and will still win pages on one split and lose them on the other here.
 

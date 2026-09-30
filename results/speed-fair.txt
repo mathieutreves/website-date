@@ -2,11 +2,11 @@
 55 pages
 
   pagedate (fast)
-    extraction only          3.16 ms/page
-    including HTML parsing   12.17 ms/page
+    extraction only          1.91 ms/page
+    including HTML parsing   8.26 ms/page
   pagedate (standard)
-    extraction only          8.43 ms/page
-    including HTML parsing   18.04 ms/page
+    extraction only          5.41 ms/page
+    including HTML parsing   11.55 ms/page
 
   htmldate for comparison, both including lxml parsing:
     fast                      11.17 ms/page

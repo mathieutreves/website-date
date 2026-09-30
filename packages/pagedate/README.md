@@ -19,8 +19,8 @@ const result = await resolve(
 )
 
 result.published  // { value: '2019-03-04', precision: 'day', confidence: 'declared', source: 'jsonld' }
-result.modified   // { value: '2024-11-02', precision: 'day', confidence: 'derived',  source: 'sitemap' }
-result.conflict   // { kind: 'stale-declaration', gapDays: 2070, detail: '…' }
+result.modified   // { value: '2024-11-02T09:30Z', precision: 'minute', confidence: 'declared', source: 'opengraph' }
+result.conflict   // { kind: 'declared-disagreement', gapDays: 412, detail: '…' }, or absent
 result.candidates // everything found, unresolved, each with a note
 ```
 
@@ -41,7 +41,7 @@ const candidates = extractFromDocument(document, location.href)   // sync, no ne
 const result = await resolve(candidates, location.href)
 ```
 
-Extraction is synchronous and DOM-only, so it can run in an MV3 content script. Resolution is where network-backed signals arrive, in the service worker.
+Extraction is synchronous and DOM-only, so it can run in an MV3 content script. `resolve` ranks what was extracted and fetches nothing, so it can run in the service worker. The signals that need a request — feeds, the sitemap, `Last-Modified` — are collected by `findDates(document, url, env)`, which takes the network as an injected `Env`.
 
 ## Node
 
@@ -49,7 +49,7 @@ Extraction is synchronous and DOM-only, so it can run in an MV3 content script. 
 npm install pagedate node-html-parser linkedom
 ```
 
-Both are optional peer dependencies, needed only on this path.
+Both are optional peer dependencies, needed only on this path. They are loaded on first use: without `node-html-parser`, the first parse throws a `MissingParserError` naming it; without `linkedom`, feeds and sitemaps are not fetched.
 
 ```js
 import { findDatesFromUrl, findDatesFromHtml } from 'pagedate/node'
@@ -101,13 +101,20 @@ staleness(result, { maxAgeDays: 180 })
 
 ## CLI
 
+The CLI parses HTML, so it needs the two parsers beside it:
+
 ```bash
-npx pagedate https://example.com/post
-npx pagedate --file page.html --url https://example.com/post --all
-cat page.html | npx pagedate --url https://example.com/post --json
+npm install -g pagedate node-html-parser linkedom
+pagedate https://example.com/post
+pagedate --file page.html --url https://example.com/post --all
+cat page.html | pagedate --url https://example.com/post --json
 ```
 
-Exit codes: `0` a date was found, `1` none found, `2` the page could not be read.
+Without installing anything: `npx -p pagedate -p node-html-parser -p linkedom pagedate <url>`. Run without `node-html-parser`, the CLI exits `2` with a message naming the package.
+
+A bare URL is always fetched. Stdin is read only when the page is named with `--url` and no `--file` is given, so `pagedate "$url"` is safe inside a `while read` loop. Unknown options are refused rather than ignored.
+
+Exit codes: `0` a date was found, `1` none found, `2` the page could not be read or the arguments were wrong.
 
 ### Batch
 
@@ -146,11 +153,11 @@ extractFromDocument(document, url, {
 
 | mode | accuracy | ms/page | reads |
 | --- | --- | --- | --- |
-| `fast` | 68.8% | 0.9 | declared metadata only — JSON-LD, OpenGraph, `<time>`, URL |
-| `standard` | 90.9% | 3.2 | the above plus rendered text and inlined CMS state |
-| `extensive` | 90.9% | 4.2 | the above plus unlabelled text, always |
+| `fast` | 66.3% | 1.1 | declared metadata only — JSON-LD, OpenGraph, `<time>`, URL |
+| `standard` | 88.2% | 2.9 | the above plus rendered text and inlined CMS state |
+| `extensive` | 89.2% | 3.7 | the above plus unlabelled text, always |
 
-`extensive` finds the same 230 correct answers as `standard` on the held-out split and turns one abstention into a wrong answer. Its function is populating `candidates` for conflict detection and for display; it will date a page that has no date.
+`extensive` turns 7 of `standard`'s abstentions on the held-out split into 6 correct answers and 1 wrong one. It also populates `candidates` for conflict detection and for display, and it is more willing to date a page that has no date.
 
 Accuracy is the held-out split described below. ms/page is extraction only, which is the whole cost in a browser and none of the parsing cost in Node.
 
@@ -175,36 +182,37 @@ Feed entries (`<published>`, `<updated>`, `<pubDate>`) are `declared` and always
 
 ## Languages
 
-Around 25 languages of month names, non-ASCII digit systems (Arabic, Persian, Devanagari, Thai, full-width), CJK structural dates (`2024年3月12日`), and ordinal suffixes in English, French, Spanish and Dutch. Ambiguous all-numeric dates degrade to month precision.
+Around 30 languages of month names, non-ASCII digit systems (Arabic, Persian, Devanagari, Thai, full-width), CJK structural dates (`2024年3月12日`), and ordinal suffixes in English, French, Spanish and Dutch. Ambiguous all-numeric dates degrade to year precision: `03/04/2024` with no locale hint is `2024`, because both readings share the year and nothing else.
 
 ## Accuracy
 
-On a 253-page held-out split of a corpus built for this project — 1248 pages, 33 hosts, 10 languages, labels from dated URL permalinks, hosts assigned to dev and test by hash, URL neutralised for every tool, and `htmldate` invoked with `original_date=True`:
+On a 566-page held-out split of a corpus built for this project — 4302 pages, 364 hosts, 19 languages, labels from dated URL permalinks, hosts assigned to dev, diag and test by hash, URL neutralised for every tool, and `htmldate` invoked with `original_date=True`:
 
 | tool | precision | accuracy |
 | --- | ---: | ---: |
-| htmldate (extensive) | 93.3% | 93.3% |
-| pagedate (standard) | 94.2% | 89.3% |
-| htmldate (fast) | 95.2% | 85.8% |
-| metascraper | 81.3% | 70.4% |
-| articleDateExtractor | 93.1% | 69.6% |
-| pagedate (fast) | 95.0% | 67.2% |
-| newspaper4k | 97.1% | 65.6% |
-| goose3 | 98.7% | 61.3% |
-| @extractus/article-extractor | 79.9% | 54.9% |
-| unfluff | 98.4% | 49.4% |
+| htmldate (extensive) | 92.0% | 92.0% |
+| pagedate (extensive) | 93.0% | 89.2% |
+| pagedate (standard) | 93.1% | 88.2% |
+| htmldate (fast) | 93.1% | 85.5% |
+| articleDateExtractor | 90.8% | 71.2% |
+| metascraper | 82.0% | 69.8% |
+| pagedate (fast) | 95.2% | 66.3% |
+| newspaper4k | 96.3% | 64.3% |
+| @extractus/article-extractor | 88.2% | 62.2% |
+| goose3 | 96.6% | 55.1% |
+| unfluff | 95.9% | 50.0% |
 
-[htmldate](https://github.com/adbar/htmldate) leads by 4.0 points and answers every page. pagedate is second, marginally ahead on precision, at roughly a quarter of the per-page cost. On htmldate's own German-news corpus the margin widens to 29 points; it is the better general-purpose extractor on news, and what this library offers is a different shape that runs where htmldate cannot.
+[htmldate](https://github.com/adbar/htmldate) leads by 3.8 points and answers every page. pagedate is second, marginally ahead on precision. On htmldate's own German-news corpus the margin widens to 33 points; it is the better general-purpose extractor on news, and what this library offers is a different shape that runs where htmldate cannot.
 
-Read both columns. Every page in this corpus has a date, so declining to answer can only cost accuracy. pagedate declines on 13 pages, htmldate on none, and those 13 are 5.1 points against a 4.0-point deficit. Whether that trade suits you is the reason the library reports a confidence tier rather than a number.
+Read both columns. Every page in this corpus has a date, so declining to answer can only cost accuracy. pagedate declines on 30 pages, htmldate on none, and those 30 are 5.3 points against a 3.8-point deficit. Whether that trade suits you is the reason the library reports a confidence tier rather than a number. No published table, this one included, charges a tool for inventing a date on a page that has none; on an unreviewed set of such pages pagedate invents one on 20%.
 
-On the dev split — the one the extraction rules were developed against — pagedate scores 96.0%. Quote the held-out figure.
+On the dev split — the one the extraction rules were developed against — pagedate scores 93.3%. Quote the held-out figure.
 
 Full tables, the corpus construction, and what was tried and rejected: [docs/BENCHMARK.md](https://github.com/mathieutreves/website-date/blob/main/docs/BENCHMARK.md). Everything is reproducible with `./scripts/validate.sh`.
 
 ## Status
 
-`0.x`. The API may still change. Published and modified dates, provenance, confidence tiers, conflict detection, staleness, the Node and edge entry points and the CLI all work and are covered by 303 tests.
+`0.x`. The API may still change. Published and modified dates, provenance, confidence tiers, conflict detection, staleness, the Node and edge entry points and the CLI all work and are covered by 380 tests.
 
 ## Licence
 

@@ -602,7 +602,7 @@ The feature is presented as "roughly when this changed", never as a diff.
 | `Last-Modified` kept but opt-in | Real on static hosts, the serve time behind a CDN. Measured: two false positives and no gains (§4.10) |
 | `document.lastModified` never used | It falls back to the current time when the header is absent |
 | Timezone preserved rather than normalised to UTC | Normalising shifts the displayed day for no gain |
-| Ambiguous numeric dates degrade to month precision | Guessing DD/MM against MM/DD produces a confidently wrong day |
+| Ambiguous numeric dates degrade to year precision | Guessing DD/MM against MM/DD produces a confidently wrong day |
 | Adapters as a seam, none shipped | Generic heuristics optimise for news, which is the case needing least help, but no per-domain rule has yet earned its maintenance (§4.6) |
 | Port htmldate rather than reinvent | Apache-2.0 since v1.8.0, multilingual, production-proven on millions of documents |
 | Listings suppress body-scraped sources | On an index page the body is other documents' metadata, so the newest item's date is returned as the page's own. Tuned for precision over recall: a wrong suppression deletes a correct answer invisibly (§4.8a) |
