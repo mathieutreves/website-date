@@ -175,6 +175,8 @@ export const MESSAGES = {
   menuNoDate: 'No date found for this link.',
   menuUnreachable: 'Could not read that page.',
   menuNeedsPermission: 'Permission to read that site was declined.',
+  /** Spoken name of the toast's × button, which has no text of its own. */
+  toastDismiss: 'Dismiss',
 
   /** Provenance line on a chip dated from the address alone. */
   annotateFromUrl: 'inferred from the link address',

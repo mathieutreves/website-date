@@ -266,6 +266,9 @@
   "menuNeedsPermission": {
     "message": "Toestemming om die site te lezen is geweigerd."
   },
+  "toastDismiss": {
+    "message": "Sluiten"
+  },
   "annotateFromUrl": {
     "message": "afgeleid uit het linkadres"
   },

@@ -1,12 +1,12 @@
 import {
   chipFor,
   FETCH_CONCURRENCY,
-  MAX_FETCHES_PER_PAGE,
   pooled,
   shouldFetch,
   type Chip,
 } from '../lib/annotate.js'
-import { dateFromUrl, dateFromFetch, makeTabFetcher, type LinkDate } from '../lib/link-date.js'
+import { FETCH_MESSAGE, type FetchReply, type FetchRequest } from '../lib/fetch-relay.js'
+import { dateFromUrl, dateFromFetch, parseHtml, type LinkDate } from '../lib/link-date.js'
 import { engineFor, resultLinks, targetOf } from '../lib/search-sites.js'
 import { getSettings } from '../lib/settings.js'
 
@@ -52,7 +52,20 @@ export default defineContentScript({
     if (!engine) return
 
     const now = new Date()
-    const fetcher = makeTabFetcher()
+
+    /*
+     * The request is made by the background worker and the parse is done here.
+     * A `fetch` from this script would run under the results page's CORS
+     * policy — the all-sites grant does not lift it for content scripts — so it
+     * would fail for every result, all of which are cross-origin by definition.
+     * The worker decides for itself whether to honour the request; see
+     * lib/fetch-relay.ts.
+     */
+    const fetcher = async (url: string): Promise<Document | null> => {
+      const request: FetchRequest = { type: FETCH_MESSAGE, url }
+      const reply = (await browser.runtime.sendMessage(request)) as FetchReply | undefined
+      return reply && typeof reply.html === 'string' ? parseHtml(reply.html) : null
+    }
 
     /** Targets already annotated, so a re-run after scroll does no work twice. */
     const done = new Set<string>()

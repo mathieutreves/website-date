@@ -1,5 +1,6 @@
 import { resolve, type Candidate, type DateResult } from 'pagedate'
 import { fetchArchive } from './archive.js'
+import { readCache, writeCache } from './cache.js'
 import { PAGE_READ_GLOBAL, type PageRead } from './page-read.js'
 
 /**
@@ -10,24 +11,16 @@ import { PAGE_READ_GLOBAL, type PageRead } from './page-read.js'
  * is how a popup and a badge end up disagreeing about the same page.
  */
 
-const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000
-
-/**
- * Bump to invalidate every cached result. Entries below this version are
- * discarded on read.
- *
- * Bump for a heuristics change, and equally for a change to the *shape* of what
- * is stored. The shape is the case that gets forgotten: an entry written before
- * `Conflict` carried the fields the UI builds its warning sentence from is a
- * complete, valid-looking `DateResult`, so nothing rejects it, and the warning
- * renders as "carries undefined dated elements from before then, back to ." —
- * a week of that, per reader, from one skipped increment.
- */
-const CACHE_VERSION = 3
-
-export type CacheEntry = { result: DateResult; fetchedAt: number; version: number }
-
-export const cacheKey = (url: string): string => `d:${url}`
+export {
+  cacheKey,
+  cacheStats,
+  clearCache,
+  dropCache,
+  pruneCache,
+  readCache,
+  writeCache,
+  type CacheEntry,
+} from './cache.js'
 
 export const originOf = (url: string): string | null => {
   try {
@@ -75,10 +68,10 @@ const EXTRACT_SCRIPT = '/extract.js'
  * Both land in the same isolated world, so the second call sees what the first
  * left. Neither is visible to the page.
  */
-export async function readPageCandidates(
+export async function readPage(
   tabId: number,
   expectedUrl?: string,
-): Promise<Candidate[] | null> {
+): Promise<{ candidates: Candidate[]; soft: boolean } | null> {
   try {
     await browser.scripting.executeScript({ target: { tabId }, files: [EXTRACT_SCRIPT] })
 
@@ -91,7 +84,8 @@ export async function readPageCandidates(
       args: [PAGE_READ_GLOBAL],
     })
 
-    return acceptPageRead(injection?.result, expectedUrl)
+    const candidates = acceptPageRead(injection?.result, expectedUrl)
+    return candidates && { candidates, soft: isSoftNavigated(injection?.result) }
   } catch {
     return null
   }
@@ -100,7 +94,7 @@ export async function readPageCandidates(
 /**
  * Decide whether an injection result is a page read worth trusting.
  *
- * Split out from {@link readPageCandidates} so the judgement can be tested
+ * Split out from {@link readPage} so the judgement can be tested
  * without a browser: what arrives here is whatever `executeScript` resolved to,
  * which is `undefined` on a frame that refused injection, and stale on the
  * single-page-app race the `expectedUrl` guard exists for.
@@ -115,6 +109,29 @@ export function acceptPageRead(result: unknown, expectedUrl?: string): Candidate
   if (!Array.isArray(read.candidates) || typeof read.href !== 'string') return null
   if (expectedUrl && !sameDocument(read.href, expectedUrl)) return null
   return read.candidates
+}
+
+/**
+ * Was this read taken from a document that has changed route since it loaded?
+ *
+ * The `expectedUrl` guard above catches a read that raced the URL. It cannot
+ * catch the other half of the same race: on `pushState` the URL changes
+ * *first*, so `location.href` already matches while the JSON-LD and meta tags
+ * in the head still describe the previous route — and on some single-page apps
+ * they are never rewritten at all. Such a read passes every check and is about
+ * the wrong page.
+ *
+ * It cannot be told apart from a correct one by looking at it, so the rule is
+ * about where it came from: a document whose address is no longer the one it
+ * was loaded at is shown, and not remembered. A missing `loaded` — a browser
+ * that does not report it — is not evidence either way, and is left to the
+ * caller's own knowledge of how the read was triggered.
+ */
+export function isSoftNavigated(result: unknown): boolean {
+  const read = result as PageRead | undefined
+  if (!read || typeof read !== 'object') return false
+  if (typeof read.loaded !== 'string' || typeof read.href !== 'string') return false
+  return !sameDocument(read.loaded, read.href)
 }
 
 /**
@@ -134,28 +151,6 @@ export function sameDocument(a: string, b: string): boolean {
   }
 }
 
-export async function readCache(url: string): Promise<DateResult | null> {
-  try {
-    const key = cacheKey(url)
-    const stored = await browser.storage.local.get(key)
-    const entry = stored[key] as CacheEntry | undefined
-    if (!entry || entry.version !== CACHE_VERSION) return null
-    if (Date.now() - entry.fetchedAt > CACHE_TTL_MS) return null
-    return entry.result
-  } catch {
-    return null
-  }
-}
-
-export async function writeCache(url: string, result: DateResult): Promise<void> {
-  try {
-    const entry: CacheEntry = { result, fetchedAt: Date.now(), version: CACHE_VERSION }
-    await browser.storage.local.set({ [cacheKey(url)]: entry })
-  } catch {
-    // Storage full or unavailable — the result is still shown, just not cached.
-  }
-}
-
 export type Analysis = { result: DateResult; fromCache: boolean } | { error: 'unreadable' }
 
 export type AnalyzeOptions = {
@@ -167,6 +162,14 @@ export type AnalyzeOptions = {
    * page it is asking about; the popup reads on a click and cannot.
    */
   expectUrl?: string
+  /**
+   * `false` shows the result without writing it to the cache. Set for a private
+   * window, which must leave nothing on disk, and for a read triggered by a URL
+   * change with no page load behind it — see {@link isSoftNavigated}. A cached
+   * entry is a claim that lasts a week; both are cases where that claim should
+   * not be made.
+   */
+  persist?: boolean
 }
 
 export async function analyze(
@@ -179,8 +182,9 @@ export async function analyze(
   // different question, so the cache is bypassed rather than answered stale.
   if (cached && !options.withArchive) return { result: cached, fromCache: true }
 
-  const candidates = await readPageCandidates(tabId, options.expectUrl)
-  if (candidates === null) return { error: 'unreadable' }
+  const read = await readPage(tabId, options.expectUrl)
+  if (read === null) return { error: 'unreadable' }
+  const { candidates } = read
 
   const archive = options.withArchive ? await fetchArchive(url) : null
 
@@ -190,26 +194,6 @@ export async function analyze(
   // to borrow a DOM from anywhere.
   const result = await resolve(candidates, url, {}, archive?.lastEdit ? { archiveLastEdit: archive.lastEdit } : {})
 
-  await writeCache(url, result)
+  if (options.persist !== false && !read.soft) await writeCache(url, result)
   return { result, fromCache: false }
-}
-
-/** How much of `storage.local` the result cache is using, for the options page. */
-export async function cacheStats(): Promise<{ count: number; bytes: number }> {
-  try {
-    const all = await browser.storage.local.get(null)
-    const entries = Object.entries(all).filter(([key]) => key.startsWith('d:'))
-    return {
-      count: entries.length,
-      bytes: entries.reduce((sum, entry) => sum + JSON.stringify(entry).length, 0),
-    }
-  } catch {
-    return { count: 0, bytes: 0 }
-  }
-}
-
-export async function clearCache(): Promise<void> {
-  const all = await browser.storage.local.get(null)
-  const keys = Object.keys(all).filter((key) => key.startsWith('d:'))
-  if (keys.length > 0) await browser.storage.local.remove(keys)
 }

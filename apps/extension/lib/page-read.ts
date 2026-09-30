@@ -37,4 +37,14 @@ export type PageRead = {
    * which would then be cached under the new URL and served as fact for a week.
    */
   href: string
+  /**
+   * The URL the document was *loaded* from, which stops matching `href` once a
+   * single-page app has changed route. `href` proves the read is about the
+   * address asked for; this says whether the markup behind that address can be
+   * trusted to have caught up with it. See `isSoftNavigated` in lib/analyze.ts.
+   *
+   * Optional because it comes from the navigation timing entry, which a
+   * browser may not expose, and absent is a different answer from equal.
+   */
+  loaded?: string
 }

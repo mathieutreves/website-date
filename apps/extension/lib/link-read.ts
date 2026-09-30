@@ -10,19 +10,29 @@ import type { Candidate } from 'pagedate'
  *
  * Two globals rather than one, because unlike `extract.ts` this script needs an
  * argument. `executeScript({ files })` takes none — there is no `args` for a
- * file injection — so the URL is written into the isolated world by a tiny
+ * file injection — so the request is written into the isolated world by a tiny
  * `func` injection first, and the script reads it from there. Both land in the
  * same isolated world for the frame, so the page can neither see nor forge
  * either one.
+ *
+ * The request carries the markup as well as the address. The worker fetches —
+ * it is the only context whose requests the host permission exempts from CORS —
+ * and the tab parses, because it is the only one with a `DOMParser`.
  */
 
 export const LINK_REQUEST_GLOBAL = '__pagedateLinkRequest'
 export const LINK_RESULT_GLOBAL = '__pagedateLinkResult'
 
+export type LinkRequest = {
+  url: string
+  /** The page's markup, already fetched by the worker. */
+  html: string
+}
+
 export type LinkRead = {
   /** Echoed back so the worker can prove the answer is about what it asked. */
   url: string
-  /** `null` when the page could not be fetched or was not HTML. */
+  /** `null` when the markup could not be parsed into a document. */
   candidates: Candidate[] | null
 }
 

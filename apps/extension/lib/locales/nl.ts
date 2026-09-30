@@ -125,6 +125,7 @@ export const nl: Translation = {
   menuNoDate: 'Geen datum gevonden voor deze link.',
   menuUnreachable: 'Kon die pagina niet lezen.',
   menuNeedsPermission: 'Toestemming om die site te lezen is geweigerd.',
+  toastDismiss: 'Sluiten',
   annotateFromUrl: 'afgeleid uit het linkadres',
 
   optSearchHeading: 'Zoekresultaten',

@@ -266,6 +266,9 @@
   "menuNeedsPermission": {
     "message": "そのサイトを読み取る許可が拒否されました。"
   },
+  "toastDismiss": {
+    "message": "閉じる"
+  },
   "annotateFromUrl": {
     "message": "リンクのアドレスから推定"
   },

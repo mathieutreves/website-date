@@ -11,7 +11,8 @@ const workspaceRoot = fileURLToPath(new URL('../..', import.meta.url))
 export default defineConfig({
   // MV3 on both targets. WXT defaults Firefox to MV2, where `browser.scripting`
   // does not exist and the popup's only way of reading the page would break.
-  // Firefox has supported MV3 since 109, which is the floor set below.
+  // Firefox has supported MV3 since 109; the floor set below is higher than
+  // that, for the reason given there.
   manifestVersion: 3,
 
   manifest: ({ browser }) => ({
@@ -82,23 +83,47 @@ export default defineConfig({
     // `options_ui.open_in_tab` is not set here: WXT owns that key and reads it
     // from a meta tag on entrypoints/options/index.html.
 
-    browser_specific_settings: {
-      gecko: {
-        id: 'pagedate@mathieutreves.github.io',
-        strict_min_version: '109.0',
-      },
-      // Android is declared separately, and later: Firefox for Android only
-      // opened up to general add-ons in 120. It is also the only mobile browser
-      // worth targeting — Chrome for Android has no extensions at all, and
-      // Safari would need a native wrapper and an App Store listing.
-      //
-      // The toolbar badge is close to invisible there, since the icon lives
-      // inside the ⋮ menu. On Android the on-page readout is not a convenience,
-      // it is the only ambient surface available.
-      gecko_android: {
-        strict_min_version: '120.0',
-      },
-    },
+    // Only emitted for Firefox. Chrome ignores the key, but warns about it on
+    // the extensions page, and a manifest that carries nothing a store has to
+    // ask about is the easier review.
+    ...(browser === 'firefox'
+      ? {
+          browser_specific_settings: {
+            gecko: {
+              id: 'pagedate@mathieutreves.github.io',
+              // 128, not the 109 where MV3 arrived. Every optional feature here
+              // is requested through `optional_host_permissions`, and Firefox
+              // only recognises that key from 128 — before it, the key is
+              // ignored, `permissions.request` rejects an origin the manifest
+              // never declared, and every toggle in the options page fails
+              // while the extension installs and looks fine. 128 is also an ESR,
+              // so the floor excludes nobody on a supported release.
+              strict_min_version: '128.0',
+              // Required by AMO for new listings since November 2025, and shown
+              // to the reader at install. `none` is a claim about the code, not
+              // a default: nothing is sent to the developer or to any service
+              // of the developer's. docs/PRIVACY.md is the long form.
+              data_collection_permissions: {
+                required: ['none'],
+              },
+            },
+            // Android is declared separately. Firefox for Android opened up to
+            // general add-ons in 120, but the floor is the same 128 as desktop
+            // and for the same reason: the engine is the same, and so is the
+            // key it does not recognise before then. It is also the only mobile
+            // browser worth targeting — Chrome for Android has no extensions at
+            // all, and Safari would need a native wrapper and an App Store
+            // listing.
+            //
+            // The toolbar badge does not exist there, and the right-click menu
+            // does not either. On Android the on-page readout is not a
+            // convenience, it is the only ambient surface available.
+            gecko_android: {
+              strict_min_version: '128.0',
+            },
+          },
+        }
+      : {}),
   }),
 
   /**

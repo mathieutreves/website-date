@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import type { Candidate } from 'pagedate'
-import { checkLink, hostOf, toastFor, type MenuDeps, type MenuOutcome } from '../lib/link-menu.js'
+import {
+  checkingToast,
+  checkLink,
+  hostOf,
+  toastFor,
+  type MenuDeps,
+  type MenuOutcome,
+} from '../lib/link-menu.js'
+import { CHECKING_TTL_MS, paintToast, toastData } from '../lib/toast.js'
 import { dateFromUrl } from '../lib/link-date.js'
 
 const NOW = new Date('2026-07-28T12:00:00Z')
@@ -25,8 +33,11 @@ function deps(over: Partial<MenuDeps> = {}) {
       calls.push('requestOrigin')
       return true
     },
-    readInTab: async () => {
-      calls.push('readInTab')
+    releaseOrigin: async () => {
+      calls.push('releaseOrigin')
+    },
+    readPage: async () => {
+      calls.push('readPage')
       return [declared]
     },
     now: NOW,
@@ -46,19 +57,66 @@ describe('checkLink', () => {
     expect(calls).toEqual([])
   })
 
-  it('asks for one origin, then reads, when the URL says nothing', async () => {
+  it('asks for one origin, reads, and hands the origin back', async () => {
     const { deps: d, calls } = deps()
     const outcome = await checkLink('https://example.com/docs/thing', d)
 
     expect(outcome).toMatchObject({ kind: 'dated' })
-    expect(calls).toEqual(['hasOrigin', 'requestOrigin', 'readInTab'])
+    expect(calls).toEqual(['hasOrigin', 'requestOrigin', 'readPage', 'releaseOrigin'])
   })
 
-  it('does not prompt again when the grant already exists', async () => {
+  /*
+   * A permission prompt needs the click's user gesture, and Firefox counts it
+   * as spent after the first `await`. So the request has to have been *made*
+   * by the time `checkLink` first yields — which is what calling it and not
+   * awaiting it observes.
+   */
+  it('makes the permission request before it awaits anything', () => {
+    const { deps: d, calls } = deps({
+      // Never settles: if the request waited on this, it would never be made.
+      hasOrigin: () => {
+        calls.push('hasOrigin')
+        return new Promise<boolean>(() => {})
+      },
+    })
+
+    void checkLink('https://example.com/docs/thing', d)
+
+    expect(calls).toEqual(['hasOrigin', 'requestOrigin'])
+  })
+
+  /*
+   * An origin that was already granted belongs to a setting — automatic
+   * reading, or a search engine — and removing it would switch that feature
+   * off behind the reader's back.
+   */
+  it('leaves alone a grant that was there before the click', async () => {
     const { deps: d, calls } = deps({ hasOrigin: async () => true })
     await checkLink('https://example.com/docs/thing', d)
 
-    expect(calls).not.toContain('requestOrigin')
+    expect(calls).toContain('readPage')
+    expect(calls).not.toContain('releaseOrigin')
+  })
+
+  it('does not remove a grant it could not check', async () => {
+    const { deps: d, calls } = deps({
+      hasOrigin: async () => {
+        throw new Error('permissions unavailable')
+      },
+    })
+    await checkLink('https://example.com/docs/thing', d)
+
+    expect(calls).not.toContain('releaseOrigin')
+  })
+
+  it('hands the origin back when the read fails too', async () => {
+    const { deps: d, calls } = deps({
+      readPage: async () => {
+        throw new Error('tab closed')
+      },
+    })
+    expect(await checkLink('https://example.com/docs/thing', d)).toEqual({ kind: 'unreachable' })
+    expect(calls).toContain('releaseOrigin')
   })
 
   it('stops at "denied" and reads nothing when the prompt is refused', async () => {
@@ -66,19 +124,55 @@ describe('checkLink', () => {
     const outcome = await checkLink('https://example.com/docs/thing', d)
 
     expect(outcome).toEqual({ kind: 'denied' })
-    expect(calls).not.toContain('readInTab')
+    expect(calls).not.toContain('readPage')
+  })
+
+  it('treats a rejected request as a refusal', async () => {
+    const { deps: d } = deps({
+      requestOrigin: async () => {
+        throw new Error('may only be called from a user input handler')
+      },
+    })
+    expect(await checkLink('https://example.com/docs/thing', d)).toEqual({ kind: 'denied' })
+  })
+
+  it('says it is reading only once there is something to wait for', async () => {
+    const log: string[] = []
+    const { deps: d } = deps({
+      requestOrigin: async () => {
+        log.push('request')
+        return true
+      },
+      onReading: () => log.push('reading'),
+      readPage: async () => {
+        log.push('read')
+        return [declared]
+      },
+    })
+    await checkLink('https://example.com/docs/thing', d)
+    expect(log).toEqual(['request', 'reading', 'read'])
+
+    // The address answered, or the prompt was refused: nothing to announce.
+    const quiet: string[] = []
+    await checkLink('https://example.com/2019/03/04/post/', { ...d, onReading: () => quiet.push('x') })
+    await checkLink('https://example.com/docs/thing', {
+      ...d,
+      requestOrigin: async () => false,
+      onReading: () => quiet.push('x'),
+    })
+    expect(quiet).toEqual([])
   })
 
   it('distinguishes a page it could not read from one with no date', async () => {
     const unreadable = await checkLink(
       'https://example.com/docs/thing',
-      deps({ readInTab: async () => null }).deps,
+      deps({ readPage: async () => null }).deps,
     )
     expect(unreadable).toEqual({ kind: 'unreachable' })
 
     const empty = await checkLink(
       'https://example.com/docs/thing',
-      deps({ readInTab: async () => [] }).deps,
+      deps({ readPage: async () => [] }).deps,
     )
     expect(empty).toEqual({ kind: 'none' })
   })
@@ -88,14 +182,28 @@ describe('checkLink', () => {
     expect(await checkLink('javascript:alert(1)', d)).toEqual({ kind: 'none' })
     expect(calls).toEqual([])
   })
+})
 
-  it('survives a reader that throws', async () => {
-    const { deps: d } = deps({
-      readInTab: async () => {
-        throw new Error('tab closed')
-      },
-    })
-    expect(await checkLink('https://example.com/docs/thing', d)).toEqual({ kind: 'unreachable' })
+describe('the toast', () => {
+  it('has a "checking" state that says which site it is about', () => {
+    const toast = checkingToast('example.com')
+    expect(toast.heading).toMatch(/checking/i)
+    expect(toast.detail).toContain('example.com')
+  })
+
+  /*
+   * `paintToast` is serialised into the page, where there is no i18n to ask.
+   * The close button's name therefore has to arrive in the data, and a literal
+   * in the function body is English for every reader.
+   */
+  it('carries the dismiss label in, rather than hardcoding it in the page', () => {
+    expect(toastData(checkingToast('example.com')).dismissLabel).toBe('Dismiss')
+    expect(paintToast.toString()).toContain('data.dismissLabel')
+    expect(paintToast.toString()).not.toMatch(/['"]Dismiss['"]/)
+  })
+
+  it('keeps "checking" on screen longer than the fetch can take', () => {
+    expect(CHECKING_TTL_MS).toBeGreaterThan(8000)
   })
 })
 

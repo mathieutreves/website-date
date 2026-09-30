@@ -2,7 +2,7 @@ import { cacheStats, clearCache } from '../../lib/analyze.js'
 import { t, uiLanguage } from '../../lib/messages.js'
 import {
   ARCHIVE_ORIGINS,
-  getSettings,
+  reconcileGrants,
   saveSettings,
   setAutoRead,
   setSearchAnnotate,
@@ -33,8 +33,14 @@ document.title = t('optTitle')
 
 void render()
 
+/**
+ * Drawn from the settings *as reconciled with the grants*, not from storage
+ * alone. A grant revoked in the browser's own permissions page leaves the
+ * stored setting saying "on", and a page that rendered it would be showing a
+ * state that is not real — the thing the rule above exists to prevent.
+ */
 async function render(): Promise<void> {
-  const [settings, stats] = await Promise.all([getSettings(), cacheStats()])
+  const [settings, stats] = await Promise.all([reconcileGrants(), cacheStats()])
   app.innerHTML = optionsView(settings, stats)
   wire()
 }
@@ -80,14 +86,24 @@ function wire(): void {
 
       // "Never" needs no grant, so it also hands back any grant already given.
       if (mode === 'off') {
-        await browser.permissions.remove({ origins: ARCHIVE_ORIGINS }).catch(() => false)
         await saveSettings({ archive: 'off' })
+        await browser.permissions.remove({ origins: ARCHIVE_ORIGINS }).catch(() => false)
         return
       }
 
       // "Always" means no further prompting, so the grant has to be taken now.
       // "Ask each time" deliberately does not: it is requested from the popup
-      // button, where the click is the user gesture the browser requires.
+      // button, where the click is the user gesture the browser requires — and
+      // stepping down to it from "Always" gives back the grant that mode held,
+      // or the next "ask" would not be one.
+      // Saved before the grant goes, so nothing watching the grant disappear
+      // finds a setting that still claims it.
+      if (mode === 'ask') {
+        await saveSettings({ archive: 'ask' })
+        await browser.permissions.remove({ origins: ARCHIVE_ORIGINS }).catch(() => false)
+        return
+      }
+
       if (mode === 'always') {
         const granted = await browser.permissions
           .request({ origins: ARCHIVE_ORIGINS })

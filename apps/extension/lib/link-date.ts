@@ -1,6 +1,7 @@
 import {
   extractFromDocument,
   extractUrlSlug,
+  isSafeFetchTarget,
   resolveCandidates,
   type Candidate,
   type DateResult,
@@ -29,8 +30,8 @@ import {
  * different proposition from anything else this extension does, and it is why
  * the fetch tier is opt-in, capped, and asks for its own permission.
  *
- * Everything here is pure apart from the injected `fetchDocument`, so both
- * tiers are testable without a browser.
+ * Everything here is pure apart from the injected `fetchDocument` and the
+ * injectable `fetch`, so both tiers are testable without a browser.
  */
 
 export type LinkTier = 'url' | 'fetch'
@@ -69,12 +70,12 @@ export function dateFromUrl(url: string, now: Date = new Date()): LinkDate | nul
 /**
  * Fetch a page and read its dates the way the popup would.
  *
- * `fetchDocument` is injected because *where* this runs is the whole point: it
- * must run in a tab, not in the service worker. Chrome's MV3 worker has no
+ * `fetchDocument` is injected because *where* each half runs is the whole
+ * point. The parse must happen in a tab: Chrome's MV3 worker has no
  * `DOMParser`, and shipping one to work around that would mean bundling a
  * parser into an extension whose entire premise is that the browser already has
- * one. A content script has both `fetch` and `DOMParser`, so the work happens
- * there and only the result crosses back.
+ * one. The request must happen in the worker: a tab's `fetch` answers to the
+ * page's CORS policy. See {@link fetchPageText}.
  *
  * No `Env` is passed to the resolver, so no feed and no sitemap are consulted:
  * one request per link is the budget, and a link check that quietly became
@@ -137,40 +138,126 @@ export async function dateLink(
 }
 
 /**
- * Parse a fetched page into a Document, in a context that has a real parser.
- *
- * Serialised into the tab by `executeScript`, so it closes over nothing and
- * names no import. `text/html` rather than `text/xml`: an HTML parser applied
- * to real-world markup recovers from the tag soup that a strict XML parse
- * rejects outright, and this is being handed whatever the open web returns.
+ * How much of a page is read. Dates live in the head and in the first screens
+ * of markup, so a body cut off here still parses and still answers; what the
+ * cap prevents is a link to a 400 MB log file being pulled through the worker
+ * and posted into a tab in one piece.
  */
-export function makeTabFetcher(timeoutMs = 8000) {
-  return async (url: string): Promise<Document | null> => {
-    const controller = new AbortController()
-    const timer = setTimeout(() => controller.abort(), timeoutMs)
-    try {
-      const response = await fetch(url, {
-        // No cookies. The point is to read a public page, not to see the
-        // reader's logged-in view of it — and sending credentials to a site
-        // the reader has not visited is exactly the thing this must not do.
-        credentials: 'omit',
-        redirect: 'follow',
-        signal: controller.signal,
-      })
-      if (!response.ok) return null
+export const MAX_PAGE_BYTES = 2 * 1024 * 1024
 
-      const type = response.headers.get('content-type') ?? ''
-      // A PDF or an image would parse into an empty document and read as "no
-      // date here", which is a different and less honest answer than "this is
-      // not a page I can read".
-      if (type && !/^\s*text\/html|^\s*application\/xhtml/i.test(type)) return null
+export type FetchPageOptions = {
+  timeoutMs?: number
+  maxBytes?: number
+  /**
+   * Refuse a URL, or a redirect's destination, that `isSafeFetchTarget`
+   * rejects. Set wherever the URL was chosen by a page rather than by the
+   * reader — see lib/fetch-relay.ts.
+   */
+  publicOnly?: boolean
+  fetchImpl?: typeof fetch
+}
 
-      return new DOMParser().parseFromString(await response.text(), 'text/html')
-    } catch {
-      return null
-    } finally {
-      clearTimeout(timer)
+/**
+ * Fetch a page's markup as text. Runs in the background worker, and only there.
+ *
+ * This used to be a `fetch` in the tab, beside the `DOMParser` that reads the
+ * answer, and it could not work: a content script's requests are subject to
+ * the *page's* CORS policy whatever host permissions the extension holds, so
+ * every cross-origin read — which is nearly every link anyone right-clicks,
+ * and every search result by definition — failed after the reader had granted
+ * the permission for it. Host permissions lift CORS for the extension's own
+ * contexts, and the worker is one.
+ *
+ * So the job is split along the line each half can do: the worker, which may
+ * make the request, fetches text; the tab, which has a parser, turns it into a
+ * document ({@link parseHtml}). The markup crosses one boundary as a string,
+ * which is the copy `extract.ts` exists to avoid for the page already on
+ * screen and cannot be avoided for one that is not.
+ */
+export async function fetchPageText(url: string, options: FetchPageOptions = {}): Promise<string | null> {
+  const { timeoutMs = 8000, maxBytes = MAX_PAGE_BYTES, publicOnly = false } = options
+  const doFetch = options.fetchImpl ?? fetch
+
+  if (!/^https?:/i.test(url)) return null
+  if (publicOnly && !isSafeFetchTarget(url)) return null
+
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
+  try {
+    const response = await doFetch(url, {
+      // No cookies. The point is to read a public page, not to see the
+      // reader's logged-in view of it — and sending credentials to a site
+      // the reader has not visited is exactly the thing this must not do.
+      credentials: 'omit',
+      redirect: 'follow',
+      signal: controller.signal,
+    })
+    if (!response.ok) return null
+
+    // `fetch` cannot be asked to vet each hop, only to follow or not, so a
+    // redirect is judged by where it ended up. The request has been made by
+    // then; what this withholds is the body.
+    if (publicOnly && response.url && !isSafeFetchTarget(response.url)) return null
+
+    const type = response.headers.get('content-type') ?? ''
+    // A PDF or an image would parse into an empty document and read as "no
+    // date here", which is a different and less honest answer than "this is
+    // not a page I can read".
+    if (type && !/^\s*text\/html|^\s*application\/xhtml/i.test(type)) return null
+
+    return await readCapped(response, maxBytes)
+  } catch {
+    return null
+  } finally {
+    // Also stops a body still streaming when the cap was reached.
+    controller.abort()
+    clearTimeout(timer)
+  }
+}
+
+/**
+ * The body as text, stopping at `maxBytes`. Decoded as UTF-8, which is what
+ * `response.text()` does too; the dates being looked for are ASCII in every
+ * encoding a page is likely to be served in.
+ */
+async function readCapped(response: Response, maxBytes: number): Promise<string> {
+  const reader = response.body?.getReader()
+  if (!reader) return (await response.text()).slice(0, maxBytes)
+
+  const decoder = new TextDecoder()
+  let text = ''
+  let received = 0
+
+  for (;;) {
+    const { done, value } = await reader.read()
+    if (done) break
+    const room = maxBytes - received
+    if (value.byteLength >= room) {
+      text += decoder.decode(value.subarray(0, room))
+      await reader.cancel().catch(() => {})
+      return text
     }
+    received += value.byteLength
+    text += decoder.decode(value, { stream: true })
+  }
+
+  return text + decoder.decode()
+}
+
+/**
+ * Parse fetched markup into a Document, in a context that has a real parser —
+ * a tab. `text/html` rather than `text/xml`: an HTML parser applied to
+ * real-world markup recovers from the tag soup that a strict XML parse rejects
+ * outright, and this is being handed whatever the open web returns.
+ *
+ * The result is inert: a document made by `DOMParser` runs no script and loads
+ * no subresource, so parsing a stranger's page inside a tab executes nothing.
+ */
+export function parseHtml(html: string): Document | null {
+  try {
+    return new DOMParser().parseFromString(html, 'text/html')
+  } catch {
+    return null
   }
 }
 

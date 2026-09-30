@@ -1,4 +1,5 @@
 import type { Toast } from './link-menu.js'
+import { t } from './messages.js'
 
 /**
  * The transient readout for a right-click check.
@@ -20,9 +21,26 @@ export const TOAST_ID = 'pagedate-toast-8f2a'
 export type ToastData = Toast & {
   /** Milliseconds before it removes itself. */
   ttlMs: number
+  /**
+   * The close button's accessible name. Carried in the data because the
+   * renderer is serialised into the page, where there is no `i18n` to ask — a
+   * literal written there is English for every reader, in a control whose only
+   * text is what a screen reader announces.
+   */
+  dismissLabel: string
 }
 
-export const toastData = (toast: Toast, ttlMs = 9000): ToastData => ({ ...toast, ttlMs })
+export const toastData = (toast: Toast, ttlMs = 9000): ToastData => ({
+  ...toast,
+  ttlMs,
+  dismissLabel: t('toastDismiss'),
+})
+
+/**
+ * How long the "checking…" toast may stay: a little past the fetch timeout, so
+ * it is always replaced by an answer rather than expiring into silence.
+ */
+export const CHECKING_TTL_MS = 12_000
 
 /**
  * Injected into the page. MUST be self-contained — see the note on
@@ -109,7 +127,7 @@ export const paintToast = (data: ToastData): void => {
   const close = document.createElement('button')
   close.className = 'close'
   close.textContent = '×'
-  close.setAttribute('aria-label', 'Dismiss')
+  close.setAttribute('aria-label', data.dismissLabel)
   close.addEventListener('click', () => host.remove())
 
   text.append(heading, detail)

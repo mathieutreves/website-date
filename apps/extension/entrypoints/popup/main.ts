@@ -1,4 +1,4 @@
-import { analyze, cacheKey } from '../../lib/analyze.js'
+import { analyze, dropCache } from '../../lib/analyze.js'
 import { ARCHIVE_ORIGINS, getSettings } from '../../lib/settings.js'
 import { t, uiLanguage } from '../../lib/messages.js'
 import { errorView, unsupportedView, view } from './render.js'
@@ -51,7 +51,11 @@ async function main(withArchive = false): Promise<void> {
       (settings.archive === 'always' &&
         (await browser.permissions.contains({ origins: ARCHIVE_ORIGINS }).catch(() => false)))
 
-    const analysis = await analyze(tab.id, url, { withArchive: archiveNow })
+    // A private window leaves nothing on disk: the result is shown and not kept.
+    const analysis = await analyze(tab.id, url, {
+      withArchive: archiveNow,
+      persist: !tab.incognito,
+    })
 
     if ('error' in analysis) {
       render(errorView(t('errorUnreadable')))
@@ -82,18 +86,32 @@ function render(html: string): void {
 
 async function refresh(): Promise<void> {
   const [tab] = await browser.tabs.query({ active: true, currentWindow: true })
-  if (tab?.url) await browser.storage.local.remove(cacheKey(tab.url))
+  if (tab?.url) await dropCache(tab.url)
   app.innerHTML = `<div class="state">${t('loading')}</div>`
   await main()
 }
 
-/** The click is the consent, and the gesture the permission prompt needs. */
+/**
+ * The click is the consent, and the gesture the permission prompt needs — so
+ * the request is the first thing awaited here, before any settings read.
+ *
+ * "Ask each time" has to mean each time. The grant used to be kept after the
+ * first lookup, which made the second click a silent request to the archive
+ * under a label that promised a question. It is handed back as soon as the
+ * lookup is done, unless the reader has since chosen "Always", which owns it.
+ */
 async function checkArchive(): Promise<void> {
   const granted = await browser.permissions
     .request({ origins: ARCHIVE_ORIGINS })
     .catch(() => false)
   if (!granted) return
 
-  app.innerHTML = `<div class="state">${t('archiveChecking')}</div>`
-  await main(true)
+  try {
+    app.innerHTML = `<div class="state">${t('archiveChecking')}</div>`
+    await main(true)
+  } finally {
+    if ((await getSettings()).archive !== 'always') {
+      await browser.permissions.remove({ origins: ARCHIVE_ORIGINS }).catch(() => false)
+    }
+  }
 }

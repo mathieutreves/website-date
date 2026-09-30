@@ -1,13 +1,28 @@
 import type { Candidate } from 'pagedate'
-import { analyze } from '../lib/analyze.js'
+import { analyze, pruneCache } from '../lib/analyze.js'
 import { badgeFor } from '../lib/badge.js'
-import { checkLink, hostOf, toastFor } from '../lib/link-menu.js'
-import { acceptLinkRead, LINK_REQUEST_GLOBAL, LINK_RESULT_GLOBAL } from '../lib/link-read.js'
+import {
+  fetchBudget,
+  isFetchRequest,
+  refusal,
+  type FetchReply,
+  type FetchRequest,
+  type RelaySender,
+} from '../lib/fetch-relay.js'
+import { fetchPageText } from '../lib/link-date.js'
+import { checkingToast, checkLink, hostOf, toastFor } from '../lib/link-menu.js'
+import {
+  acceptLinkRead,
+  LINK_REQUEST_GLOBAL,
+  LINK_RESULT_GLOBAL,
+  type LinkRequest,
+} from '../lib/link-read.js'
+import { registrationPlan } from '../lib/registration.js'
 import { SEARCH_MATCHES, SEARCH_ORIGINS } from '../lib/search-sites.js'
 import { t } from '../lib/messages.js'
 import { clearOverlay, overlayData, paintOverlay } from '../lib/overlay.js'
-import { paintToast, toastData } from '../lib/toast.js'
-import { AUTO_READ_ORIGINS, getSettings } from '../lib/settings.js'
+import { CHECKING_TTL_MS, paintToast, toastData, type ToastData } from '../lib/toast.js'
+import { AUTO_READ_ORIGINS, getSettings, reconcileGrants } from '../lib/settings.js'
 
 /**
  * Optional background pass: read each page as you browse, put its age on the
@@ -26,7 +41,14 @@ export default defineBackground(() => {
    * Single-page apps change the URL without a page load, so a read fired on
    * navigation races the render. This is the settle delay before reading, and
    * `analyze` additionally refuses any read whose `location.href` no longer
-   * matches — belt and braces, because a wrong read gets cached for a week.
+   * matches.
+   *
+   * Neither is enough to *cache* such a read. The URL changes before the head
+   * metadata does, so a read can match the new address and still describe the
+   * previous route, and no delay is long enough to be sure it has caught up. A
+   * read with no page load behind it is therefore shown and not stored — see
+   * `persist` below, and `isSoftNavigated` in lib/analyze.ts for the same rule
+   * applied from inside the page.
    */
   const SPA_SETTLE_MS = 400
   const RETRY_MS = 700
@@ -38,13 +60,6 @@ export default defineBackground(() => {
    */
   const generation = new Map<number, number>()
 
-  /**
-   * Tabs we have actually drawn into. Injecting a removal script into every
-   * page on every navigation, on the chance something is there, is exactly the
-   * kind of gratuitous page access this extension is built to avoid.
-   */
-  const painted = new Set<number>()
-
   const granted = async (): Promise<boolean> => {
     try {
       return await browser.permissions.contains({ origins: AUTO_READ_ORIGINS })
@@ -55,7 +70,17 @@ export default defineBackground(() => {
 
   const wait = (ms: number): Promise<void> => new Promise((done) => setTimeout(done, ms))
 
-  async function update(tabId: number, url: string | undefined, spa: boolean): Promise<void> {
+  type UpdateOptions = {
+    /** The URL changed with no page load behind it. */
+    spa?: boolean
+    /** A private window: read and show, write nothing to disk. */
+    incognito?: boolean
+    /** Remove any overlay even if automatic reading is off — a setting just changed. */
+    sweep?: boolean
+  }
+
+  async function update(tabId: number, url: string | undefined, options: UpdateOptions = {}): Promise<void> {
+    const { spa = false, incognito = false, sweep = false } = options
     const mine = (generation.get(tabId) ?? 0) + 1
     generation.set(tabId, mine)
     const current = () => generation.get(tabId) === mine
@@ -63,37 +88,29 @@ export default defineBackground(() => {
     const settings = await getSettings()
     const on = settings.autoRead && (await granted())
 
-    if (!url || !/^https?:/i.test(url) || !on) {
-      await clear(tabId)
-      return
-    }
-
     // Whatever is on screen belongs to the previous page. Clearing first means
     // a slow read shows nothing rather than something wrong.
-    await clear(tabId)
+    await clear(tabId, on || sweep)
+    if (!url || !/^https?:/i.test(url) || !on) return
+
     if (spa) await wait(SPA_SETTLE_MS)
     if (!current()) return
 
-    let analysis = await analyze(tabId, url, { expectUrl: url })
+    const read = { expectUrl: url, persist: !spa && !incognito }
+    let analysis = await analyze(tabId, url, read)
 
     // A refused read on an SPA usually means the new view had not rendered.
-    // One more attempt, then give up rather than cache a guess.
+    // One more attempt, then give up rather than show a guess.
     if ('error' in analysis && spa) {
       await wait(RETRY_MS)
       if (!current()) return
-      analysis = await analyze(tabId, url, { expectUrl: url })
+      analysis = await analyze(tabId, url, read)
     }
 
     if (!current() || 'error' in analysis) return
 
     const badge = badgeFor(analysis.result, new Date())
-    try {
-      await browser.action.setBadgeText({ tabId, text: badge.text })
-      await browser.action.setBadgeBackgroundColor({ tabId, color: badge.color })
-      await browser.action.setTitle({ tabId, title: `${t('extName')} — ${badge.title}` })
-    } catch {
-      // A tab that closed mid-analysis. Nothing to report to.
-    }
+    await setBadge(tabId, badge.text, `${t('extName')} — ${badge.title}`, badge.color)
 
     const data = overlayData(
       analysis.result,
@@ -110,26 +127,61 @@ export default defineBackground(() => {
         func: paintOverlay,
         args: [data],
       })
-      painted.add(tabId)
     } catch {
       // Pages that refuse injection (the extension gallery, PDF viewers).
     }
   }
 
-  async function clear(tabId: number, force = false): Promise<void> {
+  /**
+   * Each call guarded on its own. Firefox for Android has an action but no
+   * badge on it, and one missing method must not cost the tooltip as well.
+   */
+  async function setBadge(tabId: number, text: string, title: string, color?: string): Promise<void> {
     try {
-      await browser.action.setBadgeText({ tabId, text: '' })
-      await browser.action.setTitle({ tabId, title: t('extName') })
+      await browser.action.setBadgeText?.({ tabId, text })
+      if (color) await browser.action.setBadgeBackgroundColor?.({ tabId, color })
+      await browser.action.setTitle?.({ tabId, title })
     } catch {
-      // Tab is gone.
+      // A tab that closed mid-analysis. Nothing to report to.
     }
+  }
 
-    if (!force && !painted.has(tabId)) return
-    painted.delete(tabId)
+  /**
+   * Reset the badge and, if `overlay` is set, remove the on-page readout.
+   *
+   * The removal is an injection, and whether to make it used to be decided by
+   * an in-memory set of tabs this worker had drawn into — on the principle that
+   * injecting into every page on the chance something is there is gratuitous
+   * page access. The principle stands; the set did not survive the worker
+   * idling out, after which a single-page app's overlay from the previous route
+   * was left on screen because nothing remembered drawing it.
+   *
+   * So the question asked is the one that needs no memory: is automatic reading
+   * on, with its grant? If so this tab is about to be read anyway, and removing
+   * a stale readout first is part of that read. If not, nothing is injected —
+   * except when a setting has just changed, where it is the only way to take
+   * down what the old setting put up.
+   */
+  async function clear(tabId: number, overlay: boolean): Promise<void> {
+    await setBadge(tabId, '', t('extName'))
+
+    if (!overlay) return
     try {
       await browser.scripting.executeScript({ target: { tabId }, func: clearOverlay })
     } catch {
       // No overlay to remove, or injection refused.
+    }
+  }
+
+  /** Re-read every open tab, removing whatever a previous setting drew. */
+  const sweep = async (): Promise<void> => {
+    try {
+      for (const tab of await browser.tabs.query({})) {
+        if (tab.id === undefined) continue
+        await update(tab.id, tab.url, { incognito: tab.incognito, sweep: true })
+      }
+    } catch {
+      // No tabs to sweep.
     }
   }
 
@@ -140,16 +192,26 @@ export default defineBackground(() => {
    * badge showing the previous page indefinitely.
    */
   browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.url) void update(tabId, changeInfo.url, changeInfo.status !== 'loading')
-    else if (changeInfo.status === 'complete') void update(tabId, tab.url, false)
+    // A new document in this tab is a new page for the fetch cap below.
+    if (changeInfo.status === 'loading') budget.forget(tabId)
+
+    const { incognito } = tab
+    if (changeInfo.url) {
+      void update(tabId, changeInfo.url, { spa: changeInfo.status !== 'loading', incognito })
+    } else if (changeInfo.status === 'complete') void update(tabId, tab.url, { incognito })
   })
 
   browser.tabs.onActivated.addListener(({ tabId }) => {
-    void browser.tabs.get(tabId).then((tab) => update(tabId, tab.url, false))
+    void browser.tabs
+      .get(tabId)
+      .then((tab) => update(tabId, tab.url, { incognito: tab.incognito }))
+      // Activated and closed before this ran: there is no tab to describe.
+      .catch(() => {})
   })
 
   browser.tabs.onRemoved.addListener((tabId) => {
     generation.delete(tabId)
+    budget.forget(tabId)
   })
 
   // Turning a setting off has to take effect on tabs already showing a badge or
@@ -158,16 +220,7 @@ export default defineBackground(() => {
     if (areaName !== 'local' || !changes.settings) return
     void syncMenu()
     void syncAnnotator()
-    void browser.tabs.query({}).then(async (tabs) => {
-      for (const tab of tabs) {
-        if (tab.id === undefined) continue
-        // Forced, because the worker may have restarted since painting and
-        // lost track of which tabs carry an overlay — leaving one stranded on
-        // a page after the setting that created it was switched off.
-        await clear(tab.id, true)
-        await update(tab.id, tab.url, false)
-      }
-    })
+    void sweep()
   })
 
   // ------------------------------------------------------- right-click a link
@@ -179,11 +232,11 @@ export default defineBackground(() => {
    *
    * Both syncs below are read-modify-write against browser-global state, and
    * both are triggered from four places — install, startup, a settings change,
-   * and worker start. Two overlapping runs each await their teardown, then each
-   * perform their setup, and the second `contextMenus.create` fails with
-   * `Cannot create item with duplicate id`. `await` inside the function does not
-   * help; the interleaving is between separate invocations, so the queue has to
-   * be outside them.
+   * and worker start. Two overlapping runs each read the state, then each act
+   * on what they read, and the second acts on something the first has already
+   * changed: a registration made twice, or one removed by the run that lost.
+   * `await` inside the function does not help; the interleaving is between
+   * separate invocations, so the queue has to be outside them.
    *
    * The chain always continues from a *settled* promise, so one failing sync
    * cannot wedge every later one behind a rejection — and what the caller gets
@@ -205,27 +258,46 @@ export default defineBackground(() => {
   /**
    * Create or remove the menu entry to match the setting.
    *
-   * `removeAll` then recreate, rather than tracking whether it exists: the
-   * worker is evicted and restarted freely in MV3, so any flag it keeps about
-   * what it has already registered is a guess. `create` on an existing id is an
-   * error, and a stale entry left behind by a previous worker generation is the
-   * normal case rather than the odd one.
+   * There is no way to ask which entries exist, and the worker is evicted and
+   * restarted freely in MV3, so any flag it keeps about what it has already
+   * registered is a guess. This used to settle that with `removeAll` and a
+   * fresh `create` on every start — which left a moment with no entry at all,
+   * on every wake, for a right-click to land in.
+   *
+   * So it creates, and treats "duplicate id" as the answer to the question it
+   * could not ask: the entry is there already, and only its title — which
+   * follows the browser's language — is refreshed. Nothing is torn down unless
+   * the setting is off.
+   *
+   * `contextMenus` does not exist on Firefox for Android; hence the guard.
    */
   const syncMenu = (): Promise<void> =>
     menuQueue(async () => {
-      try {
-        await browser.contextMenus.removeAll()
-        const { linkMenu } = await getSettings()
-        if (!linkMenu) return
+      const menus = browser.contextMenus
+      if (!menus) return
 
-        // The callback form, so `runtime.lastError` is read. `create` reports
-        // failure only through it, and an unread lastError is logged by Chrome
-        // as an unchecked error against the extension.
-        browser.contextMenus.create({ id: MENU_ID, title: t('menuCheckLink'), contexts: ['link'] }, () => {
-          void browser.runtime.lastError
+      try {
+        const { linkMenu } = await getSettings()
+        if (!linkMenu) {
+          await menus.remove(MENU_ID).catch(() => {})
+          return
+        }
+
+        const title = t('menuCheckLink')
+        await new Promise<void>((done) => {
+          // The callback form, so `runtime.lastError` is read. `create` reports
+          // failure only through it, and an unread lastError is logged by
+          // Chrome as an unchecked error against the extension.
+          menus.create({ id: MENU_ID, title, contexts: ['link'] }, () => {
+            if (!browser.runtime.lastError) return done()
+            void menus
+              .update(MENU_ID, { title })
+              .catch(() => {})
+              .then(() => done())
+          })
         })
       } catch {
-        // Firefox before the menus API settled, or a worker torn down mid-call.
+        // A worker torn down mid-call.
       }
     })
 
@@ -243,34 +315,45 @@ export default defineBackground(() => {
    * including the majority who never turn the feature on. See the note at the
    * top of entrypoints/annotate.content.ts.
    *
-   * Unregister-then-register rather than checking what exists, for the same
-   * reason `syncMenu` does: the worker is evicted freely, so anything it
-   * remembers about its own past registrations is a guess.
+   * The browser is asked what is registered, and the registration is changed
+   * only if that differs from what is wanted. See lib/registration.ts for why
+   * this is not the unregister-then-register it used to be.
    */
   const syncAnnotator = (): Promise<void> =>
     annotatorQueue(async () => {
       try {
-        await browser.scripting.unregisterContentScripts({ ids: [ANNOTATOR_ID] }).catch(() => {})
-
         const { searchAnnotate } = await getSettings()
-        if (searchAnnotate === 'off') return
 
-        // The grant can be revoked from the browser's own UI without this
-        // extension hearing about it, and registering against origins we do not
-        // hold throws.
-        const granted = await browser.permissions
-          .contains({ origins: SEARCH_ORIGINS })
-          .catch(() => false)
-        if (!granted) return
+        // The grant can be revoked from the browser's own UI, and registering
+        // against origins we do not hold throws.
+        const held =
+          searchAnnotate !== 'off' &&
+          (await browser.permissions.contains({ origins: SEARCH_ORIGINS }).catch(() => false))
 
-        await browser.scripting.registerContentScripts([
-          {
-            id: ANNOTATOR_ID,
-            js: [ANNOTATE_SCRIPT],
-            matches: SEARCH_MATCHES,
-            runAt: 'document_idle',
-          },
-        ])
+        const script = {
+          id: ANNOTATOR_ID,
+          js: [ANNOTATE_SCRIPT],
+          matches: SEARCH_MATCHES,
+          runAt: 'document_idle' as const,
+        }
+
+        const [existing] = await browser.scripting
+          .getRegisteredContentScripts({ ids: [ANNOTATOR_ID] })
+          .catch(() => [])
+
+        switch (registrationPlan(existing, held ? script : null)) {
+          case 'keep':
+            return
+          case 'unregister':
+            await browser.scripting.unregisterContentScripts({ ids: [ANNOTATOR_ID] })
+            return
+          case 'register':
+            await browser.scripting.registerContentScripts([script])
+            return
+          case 'replace':
+            // In place: there is no moment at which nothing is registered.
+            await browser.scripting.updateContentScripts([script])
+        }
       } catch {
         // Nothing here is recoverable and none of it is worth breaking the rest
         // of the worker's startup for.
@@ -287,36 +370,93 @@ export default defineBackground(() => {
   })
 
   // A grant revoked from the browser's own permissions UI has to take the
-  // registration down with it, or the script stays registered and inert.
-  browser.permissions.onRemoved?.addListener(() => void syncAnnotator())
+  // setting that depended on it down too, or the options page goes on showing
+  // a feature as on that has stopped working. Saving the corrected settings
+  // fires `storage.onChanged` above, which clears what the feature had drawn.
+  browser.permissions.onRemoved?.addListener(() => {
+    void reconcileGrants()
+      .catch(() => {})
+      .then(() => syncAnnotator())
+  })
   browser.permissions.onAdded?.addListener(() => void syncAnnotator())
 
-  browser.contextMenus.onClicked.addListener((info, tab) => {
+  /*
+   * Optional-chained because this runs at the top level of the worker: on
+   * Firefox for Android there is no `contextMenus`, and a TypeError here would
+   * abort the script before the listeners below it were registered.
+   *
+   * The handler is synchronous up to the permission request, and has to be.
+   * See `checkLink`.
+   */
+  browser.contextMenus?.onClicked.addListener((info, tab) => {
     if (info.menuItemId !== MENU_ID || !info.linkUrl || tab?.id === undefined) return
-    void onLinkClicked(info.linkUrl, tab.id)
+    onLinkClicked(info.linkUrl, tab.id)
   })
 
-  async function onLinkClicked(linkUrl: string, tabId: number): Promise<void> {
-    const settings = await getSettings()
+  /**
+   * Origins this worker asked for on behalf of a click, and how many checks in
+   * flight are relying on each. Two quick clicks on links to the same site
+   * share one grant; it goes back when the last of them has its answer, not
+   * when the first does.
+   */
+  const borrowed = new Map<string, number>()
 
-    const toast = async (data: Parameters<typeof paintToast>[0]): Promise<void> => {
-      try {
-        await browser.scripting.executeScript({ target: { tabId }, func: paintToast, args: [data] })
-      } catch {
-        // The page refuses injection. There is nowhere to put the answer, and a
-        // notification would be a second permission for an edge case.
-      }
+  const hadOrigin = async (pattern: string): Promise<boolean> => {
+    const others = borrowed.get(pattern)
+    // Held only because an earlier click borrowed it: that is not "already had".
+    const had =
+      others === undefined &&
+      (await browser.permissions.contains({ origins: [pattern] }).catch(() => true))
+    if (!had) borrowed.set(pattern, (borrowed.get(pattern) ?? 0) + 1)
+    return had
+  }
+
+  const releaseOrigin = async (pattern: string): Promise<void> => {
+    const left = (borrowed.get(pattern) ?? 1) - 1
+    if (left > 0) {
+      borrowed.set(pattern, left)
+      return
+    }
+    borrowed.delete(pattern)
+    await browser.permissions.remove({ origins: [pattern] }).catch(() => false)
+  }
+
+  function onLinkClicked(linkUrl: string, tabId: number): void {
+    const host = hostOf(linkUrl)
+
+    // Chained, so the answer can never be painted before the "checking…" it
+    // replaces and then be overwritten by it.
+    let painting: Promise<void> = Promise.resolve()
+    const toast = (data: ToastData): Promise<void> => {
+      painting = painting.then(async () => {
+        try {
+          await browser.scripting.executeScript({ target: { tabId }, func: paintToast, args: [data] })
+        } catch {
+          // The page refuses injection. There is nowhere to put the answer, and
+          // a notification would be a second permission for an edge case.
+        }
+      })
+      return painting
     }
 
-    const outcome = await checkLink(linkUrl, {
-      hasOrigin: (pattern) =>
-        browser.permissions.contains({ origins: [pattern] }).catch(() => false),
-      requestOrigin: (pattern) =>
-        browser.permissions.request({ origins: [pattern] }).catch(() => false),
-      readInTab: (url) => readLinkInTab(tabId, url),
+    // Called here, in the click's own tick: nothing may be awaited before the
+    // permission request inside it. The settings are read afterwards.
+    const outcome = checkLink(linkUrl, {
+      hasOrigin: hadOrigin,
+      requestOrigin: (pattern) => browser.permissions.request({ origins: [pattern] }),
+      releaseOrigin,
+      readPage: (url) => readLink(tabId, url),
+      // Up to eight seconds can pass before there is an answer, and until now
+      // they passed in silence.
+      onReading: () => void toast(toastData(checkingToast(host), CHECKING_TTL_MS)),
     })
 
-    await toast(toastData(toastFor(outcome, hostOf(linkUrl), new Date(), settings.dateFormat)))
+    void outcome
+      .then(async (result) => {
+        const { dateFormat } = await getSettings()
+        await toast(toastData(toastFor(result, host, new Date(), dateFormat)))
+      })
+      .catch(() => {})
   }
 
   /** Built by WXT from `entrypoints/link-extract.ts`. Root-relative, per {@link EXTRACT_SCRIPT}. */
@@ -326,22 +466,30 @@ export default defineBackground(() => {
   const ANNOTATE_SCRIPT = 'content-scripts/annotate.js'
 
   /**
-   * Fetch and extract a linked page, in the tab.
+   * Fetch a linked page here, and extract from it in the tab.
+   *
+   * The request is made by the worker because the grant only lifts CORS for
+   * the extension's own contexts; the parse happens in the tab because the
+   * worker has no `DOMParser`. See `fetchPageText`.
    *
    * Three injections, for the reason given in `lib/link-read.ts`:
-   * `executeScript({ files })` accepts no arguments, so the URL is written into
-   * the isolated world first, the bundle reads it, and a third call reads the
-   * answer back. All three land in the same isolated world, invisible to the
-   * page.
+   * `executeScript({ files })` accepts no arguments, so the request is written
+   * into the isolated world first, the bundle reads it, and a third call reads
+   * the answer back. All three land in the same isolated world, invisible to
+   * the page.
    */
-  async function readLinkInTab(tabId: number, url: string): Promise<Candidate[] | null> {
+  async function readLink(tabId: number, url: string): Promise<Candidate[] | null> {
     try {
+      const html = await fetchPageText(url)
+      if (html === null) return null
+
+      const request: LinkRequest = { url, html }
       await browser.scripting.executeScript({
         target: { tabId },
-        func: (key: string, value: string) => {
+        func: (key: string, value: LinkRequest) => {
           ;(globalThis as unknown as Record<string, unknown>)[key] = value
         },
-        args: [LINK_REQUEST_GLOBAL, url],
+        args: [LINK_REQUEST_GLOBAL, request],
       })
 
       await browser.scripting.executeScript({ target: { tabId }, files: [LINK_EXTRACT_SCRIPT] })
@@ -358,6 +506,43 @@ export default defineBackground(() => {
     }
   }
 
+  // ------------------------------------------- fetching for the annotator
+
+  const budget = fetchBudget()
+
+  /**
+   * Decide, then fetch. Every condition is in `refusal` — see
+   * lib/fetch-relay.ts for what is being guarded and why.
+   */
+  async function relay(message: FetchRequest, sender: RelaySender): Promise<FetchReply> {
+    const [settings, held] = await Promise.all([getSettings(), granted()])
+
+    const refused = refusal(message, sender, {
+      extensionId: browser.runtime.id,
+      fetchTier: settings.searchAnnotate === 'fetch',
+      granted: held,
+    })
+    if (refused || sender.tab?.id === undefined) return null
+    if (!budget.take(sender.tab.id)) return null
+
+    const html = await fetchPageText(message.url, { publicOnly: true })
+    return html === null ? null : { html }
+  }
+
+  /*
+   * `sendResponse` and `return true`, not a returned promise: that is the one
+   * form of asynchronous reply both browsers have always understood.
+   *
+   * Only `onMessage` is listened to. Messages from web pages and from other
+   * extensions arrive on `onMessageExternal`, which has no listener here, and
+   * `refusal` checks the sender regardless.
+   */
+  browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (!isFetchRequest(message)) return
+    void relay(message, sender).then(sendResponse, () => sendResponse(null))
+    return true
+  })
+
   /*
    * On every worker start, which is the case `onInstalled` and `onStartup` miss.
    * MV3 evicts the worker whenever it is idle and runs this body again on the
@@ -368,4 +553,10 @@ export default defineBackground(() => {
    */
   void syncMenu()
   void syncAnnotator()
+
+  // Housekeeping with the same cadence. The first is what makes "kept for
+  // seven days" mean deleted rather than ignored; the second catches a grant
+  // revoked while no listener was there to hear it.
+  void pruneCache()
+  void reconcileGrants().catch(() => {})
 })

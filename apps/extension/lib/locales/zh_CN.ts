@@ -121,6 +121,7 @@ export const zhCN: Translation = {
   menuNoDate: '未找到该链接的日期。',
   menuUnreachable: '无法读取该页面。',
   menuNeedsPermission: '读取该网站的权限被拒绝。',
+  toastDismiss: '关闭',
   annotateFromUrl: '根据链接地址推断',
 
   optSearchHeading: '搜索结果',
