@@ -40,23 +40,51 @@ function typesOf(node: Record<string, JsonValue>): string[] {
 }
 
 /**
+ * Properties whose value is a different work from the one the node describes:
+ * the series an article belongs to, the comments under it, what it cites.
+ *
+ * A date on such a node is `declared`, but not about this page. It matters
+ * because the resolver takes the *earliest* declared publication date as the
+ * original one, so an `isPartOf` series launched years before the article, or a
+ * `comment` stamped on an earlier thread, quietly became the article's date.
+ */
+const OTHER_WORK_KEYS = new Set([
+  'ispartof',
+  'haspart',
+  'comment',
+  'mentions',
+  'citation',
+  'isbasedon',
+  'review',
+  'about',
+  'subjectof',
+  'workexample',
+  'exampleofwork',
+])
+
+type Visited = { node: Record<string, JsonValue>; otherWork: boolean }
+
+/**
  * Walk every object in the graph. Publishers nest the useful node arbitrarily
  * deep — inside `@graph`, `mainEntity`, `itemListElement`, or a bare array — so
  * a full recursive walk is more reliable than probing known paths.
+ *
+ * Each node is reported with whether it was reached through one of
+ * {@link OTHER_WORK_KEYS}, at any depth above it.
  */
-function* walk(value: JsonValue, depth = 0): Generator<Record<string, JsonValue>> {
+function* walk(value: JsonValue, depth = 0, otherWork = false): Generator<Visited> {
   if (depth > 12 || value === null || typeof value !== 'object') return
 
   if (Array.isArray(value)) {
-    for (const item of value) yield* walk(item, depth + 1)
+    for (const item of value) yield* walk(item, depth + 1, otherWork)
     return
   }
 
   const node = value as Record<string, JsonValue>
-  yield node
+  yield { node, otherWork }
   for (const key of Object.keys(node)) {
     if (key.startsWith('@') && key !== '@graph') continue
-    yield* walk(node[key], depth + 1)
+    yield* walk(node[key], depth + 1, otherWork || OTHER_WORK_KEYS.has(key.toLowerCase()))
   }
 }
 
@@ -96,9 +124,9 @@ export function extractJsonLd(doc: Document, opts: ParseOptions = {}): Candidate
       continue
     }
 
-    for (const node of walk(parsed)) {
+    for (const { node, otherWork } of walk(parsed)) {
       const types = typesOf(node)
-      const isArticle = types.some(isContentType)
+      const isArticle = !otherWork && types.some(isContentType)
       // Only trust dates on nodes that declare a type; an untyped object with a
       // `datePublished` key is usually a fragment we've walked into by accident.
       if (types.length === 0) continue
@@ -134,7 +162,9 @@ export function extractJsonLd(doc: Document, opts: ParseOptions = {}): Candidate
           // The old `SOURCE_RANK` demotion could not fix that: it only breaks
           // ties inside a tier.
           confidence: isArticle ? 'declared' : 'derived',
-          note: `schema.org ${key} on ${types[0] ?? 'node'}${isArticle ? '' : ' (container type)'}`,
+          note: `schema.org ${key} on ${types[0] ?? 'node'}${
+            isArticle ? '' : otherWork ? ' (a related work, not this page)' : ' (container type)'
+          }`,
         })
       }
     }

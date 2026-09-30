@@ -1,4 +1,4 @@
-import { CJK_DATE_PATTERN, MONTH_NAME_PATTERN, ORDINAL_SUFFIX } from '../parse/locale.js'
+import { CJK_DATE_PATTERN, MONTH_NAME_IN_TEXT, ORDINAL_SUFFIX } from '../parse/locale.js'
 
 /**
  * Date shapes recognisable in rendered text, in any supported language.
@@ -17,13 +17,18 @@ export const DATE_BODY = [
   // alternative fails and the text falls through to the month-year pattern
   // below, which matches "March 2024" and silently returns month precision — a
   // day the page stated, dropped, and reported as though the page never gave it.
-  `\\d{1,2}${ORDINAL_SUFFIX}\\.?\\s+(?:de\\s+|of\\s+)?(?:${MONTH_NAME_PATTERN})\\.?\\s+(?:de\\s+|del\\s+|r\\.?\\s*)?\\d{4}`,
+  //
+  // Every alternative is fenced against digits on both sides, and the ones that
+  // open with a month name use {@link MONTH_NAME_IN_TEXT}. Without the fences a
+  // date is found inside a longer number — `415-10-2024` is a phone number and
+  // read as 15 October, "Reset 20000" as September 2000.
+  `(?<!\\d)\\d{1,2}${ORDINAL_SUFFIX}\\.?\\s+(?:de\\s+|of\\s+)?(?:${MONTH_NAME_IN_TEXT})\\.?\\s+(?:de\\s+|del\\s+|r\\.?\\s*)?\\d{4}(?!\\d)`,
   // "March 12, 2024", "November 1st, 2012"
-  `(?:${MONTH_NAME_PATTERN})\\.?\\s+\\d{1,2}${ORDINAL_SUFFIX},?\\s+\\d{4}`,
+  `(?:${MONTH_NAME_IN_TEXT})\\.?\\s+\\d{1,2}${ORDINAL_SUFFIX},?\\s+\\d{4}(?!\\d)`,
   // "March 2024"
-  `(?:${MONTH_NAME_PATTERN})\\.?\\s+\\d{4}`,
+  `(?:${MONTH_NAME_IN_TEXT})\\.?\\s+\\d{4}(?!\\d)`,
   // ISO
-  `\\d{4}-\\d{2}-\\d{2}`,
+  `(?<!\\d)\\d{4}-\\d{2}-\\d{2}(?!\\d)`,
   // Year-first with a separator other than the ISO hyphen: "2015.4.23",
   // "2024/03/12". This is the ordinary written form in Japan, China, Korea and
   // Hungary, and its absence was not a rounding error — every Japanese page in
@@ -31,9 +36,9 @@ export const DATE_BODY = [
   // because nothing else on those pages carries a date either. The leading
   // four-digit year makes it unambiguous, so unlike the day-first form below it
   // needs no locale guess.
-  `\\d{4}[/.]\\d{1,2}[/.]\\d{1,2}`,
+  `(?<!\\d)\\d{4}[/.]\\d{1,2}[/.]\\d{1,2}(?!\\d)`,
   // "12/03/2024", "19.07.2014", "12-03-2024"
-  `\\d{1,2}[/.\\-]\\d{1,2}[/.\\-]\\d{4}`,
+  `(?<!\\d)\\d{1,2}[/.\\-]\\d{1,2}[/.\\-]\\d{4}(?!\\d)`,
 ].join('|')
 
 /** Anywhere-in-string matcher, for finding a date inside a longer phrase. */

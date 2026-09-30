@@ -298,10 +298,18 @@ const NEARBY_LIMIT = 400
  * throw all but the first 400 characters away is pure cost, and cost the page
  * gets to choose. Same answer on any real document; bounded on a hostile one.
  */
-export function surroundingText(el: Element): string {
+export function surroundingText(el: Element, parentTexts?: Map<Element, string>): string {
   const own = boundedText(el, NEARBY_LIMIT)
   const parentEl = parentOf(el)
-  const parent = parentEl ? boundedText(parentEl, NEARBY_LIMIT) : ''
+  // Siblings share a parent, and its text is the same for each of them. A
+  // caller walking many elements passes a map so it is read once per parent:
+  // under linkedom every read of `childNodes` rebuilds the list, and ten
+  // thousand sibling `<time>` tags cost ten seconds that way.
+  let parent = ''
+  if (parentEl) {
+    parent = parentTexts?.get(parentEl) ?? boundedText(parentEl, NEARBY_LIMIT)
+    parentTexts?.set(parentEl, parent)
+  }
   const label = (el.getAttribute('aria-label') ?? el.getAttribute('title') ?? '').slice(
     0,
     NEARBY_LIMIT,

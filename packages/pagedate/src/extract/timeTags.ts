@@ -13,6 +13,8 @@ import { fieldFromLabel } from './labels.js'
 export function extractTimeTags(doc: Document, opts: ParseOptions = {}): Candidate[] {
   const out: Candidate[] = []
 
+  const parentTexts = new Map<Element, string>()
+
   for (const el of doc.querySelectorAll('time[datetime], time[pubdate]')) {
     const attr = el.getAttribute('datetime')?.trim()
     const own = el.textContent?.trim()
@@ -25,7 +27,7 @@ export function extractTimeTags(doc: Document, opts: ParseOptions = {}): Candida
     const parsed = parseDateString(raw, opts)
     if (!parsed) continue
 
-    const nearby = surroundingText(el)
+    const nearby = surroundingText(el, parentTexts)
     let field = fieldFromLabel(nearby)
 
     // The legacy `pubdate` attribute is an explicit publication marker.

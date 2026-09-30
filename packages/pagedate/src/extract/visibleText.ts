@@ -7,7 +7,7 @@ import {
   MODIFIED_LABEL_PATTERN,
   PUBLISHED_LABEL_PATTERN,
 } from './labels.js'
-import { collapse, DATE_ANYWHERE, DATE_BODY, directText, isBorrowedContent, MAYBE_DATE, textCandidates, NOT_A_DATE } from './patterns.js'
+import { collapse, DATE_ANYWHERE, DATE_BODY, directText, isBorrowedContent, MAYBE_DATE, textCandidates, NOT_A_DATE, parentOf } from './patterns.js'
 
 /**
  * Prose like "Last updated on 3 March 2024".
@@ -219,8 +219,11 @@ export function extractLabelledPairs(
     // third common rendering, so the parent's sibling is tried as a fallback.
     const candidates = [
       label.nextElementSibling,
-      label.parentElement?.children?.length === 1
-        ? label.parentElement.nextElementSibling
+      // Asked of the label rather than by counting the parent's children:
+      // linkedom rebuilds `children` on every access, which made this line
+      // quadratic in the width of the parent.
+      !label.previousElementSibling && !label.nextElementSibling
+        ? (parentOf(label)?.nextElementSibling ?? null)
         : null,
     ]
 
@@ -275,9 +278,16 @@ export function extractVisibleText(
     // large alternations — almost every element on a page has no year in it and
     // can skip all three.
     const raw = directText(el)
-    if (!raw || !MAYBE_DATE.test(raw)) continue
+    // hAtom keeps the machine value in `title` and shows only a clock time, so
+    // an `<abbr>` is also let through on the strength of its attribute. Without
+    // this the text fails the year test, the element is skipped here, and the
+    // branch below that reads `title` is never reached.
+    const titled = el.tagName?.toUpperCase() === 'ABBR' ? el.getAttribute('title') : null
+    const datedTitle = titled && MAYBE_DATE.test(titled) ? titled : null
+    const datedText = Boolean(raw) && MAYBE_DATE.test(raw)
+    if (!datedText && !datedTitle) continue
     // Prices, versions, phone numbers and IBANs all look like dates.
-    if (NOT_A_DATE.test(raw)) continue
+    if (datedText && NOT_A_DATE.test(raw)) continue
 
     const collapsed = collapse(raw)
     if (collapsed.length > MAX_TEXT_LENGTH) continue
@@ -304,11 +314,14 @@ export function extractVisibleText(
       // hAtom writes `<abbr class="published" title="2016-12-23T05:11:00-05:00">
       // 5:11 AM</abbr>` — the marker names it a publication date and the machine
       // value is in the attribute, while the text alone says only a time.
-      const title = el.getAttribute('title')
-      const source = DATE_ANYWHERE.test(text) ? text : title && MAYBE_DATE.test(title) ? title : text
-
-      const match = DATE_ANYWHERE.exec(source)
-      const parsed = match ? parseDateString(match[0], opts) : null
+      //
+      // The attribute is parsed whole before it is searched. It is a timestamp,
+      // and cutting the date out of it first discards the time and the offset.
+      const fromTitle = datedTitle && !DATE_ANYWHERE.test(text) ? datedTitle : null
+      const match = DATE_ANYWHERE.exec(fromTitle ?? text)
+      const parsed =
+        (fromTitle ? parseDateString(fromTitle, opts) : null) ??
+        (match ? parseDateString(match[0], opts) : null)
       if (parsed && !seen.has(`${markerField}:${parsed.value}`)) {
         seen.add(`${markerField}:${parsed.value}`)
         out.push({
@@ -323,6 +336,9 @@ export function extractVisibleText(
         continue
       }
     }
+
+    // Only the attribute carried a date, and only the branch above reads it.
+    if (!datedText) continue
 
     // Tested once per element rather than once per pattern, and only when the
     // text could contain a byline at all.

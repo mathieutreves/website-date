@@ -5,6 +5,7 @@ import {
   MONTH_NAME_PATTERN,
   monthFromName,
   normaliseDigits,
+  NOT_MID_WORD,
   ORDINAL_SUFFIX,
 } from './locale.js'
 
@@ -89,9 +90,13 @@ function parseCjk(input: string): ParsedDate | null {
 /** ISO 8601 and its common near-misses, including the `YYYY-MM` / `YYYY` prefixes. */
 function parseIso(input: string): ParsedDate | null {
   // Full timestamp — keep to minute precision; seconds add nothing for our purposes.
-  const full = /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::\d{2}(?:\.\d+)?)?\s*(Z|[+-]\d{2}:?\d{2})?/.exec(
-    input,
-  )
+  // `t`/`z` in lowercase and an hour-only offset (`+05`) are all valid RFC 3339
+  // or ISO 8601 and all turn up; read strictly, the first was rejected outright
+  // and the second lost its zone and became a local time.
+  const full =
+    /^(\d{4})-(\d{2})-(\d{2})[Tt ](\d{2}):(\d{2})(?::\d{2}(?:\.\d+)?)?\s*([Zz]|[+-]\d{2}(?::?\d{2})?(?!\d))?/.exec(
+      input,
+    )
   if (full) {
     const [, ys, ms, ds, hs, mins, zone] = full
     const y = Number(ys)
@@ -103,7 +108,11 @@ function parseIso(input: string): ParsedDate | null {
     if (h > 23 || mi > 59) return null
     // Timezone is preserved verbatim rather than normalised to UTC — converting
     // shifts the displayed day for no benefit. See docs/DESIGN.md §4.7.
-    const suffix = zone ? (zone === 'Z' ? 'Z' : zone.replace(/^([+-]\d{2})(\d{2})$/, '$1:$2')) : ''
+    const suffix = !zone
+      ? ''
+      : zone === 'Z' || zone === 'z'
+        ? 'Z'
+        : zone.replace(/^([+-]\d{2}):?(\d{2})?$/, (_m, h: string, m?: string) => `${h}:${m ?? '00'}`)
     return {
       value: `${pad(y, 4)}-${pad(m)}-${pad(d)}T${pad(h)}:${pad(mi)}${suffix}`,
       precision: 'minute',
@@ -130,7 +139,10 @@ function parseIso(input: string): ParsedDate | null {
   // The separator is backreferenced rather than matched twice independently:
   // `2015/4.23` is not a form anyone writes, and accepting it would let two
   // unrelated numbers either side of a full stop parse as a date.
-  const yearFirst = /^(\d{4})([/.])(\d{1,2})\2(\d{1,2})$/.exec(input)
+  //
+  // A clock time may follow — `2024/03/12 10:00` is the ordinary Japanese
+  // timestamp — and is dropped: it names no zone, so the day is what it says.
+  const yearFirst = /^(\d{4})([/.])(\d{1,2})\2(\d{1,2})(?:\s+\d{1,2}:\d{2}(?::\d{2})?)?$/.exec(input)
   if (yearFirst) return ymd(Number(yearFirst[1]), Number(yearFirst[3]), Number(yearFirst[4]))
 
   return null
@@ -224,18 +236,25 @@ function parseNumeric(input: string, dayFirst: DayFirstHint): ParsedDate | null 
  * exactly the trap this pair fell into.
  */
 const DAY_FIRST_TEXTUAL = new RegExp(
-  `\\b(\\d{1,2})${ORDINAL_SUFFIX}\\.?\\s+(?:de\\s+|of\\s+)?(${MONTH_NAME_PATTERN})\\.?\\s+(?:de\\s+|del\\s+)?(\\d{4})\\b`,
+  `(?<![A-Za-z0-9_])(\\d{1,2})${ORDINAL_SUFFIX}\\.?\\s+(?:de\\s+|of\\s+)?(${MONTH_NAME_PATTERN})\\.?\\s+(?:de\\s+|del\\s+)?(\\d{4})\\b`,
   'i',
 )
 
-/** "March 12 2024" */
+/**
+ * "March 12 2024".
+ *
+ * Opens with {@link NOT_MID_WORD} rather than `\\b`, which without the `u` flag
+ * is an ASCII notion: there is no `\\b` in front of a Cyrillic, Greek, Arabic or
+ * Devanagari letter, so "Март 2024" and "مارس 2024" never matched at all. The
+ * day-first form survived only because its boundary sits before a digit.
+ */
 const MONTH_FIRST_TEXTUAL = new RegExp(
-  `\\b(${MONTH_NAME_PATTERN})\\.?\\s+(\\d{1,2})\\s+(\\d{4})\\b`,
+  `${NOT_MID_WORD}(${MONTH_NAME_PATTERN})\\.?\\s+(\\d{1,2})\\s+(\\d{4})\\b`,
   'i',
 )
 
 /** "March 2024" — month precision, no day was stated. */
-const MONTH_YEAR_TEXTUAL = new RegExp(`\\b(${MONTH_NAME_PATTERN})\\.?\\s+(\\d{4})\\b`, 'i')
+const MONTH_YEAR_TEXTUAL = new RegExp(`${NOT_MID_WORD}(${MONTH_NAME_PATTERN})\\.?\\s+(\\d{4})\\b`, 'i')
 
 /** Dates written with a month name, in either order and in any supported language. */
 function parseTextualMonth(input: string): ParsedDate | null {
@@ -276,11 +295,31 @@ function parseTextualMonth(input: string): ParsedDate | null {
 /**
  * Instant a candidate refers to, for comparison and gap arithmetic.
  * Partial values resolve to the start of their period.
+ *
+ * A timestamp with no zone is read as UTC. `new Date('2024-03-12T10:00')` is
+ * local time, so left to the platform the same candidate named three different
+ * instants in Los Angeles, London and Auckland — and which of two declared dates
+ * ranked earlier, whether a date counted as in the future, and how stale a page
+ * was all depended on where the code happened to run.
+ *
+ * Returns `null` for a value that names no real date. `Date` rolls `2024-02-30`
+ * over to March rather than refusing it, and the extractors never emit one, but
+ * `resolveCandidates` is exported and a caller-built candidate reaches here
+ * unvalidated.
  */
 export function toInstant(value: string): Date | null {
-  if (/^\d{4}$/.test(value)) return new Date(`${value}-01-01T00:00:00Z`)
-  if (/^\d{4}-\d{2}$/.test(value)) return new Date(`${value}-01T00:00:00Z`)
-  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return new Date(`${value}T00:00:00Z`)
-  const parsed = new Date(value)
+  const partial = /^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/.exec(value)
+  if (partial) {
+    const y = Number(partial[1])
+    const m = Number(partial[2] ?? 1)
+    const d = Number(partial[3] ?? 1)
+    return isValidYmd(y, m, d) ? new Date(Date.UTC(y, m - 1, d)) : null
+  }
+
+  const day = /^(\d{4})-(\d{2})-(\d{2})T/.exec(value)
+  if (day && !isValidYmd(Number(day[1]), Number(day[2]), Number(day[3]))) return null
+
+  const zoned = /(?:Z|[+-]\d{2}:?\d{2})$/.test(value)
+  const parsed = new Date(day && !zoned ? `${value}Z` : value)
   return Number.isNaN(parsed.getTime()) ? null : parsed
 }

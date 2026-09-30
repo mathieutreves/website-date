@@ -268,6 +268,8 @@ export async function findDates(
 ): Promise<DateResult> {
   const candidates = extractFromDocument(doc, url, options)
   const parsedUrl = safeUrl(url)
+  const admits = (confidence: Confidence): boolean =>
+    !options.minConfidence || atLeast(confidence, options.minConfidence)
 
   if (parsedUrl && env.fetchText) {
     const opts: ParseOptions = {
@@ -280,13 +282,17 @@ export async function findDates(
     // XML parser is asked to survive.
     candidates.push(...(await extractFeed(doc, parsedUrl, env, opts).catch(() => [])))
 
-    if (options.sitemap !== false && !declaresModified(candidates)) {
+    // A sitemap can only ever yield a `derived` candidate, so under a
+    // `declared` floor the request would be made for an answer already refused.
+    if (options.sitemap !== false && admits('derived') && !declaresModified(candidates)) {
       candidates.push(...(await extractSitemap(doc, parsedUrl, env, opts).catch(() => [])))
     }
   }
 
-  if (options.httpHeaders && env.fetchHeaders) {
-    const headers = await env.fetchHeaders(url).catch(() => null)
+  if (options.httpHeaders && env.fetchHeaders && admits('inferred')) {
+    // `async` so that an `Env` whose `fetchHeaders` throws synchronously is
+    // contained like one that rejects.
+    const headers = await (async () => env.fetchHeaders!(url))().catch(() => null)
     if (headers) {
       candidates.push(
         ...safely(() => extractHttpHeaders(headers, options.now ?? env.now?.() ?? new Date())),
@@ -294,7 +300,10 @@ export async function findDates(
     }
   }
 
-  return resolve(candidates, url, env, options)
+  // The floor again, over the network signals. `extractFromDocument` applied it
+  // to what the page holds; a feed, sitemap or header arrives after that and
+  // would otherwise walk straight past a caller who asked for declared dates only.
+  return resolve(candidates.filter((c) => admits(c.confidence)), url, env, options)
 }
 
 const declaresModified = (candidates: Candidate[]): boolean =>

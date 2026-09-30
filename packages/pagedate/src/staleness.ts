@@ -165,14 +165,14 @@ const NOTHING: Staleness = {
 export function staleness(result: DateResult, options: StalenessOptions): Staleness {
   const now = options.now ?? new Date()
   const chosen = pick(result, options.basis ?? 'either', options.minConfidence)
-  if (!chosen) return NOTHING
+  if (!chosen) return { ...NOTHING }
 
   const interval = toInterval(chosen.candidate)
   // A candidate whose value will not parse is not evidence of anything. This
   // should be unreachable through the extractors, which only ever emit values
   // they built themselves, but `resolveCandidates` is exported and an Adapter
   // supplies `value` as a free-form string.
-  if (!interval) return NOTHING
+  if (!interval) return { ...NOTHING }
 
   // Youngest possible instant gives the smallest age, and vice versa. `end` is
   // exclusive, so the youngest instant actually inside the interval is one

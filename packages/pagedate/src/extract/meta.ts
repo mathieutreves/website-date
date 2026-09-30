@@ -1,5 +1,6 @@
 import type { Candidate, Confidence, Field } from '../types.js'
 import { parseDateString, type ParseOptions } from '../parse/normalize.js'
+import { parentOf } from './patterns.js'
 
 type MetaRule = {
   /** Matched case-insensitively against `property`, `name` or `itemprop`. */
@@ -176,14 +177,34 @@ export function extractMeta(doc: Document, opts: ParseOptions = {}): Candidate[]
     const parsed = parseDateString(raw, opts)
     if (!parsed) continue
 
+    // Microdata scopes a property to the nearest `itemscope`, so a
+    // `datePublished` inside a Comment or Review item is that comment's date.
+    // It is still something the site stated, which is why it is kept, but not
+    // at the tier reserved for what the page says about itself.
+    const nested = rule.source === 'itemprop' && inNestedItem(el)
+
     out.push({
       ...parsed,
       field: rule.field,
       source: rule.source,
-      confidence: rule.confidence,
-      note: `<meta> ${key}`,
+      confidence: nested ? 'derived' : rule.confidence,
+      note: nested ? `<meta> ${key} (inside a comment or review item)` : `<meta> ${key}`,
     })
   }
 
   return out
+}
+
+const NESTED_ITEM_TYPE = /(?:comment|review|rating|answer)s?$/i
+
+/** Is the nearest enclosing microdata item a comment, review or answer? */
+function inNestedItem(el: Element): boolean {
+  let node = parentOf(el)
+  for (let depth = 0; node && depth < 24; depth++) {
+    if (node.hasAttribute?.('itemscope')) {
+      return NESTED_ITEM_TYPE.test(node.getAttribute('itemtype')?.trim() ?? '')
+    }
+    node = parentOf(node)
+  }
+  return false
 }
