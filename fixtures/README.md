@@ -1,21 +1,12 @@
-# Fixtures — what these pages are and where they came from
+# Fixtures
 
-Seventeen real web pages, saved exactly as their servers sent them, with an
-answer key beside each one. They are the regression tests: every date this
-library learns to read, it learns against markup someone actually shipped.
+Seventeen real web pages, saved as their servers sent them, with an answer key beside each. They are the regression suite: every date this library reads, it reads against markup someone shipped.
 
-Nothing here was written for the test. That is the point — a fixture rewritten
-to be convenient stops testing the thing that breaks, which is the fifteen
-layers of framework output, consent banners and sidebar dates a real page wraps
-around its one useful timestamp. The Stack Overflow capture is 1.1 MB and the
-date is four characters of it.
+Nothing here was written for the test. A fixture rewritten to be convenient stops testing what breaks, which is the framework output, consent banners and sidebar dates a real page wraps around its one useful timestamp. The Stack Overflow capture is 1.1 MB and the date is four characters of it.
 
 ## Provenance
 
-Every capture was made on 2026-07-28 by `scripts/fixture.ts`, which records the
-URL and the response headers alongside the body. `expected.json` in each
-directory carries the source URL, the capture date, and a note on why the page
-is interesting.
+Every capture was made on 2026-07-28 by `scripts/fixture.ts`, which records the URL and the response headers alongside the body. `expected.json` in each directory carries the source URL, the capture date, and a note on why the page is interesting.
 
 | Directory | Source | Size | Publisher |
 | --- | --- | --- | --- |
@@ -39,43 +30,20 @@ is interesting.
 
 ## Terms
 
-Copyright in these pages belongs to the publishers above, not to this project,
-and none of it is relicensed by the MIT licence covering the rest of the
-repository. They are retained unmodified and in full, as captured, for the sole
-purpose of testing a date extractor, and they are not served, republished or
-presented as content.
+Copyright in these pages belongs to the publishers above, not to this project, and none of it is relicensed by the MIT licence covering the rest of the repository. They are retained unmodified and in full, as captured, for the sole purpose of testing a date extractor, and they are not served, republished or presented as content.
 
-Two carry share-alike terms whose attribution requirement is worth stating
-explicitly rather than leaving to the table above:
+Two carry share-alike terms whose attribution requirement is stated here explicitly:
 
-- **`stackoverflow-answer`** — user contributions on Stack Overflow are licensed
-  [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The question
-  is *Why is processing a sorted array faster than processing an unsorted
-  array?* by GManNickG and its answers by their respective authors.
-- **`mdn-docs`** — MDN Web Docs prose is licensed
-  [CC BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5/) by Mozilla and
-  MDN contributors.
+- **`stackoverflow-answer`** — user contributions on Stack Overflow are licensed [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The question is *Why is processing a sorted array faster than processing an unsorted array?* by GManNickG, and its answers are by their respective authors.
+- **`mdn-docs`** — MDN Web Docs prose is licensed [CC BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5/) by Mozilla and MDN contributors.
 
-Several others are open-source documentation whose sites state their own terms
-(Astro, VitePress, the Rust Project); the news captures and personal blogs are
-all rights reserved by their publishers unless those sites say otherwise. No
-attempt is made here to summarise each publisher's terms, because the basis for
-including them does not depend on the licence: it is a quotation for the purpose
-of testing software, of a page that is publicly served to anyone who requests
-it.
+Several others are open-source documentation whose sites state their own terms (Astro, VitePress, the Rust Project). The news captures and personal blogs are all rights reserved by their publishers unless those sites say otherwise. No attempt is made to summarise each publisher's terms, because the basis for inclusion does not depend on the licence: it is a quotation for the purpose of testing software, of a page publicly served to anyone who requests it.
 
-If you are a rights holder and you would rather your page were not here, open an
-issue and it will be removed and replaced. Nothing in the suite depends on any
-one page.
+If you are a rights holder and would rather your page were not here, open an issue and it will be removed and replaced. Nothing in the suite depends on any one page.
 
 ## What was stripped
 
-`Set-Cookie` response headers were removed from `headers.json` after capture.
-They carried per-session identifiers issued to the machine that made the
-request — a Cloudflare bot-management token, a Qiita session cookie — which
-belong to nobody's test suite and would have been committed verbatim. Every
-other response header is as received, including the `Last-Modified` and `Date`
-headers, which the extractor reads.
+`Set-Cookie` response headers were removed from `headers.json` after capture. They carried per-session identifiers issued to the machine that made the request — a Cloudflare bot-management token, a Qiita session cookie. Every other response header is as received, including the `Last-Modified` and `Date` headers, which the extractor reads.
 
 ## Adding one
 
@@ -83,7 +51,4 @@ headers, which the extractor reads.
 pnpm tsx scripts/fixture.ts <url> <directory-name>
 ```
 
-Writes `page.html`, `headers.json`, and the feed and sitemap when the page
-declares them, plus a stub `expected.json` for the answer key. Fill in the
-`notes` field with what the page is and why it is worth keeping — a fixture
-whose interest nobody recorded is a fixture nobody dares delete.
+Writes `page.html`, `headers.json`, and the feed and sitemap when the page declares them, plus a stub `expected.json` for the answer key. Fill in the `notes` field with what the page is and why it is worth keeping; a fixture whose interest nobody recorded is a fixture nobody will delete.
